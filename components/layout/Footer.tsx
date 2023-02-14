@@ -1,14 +1,24 @@
+import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import LayersIcon from '@mui/icons-material/Layers';
 import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
+import Fade from '@mui/material/Fade';
 import IconButton from '@mui/material/IconButton';
-import { useWeb3React, Web3ReactHooks } from '@web3-react/core';
+import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
-import { hooks, metaMask } from '../../connectors/metaMask';
-import { Chain } from '../Chain';
 
-const { useChainId, useAccounts, useIsActivating, useIsActive, useProvider, useENSNames } = hooks;
+// const StyledTooltip = styled(({ className, ...props }: TooltipProps) => <Tooltip {...props} arrow classes={{ popper: className }} />)(
+// 	({ theme }) => ({
+// 		[`& .${tooltipClasses.arrow}`]: {
+// 			color: 'rgba(6, 16, 25, 1)',
+// 		},
+// 		[`& .${tooltipClasses.tooltip}`]: {
+// 			backgroundColor: 'rgba(6, 16, 25, 1)',
+// 			border: '0.25px solid rgba(76, 76, 90, 1)',
+// 		},
+// 	})
+// );
 
 const StyledFooter = styled.footer`
 	max-width: auto;
@@ -16,7 +26,7 @@ const StyledFooter = styled.footer`
 	flex: 1;
 	justify-content: space-between;
 	align-items: center;
-	padding: 0 25px 10px 0;
+	padding: 0 10px 10px 0;
 	position: absolute;
 	bottom: 0;
 	right: 0;
@@ -30,54 +40,233 @@ const StyledFooter = styled.footer`
 	}
 `;
 
+const StyledPollingDot = styled.div`
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	min-height: 8px;
+	min-width: 8px;
+	border-radius: 50%;
+`;
+
+const LayersIconAnimated = styled(LayersIcon)({
+	// animation: `${rotate360} 1s cubic-bezier(0.83, 0, 0.17, 1) infinite`,
+	color: 'rgba(0,128,0,1)',
+});
+
+const LocalGasStationIconAnimated = styled(LocalGasStationIcon)({
+	// animation: `${rotate360} 1s cubic-bezier(0.83, 0, 0.17, 1) infinite`,
+	color: 'rgba(0,128,0,1)',
+});
+
 export default function BlockNumber() {
-	const chainId = useChainId();
-	var chain = chainId === undefined ? 1 : chainId;
-	var provider = ethers.getDefaultProvider(chain, {
-		etherscan: '-',
-		infura: process.env.infuraKey,
-		alchemy: '-',
-		pocket: '-',
-		ankr: '-',
-	});
+	// let chainId = useChainId();
+	let chainId = 137;
 	const [blockNumber, setBlockNumber] = useState(0);
 	const [gasPrice, setGasPrice] = useState('0');
+	const [isMountingBlock, setIsMountingBlock] = useState(false);
+	const [isMountingGas, setIsMountingGas] = useState(false);
+	const [lastGasPriceRendered, setLastGasPriceRendered] = useState(Date.now());
 
 	useEffect(() => {
-		setInterval(() => {
-			// Get Block Height
-			const getBlock = async () => {
-				try {
-					const blockNumber = await provider.getBlockNumber();
-					setBlockNumber(blockNumber);
-				} catch (error) {}
-			};
-			getBlock();
+		const provider = ethers.getDefaultProvider(chainId, {
+			etherscan: '-',
+			infura: process.env.NEXT_PUBLIC_INFURA_KEY,
+			alchemy: '-',
+			pocket: '-',
+			ankr: '-',
+		});
+		// Get Block Height
+		const getBlock = async () => {
+			try {
+				const blockNumber = await provider.getBlockNumber();
+				setBlockNumber(blockNumber);
+			} catch (error) {}
+		};
+		getBlock();
+		const intervalBlock = setInterval(getBlock, 1000);
 
-			// Get Gas Price in gwei
-			const getGwei = async () => {
-				try {
-					const GasPrice = await provider.getGasPrice();
-					const gweiPrice = ethers.utils.formatUnits(GasPrice, 'gwei');
-					const gwei = gweiPrice.split('.', 1).pop();
-					setGasPrice(gwei);
-				} catch (error) {}
-			};
-			getGwei();
-		}, 50000);
+		// Get Gas Price in gwei
+		const getGwei = async () => {
+			try {
+				const GasPrice = await provider.getGasPrice();
+				const gweiPrice = ethers.utils.formatUnits(GasPrice, 'gwei');
+				const gwei = gweiPrice.split('.', 1).pop();
+				setGasPrice(gwei);
+			} catch (error) {}
+		};
+		getGwei();
+		const interval = setInterval(getGwei, 1000);
+
+		return () => clearInterval(interval && intervalBlock);
 	}, []);
+
+	useEffect(
+		() => {
+			if (!blockNumber) {
+				return;
+			}
+
+			setIsMountingBlock(true);
+			const mountingTimerBlock = setTimeout(() => setIsMountingBlock(false), 1000);
+
+			// this will clear Timeout when component unmount like in willComponentUnmount
+			return () => {
+				clearTimeout(mountingTimerBlock);
+			};
+		},
+		[blockNumber] //useEffect will run only one time
+		//if you pass a value to array, like this [data] than clearTimeout will run every time this value changes (useEffect re-run)
+	);
+
+	useEffect(() => {
+		if (!gasPrice) {
+			return;
+		}
+
+		setIsMountingGas(true);
+		const mountingTimerGas = setTimeout(() => setIsMountingGas(false), 1000);
+
+		// this will clear Timeout when component unmount like in willComponentUnmount
+		return () => {
+			clearTimeout(mountingTimerGas);
+		};
+	}, [gasPrice]); //useEffect will run only one time when gasPrice changes
+
+	useEffect(() => {
+		setIsMountingGas(true);
+		const mountingTimerGas = setTimeout(() => setIsMountingGas(false), 1000);
+		return () => clearTimeout(mountingTimerGas);
+	}, [gasPrice]);
+
+	useEffect(() => {
+		if (Date.now() - lastGasPriceRendered >= 10000) {
+			console.log("It's been 10 seconds or more since the gasPrice was last rendered!");
+		}
+		setLastGasPriceRendered(Date.now());
+	}, [gasPrice]);
 
 	return (
 		<StyledFooter>
-			<IconButton sx={{ color: '#5D6785', fontSize: '0.75rem' }}>
-				<LocalGasStationIcon fontSize="small" sx={{ mr: '0.5rem' }} />
-				{gasPrice}
-			</IconButton>
+			{chainId === 137 ? (
+				<div>
+					<Tooltip
+						title={
+							<>
+								The current best guess of the gas amount for sending a transaction on L2. Gas fees are paid in Polygon's native currency Matic (MATIC)
+								and denominated in GWEI.
+								<div>
+									<div>
+										<StyledPollingDot style={{ backgroundColor: 'rgba(0,128,0,1)' }} /> Up to date
+									</div>
+									<div>
+										<StyledPollingDot style={{ backgroundColor: 'rgba(130,71,229,1)' }} /> Last fetch {'<'} 10 seconds ago
+									</div>
+									<div>
+										<StyledPollingDot style={{ backgroundColor: 'rgba(165,42,42,1)' }} /> Last fetch {'>'} 10 seconds ago
+									</div>
+								</div>
+							</>
+						}
+						placement="top-start"
+						disableInteractive
+						TransitionComponent={Fade}
+						TransitionProps={{ timeout: 600 }}
+					>
+						<IconButton target="_blank" rel="noreferrer" href={'https://polygonscan.com/gastracker'} sx={{ color: '#5D6785', fontSize: '0.75rem' }}>
+							{isMountingGas ? (
+								<LocalGasStationIconAnimated fontSize="small" sx={{ mr: '0.5rem' }} />
+							) : (
+								<LocalGasStationIcon fontSize="small" sx={{ color: 'rgba(0,128,0,0.75)', mr: '0.5rem' }} />
+							)}
+							{gasPrice}
+						</IconButton>
+					</Tooltip>
+					<Tooltip
+						title="The most recent block height on this network. Prices update on every block."
+						placement="top-start"
+						disableInteractive
+						TransitionComponent={Fade}
+						TransitionProps={{ timeout: 600 }}
+					>
+						<IconButton
+							target="_blank"
+							rel="noreferrer"
+							href={`https://polygonscan.com/block/${blockNumber}`}
+							sx={{ color: '#5D6785', fontSize: '0.75rem' }}
+						>
+							{isMountingBlock ? (
+								<LayersIconAnimated fontSize="small" sx={{ mr: '0.5rem' }} />
+							) : (
+								<LayersIcon fontSize="small" sx={{ color: 'rgba(0,128,0,0.75)', mr: '0.5rem' }} />
+							)}
+							{blockNumber}
+						</IconButton>
+					</Tooltip>
+				</div>
+			) : chainId === 1 ? (
+				<div>
+					<Tooltip
+						title="The current fast gas amount for sending a transaction on L1. Gas fees are paid in Ethereum's
+                      native currency Ether (ETH) and denominated in GWEI."
+						placement="top-start"
+						disableInteractive
+						TransitionComponent={Fade}
+						TransitionProps={{ timeout: 600 }}
+					>
+						<IconButton target="_blank" rel="noreferrer" href={'https://etherscan.io/gastracker'} sx={{ color: '#5D6785', fontSize: '0.75rem' }}>
+							<LocalGasStationIcon fontSize="small" sx={{ mr: '0.5rem' }} />
+							{gasPrice}
+						</IconButton>
+					</Tooltip>
 
-			<IconButton sx={{ color: '#5D6785', fontSize: '0.75rem' }}>
-				<LayersIcon fontSize="small" sx={{ mr: '0.5rem' }} />
-				{blockNumber}
-			</IconButton>
+					<Tooltip
+						title="The most recent block height on this network. Prices update on every block."
+						placement="top-start"
+						disableInteractive
+						TransitionComponent={Fade}
+						TransitionProps={{ timeout: 600 }}
+					>
+						<IconButton
+							target="_blank"
+							rel="noreferrer"
+							href={`https://etherscan.io/block/${blockNumber}`}
+							sx={{ color: '#5D6785', fontSize: '0.75rem' }}
+						>
+							{isMountingBlock ? (
+								<LayersIconAnimated fontSize="small" sx={{ mr: '0.5rem' }} />
+							) : (
+								<LayersIcon fontSize="small" sx={{ color: 'rgba(0,128,0,0.75)', mr: '0.5rem' }} />
+							)}
+							{blockNumber}
+						</IconButton>
+					</Tooltip>
+				</div>
+			) : (
+				<div>
+					<Tooltip
+						title="The most recent block height on this network. Prices update on every block."
+						placement="top-start"
+						disableInteractive
+						TransitionComponent={Fade}
+						TransitionProps={{ timeout: 600 }}
+					>
+						<IconButton
+							// target="_blank"
+							// rel="noreferrer"
+							// href={`https://etherscan.io/block/${blockNumber}`}
+							sx={{ color: '#5D6785', fontSize: '0.75rem' }}
+						>
+							{isMountingBlock ? (
+								<LayersIconAnimated fontSize="small" sx={{ mr: '0.5rem' }} />
+							) : (
+								<LayersIcon fontSize="small" sx={{ color: 'rgba(0,128,0,0.75)', mr: '0.5rem' }} />
+							)}
+							{blockNumber}
+						</IconButton>
+					</Tooltip>
+				</div>
+			)}
 		</StyledFooter>
 	);
 }

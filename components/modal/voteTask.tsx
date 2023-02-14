@@ -1,19 +1,15 @@
-import styled from '@emotion/styled';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import TextField from '@mui/material/TextField';
 import { useWeb3React } from '@web3-react/core';
-import { BigNumber, ethers, providers } from 'ethers';
-import { copyFileSync } from 'fs';
+import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import NerveGlobalABI from '../../abi/NerveGlobal.json';
 
-export default function FormDialog() {
+export default function VoteTask() {
 	const [open, setOpen] = useState(false);
 	const { provider } = useWeb3React();
 	const { enqueueSnackbar } = useSnackbar();
@@ -45,13 +41,6 @@ export default function FormDialog() {
 		} catch (error) {
 			enqueueSnackbar('Transaction failed!', {
 				variant: 'error',
-				action: (key) => (
-					<Fragment>
-						<Button size="small" onClick={() => alert(`${error}${key}`)}>
-							Detail
-						</Button>
-					</Fragment>
-				),
 			});
 			setPendingTx(false);
 		}
@@ -70,13 +59,6 @@ export default function FormDialog() {
 		} catch (error) {
 			enqueueSnackbar('Transaction failed!', {
 				variant: 'error',
-				action: (key) => (
-					<Fragment>
-						<Button size="small" onClick={() => alert(`${error}${key}`)}>
-							Detail
-						</Button>
-					</Fragment>
-				),
 			});
 			setPendingTx(false);
 		}

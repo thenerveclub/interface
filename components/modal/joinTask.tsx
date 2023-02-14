@@ -1,27 +1,14 @@
-import styled from '@emotion/styled';
 import { Box, Modal, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import InputAdornment from '@mui/material/InputAdornment';
-import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Slide from '@mui/material/Slide';
-import TextField from '@mui/material/TextField';
 import { TransitionProps } from '@mui/material/transitions';
 import { useWeb3React } from '@web3-react/core';
-import { BigNumber, ethers, providers } from 'ethers';
-import { copyFileSync } from 'fs';
+import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
-import { forwardRef, Fragment, useState } from 'react';
+import { forwardRef, useState } from 'react';
 import NerveGlobalABI from '../../abi/NerveGlobal.json';
-
-interface State {
-	amount: string;
-}
 
 const style = {
 	position: 'absolute' as 'absolute',
@@ -47,10 +34,11 @@ const Transition = forwardRef(function Transition(
 	return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function FormDialog() {
+export default function JoinTask() {
 	const [open, setOpen] = useState(false);
-	const { account, provider, isActive } = useWeb3React();
+	const { provider } = useWeb3React();
 	const { enqueueSnackbar } = useSnackbar();
+	const [value, setValue] = useState(null);
 
 	const handleClickOpen = () => {
 		setOpen(true);
@@ -60,18 +48,6 @@ export default function FormDialog() {
 		setOpen(false);
 	};
 	const [pendingTx, setPendingTx] = useState(false);
-
-	const [values, setValues] = useState<State>({
-		amount: '0',
-	});
-
-	const handleChange = (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
-		setValues({ ...values, [prop]: event.target.value });
-	};
-
-	const customValue = values.amount.toString();
-	// TODO -> Get Minimum Stake + Individual input Stake from user
-	const val = ethers.utils.parseEther(customValue);
 
 	// Get Task ID
 	const path = (global.window && window.location.pathname)?.toString() || '';
@@ -84,20 +60,13 @@ export default function FormDialog() {
 		const nerveGlobal = new ethers.Contract('0x91596B44543016DDb5D410A51619D5552961a23b', NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			await nerveGlobal.joinTask(Id, { value: val, gasLimit: 250000 });
+			await nerveGlobal.joinTask(Id, { value: value, gasLimit: 250000 });
 			enqueueSnackbar('Transaction signed succesfully!', {
 				variant: 'success',
 			});
 		} catch (error) {
 			enqueueSnackbar('Transaction failed!', {
 				variant: 'error',
-				action: (key) => (
-					<Fragment>
-						<Button size="small" onClick={() => alert(`${error}${key}`)}>
-							Detail
-						</Button>
-					</Fragment>
-				),
 			});
 			setPendingTx(false);
 		}
@@ -115,8 +84,7 @@ export default function FormDialog() {
 					</Typography>
 					<OutlinedInput
 						id="outlined-adornment-amount"
-						value={values.amount}
-						onChange={handleChange('amount')}
+						onChange={(event) => setValue(event.target.value)}
 						startAdornment={<InputAdornment position="start">$</InputAdornment>}
 						label="Amount"
 					/>

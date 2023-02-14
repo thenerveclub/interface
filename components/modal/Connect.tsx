@@ -1,52 +1,93 @@
+import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Modal from '@mui/material/Modal';
-import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
-import { coinbaseWallet, hooks } from '../../connectors/coinbaseWallet';
 import CoinbaseWalletConnect from '../connectorButtons/CoinbaseWalletConnect';
 import MetaMaskConnect from '../connectorButtons/MetaMaskConnect';
-import WalletConnect from '../connectorButtons/WalletConnect';
+import { WalletConnect } from '../connectorButtons/WalletConnect';
 
-const { useChainId, useAccounts, useIsActivating, useIsActive, useProvider, useENSNames } = hooks;
+const ConnectButton = styled(Button)({
+	color: '#000',
+	textTransform: 'none',
+	justifyContent: 'flex-start',
+	fontSize: 16,
+	fontWeight: 400,
+	height: 50,
+	backgroundColor: 'rgba(76, 76, 90, 1)',
+	borderRadius: 5,
+	'&:hover': {
+		backgroundColor: 'rgba(102, 102, 114, 1)',
+		transition: 'all 0.75s ease',
+	},
+});
 
-const style = {
+const ConnectBox = styled(Box)({
 	position: 'absolute' as 'absolute',
 	top: '50%',
 	left: '50%',
 	transform: 'translate(-50%, -50%)',
-	width: 400,
-	bgcolor: '#292929',
-	border: '0.5px solid rgba(152, 161, 192, 0.1)',
-	borderRadius: '20px',
-	boxShadow: 24,
-	pt: 2,
-	px: 4,
-	pb: 3,
-};
+	margin: '0 auto 0 auto',
+	justifyContent: 'center',
+	alignItems: 'center',
+	padding: '1rem',
+	height: 400,
+	width: 350,
+	backgroundColor: 'rgba(6, 16, 25, 1)',
+	border: '0.25px solid rgba(76, 76, 90, 1)',
+	borderRadius: '10px',
+	boxShadow: '0 0 25px rgba(76,130,251,0.25)',
+	pt: 4,
+	px: 2,
+	pb: 2,
+});
 
 function ConnectHeader() {
 	const [open, setOpen] = React.useState(false);
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
-	const isActivating = useIsActivating();
 
 	return (
 		<div>
-			<Button fullWidth={true} sx={{ my: 2, color: 'white', display: 'block' }} onClick={handleOpen}>
-				Connect
-			</Button>
+			{!open ? (
+				<ConnectButton fullWidth={true} sx={{ my: 2, color: 'white', display: 'block', fontSize: '16px' }} onClick={handleOpen}>
+					Connect
+				</ConnectButton>
+			) : (
+				<ConnectButton
+					fullWidth={true}
+					sx={{ my: 2, color: 'white', fontSize: '12px' }}
+					startIcon={<CircularProgress color="secondary" thickness={2.5} size={18} />}
+				>
+					Connecting
+				</ConnectButton>
+			)}
 			<Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
-				<Box sx={style}>
-					<Typography id="modal-modal-title" variant="h6" component="h2">
+				<ConnectBox>
+					<Typography
+						style={{ fontWeight: 'bold', margin: '0.75rem auto 0.75rem auto' }}
+						align="center"
+						color={'#fff'}
+						id="modal-modal-title"
+						variant="h6"
+						component="h2"
+					>
 						Connect a wallet
 					</Typography>
 					<MetaMaskConnect />
 					<CoinbaseWalletConnect />
 					<WalletConnect />
-					<Typography id="modal-modal-description" sx={{ fontSize: '12px', mt: 2 }}>
+					<Typography
+						id="modal-modal-description"
+						sx={{
+							fontSize: '12px',
+							margin: '0.75rem auto 0 auto',
+							textAlign: 'center',
+							padding: '1rem',
+						}}
+					>
 						By connecting a wallet, you agree to Nerve Global's{' '}
 						<a target="_blank" rel="noreferrer" href={'https://www.nerveglobal.com/disclaimer'}>
 							Terms of Service
@@ -57,7 +98,7 @@ function ConnectHeader() {
 						</a>
 						{'.'}
 					</Typography>
-				</Box>
+				</ConnectBox>
 			</Modal>
 		</div>
 	);

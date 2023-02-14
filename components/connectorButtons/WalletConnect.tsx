@@ -4,7 +4,7 @@ import { Card } from '../ConnectOnlyCard';
 
 const { useChainId, useAccounts, useIsActivating, useIsActive, useProvider, useENSNames } = hooks;
 
-export default function CoinbaseWalletConnect() {
+export function WalletConnect() {
 	const chainId = useChainId();
 	const isActivating = useIsActivating();
 	const isActive = useIsActive();

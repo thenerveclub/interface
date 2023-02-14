@@ -4,16 +4,15 @@ import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import LinearProgress from '@mui/material/LinearProgress';
 import Modal from '@mui/material/Modal';
-import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { hooks, metaMask } from '../../connectors/metaMask';
+import { hooks } from '../../connectors/metaMask';
 import Identicon from '../Identicon';
 
-const { useAccounts, useChainId, useIsActivating, useIsActive } = hooks;
+const { useChainId } = hooks;
 
 const style = {
 	position: 'absolute' as 'absolute',

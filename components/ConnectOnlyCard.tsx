@@ -23,7 +23,7 @@ export function Card({ connector, chainId, isActivating, isActive, error, setErr
 				width: '100%',
 				flexDirection: 'column',
 				justifyContent: 'space-between',
-				padding: '1rem',
+				padding: '0.5rem',
 				overflow: 'auto',
 			}}
 		>

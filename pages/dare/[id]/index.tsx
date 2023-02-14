@@ -2,18 +2,18 @@ import styled from '@emotion/styled';
 import { BigNumber, ethers } from 'ethers';
 import { Fragment, useEffect, useRef, useState } from 'react';
 
-import Join from '../../../components/modal/Join';
-import Vote from '../../../components/modal/Vote';
+import Join from '../../../components/modal/joinTask';
+import Vote from '../../../components/modal/voteTask';
 
 import { useWeb3React } from '@web3-react/core';
 import NerveGlobalABI from '../../../abi/NerveGlobal.json';
 import Connect from '../../../components/modal/Connect';
 
-import Instagram from '../../../images/instagram.inline.svg';
-import TikTok from '../../../images/tiktok.inline.svg';
-import Twitch from '../../../images/twitch.inline.svg';
-import Twitter from '../../../images/twitter.inline.svg';
-import Youtube from '../../../images/youtube.inline.svg';
+import Instagram from '/public/svg/instagram.svg';
+import TikTok from '/public/svg/tiktok.svg';
+import Twitch from '/public/svg/twitch.svg';
+import Twitter from '/public/svg/twitter.svg';
+import Youtube from '/public/svg/youtube.svg';
 
 import Button from '@mui/material/Button';
 import { useSnackbar } from 'notistack';
@@ -24,6 +24,7 @@ import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { themeDark } from '../../../components/layout/styles';
+import RegisterName from '../../../components/modal/registerName';
 
 const StyledInstagram = styled(Instagram)`
 	path {
@@ -116,7 +117,8 @@ const StyledTwitch = styled(Twitch)`
 
 const StyledCard = styled.div`
 	background-color: rgba(0, 0, 20, 0.5);
-	border: 1px solid #white;
+	border: '1px';
+	border-color: #00f2fc;
 	padding: 2rem;
 	border-radius: 24px;
 `;
@@ -125,6 +127,8 @@ const GrantsCard = styled(StyledCard)`
 	width: 500px;
 	height: 500px;
 	margin: 0 auto 0 auto;
+	border: '1px';
+	border-color: #00f2fc;
 
 	@media (max-width: 960px) {
 		width: 100%;
@@ -363,15 +367,20 @@ export default function DarePage() {
 	// Query The Graph -> Dares
 	const [tad, setTAD] = useState<any[]>([]);
 	useEffect(() => {
-		setInterval(() => {
-			fetch('https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ query: QueryForDare }),
-			})
-				.then((response) => response.json())
-				.then((data) => setTAD(data.data.tasks));
-		}, 5000);
+		const getTask = async () => {
+			try {
+				const fetchTask = await fetch('https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ query: QueryForDare }),
+				})
+					.then((response) => response.json())
+					.then((data) => setTAD(data.data.tasks));
+			} catch (error) {}
+		};
+		const interval = setInterval(getTask, 1000);
+
+		return () => clearInterval(interval);
 	}, []);
 
 	const QueryForDare = `
@@ -395,21 +404,26 @@ export default function DarePage() {
 	// Query The Graph -> User -> Joined Dare || Voted Dare || Claimed Dare
 	const [queryForUser, setQueryForUser] = useState<any[]>([]);
 	useEffect(() => {
-		setInterval(() => {
-			fetch('https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ query: QueryForUser }),
-			}).then((response) => {
-				if (response.ok) {
-					response
-						.json()
+		const getUser = async () => {
+			try {
+				const fetchUserTask = await fetch('https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ query: QueryForUser }),
+				}).then((response) => {
+					if (response.ok) {
+						response
+							.json()
 
-						.then((data) => setQueryForUser(data.data.userTasks));
-				}
-				throw console.log('Array is Empty');
-			});
-		}, 5000);
+							.then((data) => setQueryForUser(data.data.userTasks));
+					}
+					throw console.log('Array is Empty');
+				});
+			} catch (error) {}
+		};
+		const interval = setInterval(getUser, 1000);
+
+		return () => clearInterval(interval);
 	}, []);
 
 	const { account, provider, isActive } = useWeb3React();
@@ -417,7 +431,7 @@ export default function DarePage() {
 	// TODO -> Get ${account} as userAddress
 	const QueryForUser = `
 {
-	userTasks(where: { id:"${acc}-${Id}"}) {
+	userTasks(where: { id:"0x52B28292846c59dA23114496d6e6BfC875f54FF5-${Id}"}) {
 	  userStake
 	  voted
 	  vote
@@ -535,7 +549,12 @@ export default function DarePage() {
 							<GrantsCard>
 								<StyledItemRowSocials style={{ fontSize: '16px' }}>
 									{merged.recipientName.length > 0 ? (
-										<a key={merged.recipientName} target="_blank" rel="noreferrer" href={'https://app.nerveglobal.com/#' + merged.recipientName}>
+										<a
+											key={merged.recipientName}
+											target="_blank"
+											rel="noreferrer"
+											href={'https://app.nerveglobal.com/player/#' + merged.recipientName}
+										>
 											{merged.recipientName}↗
 										</a>
 									) : (
@@ -634,6 +653,7 @@ export default function DarePage() {
 									<Connect />
 								)}
 							</GrantsCard>
+							<RegisterName />
 						</StyledItemRow>
 					</li>
 				))}
