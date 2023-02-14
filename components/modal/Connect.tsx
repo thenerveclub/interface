@@ -5,9 +5,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
-import CoinbaseWalletConnect from '../connectorButtons/CoinbaseWalletConnect';
-import MetaMaskConnect from '../connectorButtons/MetaMaskConnect';
-import { WalletConnect } from '../connectorButtons/WalletConnect';
+import CoinbaseWalletConnect from '../connectorButtons/coinbaseWalletConnect';
+import MetaMaskConnect from '../connectorButtons/metaMaskConnect';
+import { WalletConnect } from '../connectorButtons/walletConnect';
 
 const ConnectButton = styled(Button)({
 	color: '#000',

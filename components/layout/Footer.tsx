@@ -1,24 +1,11 @@
-import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import LayersIcon from '@mui/icons-material/Layers';
 import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
 import Fade from '@mui/material/Fade';
 import IconButton from '@mui/material/IconButton';
-import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
+import Tooltip from '@mui/material/Tooltip';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
-
-// const StyledTooltip = styled(({ className, ...props }: TooltipProps) => <Tooltip {...props} arrow classes={{ popper: className }} />)(
-// 	({ theme }) => ({
-// 		[`& .${tooltipClasses.arrow}`]: {
-// 			color: 'rgba(6, 16, 25, 1)',
-// 		},
-// 		[`& .${tooltipClasses.tooltip}`]: {
-// 			backgroundColor: 'rgba(6, 16, 25, 1)',
-// 			border: '0.25px solid rgba(76, 76, 90, 1)',
-// 		},
-// 	})
-// );
 
 const StyledFooter = styled.footer`
 	max-width: auto;

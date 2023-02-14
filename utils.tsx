@@ -5,9 +5,9 @@ import { Network } from '@web3-react/network';
 import type { Connector } from '@web3-react/types';
 import { WalletConnect } from '@web3-react/walletconnect';
 import Image from 'next/image';
-import CoinbaseWalletLogo from '/public/svg/coinbaseWallet.svg';
-import MetaMaskLogo from '/public/svg/metaMask.svg';
-import WalletConnectLogo from '/public/svg/walletConnect.svg';
+import CoinbaseWalletLogo from '/public/svg/connectors/coinbaseWallet.svg';
+import MetaMaskLogo from '/public/svg/connectors/metaMask.svg';
+import WalletConnectLogo from '/public/svg/connectors/walletConnect.svg';
 
 export function getName(connector: Connector) {
 	if (connector instanceof MetaMask) return 'MetaMask';

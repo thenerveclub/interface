@@ -1,30 +1,20 @@
 import styled from '@emotion/styled';
-import { BigNumber, ethers } from 'ethers';
-import { Fragment, useEffect, useRef, useState } from 'react';
-
-import Join from '../../../components/modal/joinTask';
-import Vote from '../../../components/modal/voteTask';
-
+import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
 import { useWeb3React } from '@web3-react/core';
+import { BigNumber, ethers } from 'ethers';
+import { useSnackbar } from 'notistack';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import NerveGlobalABI from '../../../abi/NerveGlobal.json';
 import Connect from '../../../components/modal/connect';
-
-import Instagram from '/public/svg/instagram.svg';
-import TikTok from '/public/svg/tiktok.svg';
-import Twitch from '/public/svg/twitch.svg';
-import Twitter from '/public/svg/twitter.svg';
-import Youtube from '/public/svg/youtube.svg';
-
-import Button from '@mui/material/Button';
-import { useSnackbar } from 'notistack';
-
-import { LinearProgress } from '@mui/material';
-import Divider from '@mui/material/Divider';
-
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { themeDark } from '../../../components/layout/styles';
+import Join from '../../../components/modal/joinTask';
 import RegisterName from '../../../components/modal/registerName';
+import Vote from '../../../components/modal/voteTask';
+import Instagram from '/public/svg/socials/instagram.svg';
+import TikTok from '/public/svg/socials/tiktok.svg';
+import Twitch from '/public/svg/socials/twitch.svg';
+import Twitter from '/public/svg/socials/twitter.svg';
+import Youtube from '/public/svg/socials/youtube.svg';
 
 const StyledInstagram = styled(Instagram)`
 	path {

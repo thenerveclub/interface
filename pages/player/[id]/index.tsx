@@ -2,16 +2,15 @@ import styled from '@emotion/styled';
 import { useWeb3React } from '@web3-react/core';
 import { useEffect, useState } from 'react';
 import { CheckNameRegister } from '../../../components/checkNameRegister';
+import Connect from '../../../components/modal/connect';
 import CreateTask from '../../../components/modal/createTask';
 import RegisterName from '../../../components/modal/registerName';
 import RegisterSocial from '../../../components/modal/registerSocial';
-
-import Connect from '../../../components/modal/connect';
-import Instagram from '/public/svg/instagram.svg';
-import TikTok from '/public/svg/tiktok.svg';
-import Twitch from '/public/svg/twitch.svg';
-import Twitter from '/public/svg/twitter.svg';
-import Youtube from '/public/svg/youtube.svg';
+import Instagram from '/public/svg/socials/instagram.svg';
+import TikTok from '/public/svg/socials/tiktok.svg';
+import Twitch from '/public/svg/socials/twitch.svg';
+import Twitter from '/public/svg/socials/twitter.svg';
+import Youtube from '/public/svg/socials/youtube.svg';
 
 const StyledItemRowSocials = styled.nav`
 	display: flex;
