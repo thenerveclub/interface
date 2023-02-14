@@ -7,6 +7,8 @@ import { WalletConnect } from '@web3-react/walletconnect';
 import { useCallback, useState } from 'react';
 import { CHAINS, URLS, getAddChainParameters } from '../chains';
 
+//das hier nehemn und dann mit nem if statement checken ob es metamask ist oder nicht und wie die connector buttons machen und dann nur das Select Chain nehmen und das dann oben einbauen und hier huebsch machen
+
 function ChainSelect({
 	chainId,
 	switchChain,

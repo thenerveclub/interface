@@ -14,15 +14,19 @@ import Typography from '@mui/material/Typography';
 import { providers } from 'ethers';
 import Link from 'next/link';
 import { useState } from 'react';
-import SelectChain from '../SelectChain';
 import ConnectHeader from '../connectWithHeader';
 
+import { useWeb3React } from '@web3-react/core';
 import { CHAINS } from '../../chains';
+import { ConnectWithSelect } from '../SelectChainTest';
+import AccountModal from '../modal/account';
+import Connect from '../modal/connect';
 
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 export default function Header() {
+	const { account } = useWeb3React();
 	const [light, setLight] = useState(true);
 	const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 	const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -104,9 +108,7 @@ export default function Header() {
 						{/* <Tooltip title="Theme">
 							<Button onClick={() => setLight((prev) => !prev)}>Toggle Theme</Button>
 						</Tooltip> */}
-						<button>Switch Network</button>
-						<SelectChain />
-						<ConnectHeader />
+						{account ? <AccountModal /> : <Connect />}
 					</Toolbar>
 				</Container>
 			</AppBar>

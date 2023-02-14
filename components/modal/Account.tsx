@@ -10,7 +10,7 @@ import { ethers } from 'ethers';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { hooks } from '../../connectors/metaMask';
-import Identicon from '../Identicon';
+import Identicon from '../identicon.tsx';
 
 const { useChainId } = hooks;
 
@@ -124,7 +124,7 @@ function useBalance() {
 		// Get Account Balance in ether
 		const getBalance = async () => {
 			try {
-				const balance = await (await provider.getBalance(account)).toString();
+				const balance = await (await provider?.getBalance(account)).toString();
 				const etherBalance = ethers.utils.formatEther(balance).toString();
 				setBalance(etherBalance);
 			} catch (error) {}

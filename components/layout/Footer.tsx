@@ -76,6 +76,7 @@ export default function BlockNumber() {
 			pocket: '-',
 			ankr: '-',
 		});
+		console.log('provider', provider);
 		// Get Block Height
 		const getBlock = async () => {
 			try {
@@ -153,7 +154,7 @@ export default function BlockNumber() {
 					<Tooltip
 						title={
 							<>
-								The current best guess of the gas amount for sending a transaction on L2. Gas fees are paid in Polygon's native currency Matic (MATIC)
+								The current best guess of the gas amount for sending a transaction on L1. Gas fees are paid in Polygon's native currency Matic (MATIC)
 								and denominated in GWEI.
 								<div>
 									<div>

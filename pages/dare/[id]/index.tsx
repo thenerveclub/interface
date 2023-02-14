@@ -7,7 +7,7 @@ import Vote from '../../../components/modal/voteTask';
 
 import { useWeb3React } from '@web3-react/core';
 import NerveGlobalABI from '../../../abi/NerveGlobal.json';
-import Connect from '../../../components/modal/Connect';
+import Connect from '../../../components/modal/connect';
 
 import Instagram from '/public/svg/instagram.svg';
 import TikTok from '/public/svg/tiktok.svg';

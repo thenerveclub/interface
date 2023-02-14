@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { hooks, walletConnect } from '../../connectors/walletConnect';
-import { Card } from '../ConnectOnlyCard';
+import { Card } from '../connectOnlyCard';
 
-const { useChainId, useAccounts, useIsActivating, useIsActive, useProvider, useENSNames } = hooks;
+const { useChainId, useIsActivating, useIsActive } = hooks;
 
 export function WalletConnect() {
 	const chainId = useChainId();

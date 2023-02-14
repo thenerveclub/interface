@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { coinbaseWallet, hooks } from '../../connectors/coinbaseWallet';
-import { Card } from '../ConnectOnlyCard';
+import { Card } from '../connectOnlyCard';
 
-const { useChainId, useAccounts, useIsActivating, useIsActive, useProvider, useENSNames } = hooks;
+const { useChainId, useIsActivating, useIsActive } = hooks;
 
 export default function CoinbaseWalletConnect() {
 	const chainId = useChainId();

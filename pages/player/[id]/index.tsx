@@ -6,7 +6,7 @@ import CreateTask from '../../../components/modal/createTask';
 import RegisterName from '../../../components/modal/registerName';
 import RegisterSocial from '../../../components/modal/registerSocial';
 
-import Connect from '../../../components/modal/Connect';
+import Connect from '../../../components/modal/connect';
 import Instagram from '/public/svg/instagram.svg';
 import TikTok from '/public/svg/tiktok.svg';
 import Twitch from '/public/svg/twitch.svg';

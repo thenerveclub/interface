@@ -1,4 +1,3 @@
-import { CssBaseline } from '@mui/material/';
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet';
 import { useWeb3React, Web3ReactHooks, Web3ReactProvider } from '@web3-react/core';
 import { MetaMask } from '@web3-react/metamask';
@@ -8,16 +7,14 @@ import { SnackbarProvider } from 'notistack';
 import React, { useEffect } from 'react';
 import Layout from '../components/layout/Layout';
 import { coinbaseWallet, hooks as coinbaseWalletHooks } from '../connectors/coinbaseWallet';
-import { hooks as metaMaskHooks, metaMask } from '../connectors/metaMask';
-import { hooks as networkHooks, network } from '../connectors/network';
-import { hooks as walletConnectHooks, walletConnect } from '../connectors/walletConnect';
+import { metaMask, hooks as metaMaskHooks } from '../connectors/metaMask';
+import { walletConnect, hooks as walletConnectHooks } from '../connectors/walletConnect';
 import { getName } from '../utils';
 
 const connectors: [MetaMask | WalletConnect | CoinbaseWallet | Network, Web3ReactHooks][] = [
 	[metaMask, metaMaskHooks],
 	[walletConnect, walletConnectHooks],
 	[coinbaseWallet, coinbaseWalletHooks],
-	[network, networkHooks],
 ];
 
 function Child() {
