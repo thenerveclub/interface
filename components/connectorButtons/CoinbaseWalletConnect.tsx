@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { coinbaseWallet, hooks } from '../../connectors/coinbaseWallet';
+import { coinbaseWallet, hooks } from '../../utils/connectors/coinbaseWallet';
 import { Card } from '../ConnectOnlyCard';
 
 const { useChainId, useIsActivating, useIsActive } = hooks;

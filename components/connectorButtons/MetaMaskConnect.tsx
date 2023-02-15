@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { hooks, metaMask } from '../../connectors/metaMask';
+import { hooks, metaMask } from '../../utils/connectors/metaMask';
 import { Card } from '../ConnectOnlyCard';
 
 const { useChainId, useIsActivating, useIsActive } = hooks;

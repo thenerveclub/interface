@@ -6,10 +6,10 @@ import { WalletConnect } from '@web3-react/walletconnect';
 import { SnackbarProvider } from 'notistack';
 import React, { useEffect } from 'react';
 import Layout from '../components/layout/Layout';
-import { coinbaseWallet, hooks as coinbaseWalletHooks } from '../connectors/coinbaseWallet';
-import { metaMask, hooks as metaMaskHooks } from '../connectors/metaMask';
-import { walletConnect, hooks as walletConnectHooks } from '../connectors/walletConnect';
-import { getName } from '../utils';
+import { coinbaseWallet, hooks as coinbaseWalletHooks } from '../utils/connectors/coinbaseWallet';
+import { metaMask, hooks as metaMaskHooks } from '../utils/connectors/metaMask';
+import { walletConnect, hooks as walletConnectHooks } from '../utils/connectors/walletConnect';
+import { getName } from '../utils/web3Utils';
 
 const connectors: [MetaMask | WalletConnect | CoinbaseWallet | Network, Web3ReactHooks][] = [
 	[metaMask, metaMaskHooks],

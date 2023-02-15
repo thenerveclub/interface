@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
 import { useWeb3React } from '@web3-react/core';
 import { useEffect, useState } from 'react';
-import { CheckNameRegister } from '../../../components/CheckNameRegister';
 import Connect from '../../../components/modal/Connect';
 import CreateTask from '../../../components/modal/CreateTask';
 import RegisterName from '../../../components/modal/RegisterName';
 import RegisterSocial from '../../../components/modal/RegisterSocial';
+import { CheckNameRegister } from '../../../utils/validation/checkNameRegister';
 import Instagram from '/public/svg/socials/instagram.svg';
 import TikTok from '/public/svg/socials/tiktok.svg';
 import Twitch from '/public/svg/socials/twitch.svg';

@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
-import NerveGlobalABI from '../abi/NerveGlobal.json';
+import NerveGlobalABI from '../../abi/NerveGlobal.json';
 
 export function CheckNameRegister() {
 	const [registerStatus, setRegisterStatus] = useState<string | null>(null);

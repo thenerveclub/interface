@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { hooks, walletConnect } from '../../connectors/walletConnect';
+import { hooks, walletConnect } from '../../utils/connectors/walletConnect';
 import { Card } from '../ConnectOnlyCard';
 
 const { useChainId, useIsActivating, useIsActive } = hooks;

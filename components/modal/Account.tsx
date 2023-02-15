@@ -9,7 +9,7 @@ import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { hooks } from '../../connectors/metaMask';
+import { hooks } from '../../utils/connectors/metaMask';
 import Identicon from '../Identicon';
 
 const { useChainId } = hooks;
