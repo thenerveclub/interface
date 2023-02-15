@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { hooks, metaMask } from '../../connectors/metaMask';
-import { Card } from '../connectOnlyCard';
+import { Card } from '../ConnectOnlyCard';
 
 const { useChainId, useIsActivating, useIsActive } = hooks;
 

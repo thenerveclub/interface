@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@mui/material';
 import React, { ReactNode } from 'react';
-import Footer from './footer';
-import Header from './header';
+import Footer from './Footer';
+import Header from './Header';
 
 import { CssBaseline } from '@mui/material/';
 import { themeDark } from './styles';

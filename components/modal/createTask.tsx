@@ -8,7 +8,7 @@ import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import NerveGlobalABI from '../../abi/NerveGlobal.json';
-import { CheckNameRegister } from '../checkNameRegister';
+import { CheckNameRegister } from '../CheckNameRegister';
 
 const StyledSection = styled.section`
 	display: flex;
