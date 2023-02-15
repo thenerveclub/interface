@@ -4,7 +4,7 @@ import { GnosisSafe } from '@web3-react/gnosis-safe';
 import { MetaMask } from '@web3-react/metamask';
 import { Network } from '@web3-react/network';
 import { WalletConnect } from '@web3-react/walletconnect';
-import { ConnectOnly } from './connectOnly.tsx';
+import { ConnectOnly } from './connectOnly';
 
 interface Props {
 	connector: MetaMask | WalletConnect | CoinbaseWallet | Network | GnosisSafe;

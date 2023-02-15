@@ -10,7 +10,7 @@ import { ethers } from 'ethers';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { hooks } from '../../connectors/metaMask';
-import Identicon from '../identicon.tsx';
+import Identicon from '../identicon';
 
 const { useChainId } = hooks;
 
