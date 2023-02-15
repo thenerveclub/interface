@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import { useWeb3React } from '@web3-react/core';
 // import NetworkDropdown from '../chainLogoSize';
 import AccountModal from '../modal/account';
-import Connect from '../modal/Connect';
+import Connect from '../modal/connect';
 
 export default function Header() {
 	const { account } = useWeb3React();
