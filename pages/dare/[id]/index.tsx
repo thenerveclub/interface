@@ -7,7 +7,7 @@ import { useSnackbar } from 'notistack';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import NerveGlobalABI from '../../../abi/NerveGlobal.json';
 import Connect from '../../../components/modal/Connect';
-import Join from '../../../components/modal/joinTask';
+import Join from '../../../components/modal/JoinTask';
 import Vote from '../../../components/modal/voteTask';
 import Instagram from '/public/svg/socials/instagram.svg';
 import TikTok from '/public/svg/socials/tiktok.svg';
