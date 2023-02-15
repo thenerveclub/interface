@@ -5,7 +5,7 @@ import { Network } from '@web3-react/network';
 import { WalletConnect } from '@web3-react/walletconnect';
 import { SnackbarProvider } from 'notistack';
 import React, { useEffect } from 'react';
-import Layout from '../components/layout/layout';
+import Layout from '../components/layout/Layout';
 import { coinbaseWallet, hooks as coinbaseWalletHooks } from '../connectors/coinbaseWallet';
 import { metaMask, hooks as metaMaskHooks } from '../connectors/metaMask';
 import { walletConnect, hooks as walletConnectHooks } from '../connectors/walletConnect';

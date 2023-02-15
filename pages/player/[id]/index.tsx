@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useWeb3React } from '@web3-react/core';
 import { useEffect, useState } from 'react';
 import { CheckNameRegister } from '../../../components/checkNameRegister';
-import Connect from '../../../components/modal/connect';
+import Connect from '../../../components/modal/Connect';
 import CreateTask from '../../../components/modal/createTask';
 import RegisterName from '../../../components/modal/registerName';
 import RegisterSocial from '../../../components/modal/registerSocial';

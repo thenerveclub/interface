@@ -6,7 +6,7 @@ import { BigNumber, ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import NerveGlobalABI from '../../../abi/NerveGlobal.json';
-import Connect from '../../../components/modal/connect';
+import Connect from '../../../components/modal/Connect';
 import Join from '../../../components/modal/joinTask';
 import RegisterName from '../../../components/modal/registerName';
 import Vote from '../../../components/modal/voteTask';
