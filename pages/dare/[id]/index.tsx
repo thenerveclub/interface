@@ -8,7 +8,6 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 import NerveGlobalABI from '../../../abi/NerveGlobal.json';
 import Connect from '../../../components/modal/Connect';
 import Join from '../../../components/modal/JoinTask';
-import RegisterName from '../../../components/modal/RegisterName';
 import Vote from '../../../components/modal/VoteTask';
 import Instagram from '/public/svg/socials/instagram.svg';
 import TikTok from '/public/svg/socials/tiktok.svg';
@@ -643,7 +642,6 @@ export default function DarePage() {
 									<Connect />
 								)}
 							</GrantsCard>
-							<RegisterName />
 						</StyledItemRow>
 					</li>
 				))}
