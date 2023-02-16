@@ -9,7 +9,10 @@ import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { CHAINS } from '../../utils/chains';
 import { hooks } from '../../utils/connectors/metaMask';
+import { getProvider } from '../../utils/nerveGlobalProvider';
 import Identicon from '../Identicon';
 
 const { useChainId } = hooks;
@@ -107,31 +110,33 @@ function Account() {
 
 function useBalance() {
 	const { account } = useWeb3React();
-	const chainId = useChainId();
-	var chain = chainId === undefined ? 1 : chainId;
-	var provider = ethers.getDefaultProvider(chain, {
-		etherscan: '-',
-		infura: process.env.infuraKey,
-		alchemy: '-',
-		pocket: '-',
-		ankr: '-',
-	});
-
+	const chainId = useSelector((state: { chainId: number }) => state.chainId);
+	const { networkProvider } = getProvider(chainId);
+	// const networkProvider = ethers.getDefaultProvider(chainId, {
+	// 	etherscan: '-',
+	// 	infura: process.env.infuraKey,
+	// 	alchemy: '-',
+	// 	pocket: '-',
+	// 	ankr: '-',
+	// });
 	const [balance, setBalance] = useState('');
+	console.log('balance', balance);
 
 	useEffect(() => {
-		// setInterval(() => {
-		// Get Account Balance in ether
 		const getBalance = async () => {
 			try {
-				const balance = await (await provider?.getBalance(account)).toString();
+				const balance = await networkProvider?.getBalance(account);
 				const etherBalance = ethers.utils.formatEther(balance).toString();
 				setBalance(etherBalance);
-			} catch (error) {}
+			} catch (error) {
+				console.log(error);
+			}
 		};
-		getBalance();
-		// }, 1000);
-	}, []);
+
+		const interval = setInterval(getBalance, CHAINS[chainId].blockTime);
+
+		return () => clearInterval(interval);
+	}, [account, networkProvider]);
 
 	return balance;
 }
@@ -161,11 +166,11 @@ function AccountModal() {
 					</Typography>
 
 					<Typography id="modal-modal-title" variant="h6" component="h2">
-						{etherBalance === '' ? <LinearProgress /> : etherBalance ? etherBalance.substring(0, 6) : <LinearProgress />}
+						{etherBalance ? <p>{etherBalance.substring(0, 6)} ETH</p> : <LinearProgress />}
 					</Typography>
 
 					<Typography id="modal-modal-title" variant="h6" component="h2">
-						{etherBalance === '' ? <LinearProgress /> : etherBalance ? <p>${(Number(etherBalance) * matic).toFixed(2)} USD</p> : <LinearProgress />}
+						{etherBalance ? <p>${(Number(etherBalance) * matic).toFixed(2)} USD</p> : <LinearProgress />}
 					</Typography>
 					<Divider variant="fullWidth" color={'#fff'} />
 					<StyledItemRowIntern>

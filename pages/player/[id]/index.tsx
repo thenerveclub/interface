@@ -1,10 +1,12 @@
 import styled from '@emotion/styled';
 import { useWeb3React } from '@web3-react/core';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import Connect from '../../../components/modal/Connect';
 import CreateTask from '../../../components/modal/createTask';
 import RegisterName from '../../../components/modal/registerName';
 import RegisterSocial from '../../../components/modal/registerSocial';
+import { CHAINS } from '../../../utils/chains';
 import { CheckNameRegister } from '../../../utils/validation/checkNameRegister';
 import Instagram from '/public/svg/socials/instagram.svg';
 import TikTok from '/public/svg/socials/tiktok.svg';
@@ -139,6 +141,8 @@ const StyledSection = styled.section`
 export default function PlayerPage() {
 	const { account } = useWeb3React();
 	const [registerStatus] = CheckNameRegister();
+	const chainId = useSelector((state: { chainId: number }) => state.chainId);
+
 	// checksum address to lowercase
 	const checksumAddress = registerStatus?.toLowerCase();
 	const checksumAccount = account?.toLowerCase();
@@ -173,7 +177,7 @@ export default function PlayerPage() {
 	useEffect(() => {
 		const getTAD = async () => {
 			try {
-				const response = await fetch('https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal', {
+				const response = await fetch(CHAINS[chainId]?.graphApi, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ query: QueryForDare }),
@@ -188,7 +192,7 @@ export default function PlayerPage() {
 				console.error(error);
 			}
 		};
-		const interval = setInterval(getTAD, 1000);
+		const interval = setInterval(getTAD, CHAINS[chainId]?.blockTime);
 
 		return () => clearInterval(interval);
 	}, []);
@@ -217,7 +221,9 @@ export default function PlayerPage() {
 		`;
 
 			try {
-				const fetchTask = await fetch('https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal', {
+				// check performance
+				const start = performance.now();
+				const fetchTask = await fetch(CHAINS[chainId]?.graphApi, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ query: QueryForPlayerData }),
@@ -225,12 +231,14 @@ export default function PlayerPage() {
 
 				const data = await fetchTask.json();
 				setPlayerData(data.data.userDashStats);
+				const end = performance.now();
+				console.log(`Performance Graph Query: ${end - start} ms`);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 
-		const interval = setInterval(getTask, 1000);
+		const interval = setInterval(getTask, CHAINS[chainId]?.blockTime);
 
 		return () => clearInterval(interval);
 	}, [checksumAddress]);

@@ -6,6 +6,9 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { CHAINS } from '../../utils/chains';
+import { getProvider } from '../../utils/nerveGlobalProvider';
 
 const StyledFooter = styled.footer`
 	max-width: auto;
@@ -47,92 +50,85 @@ const LocalGasStationIconAnimated = styled(LocalGasStationIcon)({
 });
 
 export default function BlockNumber() {
-	// let chainId = useChainId();
-	let chainId = 137;
+	const chainId = useSelector((state: { chainId: number }) => state.chainId);
+	const { networkProvider } = getProvider(chainId);
+	// let chainId = 137;
 	const [blockNumber, setBlockNumber] = useState(0);
 	const [gasPrice, setGasPrice] = useState('0');
 	const [isMountingBlock, setIsMountingBlock] = useState(false);
 	const [isMountingGas, setIsMountingGas] = useState(false);
 	const [lastGasPriceRendered, setLastGasPriceRendered] = useState(Date.now());
 
-	useEffect(() => {
-		const provider = ethers.getDefaultProvider(chainId, {
-			etherscan: '-',
-			infura: process.env.NEXT_PUBLIC_INFURA_KEY,
-			alchemy: '-',
-			pocket: '-',
-			ankr: '-',
-		});
-		console.log('provider', provider);
-		// Get Block Height
-		const getBlock = async () => {
-			try {
-				const blockNumber = await provider.getBlockNumber();
-				setBlockNumber(blockNumber);
-			} catch (error) {}
-		};
-		getBlock();
-		const intervalBlock = setInterval(getBlock, 1000);
+	// useEffect(() => {
+	// 	// Get Block Height
+	// 	const getBlock = async () => {
+	// 		try {
+	// 			const blockNumber = await networkProvider.getBlockNumber();
+	// 			setBlockNumber(blockNumber);
+	// 		} catch (error) {}
+	// 	};
+	// 	getBlock();
+	// 	const intervalBlock = setInterval(getBlock, CHAINS[chainId]?.blockTime);
 
-		// Get Gas Price in gwei
-		const getGwei = async () => {
-			try {
-				const GasPrice = await provider.getGasPrice();
-				const gweiPrice = ethers.utils.formatUnits(GasPrice, 'gwei');
-				const gwei = gweiPrice.split('.', 1).pop();
-				setGasPrice(gwei);
-			} catch (error) {}
-		};
-		getGwei();
-		const interval = setInterval(getGwei, 1000);
+	// 	// Get Gas Price in gwei
+	// 	const getGwei = async () => {
+	// 		try {
+	// 			const GasPrice = await networkProvider.getGasPrice();
+	// 			const gweiPrice = ethers.utils.formatUnits(GasPrice, 'gwei');
+	// 			const gwei = gweiPrice.split('.', 1).pop();
+	// 			setGasPrice(gwei);
+	// 		} catch (error) {}
+	// 	};
+	// 	getGwei();
+	// 	const interval = setInterval(getGwei, CHAINS[chainId]?.blockTime);
 
-		return () => clearInterval(interval && intervalBlock);
-	}, []);
+	// 	return () => clearInterval(interval && intervalBlock);
+	// }, [networkProvider]);
 
-	useEffect(
-		() => {
-			if (!blockNumber) {
-				return;
-			}
+	// useEffect(
+	// 	() => {
+	// 		if (!blockNumber) {
+	// 			return;
+	// 		}
 
-			setIsMountingBlock(true);
-			const mountingTimerBlock = setTimeout(() => setIsMountingBlock(false), 1000);
+	// 		setIsMountingBlock(true);
+	// 		const mountingTimerBlock = setTimeout(() => setIsMountingBlock(false), CHAINS[chainId]?.blockTime);
 
-			// this will clear Timeout when component unmount like in willComponentUnmount
-			return () => {
-				clearTimeout(mountingTimerBlock);
-			};
-		},
-		[blockNumber] //useEffect will run only one time
-		//if you pass a value to array, like this [data] than clearTimeout will run every time this value changes (useEffect re-run)
-	);
+	// 		// this will clear Timeout when component unmount like in willComponentUnmount
+	// 		return () => {
+	// 			clearTimeout(mountingTimerBlock);
+	// 		};
+	// 	},
+	// 	[blockNumber] //useEffect will run only one time
+	// 	//if you pass a value to array, like this [data] than clearTimeout will run every time this value changes (useEffect re-run)
+	// );
 
-	useEffect(() => {
-		if (!gasPrice) {
-			return;
-		}
+	// useEffect(() => {
+	// 	if (!gasPrice) {
+	// 		return;
+	// 	}
 
-		setIsMountingGas(true);
-		const mountingTimerGas = setTimeout(() => setIsMountingGas(false), 1000);
+	// 	setIsMountingGas(true);
+	// 	const mountingTimerGas = setTimeout(() => setIsMountingGas(false), CHAINS[chainId]?.blockTime);
 
-		// this will clear Timeout when component unmount like in willComponentUnmount
-		return () => {
-			clearTimeout(mountingTimerGas);
-		};
-	}, [gasPrice]); //useEffect will run only one time when gasPrice changes
+	// 	// this will clear Timeout when component unmount like in willComponentUnmount
+	// 	return () => {
+	// 		clearTimeout(mountingTimerGas);
+	// 	};
+	// }, [gasPrice]); //useEffect will run only one time when gasPrice changes
 
-	useEffect(() => {
-		setIsMountingGas(true);
-		const mountingTimerGas = setTimeout(() => setIsMountingGas(false), 1000);
-		return () => clearTimeout(mountingTimerGas);
-	}, [gasPrice]);
+	// useEffect(() => {
+	// 	setIsMountingGas(true);
+	// 	const mountingTimerGas = setTimeout(() => setIsMountingGas(false), CHAINS[chainId]?.blockTime);
+	// 	return () => clearTimeout(mountingTimerGas);
+	// }, [gasPrice]);
 
-	useEffect(() => {
-		if (Date.now() - lastGasPriceRendered >= 10000) {
-			console.log("It's been 10 seconds or more since the gasPrice was last rendered!");
-		}
-		setLastGasPriceRendered(Date.now());
-	}, [gasPrice]);
+	// useEffect(() => {
+	// 	if (Date.now() - lastGasPriceRendered >= CHAINS[chainId]?.blockTime) {
+	// 		console.log("It's been 10 seconds or more since the gasPrice was last rendered!");
+	// 	}
+	// 	setLastGasPriceRendered(Date.now());
+	// }, [gasPrice]);
 
 	return (
 		<StyledFooter>

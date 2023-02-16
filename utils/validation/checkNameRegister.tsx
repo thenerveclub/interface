@@ -1,9 +1,13 @@
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
-import NerveGlobalABI from '../../abi/NerveGlobal.json';
+import { useSelector } from 'react-redux';
+import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
+import { CHAINS } from '../chains';
+import { getProvider } from '../nerveGlobalProvider';
 
 export function CheckNameRegister() {
 	const [registerStatus, setRegisterStatus] = useState<string | null>(null);
+	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 
 	// Get URL Path
 	const path = (global.window && window.location.pathname)?.toString() || '';
@@ -11,6 +15,7 @@ export function CheckNameRegister() {
 
 	// Check if pathLastPart is an address
 	const isAddress = ethers.utils.isAddress(pathLastPart);
+	const { contractProvider } = getProvider(chainId);
 
 	useEffect(() => {
 		if (isAddress) {
@@ -21,24 +26,21 @@ export function CheckNameRegister() {
 
 				const getStake = async () => {
 					try {
-						const provider = new ethers.providers.JsonRpcProvider(`https://polygon-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`);
-						const nerveGlobal = new ethers.Contract('0x91596B44543016DDb5D410A51619D5552961a23b', NerveGlobalABI, provider);
-
 						// Check name register
-						const checkNameRegister = await nerveGlobal.nameRegister(nameToHex);
+						const checkNameRegister = await contractProvider.nameRegister(nameToHex);
 						setRegisterStatus(checkNameRegister);
 					} catch (error) {}
 				};
 
 				getStake();
-				const interval = setInterval(getStake, 60000);
+				const interval = setInterval(getStake, CHAINS[chainId]?.blockTime);
 
 				return () => clearInterval(interval);
 			} catch (error) {
 				console.log('error', error);
 			}
 		}
-	}, [isAddress, pathLastPart]);
+	}, [isAddress, pathLastPart, contractProvider]);
 
 	return [registerStatus];
 }

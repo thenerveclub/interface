@@ -7,7 +7,9 @@ import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import NerveGlobalABI from '../../abi/NerveGlobal.json';
+import { useSelector } from 'react-redux';
+import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
+import { CHAINS } from '../../utils/chains';
 
 const StyledSection = styled.section`
 	display: flex;
@@ -111,6 +113,7 @@ export default function RegisterSocial() {
 	const [open, setOpen] = useState(false);
 	const { provider } = useWeb3React();
 	const { enqueueSnackbar } = useSnackbar();
+	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 
 	const handleClickOpen = () => {
 		setOpen(true);
@@ -166,7 +169,7 @@ export default function RegisterSocial() {
 	// Join Function
 	async function onRegisterSocial() {
 		const signer = provider.getSigner();
-		const nerveGlobal = new ethers.Contract('0x91596B44543016DDb5D410A51619D5552961a23b', NerveGlobalABI, signer);
+		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
 			await nerveGlobal.registerSocial(links, indices, { gasLimit: 250000 });

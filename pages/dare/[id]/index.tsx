@@ -5,10 +5,12 @@ import { useWeb3React } from '@web3-react/core';
 import { BigNumber, ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
 import { Fragment, useEffect, useRef, useState } from 'react';
-import NerveGlobalABI from '../../../abi/NerveGlobal.json';
+import { useSelector } from 'react-redux';
 import Connect from '../../../components/modal/Connect';
 import Join from '../../../components/modal/joinTask';
 import Vote from '../../../components/modal/voteTask';
+import NerveGlobalABI from '../../../constants/abi/nerveGlobal.json';
+import { CHAINS } from '../../../utils/chains';
 import Instagram from '/public/svg/socials/instagram.svg';
 import TikTok from '/public/svg/socials/tiktok.svg';
 import Twitch from '/public/svg/socials/twitch.svg';
@@ -353,12 +355,14 @@ export default function DarePage() {
 	const dareNumber = path.split('/').pop();
 	const Id = '0x'.concat(dareNumber);
 
+	const chainId = useSelector((state: { chainId: number }) => state.chainId);
+
 	// Query The Graph -> Dares
 	const [tad, setTAD] = useState<any[]>([]);
 	useEffect(() => {
 		const getTask = async () => {
 			try {
-				const fetchTask = await fetch('https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal', {
+				const fetchTask = await fetch(CHAINS[chainId]?.graphApi, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ query: QueryForDare }),
@@ -367,7 +371,7 @@ export default function DarePage() {
 					.then((data) => setTAD(data.data.tasks));
 			} catch (error) {}
 		};
-		const interval = setInterval(getTask, 1000);
+		const interval = setInterval(getTask, CHAINS[chainId]?.blockTime);
 
 		return () => clearInterval(interval);
 	}, []);
@@ -395,7 +399,7 @@ export default function DarePage() {
 	useEffect(() => {
 		const getUser = async () => {
 			try {
-				const fetchUserTask = await fetch('https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal', {
+				const fetchUserTask = await fetch(CHAINS[chainId]?.graphApi, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ query: QueryForUser }),
@@ -410,7 +414,7 @@ export default function DarePage() {
 				});
 			} catch (error) {}
 		};
-		const interval = setInterval(getUser, 1000);
+		const interval = setInterval(getUser, CHAINS[chainId]?.blockTime);
 
 		return () => clearInterval(interval);
 	}, []);

@@ -8,7 +8,9 @@ import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
 import { forwardRef, useState } from 'react';
-import NerveGlobalABI from '../../abi/NerveGlobal.json';
+import { useSelector } from 'react-redux';
+import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
+import { CHAINS } from '../../utils/chains';
 
 const style = {
 	position: 'absolute' as 'absolute',
@@ -39,6 +41,7 @@ export default function JoinTask() {
 	const { provider } = useWeb3React();
 	const { enqueueSnackbar } = useSnackbar();
 	const [value, setValue] = useState(null);
+	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 
 	const handleClickOpen = () => {
 		setOpen(true);
@@ -57,7 +60,7 @@ export default function JoinTask() {
 	// Join Function
 	async function onJoin() {
 		const signer = provider.getSigner();
-		const nerveGlobal = new ethers.Contract('0x91596B44543016DDb5D410A51619D5552961a23b', NerveGlobalABI, signer);
+		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
 			await nerveGlobal.joinTask(Id, { value: value, gasLimit: 250000 });

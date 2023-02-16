@@ -7,12 +7,15 @@ import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
-import NerveGlobalABI from '../../abi/NerveGlobal.json';
+import { useSelector } from 'react-redux';
+import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
+import { CHAINS } from '../../utils/chains';
 
 export default function VoteTask() {
 	const [open, setOpen] = useState(false);
 	const { provider } = useWeb3React();
 	const { enqueueSnackbar } = useSnackbar();
+	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 
 	const handleClickOpen = () => {
 		setOpen(true);
@@ -31,7 +34,7 @@ export default function VoteTask() {
 	// Vote Function -> True
 	async function voteFunctionTrue() {
 		const signer = provider.getSigner();
-		const nerveGlobal = new ethers.Contract('0x91596B44543016DDb5D410A51619D5552961a23b', NerveGlobalABI, signer);
+		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
 			await nerveGlobal.voteTask(Id, true, { gasLimit: 250000 });
@@ -49,7 +52,7 @@ export default function VoteTask() {
 	// Vote Function -> False
 	async function voteFunctionFalse() {
 		const signer = provider.getSigner();
-		const nerveGlobal = new ethers.Contract('0x91596B44543016DDb5D410A51619D5552961a23b', NerveGlobalABI, signer);
+		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
 			await nerveGlobal.voteTask(Id, false, { gasLimit: 250000 });

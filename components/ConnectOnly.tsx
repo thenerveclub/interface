@@ -8,8 +8,8 @@ import { MetaMask } from '@web3-react/metamask';
 import { Network } from '@web3-react/network';
 import { WalletConnect } from '@web3-react/walletconnect';
 import { useCallback, useState } from 'react';
-import { getAddChainParameters } from '../chains';
-import { getLogo, getName } from '../utils/web3Utils';
+import { getAddChainParameters } from '../utils/chains';
+import { getLogo, getName } from '../utils/connector';
 
 const ConnectButton = styled(Button)({
 	color: '#000',
