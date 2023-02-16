@@ -4,16 +4,16 @@ import { useWeb3React, Web3ReactHooks, Web3ReactProvider } from '@web3-react/cor
 import { MetaMask } from '@web3-react/metamask';
 import { Network } from '@web3-react/network';
 import { WalletConnect } from '@web3-react/walletconnect';
-import { SnackbarProvider } from 'notistack';
-import React, { useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import { memo, useCallback, useEffect } from 'react';
 import { Provider } from 'react-redux';
+import logger from 'redux-logger';
 import Layout from '../components/layout/Layout';
 import { getName } from '../utils/connector';
 import { coinbaseWallet, hooks as coinbaseWalletHooks } from '../utils/connectors/coinbaseWallet';
 import { metaMask, hooks as metaMaskHooks } from '../utils/connectors/metaMask';
 import { walletConnect, hooks as walletConnectHooks } from '../utils/connectors/walletConnect';
 
-// Define a Redux slice to handle the chainId state
 const chainIdSlice = createSlice({
 	name: 'chainId',
 	initialState: 137,
@@ -24,11 +24,11 @@ const chainIdSlice = createSlice({
 	},
 });
 
-// Create a Redux store with the chainId slice
 const store = configureStore({
 	reducer: {
 		chainId: chainIdSlice.reducer,
 	},
+	middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
 });
 
 const connectors: [MetaMask | WalletConnect | CoinbaseWallet | Network, Web3ReactHooks][] = [
@@ -37,18 +37,22 @@ const connectors: [MetaMask | WalletConnect | CoinbaseWallet | Network, Web3Reac
 	[coinbaseWallet, coinbaseWalletHooks],
 ];
 
-function Child() {
-	const web3React = useWeb3React();
-	const { connector, account, chainId } = web3React;
+const Child = memo(() => {
+	const { connector, account, chainId } = useWeb3React();
 
-	// Check if chainId is a number before dispatching the updateChainId action
-	if (typeof chainId === 'number') {
-		store.dispatch(chainIdSlice.actions.updateChainId(chainId));
-	}
+	useEffect(() => {
+		if (typeof chainId === 'number') {
+			store.dispatch(chainIdSlice.actions.updateChainId(chainId));
+		}
+	}, [chainId]);
 
 	console.log(`Priority Connector is: ${getName(connector)}, ChainID is ${chainId} and Account is ${account}`);
 	return null;
-}
+});
+
+const SnackbarProvider = dynamic(() => import('notistack').then((module) => module.SnackbarProvider), {
+	ssr: false,
+});
 
 export default function MyApp({ Component, pageProps }) {
 	useEffect(() => {

@@ -238,10 +238,10 @@ export default function PlayerPage() {
 			}
 		};
 
-		const interval = setInterval(getTask, CHAINS[chainId]?.blockTime);
+		const interval = setInterval(getTask, 1000);
 
 		return () => clearInterval(interval);
-	}, [checksumAddress]);
+	}, [chainId, checksumAddress]);
 
 	return (
 		<>
