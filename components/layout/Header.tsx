@@ -4,13 +4,19 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { Merriweather } from '@next/font/google';
 import localFont from '@next/font/local';
 import { useWeb3React } from '@web3-react/core';
 import SelectChain from '../SelectChain';
 import AccountModal from '../modal/Account';
 import Connect from '../modal/Connect';
 
-const trueLies = localFont({ src: './fonts/trueLies.ttf' });
+// const myFont = localFont({ src: 'fonts/TrueLies.woff2' });
+
+const roboto = Merriweather({
+	subsets: ['latin'],
+	weight: ['400', '700'],
+});
 
 const StyledSectionLeft = styled.section`
 	width: 25%;
@@ -36,7 +42,7 @@ export default function Header() {
 					<StyledSectionLeft>
 						<Typography
 							component="a"
-							className={trueLies.className}
+							className={roboto.className}
 							href="/"
 							sx={{
 								display: 'block',
