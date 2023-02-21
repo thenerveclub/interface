@@ -5,7 +5,7 @@ import Fade from '@mui/material/Fade';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { ethers } from 'ethers';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { CHAINS } from '../../utils/chains';
 import { getProvider } from '../../utils/nerveGlobalProvider';
@@ -50,14 +50,20 @@ const LocalGasStationIconAnimated = styled(LocalGasStationIcon)({
 });
 
 export default function BlockNumber() {
-	const chainId = useSelector((state: { chainId: number }) => state.chainId);
-	const { networkProvider } = getProvider(chainId);
+	const chainId = useSelector((state: { chainId: number }) => {
+		console.log('useSelector called');
+		return state.chainId;
+	});
+	console.log('MyComponent rendering'); // add this line
+
+	const memoizedChainId = useMemo(() => chainId, [chainId]);
+	const { networkProvider } = getProvider(memoizedChainId);
 	// let chainId = 137;
-	const [blockNumber, setBlockNumber] = useState(0);
-	const [gasPrice, setGasPrice] = useState('0');
-	const [isMountingBlock, setIsMountingBlock] = useState(false);
-	const [isMountingGas, setIsMountingGas] = useState(false);
-	const [lastGasPriceRendered, setLastGasPriceRendered] = useState(Date.now());
+	// const [blockNumber, setBlockNumber] = useState(0);
+	// const [gasPrice, setGasPrice] = useState('0');
+	// const [isMountingBlock, setIsMountingBlock] = useState(false);
+	// const [isMountingGas, setIsMountingGas] = useState(false);
+	// const [lastGasPriceRendered, setLastGasPriceRendered] = useState(Date.now());
 
 	// useEffect(() => {
 	// 	// Get Block Height
@@ -68,7 +74,7 @@ export default function BlockNumber() {
 	// 		} catch (error) {}
 	// 	};
 	// 	getBlock();
-	// 	const intervalBlock = setInterval(getBlock, CHAINS[chainId]?.blockTime);
+	// 	const intervalBlock = setInterval(getBlock, CHAINS[memoizedChainId]?.blockTime);
 
 	// 	// Get Gas Price in gwei
 	// 	const getGwei = async () => {
@@ -80,7 +86,7 @@ export default function BlockNumber() {
 	// 		} catch (error) {}
 	// 	};
 	// 	getGwei();
-	// 	const interval = setInterval(getGwei, CHAINS[chainId]?.blockTime);
+	// 	const interval = setInterval(getGwei, CHAINS[memoizedChainId]?.blockTime);
 
 	// 	return () => clearInterval(interval && intervalBlock);
 	// }, [networkProvider]);
@@ -92,7 +98,7 @@ export default function BlockNumber() {
 	// 		}
 
 	// 		setIsMountingBlock(true);
-	// 		const mountingTimerBlock = setTimeout(() => setIsMountingBlock(false), CHAINS[chainId]?.blockTime);
+	// 		const mountingTimerBlock = setTimeout(() => setIsMountingBlock(false), CHAINS[memoizedChainId]?.blockTime);
 
 	// 		// this will clear Timeout when component unmount like in willComponentUnmount
 	// 		return () => {
@@ -109,7 +115,7 @@ export default function BlockNumber() {
 	// 	}
 
 	// 	setIsMountingGas(true);
-	// 	const mountingTimerGas = setTimeout(() => setIsMountingGas(false), CHAINS[chainId]?.blockTime);
+	// 	const mountingTimerGas = setTimeout(() => setIsMountingGas(false), CHAINS[memoizedChainId]?.blockTime);
 
 	// 	// this will clear Timeout when component unmount like in willComponentUnmount
 	// 	return () => {
@@ -119,12 +125,12 @@ export default function BlockNumber() {
 
 	// useEffect(() => {
 	// 	setIsMountingGas(true);
-	// 	const mountingTimerGas = setTimeout(() => setIsMountingGas(false), CHAINS[chainId]?.blockTime);
+	// 	const mountingTimerGas = setTimeout(() => setIsMountingGas(false), CHAINS[memoizedChainId]?.blockTime);
 	// 	return () => clearTimeout(mountingTimerGas);
 	// }, [gasPrice]);
 
 	// useEffect(() => {
-	// 	if (Date.now() - lastGasPriceRendered >= CHAINS[chainId]?.blockTime) {
+	// 	if (Date.now() - lastGasPriceRendered >= CHAINS[memoizedChainId]?.blockTime) {
 	// 		console.log("It's been 10 seconds or more since the gasPrice was last rendered!");
 	// 	}
 	// 	setLastGasPriceRendered(Date.now());
@@ -132,7 +138,7 @@ export default function BlockNumber() {
 
 	return (
 		<StyledFooter>
-			{chainId === 137 ? (
+			{/* {memoizedChainId === 137 ? (
 				<div>
 					<Tooltip
 						title={
@@ -188,7 +194,7 @@ export default function BlockNumber() {
 						</IconButton>
 					</Tooltip>
 				</div>
-			) : chainId === 1 ? (
+			) : memoizedChainId === 1 ? (
 				<div>
 					<Tooltip
 						title="The current fast gas amount for sending a transaction on L1. Gas fees are paid in Ethereum's
@@ -250,7 +256,8 @@ export default function BlockNumber() {
 						</IconButton>
 					</Tooltip>
 				</div>
-			)}
+			)} */}
+			hallo
 		</StyledFooter>
 	);
 }

@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
-import Box from '@mui/material/Box';
+import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+import { Box } from '@mui/material';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import LinearProgress from '@mui/material/LinearProgress';
@@ -11,11 +12,9 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { CHAINS } from '../../utils/chains';
-import { hooks } from '../../utils/connectors/metaMask';
+import { hooks, metaMask } from '../../utils/connectors/metaMask';
 import { getProvider } from '../../utils/nerveGlobalProvider';
 import Identicon from '../Identicon';
-
-const { useChainId } = hooks;
 
 const style = {
 	position: 'absolute' as 'absolute',
@@ -30,6 +29,14 @@ const style = {
 	p: 1,
 };
 
+const ConnectBox = styled(Box)({
+	display: 'flex',
+	flex: 1,
+	justifyContent: 'space-between',
+	width: '9rem',
+	color: 'white',
+});
+
 const StyledItemRowIntern = styled.nav`
 	display: flex;
 	flex: 1;
@@ -39,6 +46,9 @@ const StyledItemRowIntern = styled.nav`
 	justify-content: space-between;
 	width: 100%;
 	margin: 0 auto 0 auto;
+	position: relative;
+	vertical-align: middle;
+	line-height: 200px;
 
 	p {
 		font-size: 16px;
@@ -98,29 +108,19 @@ function usePrice() {
 function Account() {
 	const { account } = useWeb3React();
 
-	return (
-		<>
-			<a>
-				<Identicon />
-				{account === null ? '-' : account ? `${account.substring(0, 6)}...${account.substring(account.length - 4)}` : ''}
-			</a>
-		</>
-	);
+	return <div>{account === null ? '-' : account ? `${account.substring(0, 6)}...${account.substring(account.length - 4)}` : ''}</div>;
 }
 
 function useBalance() {
 	const { account } = useWeb3React();
+
+	if (!account) {
+		return '0.00';
+	}
+
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 	const { networkProvider } = getProvider(chainId);
-	// const networkProvider = ethers.getDefaultProvider(chainId, {
-	// 	etherscan: '-',
-	// 	infura: process.env.infuraKey,
-	// 	alchemy: '-',
-	// 	pocket: '-',
-	// 	ankr: '-',
-	// });
-	const [balance, setBalance] = useState('');
-	console.log('balance', balance);
+	const [balance, setBalance] = useState('0.00');
 
 	useEffect(() => {
 		const getBalance = async () => {
@@ -133,10 +133,8 @@ function useBalance() {
 			}
 		};
 
-		const interval = setInterval(getBalance, CHAINS[chainId].blockTime);
-
-		return () => clearInterval(interval);
-	}, [account, networkProvider]);
+		getBalance();
+	}, [account]);
 
 	return balance;
 }
@@ -150,9 +148,10 @@ function AccountModal() {
 
 	return (
 		<div>
-			<Button fullWidth={true} sx={{ my: 2, color: 'white', display: 'block' }} onClick={handleOpen}>
+			<ConnectBox onClick={handleOpen}>
+				<Identicon />
 				<Account />
-			</Button>
+			</ConnectBox>
 			<Modal
 				open={open}
 				onClose={handleClose}
@@ -174,12 +173,21 @@ function AccountModal() {
 					</Typography>
 					<Divider variant="fullWidth" color={'#fff'} />
 					<StyledItemRowIntern>
-						<p>Disconnect</p>
-						<Button sx={{ my: 2, color: 'white', display: 'block' }}>Button</Button>
-					</StyledItemRowIntern>
-					<StyledItemRowIntern>
-						<p>Light Theme</p>
-						<Button sx={{ my: 2, color: 'white', display: 'block' }}>Button</Button>
+						Disconnect
+						<PowerSettingsNewIcon
+							style={{
+								height: 'auto',
+								cursor: 'pointer',
+								color: '#fff',
+							}}
+							onClick={() => {
+								if (metaMask?.deactivate) {
+									metaMask.deactivate();
+								} else {
+									metaMask.resetState();
+								}
+							}}
+						/>
 					</StyledItemRowIntern>
 				</Box>
 			</Modal>

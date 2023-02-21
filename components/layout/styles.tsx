@@ -1,7 +1,4 @@
 import { createTheme } from '@mui/material/styles';
-import localFont from '@next/font/local';
-
-const TrueLies = localFont({ src: './fonts/TrueLies.ttf' });
 
 const colors = {
 	primary: '#00adb5',
@@ -29,18 +26,6 @@ export const themeLight = createTheme({
 	typography: {
 		fontFamily: 'TrueLies',
 	},
-	components: {
-		MuiCssBaseline: {
-			styleOverrides: `
-		  @font-face {
-			font-family: 'TrueLies';
-			src: url(${TrueLies}) format('truetype');
-			font-weight: normal;
-			font-style: normal;
-		  }
-			`,
-		},
-	},
 	palette: {
 		background: {
 			default: '#e4f0e2',
@@ -49,9 +34,6 @@ export const themeLight = createTheme({
 });
 
 export const themeDark = createTheme({
-	// typography: {
-	// 	fontFamily: 'Roboto',
-	// },
 	components: {
 		MuiCssBaseline: {
 			styleOverrides: {
@@ -62,14 +44,6 @@ export const themeDark = createTheme({
 					backgroundAttachment: 'fixed',
 				},
 			},
-			// 	`
-			//   @font-face {
-			// 	font-family: 'TrueLies';
-			// 	src: url(${TrueLies}) format('truetype');
-			// 	font-weight: normal;
-			// 	font-style: normal;
-			//   }
-			// 	`,
 		},
 		MuiButton: {
 			defaultProps: {

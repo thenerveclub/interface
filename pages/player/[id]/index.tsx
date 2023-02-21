@@ -192,7 +192,7 @@ export default function PlayerPage() {
 				console.error(error);
 			}
 		};
-		const interval = setInterval(getTAD, CHAINS[chainId]?.blockTime);
+		const interval = setInterval(getTAD, 60000);
 
 		return () => clearInterval(interval);
 	}, []);
@@ -203,26 +203,24 @@ export default function PlayerPage() {
 	useEffect(() => {
 		const getTask = async () => {
 			const QueryForPlayerData = `
-		{
-			userDashStats(where: {id: "${checksumAddress}"}) {
-			  id
-			  earned
-			  spent
-			  userName
-			  userSocialStat {
-				 instagram
-				 tiktok
-				 twitch
-				 twitter
-				 youtube
-			  }
-			}
-		 }
-		`;
+    {
+      userDashStats(where: {id: "${checksumAddress}"}) {
+        id
+        earned
+        spent
+        userName
+        userSocialStat {
+          instagram
+          tiktok
+          twitch
+          twitter
+          youtube
+        }
+      }
+    }
+    `;
 
 			try {
-				// check performance
-				const start = performance.now();
 				const fetchTask = await fetch(CHAINS[chainId]?.graphApi, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
@@ -231,15 +229,17 @@ export default function PlayerPage() {
 
 				const data = await fetchTask.json();
 				setPlayerData(data.data.userDashStats);
-				const end = performance.now();
-				console.log(`Performance Graph Query: ${end - start} ms`);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 
-		const interval = setInterval(getTask, 1000);
+		const interval = setInterval(getTask, 60000);
 
+		// Call the function on first page load
+		getTask();
+
+		// Clear the interval on unmount
 		return () => clearInterval(interval);
 	}, [chainId, checksumAddress]);
 

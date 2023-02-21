@@ -1,66 +1,60 @@
+import styled from '@emotion/styled';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import localFont from '@next/font/local';
 import { useWeb3React } from '@web3-react/core';
-// import NetworkDropdown from '../chainLogoSize';
+import SelectChain from '../SelectChain';
 import AccountModal from '../modal/Account';
 import Connect from '../modal/Connect';
+
+const trueLies = localFont({ src: '../../public/fonts/trueLies.ttf' });
+
+const StyledSectionLeft = styled.section`
+	width: 25%;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+`;
+
+const StyledSectionRight = styled.section`
+	width: 75%;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+`;
 
 export default function Header() {
 	const { account } = useWeb3React();
 
 	return (
-		<>
-			<AppBar sx={{ background: 'transparent', boxShadow: 'none' }} position="static">
-				<Container maxWidth="xl">
-					<Toolbar disableGutters>
+		<Box sx={{ flexGrow: 1 }}>
+			<AppBar sx={{ background: 'transparent', boxShadow: 'none', height: '2rem' }} position="static">
+				<Toolbar>
+					<StyledSectionLeft>
 						<Typography
-							variant="h6"
-							noWrap
 							component="a"
+							className={trueLies.className}
 							href="/"
 							sx={{
-								mr: 2,
-								display: { xs: 'none', md: 'flex' },
-								fontFamily: 'TrueLies',
-								color: 'inherit',
+								display: 'block',
+								fontSize: '1.25rem',
+								width: 'auto',
+								color: '#fff',
 								textDecoration: 'none',
 							}}
 						>
 							NERVE GLOBAL
 						</Typography>
-						<Typography
-							variant="h5"
-							noWrap
-							component="a"
-							href=""
-							sx={{
-								mr: 2,
-								display: { xs: 'flex', md: 'none' },
-								flexGrow: 1,
-								fontFamily: 'TrueLies',
-								fontWeight: 700,
-								letterSpacing: '.3rem',
-								color: 'inherit',
-								textDecoration: 'none',
-							}}
-						>
-							Logo
-						</Typography>
-						<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-							{/* <Link href="/player">Player</Link>
-							<Link href="/dare">Dare</Link> */}
-						</Box>
-						{/* <Tooltip title="Theme">
-							<Button onClick={() => setLight((prev) => !prev)}>Toggle Theme</Button>
-						</Tooltip> */}
-						{/* <NetworkDropdown /> */}
+					</StyledSectionLeft>
+					<StyledSectionRight>
+						<SelectChain />
 						{account ? <AccountModal /> : <Connect />}
-					</Toolbar>
-				</Container>
+					</StyledSectionRight>
+				</Toolbar>
 			</AppBar>
-		</>
+		</Box>
 	);
 }

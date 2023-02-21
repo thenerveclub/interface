@@ -19,11 +19,11 @@ const CELO: AddEthereumChainParameter['nativeCurrency'] = {
 };
 
 interface BasicChainInformation {
-	urls: string;
+	urls: string[];
 	name: string;
-	contract: string;
-	blockTime: number;
-	graphApi: string;
+	contract?: string;
+	blockTime?: number;
+	graphApi?: string;
 }
 
 interface ExtendedChainInformation extends BasicChainInformation {
@@ -52,14 +52,17 @@ export function getAddChainParameters(chainId: number): AddEthereumChainParamete
 	}
 }
 
-export const CHAINS: { [chainId: number]: BasicChainInformation | ExtendedChainInformation } = {
-	1: {
-		urls: `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
-		name: 'Mainnet',
-		contract: '',
-		blockTime: 10000,
-		graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal',
-	},
+export const CHAINS: {
+	[x: string]: any;
+	[chainId: number]: BasicChainInformation | ExtendedChainInformation;
+} = {
+	// 1: {
+	// 	urls: `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+	// 	name: 'Mainnet',
+	// 	contract: '',
+	// 	blockTime: 10000,
+	// 	graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal',
+	// },
 	// 3: {
 	//   urls: [process.env.infuraKey ? `https://ropsten.infura.io/v3/${process.env.infuraKey}` : ''].filter(
 	//     (url) => url !== ''
@@ -74,7 +77,7 @@ export const CHAINS: { [chainId: number]: BasicChainInformation | ExtendedChainI
 	// },
 	// Goerli
 	5: {
-		urls: `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+		urls: [`https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`],
 		name: 'Görli',
 		contract: '0xd0d83FFcF0102E5cea570e565d8f5dFA2086C39C',
 		blockTime: 10000,
@@ -105,15 +108,15 @@ export const CHAINS: { [chainId: number]: BasicChainInformation | ExtendedChainI
 	//   nativeCurrency: ETH,
 	//   blockExplorerUrls: ['https://kovan-optimistic.etherscan.io'],
 	// },
-	// // Arbitrum
+	// Arbitrum
 	// 42161: {
-	//   urls: [
-	//     process.env.infuraKey ? `https://arbitrum-mainnet.infura.io/v3/${process.env.infuraKey}` : '',
-	//     'https://arb1.arbitrum.io/rpc',
-	//   ].filter((url) => url !== ''),
-	//   name: 'Arbitrum One',
-	//   nativeCurrency: ETH,
-	//   blockExplorerUrls: ['https://arbiscan.io'],
+	// 	urls: `https://arbitrum-mainnet.infura.io/v3/${process.env.infuraKey}`,
+	// 	name: 'Arbitrum One',
+	// 	nativeCurrency: ETH,
+	// 	blockExplorerUrls: ['https://arbiscan.io'],
+	// 	contract: '0x91596B44543016DDb5D410A51619D5552961a23b',
+	// 	blockTime: 10000,
+	// 	graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal',
 	// },
 	// 421611: {
 	//   urls: [
@@ -126,7 +129,7 @@ export const CHAINS: { [chainId: number]: BasicChainInformation | ExtendedChainI
 	// },
 	// Polygon
 	137: {
-		urls: `https://polygon-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+		urls: [`https://polygon-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`],
 		name: 'Polygon Mainnet',
 		nativeCurrency: MATIC,
 		blockExplorerUrls: ['https://polygonscan.com'],
@@ -134,14 +137,12 @@ export const CHAINS: { [chainId: number]: BasicChainInformation | ExtendedChainI
 		blockTime: 10000,
 		graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal',
 	},
-	// 80001: {
-	//   urls: [process.env.infuraKey ? `https://polygon-mumbai.infura.io/v3/${process.env.infuraKey}` : ''].filter(
-	//     (url) => url !== ''
-	//   ),
-	//   name: 'Polygon Mumbai',
-	//   nativeCurrency: MATIC,
-	//   blockExplorerUrls: ['https://mumbai.polygonscan.com'],
-	// },
+	80001: {
+		urls: [`https://matic-mumbai.chainstacklabs.com`],
+		name: 'Polygon Mumbai',
+		nativeCurrency: MATIC,
+		blockExplorerUrls: ['https://mumbai.polygonscan.com'],
+	},
 	// // Celo
 	// 42220: {
 	//   urls: ['https://forno.celo.org'],

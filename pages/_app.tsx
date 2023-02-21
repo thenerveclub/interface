@@ -5,7 +5,7 @@ import { MetaMask } from '@web3-react/metamask';
 import { Network } from '@web3-react/network';
 import { WalletConnect } from '@web3-react/walletconnect';
 import dynamic from 'next/dynamic';
-import { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import { Provider } from 'react-redux';
 import logger from 'redux-logger';
 import Layout from '../components/layout/Layout';
@@ -24,9 +24,20 @@ const chainIdSlice = createSlice({
 	},
 });
 
+const accountSlice = createSlice({
+	name: 'account',
+	initialState: '',
+	reducers: {
+		updateAccount: (state, action) => {
+			return action.payload;
+		},
+	},
+});
+
 const store = configureStore({
 	reducer: {
 		chainId: chainIdSlice.reducer,
+		account: accountSlice.reducer,
 	},
 	middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
 });
@@ -40,13 +51,32 @@ const connectors: [MetaMask | WalletConnect | CoinbaseWallet | Network, Web3Reac
 const Child = memo(() => {
 	const { connector, account, chainId } = useWeb3React();
 
+	const updateChainId = useCallback(
+		(chainId) => {
+			store.dispatch(chainIdSlice.actions.updateChainId(chainId));
+		},
+		[store]
+	);
+
+	const updateAccount = useCallback(
+		(account) => {
+			store.dispatch(accountSlice.actions.updateAccount(account));
+		},
+		[store]
+	);
+
 	useEffect(() => {
 		if (typeof chainId === 'number') {
-			store.dispatch(chainIdSlice.actions.updateChainId(chainId));
+			updateChainId(chainId);
 		}
-	}, [chainId]);
+	}, [chainId, updateChainId]);
 
-	console.log(`Priority Connector is: ${getName(connector)}, ChainID is ${chainId} and Account is ${account}`);
+	useEffect(() => {
+		if (account) {
+			updateAccount(account);
+		}
+	}, [account, updateAccount]);
+
 	return null;
 });
 
