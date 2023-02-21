@@ -10,7 +10,7 @@ import SelectChain from '../SelectChain';
 import AccountModal from '../modal/Account';
 import Connect from '../modal/Connect';
 
-const trueLies = localFont({ src: '/public/fonts/trueLies.ttf' });
+const trueLies = localFont({ src: './fonts/trueLies.ttf' });
 
 const StyledSectionLeft = styled.section`
 	width: 25%;
