@@ -11,8 +11,8 @@ import SelectChain from '../SelectChain';
 import AccountModal from '../modal/Account';
 import Connect from '../modal/Connect';
 
-// import TrueLies from '/public/fonts/TrueLies.woff2';
-const roboto = localFont({ src: [{ path: '../../public/fonts/TrueLies.woff2' }] });
+// const roboto = localFont({ src: [{ path: '../../public/fonts/TrueLies.woff2' }] });
+const roboto = localFont({ src: '../../public/fonts/TrueLies.woff2', display: 'swap' });
 
 const StyledSectionLeft = styled.section`
 	width: 25%;
@@ -38,7 +38,7 @@ export default function Header() {
 					<StyledSectionLeft>
 						<Typography
 							component="a"
-							className={roboto.className}
+							style={roboto.style}
 							href="/"
 							sx={{
 								display: 'block',
