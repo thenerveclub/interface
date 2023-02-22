@@ -5,6 +5,9 @@
  */
 const nextConfig = {
 	reactStrictMode: true,
+
+	// fontLoaders: [{ loader: '@next/font/local' }],
+
 	modularizeImports: {
 		'@mui/icons-material': {
 			transform: '@mui/icons-material/{{member}}',

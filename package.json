@@ -16,7 +16,7 @@
 		"@metamask/jazzicon": "^2.0.0",
 		"@mui/icons-material": "^5.10.9",
 		"@mui/material": "^5.10.12",
-		"@next/font": "^13.0.2",
+		"@next/font": "^13.1.6",
 		"@reduxjs/toolkit": "^1.9.2",
 		"@svgr/webpack": "^6.5.1",
 		"@walletconnect/ethereum-provider": "1.7.1",

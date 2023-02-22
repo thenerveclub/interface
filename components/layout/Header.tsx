@@ -11,12 +11,8 @@ import SelectChain from '../SelectChain';
 import AccountModal from '../modal/Account';
 import Connect from '../modal/Connect';
 
-// const myFont = localFont({ src: 'fonts/TrueLies.woff2' });
-
-const roboto = Merriweather({
-	subsets: ['latin'],
-	weight: ['400', '700'],
-});
+// import TrueLies from '/public/fonts/TrueLies.woff2';
+const roboto = localFont({ src: [{ path: '../../public/fonts/TrueLies.woff2' }] });
 
 const StyledSectionLeft = styled.section`
 	width: 25%;
