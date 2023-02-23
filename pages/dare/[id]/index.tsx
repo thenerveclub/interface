@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
-import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
+import { Button, Divider } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { BigNumber, ethers } from 'ethers';
 import { useSnackbar } from 'notistack';

@@ -1,9 +1,6 @@
 import styled from '@emotion/styled';
-import LayersIcon from '@mui/icons-material/Layers';
-import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
-import Fade from '@mui/material/Fade';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
+import { Layers, LocalGasStation } from '@mui/icons-material';
+import { Fade, IconButton, Tooltip } from '@mui/material';
 import { ethers } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -39,12 +36,12 @@ const StyledPollingDot = styled.div`
 	border-radius: 50%;
 `;
 
-const LayersIconAnimated = styled(LayersIcon)({
+const LayersIconAnimated = styled(Layers)({
 	// animation: `${rotate360} 1s cubic-bezier(0.83, 0, 0.17, 1) infinite`,
 	color: 'rgba(0,128,0,1)',
 });
 
-const LocalGasStationIconAnimated = styled(LocalGasStationIcon)({
+const LocalGasStationIconAnimated = styled(LocalGasStation)({
 	// animation: `${rotate360} 1s cubic-bezier(0.83, 0, 0.17, 1) infinite`,
 	color: 'rgba(0,128,0,1)',
 });

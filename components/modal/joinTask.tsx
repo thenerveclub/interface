@@ -1,9 +1,4 @@
-import { Box, Modal, Typography } from '@mui/material';
-import Button from '@mui/material/Button';
-import InputAdornment from '@mui/material/InputAdornment';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import Slide from '@mui/material/Slide';
-import { TransitionProps } from '@mui/material/transitions';
+import { Box, Button, InputAdornment, Modal, OutlinedInput, Slide, Typography } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';

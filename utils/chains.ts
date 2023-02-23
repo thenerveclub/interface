@@ -21,6 +21,7 @@ const CELO: AddEthereumChainParameter['nativeCurrency'] = {
 interface BasicChainInformation {
 	urls: string[];
 	name: string;
+	blockExplorerUrls: string[];
 	contract?: string;
 	blockTime?: number;
 	graphApi?: string;
@@ -28,7 +29,6 @@ interface BasicChainInformation {
 
 interface ExtendedChainInformation extends BasicChainInformation {
 	nativeCurrency: AddEthereumChainParameter['nativeCurrency'];
-	blockExplorerUrls: AddEthereumChainParameter['blockExplorerUrls'];
 }
 
 function isExtendedChainInformation(
@@ -79,9 +79,10 @@ export const CHAINS: {
 	5: {
 		urls: [`https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`],
 		name: 'Görli',
+		blockExplorerUrls: ['https://goerli.etherscan.io/'],
 		contract: '0xd0d83FFcF0102E5cea570e565d8f5dFA2086C39C',
 		blockTime: 10000,
-		graphApi: '',
+		graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal-goerli',
 	},
 	// 42: {
 	//   urls: [process.env.infuraKey ? `https://kovan.infura.io/v3/${process.env.infuraKey}` : ''].filter(

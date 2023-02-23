@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
-import CheckIcon from '@mui/icons-material/Check';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import { CheckIcon, WarningAmber } from '@mui/icons-material';
 import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, keyframes } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -10,7 +9,7 @@ import { metaMask } from '../utils/connectors/metaMask';
 import EthereumLogo from '/public/svg/chains/ethereum.svg';
 import PolygonLogo from '/public/svg/chains/polygon.svg';
 
-const WarningAmber = styled(WarningAmberIcon)({
+const WarningAmberIcon = styled(WarningAmber)({
 	margin: '0 0.75rem 0 0',
 	color: 'red',
 	animation: 'blink 2s infinite',
@@ -40,7 +39,7 @@ export default function BasicSelect() {
 	const chainId = useSelector((state: { chainId: number }) => {
 		return state.chainId;
 	});
-	const availableNetworks = [137, 1];
+	const availableNetworks = [137, 5];
 	const isNetworkAvailable = availableNetworks.includes(chainId);
 	const [age, setAge] = useState(chainId);
 	// Update age state variable whenever chainId changes
@@ -148,7 +147,7 @@ export default function BasicSelect() {
 					}}
 				>
 					<MenuItemStyled value={chainId} disabled={true}>
-						<WarningAmber style={{ verticalAlign: 'middle' }} />
+						<WarningAmberIcon style={{ verticalAlign: 'middle' }} />
 						Unsupported Chain
 					</MenuItemStyled>
 					<MenuItemStyled value={137} disabled={chainId === 137}>

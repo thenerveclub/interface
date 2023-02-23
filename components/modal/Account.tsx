@@ -1,11 +1,6 @@
 import styled from '@emotion/styled';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
-import { Box } from '@mui/material';
-import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
-import LinearProgress from '@mui/material/LinearProgress';
-import Modal from '@mui/material/Modal';
-import Typography from '@mui/material/Typography';
+import { Box, Button, Divider, LinearProgress, Modal, Typography } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import * as React from 'react';

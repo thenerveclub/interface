@@ -1,4 +1,6 @@
 import styled from '@emotion/styled';
+import { OpenInNew } from '@mui/icons-material';
+import { Box, Divider, Link, Tab, Tabs, Typography } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -14,23 +16,37 @@ import Twitch from '/public/svg/socials/twitch.svg';
 import Twitter from '/public/svg/socials/twitter.svg';
 import Youtube from '/public/svg/socials/youtube.svg';
 
+interface TabPanelProps {
+	children?: React.ReactNode;
+	index: number;
+	value: number;
+}
+
 const StyledItemRowSocials = styled.nav`
 	display: flex;
 	flex: 1;
-	flex-direction: row;
-	font-size: 16px;
-	font-weight: 500;
-	justify-content: space-between;
 	width: 100%;
-	margin: -0.5rem auto 0.75rem auto;
+	margin: 0 auto 0 auto;
+	height: 100%;
 
 	p {
 		font-size: 16px;
-		justify-content: space-between;
+
+		&:first-child {
+			margin-right: 2.5rem;
+		}
+
+		&:last-child {
+			vertical-align: middle;
+		}
 	}
 
 	a {
-		font-size: 16px;
+		font-size: 30px;
+
+		&:not(:last-child) {
+			margin-right: 2.5rem;
+		}
 	}
 
 	@media (max-width: 960px) {
@@ -123,11 +139,8 @@ const StyledItemRow = styled.nav`
 `;
 
 const StyledSection = styled.section`
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	align-content: center;
-	margin: 5rem auto 0 auto;
+	align-items: left;
+	margin: 5rem 5rem 0 5rem;
 
 	@media (max-width: 960px) {
 		display: grid;
@@ -136,6 +149,29 @@ const StyledSection = styled.section`
 		grid-template-columns: 1fr;
 		grid-gap: 2em;
 	}
+`;
+
+const StyledTab = styled(Tab)`
+	color: #fff;
+	font-size: 16px;
+	text-transform: none;
+
+	&.Mui-selected {
+		border-bottom: 1px solid #fff;
+		z-index: 1;
+	}
+
+	&.MuiTab-root {
+		color: rgba(152, 161, 192, 1);
+
+		&.Mui-selected {
+			color: #fff;
+		}
+	}
+`;
+
+const StyledBox = styled(Box)`
+	margin: 2.5rem 5rem 0 5rem;
 `;
 
 export default function PlayerPage() {
@@ -243,41 +279,67 @@ export default function PlayerPage() {
 		return () => clearInterval(interval);
 	}, [chainId, checksumAddress]);
 
+	function TabPanel(props: TabPanelProps) {
+		const { children, value, index, ...other } = props;
+
+		return (
+			<div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
+				{value === index && (
+					<StyledBox>
+						<Typography>{children}</Typography>
+					</StyledBox>
+				)}
+			</div>
+		);
+	}
+
+	const [value, setValue] = useState(0);
+
+	const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+		setValue(newValue);
+	};
+
 	return (
 		<>
 			<StyledSection>
 				<StyledItemRow>
-					<StyledItemRowSocials style={{ fontSize: '16px' }}>
+					<StyledItemRowSocials>
 						<a>{playerData[0]?.userName}</a>
-						<a>{playerData[0]?.id}</a>
+						<StyledItemRowIntern>
+							{playerData[0]?.userSocialStat?.twitter.includes('twitter') ? (
+								<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.twitter}>
+									<Twitter style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+								</a>
+							) : null}
+							{playerData[0]?.userSocialStat?.instagram.includes('instagram') ? (
+								<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.instagram}>
+									<Instagram style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+								</a>
+							) : null}
+							{playerData[0]?.userSocialStat?.tiktok.includes('tiktok') ? (
+								<Link target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.tiktok}>
+									<TikTok style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+								</Link>
+							) : null}
+							{playerData[0]?.userSocialStat?.youtube.includes('youtube') ? (
+								<Link target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.youtube}>
+									<Youtube style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+								</Link>
+							) : null}
+							{playerData[0]?.userSocialStat?.twitch.includes('twitch') ? (
+								<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.twitch}>
+									<Twitch style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+								</a>
+							) : null}
+						</StyledItemRowIntern>
 					</StyledItemRowSocials>
-					<StyledItemRowIntern>
-						{playerData[0]?.userSocialStat?.twitter.includes('twitter') ? (
-							<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.twitter}>
-								<Twitter style={{ fontSize: '20px', fill: 'rgba(152, 161, 192, 1)' }} />
-							</a>
-						) : null}
-						{playerData[0]?.userSocialStat?.instagram.includes('instagram') ? (
-							<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.instagram}>
-								<Instagram style={{ fontSize: '20px', fill: 'rgba(152, 161, 192, 1)' }} />
-							</a>
-						) : null}
-						{playerData[0]?.userSocialStat?.tiktok.includes('tiktok') ? (
-							<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.tiktok}>
-								<TikTok style={{ fontSize: '20px', fill: 'rgba(152, 161, 192, 1)' }} />
-							</a>
-						) : null}
-						{playerData[0]?.userSocialStat?.youtube.includes('youtube') ? (
-							<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.youtube}>
-								<Youtube style={{ fontSize: '20px', fill: 'rgba(152, 161, 192, 1)' }} />
-							</a>
-						) : null}
-						{playerData[0]?.userSocialStat?.twitch.includes('twitch') ? (
-							<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.twitch}>
-								<Twitch style={{ fontSize: '20px', fill: 'rgba(152, 161, 192, 1)' }} />
-							</a>
-						) : null}
-					</StyledItemRowIntern>
+					<StyledItemRowSocials>
+						<p>{playerData[0]?.id}</p>
+						<Link href={CHAINS[chainId]?.blockExplorerUrls[0] + 'address/' + playerData[0]?.id} target="_blank">
+							<OpenInNew style={{ fontSize: '16px', fill: 'rgba(152, 161, 192, 1)' }} />
+						</Link>
+					</StyledItemRowSocials>
+
 					{checksumAccount === checksumAddress ? (
 						<div>
 							<StyledItemRowIntern>
@@ -304,6 +366,27 @@ export default function PlayerPage() {
 					) : null}
 				</StyledItemRow>
 			</StyledSection>
+			<Box sx={{ width: '100%', margin: '2.5rem 5rem 2.5rem 5rem' }}>
+				<Tabs>
+					<StyledTab label="Earned" disableRipple={true} />
+					<StyledTab label="Spent" disableRipple={true} />
+					<StyledTab label="Rank" disableRipple={true} />
+				</Tabs>
+			</Box>
+			<Box sx={{ width: '100%' }}>
+				<Box sx={{ borderBottom: 1, borderColor: 'rgba(41, 50, 73, 1)', margin: '0 5rem 0 5rem' }}>
+					<Tabs value={value} onChange={handleChange}>
+						<StyledTab label="Active Tasks" disableRipple={true} />
+						<StyledTab label="Completed Tasks" disableRipple={true} />
+					</Tabs>
+				</Box>
+				<TabPanel value={value} index={0}>
+					Active Tasks
+				</TabPanel>
+				<TabPanel value={value} index={1}>
+					Completed Tasks
+				</TabPanel>
+			</Box>
 		</>
 	);
 }

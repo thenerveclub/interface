@@ -1,9 +1,5 @@
 import styled from '@emotion/styled';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
-import Modal from '@mui/material/Modal';
-import Typography from '@mui/material/Typography';
+import { Box, Button, CircularProgress, Modal, Typography } from '@mui/material';
 import * as React from 'react';
 import CoinbaseWalletConnect from '../connectorButtons/CoinbaseWalletConnect';
 import MetaMaskConnect from '../connectorButtons/MetaMaskConnect';

@@ -1,8 +1,5 @@
 import styled from '@emotion/styled';
-import { Box, CircularProgress, Modal, Typography } from '@mui/material';
-import Button from '@mui/material/Button';
-import InputAdornment from '@mui/material/InputAdornment';
-import OutlinedInput from '@mui/material/OutlinedInput';
+import { Box, Button, CircularProgress, InputAdornment, Modal, OutlinedInput, Typography } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';

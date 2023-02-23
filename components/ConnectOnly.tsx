@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
-import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
+import { Button, CircularProgress } from '@mui/material';
 import type { CoinbaseWallet } from '@web3-react/coinbase-wallet';
 import type { Web3ReactHooks } from '@web3-react/core';
 import { GnosisSafe } from '@web3-react/gnosis-safe';

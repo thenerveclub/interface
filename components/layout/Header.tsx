@@ -1,10 +1,5 @@
 import styled from '@emotion/styled';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import { Merriweather } from '@next/font/google';
+import { AppBar, Box, Container, Toolbar, Typography } from '@mui/material';
 import localFont from '@next/font/local';
 import { useWeb3React } from '@web3-react/core';
 import SelectChain from '../SelectChain';
@@ -13,11 +8,23 @@ import Connect from '../modal/Connect';
 
 const roboto = localFont({ src: '../../public/fonts/TrueLies.woff2', display: 'swap' });
 
+const StyledAppBar = styled(AppBar)`
+	background: transparent;
+	box-shadow: none;
+	flex-direction: row;
+	height: 80px;
+	padding: 1rem;
+`;
+
 const StyledSectionLeft = styled.section`
 	width: 25%;
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
+
+	& > *:first-child {
+		margin-left: 1rem;
+	}
 `;
 
 const StyledSectionRight = styled.section`
@@ -29,37 +36,37 @@ const StyledSectionRight = styled.section`
 	& > *:not(:last-child) {
 		margin-right: 1rem;
 	}
+
+	& > *:last-child {
+		margin-right: 1rem;
+	}
 `;
 
 export default function Header() {
 	const { account } = useWeb3React();
 
 	return (
-		<Box sx={{ flexGrow: 1 }}>
-			<AppBar sx={{ background: 'transparent', boxShadow: 'none', height: '2rem' }} position="static">
-				<Toolbar>
-					<StyledSectionLeft>
-						<Typography
-							component="a"
-							style={roboto.style}
-							href="/"
-							sx={{
-								display: 'block',
-								fontSize: '1.25rem',
-								width: 'auto',
-								color: '#fff',
-								textDecoration: 'none',
-							}}
-						>
-							NERVE GLOBAL
-						</Typography>
-					</StyledSectionLeft>
-					<StyledSectionRight>
-						<SelectChain />
-						{account ? <AccountModal /> : <Connect />}
-					</StyledSectionRight>
-				</Toolbar>
-			</AppBar>
-		</Box>
+		<StyledAppBar position="static">
+			<StyledSectionLeft>
+				<Typography
+					component="a"
+					style={roboto.style}
+					href="/"
+					sx={{
+						display: 'block',
+						fontSize: '1.25rem',
+						width: 'auto',
+						color: '#fff',
+						textDecoration: 'none',
+					}}
+				>
+					NERVE GLOBAL
+				</Typography>
+			</StyledSectionLeft>
+			<StyledSectionRight>
+				<SelectChain />
+				{account ? <AccountModal /> : <Connect />}
+			</StyledSectionRight>
+		</StyledAppBar>
 	);
 }
