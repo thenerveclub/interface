@@ -11,7 +11,6 @@ import SelectChain from '../SelectChain';
 import AccountModal from '../modal/Account';
 import Connect from '../modal/Connect';
 
-// const roboto = localFont({ src: [{ path: '../../public/fonts/TrueLies.woff2' }] });
 const roboto = localFont({ src: '../../public/fonts/TrueLies.woff2', display: 'swap' });
 
 const StyledSectionLeft = styled.section`
@@ -26,6 +25,10 @@ const StyledSectionRight = styled.section`
 	display: flex;
 	justify-content: flex-end;
 	align-items: center;
+
+	& > *:not(:last-child) {
+		margin-right: 1rem;
+	}
 `;
 
 export default function Header() {

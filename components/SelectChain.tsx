@@ -22,6 +22,20 @@ const WarningAmber = styled(WarningAmberIcon)({
 	},
 });
 
+const MenuItemStyled = styled(MenuItem)({
+	color: '#000',
+	backgroundColor: '#fff',
+	verticalAlign: 'middle',
+	width: '90%',
+	margin: '0 auto 0 auto',
+	padding: '0.5rem',
+	borderRadius: '12px',
+
+	'&:focus': {
+		background: '#fff',
+	},
+});
+
 export default function BasicSelect() {
 	const chainId = useSelector((state: { chainId: number }) => {
 		return state.chainId;
@@ -58,67 +72,94 @@ export default function BasicSelect() {
 	return (
 		<>
 			{isNetworkAvailable ? (
-				<Box
+				<Select
+					variant="outlined"
+					value={age}
+					onChange={handleChange}
 					sx={{
-						minWidth: 120,
+						color: '#fff',
+						height: '100%',
+						verticalAlign: 'middle',
+
+						'& .MuiOutlinedInput-notchedOutline': {
+							border: 'none',
+						},
+
+						'& .MuiSelect-icon': {
+							color: '#fff',
+						},
+					}}
+					MenuProps={{
+						PaperProps: {
+							sx: {
+								'& .MuiMenuItem-root.Mui-selected': {
+									backgroundColor: '#fff',
+								},
+								'& .MuiMenuItem-root': {
+									backgroundColor: '#fff',
+								},
+								'& .MuiMenuItem-root:hover': {
+									backgroundColor: 'rgba(152, 161, 192, 0.5)',
+								},
+							},
+						},
 					}}
 				>
-					<FormControl fullWidth>
-						<Select
-							value={age}
-							onChange={handleChange}
-							sx={{
-								color: '#fff',
-
-								'& .MuiSelect-icon': {
-									color: '#fff',
-								},
-							}}
-						>
-							<MenuItem sx={{ color: '#000', background: '#fff' }} value={137} disabled={chainId === 137}>
-								<PolygonLogo style={{ margin: '0 0.9rem 0 0', verticalAlign: 'middle' }} width="22" height="22" alt="Logo" />
-								Polygon
-							</MenuItem>
-							<MenuItem sx={{ color: '#000', background: '#fff' }} value={1}>
-								<EthereumLogo style={{ margin: '0 0.81rem 0 0.1rem', verticalAlign: 'middle' }} width="22" height="22" alt="Logo" />
-								Ethereum
-							</MenuItem>
-						</Select>
-					</FormControl>
-				</Box>
+					<MenuItemStyled value={137} disabled={chainId === 137}>
+						<PolygonLogo style={{ margin: '0 0.9rem 0 0', verticalAlign: 'middle' }} width="22" height="22" alt="Logo" />
+						Polygon
+					</MenuItemStyled>
+					<MenuItemStyled value={5} disabled={chainId === 5}>
+						<EthereumLogo style={{ margin: '0 0.81rem 0 0.1rem', verticalAlign: 'middle' }} width="22" height="22" alt="Logo" />
+						Goerli
+					</MenuItemStyled>
+				</Select>
 			) : (
-				<Box
+				<Select
+					value={age}
+					onChange={handleChange}
 					sx={{
-						minWidth: 120,
+						color: '#fff',
+						height: '100%',
+						verticalAlign: 'middle',
+
+						'& .MuiOutlinedInput-notchedOutline': {
+							border: 'none',
+						},
+
+						'& .MuiSelect-icon': {
+							color: '#fff',
+						},
+					}}
+					MenuProps={{
+						PaperProps: {
+							sx: {
+								'& .MuiMenuItem-root.Mui-selected': {
+									backgroundColor: '#fff',
+								},
+								'& .MuiMenuItem-root': {
+									backgroundColor: '#fff',
+								},
+								'& .MuiMenuItem-root:hover': {
+									backgroundColor: 'rgba(152, 161, 192, 0.5)',
+								},
+							},
+						},
 					}}
 				>
-					<FormControl fullWidth>
-						<Select
-							value={age}
-							onChange={handleChange}
-							sx={{
-								color: '#fff',
-
-								'& .MuiSelect-icon': {
-									color: '#fff',
-								},
-							}}
-						>
-							<MenuItem sx={{ color: '#000' }} value={chainId} disabled={true}>
-								<WarningAmber style={{ verticalAlign: 'middle' }} />
-								Unsupported Chain
-							</MenuItem>
-							<MenuItem sx={{ color: '#000' }} value={137} disabled={chainId === 137}>
-								<PolygonLogo style={{ margin: '0 0.9rem 0 0', verticalAlign: 'middle' }} width="22" height="22" alt="Logo" />
-								Polygon
-							</MenuItem>
-							<MenuItem sx={{ color: '#000' }} value={1} disabled={chainId === 1}>
-								<EthereumLogo style={{ margin: '0 0.81rem 0 0.1rem', verticalAlign: 'middle' }} width="22" height="22" alt="Logo" />
-								Ethereum
-							</MenuItem>
-						</Select>
-					</FormControl>
-				</Box>
+					<MenuItemStyled value={chainId} disabled={true}>
+						<WarningAmber style={{ verticalAlign: 'middle' }} />
+						Unsupported Chain
+					</MenuItemStyled>
+					<MenuItemStyled value={137} disabled={chainId === 137}>
+						<PolygonLogo style={{ margin: '0 0.9rem 0 0', verticalAlign: 'middle' }} width="22" height="22" alt="Logo" />
+						Polygon
+					</MenuItemStyled>
+					<MenuItemStyled value={5} disabled={chainId === 5}>
+						<EthereumLogo style={{ margin: '0 0.81rem 0 0.1rem', verticalAlign: 'middle' }} width="22" height="22" alt="Logo" />
+						Goerli
+					</MenuItemStyled>
+				</Select>
 			)}
 		</>
 	);

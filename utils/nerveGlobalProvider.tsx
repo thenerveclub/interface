@@ -10,7 +10,7 @@ const getProvider = (function () {
 			return cache[chainId];
 		}
 
-		const providerUrls = CHAINS[chainId]?.urls;
+		const providerUrls = CHAINS[chainId]?.urls[0];
 		const networkProvider = new ethers.providers.JsonRpcProvider(providerUrls);
 
 		const getContractProvider = () => {

@@ -137,12 +137,12 @@ export const CHAINS: {
 		blockTime: 10000,
 		graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal',
 	},
-	80001: {
-		urls: [`https://matic-mumbai.chainstacklabs.com`],
-		name: 'Polygon Mumbai',
-		nativeCurrency: MATIC,
-		blockExplorerUrls: ['https://mumbai.polygonscan.com'],
-	},
+	// 80001: {
+	// 	urls: [`https://matic-mumbai.chainstacklabs.com`],
+	// 	name: 'Polygon Mumbai',
+	// 	nativeCurrency: MATIC,
+	// 	blockExplorerUrls: ['https://mumbai.polygonscan.com'],
+	// },
 	// // Celo
 	// 42220: {
 	//   urls: ['https://forno.celo.org'],
