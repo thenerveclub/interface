@@ -21,6 +21,7 @@ const CELO: AddEthereumChainParameter['nativeCurrency'] = {
 interface BasicChainInformation {
 	urls: string[];
 	name: string;
+	nameToken: string;
 	blockExplorerUrls: string[];
 	contract?: string;
 	blockTime?: number;
@@ -79,6 +80,7 @@ export const CHAINS: {
 	5: {
 		urls: [`https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`],
 		name: 'Görli',
+		nameToken: 'GoerliETH',
 		blockExplorerUrls: ['https://goerli.etherscan.io/'],
 		contract: '0xd0d83FFcF0102E5cea570e565d8f5dFA2086C39C',
 		blockTime: 10000,
@@ -132,8 +134,9 @@ export const CHAINS: {
 	137: {
 		urls: [`https://polygon-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`],
 		name: 'Polygon Mainnet',
+		nameToken: 'MATIC',
 		nativeCurrency: MATIC,
-		blockExplorerUrls: ['https://polygonscan.com'],
+		blockExplorerUrls: ['https://polygonscan.com/'],
 		contract: '0x91596B44543016DDb5D410A51619D5552961a23b',
 		blockTime: 10000,
 		graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal',

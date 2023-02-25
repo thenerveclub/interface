@@ -6,16 +6,16 @@ import MetaMaskConnect from '../connectorButtons/MetaMaskConnect';
 import { WalletConnect } from '../connectorButtons/WalletConnect';
 
 const ConnectButton = styled(Button)({
-	color: '#000',
+	color: '#fff',
 	textTransform: 'none',
 	justifyContent: 'flex-start',
 	fontSize: 16,
 	fontWeight: 400,
 	height: 50,
-	backgroundColor: 'rgba(76, 76, 90, 1)',
-	borderRadius: 5,
+	backgroundColor: 'transparent',
+
 	'&:hover': {
-		backgroundColor: 'rgba(102, 102, 114, 1)',
+		color: '#FF6B00',
 		transition: 'all 0.75s ease',
 	},
 });

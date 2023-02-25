@@ -1,10 +1,11 @@
 import styled from '@emotion/styled';
 import { OpenInNew } from '@mui/icons-material';
-import { Box, Divider, Link, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Button, Divider, Grid, IconButton, Link, Tab, Tabs, Typography } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Connect from '../../../components/modal/Connect';
+import BlacklistPlayer from '../../../components/modal/blacklistPlayer';
 import CreateTask from '../../../components/modal/createTask';
 import RegisterName from '../../../components/modal/registerName';
 import RegisterSocial from '../../../components/modal/registerSocial';
@@ -22,139 +23,11 @@ interface TabPanelProps {
 	value: number;
 }
 
-const StyledItemRowSocials = styled.nav`
-	display: flex;
-	flex: 1;
-	width: 100%;
-	margin: 0 auto 0 auto;
-	height: 100%;
-
-	p {
-		font-size: 16px;
-
-		&:first-child {
-			margin-right: 2.5rem;
-		}
-
-		&:last-child {
-			vertical-align: middle;
-		}
-	}
-
-	a {
-		font-size: 30px;
-
-		&:not(:last-child) {
-			margin-right: 2.5rem;
-		}
-	}
-
-	@media (max-width: 960px) {
-		font-size: 16px;
-		justify-content: space-between;
-		width: 100%;
-		margin: 0 auto 0 auto;
-
-		p {
-			font-size: 12px;
-		}
-
-		& > * {
-			margin-top: 1px;
-			margin-bottom: 1px;
-		}
-		& > *:not(:first-of-type) {
-			margin-top: 0;
-			align-items: right;
-		}
-	}
-`;
-
-const StyledItemRowIntern = styled.nav`
-	display: flex;
-	flex: 1;
-	flex-direction: row;
-	font-size: 16px;
-	font-weight: 500;
-	justify-content: space-between;
-	width: 100%;
-	margin: 0 auto 0 auto;
-
-	p {
-		font-size: 16px;
-		justify-content: space-between;
-	}
-
-	a {
-		font-size: 16px;
-	}
-
-	negative {
-		color: red;
-	}
-
-	positive {
-		font-size: 16px;
-		color: green;
-	}
-
-	@media (max-width: 960px) {
-		font-size: 16px;
-		justify-content: space-between;
-		width: 100%;
-		margin: 0 auto 0 auto;
-
-		p {
-			font-size: 12px;
-		}
-
-		& > * {
-			margin-top: 1px;
-			margin-bottom: 1px;
-		}
-		& > *:not(:first-of-type) {
-			margin-top: 0;
-			align-items: right;
-		}
-	}
-`;
-
-const StyledItemRow = styled.nav`
-	display: flex;
-	flex-direction: column;
-	margin: 0 auto 0 auto;
-
-	& > * {
-		margin-right: 10px;
-	}
-
-	@media (max-width: 960px) {
-		flex-direction: column-reverse;
-
-		& > * {
-			margin-right: 0;
-			margin-top: 10px;
-		}
-	}
-`;
-
-const StyledSection = styled.section`
-	align-items: left;
-	margin: 5rem 5rem 0 5rem;
-
-	@media (max-width: 960px) {
-		display: grid;
-		align-items: center;
-		margin: 0 auto 0 auto;
-		grid-template-columns: 1fr;
-		grid-gap: 2em;
-	}
-`;
-
 const StyledTab = styled(Tab)`
 	color: #fff;
 	font-size: 16px;
 	text-transform: none;
+	min-width: 150px;
 
 	&.Mui-selected {
 		border-bottom: 1px solid #fff;
@@ -171,12 +44,100 @@ const StyledTab = styled(Tab)`
 `;
 
 const StyledBox = styled(Box)`
-	margin: 2.5rem 5rem 0 5rem;
+	margin: 5rem 5rem auto 5rem;
+`;
+
+const PlayerBox = styled(Box)`
+	display: flex;
+	flex-direction: row;
+	min-height: 50px;
+	text-align: left;
+	align-items: center;
+
+	a {
+		font-size: 30px;
+
+		&:not(:last-child) {
+			margin-right: 1rem;
+		}
+	}
+`;
+
+const AddressBox = styled(Box)`
+	display: flex;
+	flex-direction: row;
+	min-height: 50px;
+	text-align: left;
+	align-items: center;
+
+	a {
+		font-size: 16px;
+
+		&:not(:last-child) {
+			margin-right: 1rem;
+		}
+	}
+`;
+
+const SocialBox = styled(Box)`
+	display: flex;
+	flex-direction: row;
+	min-height: 50px;
+	align-items: center;
+
+	a {
+		font-size: 30px;
+
+		&:not(:last-child) {
+			margin-right: 2.5rem;
+		}
+	}
+`;
+
+const StatisticBox = styled(Box)`
+	width: 100%;
+	margin: 3rem 0 auto 0;
+	text-align: center;
+`;
+
+const StyledGridFirst = styled(Grid)`
+	display: flex;
+	flex-direction: row;
+	font-size: 16px;
+	color: #fff;
+
+	a {
+		color: #fff;
+		font-size: 16px;
+		width: 150px;
+	}
+`;
+
+const StyledGridSecond = styled(Grid)`
+	display: flex;
+	flex-direction: row;
+	font-size: 16px;
+	color: #fff;
+	margin-top: 0.25rem;
+
+	a {
+		color: rgba(152, 161, 192, 1);
+		font-size: 16px;
+		width: 150px;
+	}
+`;
+
+const ActiveBox = styled(Box)`
+	margin: 3rem 0 auto 0;
+`;
+
+const PanelBox = styled(Box)`
+	margin: 2.5rem 0 auto 0;
 `;
 
 export default function PlayerPage() {
-	const { account } = useWeb3React();
 	const [registerStatus] = CheckNameRegister();
+	const account = useSelector((state: { account: string }) => state.account);
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 
 	// checksum address to lowercase
@@ -285,9 +246,9 @@ export default function PlayerPage() {
 		return (
 			<div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
 				{value === index && (
-					<StyledBox>
+					<PanelBox>
 						<Typography>{children}</Typography>
-					</StyledBox>
+					</PanelBox>
 				)}
 			</div>
 		);
@@ -300,93 +261,93 @@ export default function PlayerPage() {
 	};
 
 	return (
-		<>
-			<StyledSection>
-				<StyledItemRow>
-					<StyledItemRowSocials>
-						<a>{playerData[0]?.userName}</a>
-						<StyledItemRowIntern>
-							{playerData[0]?.userSocialStat?.twitter.includes('twitter') ? (
-								<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.twitter}>
-									<Twitter style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
-								</a>
-							) : null}
-							{playerData[0]?.userSocialStat?.instagram.includes('instagram') ? (
-								<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.instagram}>
-									<Instagram style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
-								</a>
-							) : null}
-							{playerData[0]?.userSocialStat?.tiktok.includes('tiktok') ? (
-								<Link target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.tiktok}>
-									<TikTok style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
-								</Link>
-							) : null}
-							{playerData[0]?.userSocialStat?.youtube.includes('youtube') ? (
-								<Link target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.youtube}>
-									<Youtube style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
-								</Link>
-							) : null}
-							{playerData[0]?.userSocialStat?.twitch.includes('twitch') ? (
-								<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.twitch}>
-									<Twitch style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
-								</a>
-							) : null}
-						</StyledItemRowIntern>
-					</StyledItemRowSocials>
-					<StyledItemRowSocials>
-						<p>{playerData[0]?.id}</p>
-						<Link href={CHAINS[chainId]?.blockExplorerUrls[0] + 'address/' + playerData[0]?.id} target="_blank">
-							<OpenInNew style={{ fontSize: '16px', fill: 'rgba(152, 161, 192, 1)' }} />
-						</Link>
-					</StyledItemRowSocials>
+		<StyledBox>
+			<PlayerBox>
+				<a>{playerData[0]?.userName}</a>
+				<a>{account ? checksumAccount === checksumAddress ? <RegisterName /> : <BlacklistPlayer /> : null}</a>
+			</PlayerBox>
 
-					{checksumAccount === checksumAddress ? (
-						<div>
-							<StyledItemRowIntern>
-								<RegisterSocial />
-							</StyledItemRowIntern>
-							<StyledItemRowIntern>
-								<RegisterName />
-							</StyledItemRowIntern>
-						</div>
-					) : null}
+			<AddressBox>
+				<a>
+					({playerData[0]?.id.substring(0, 6)}...{playerData[0]?.id.substring(playerData[0]?.id.length - 4).toUpperCase()})
+				</a>
+				<a href={CHAINS[chainId]?.blockExplorerUrls[0] + 'address/' + playerData[0]?.id} target="_blank">
+					<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(152, 161, 192, 1)' }} />
+				</a>
+			</AddressBox>
 
-					{!checksumAccount ? (
-						<div>
-							<StyledItemRowIntern>
-								<Connect />
-							</StyledItemRowIntern>
-						</div>
-					) : checksumAccount !== checksumAddress ? (
-						<div>
-							<StyledItemRowIntern>
-								<CreateTask />
-							</StyledItemRowIntern>
-						</div>
-					) : null}
-				</StyledItemRow>
-			</StyledSection>
-			<Box sx={{ width: '100%', margin: '2.5rem 5rem 2.5rem 5rem' }}>
-				<Tabs>
-					<StyledTab label="Earned" disableRipple={true} />
-					<StyledTab label="Spent" disableRipple={true} />
-					<StyledTab label="Rank" disableRipple={true} />
+			<SocialBox>
+				{playerData[0]?.userSocialStat?.twitter.includes('twitter') ? (
+					<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.twitter}>
+						<Twitter style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+					</a>
+				) : null}
+				{playerData[0]?.userSocialStat?.instagram.includes('instagram') ? (
+					<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.instagram}>
+						<Instagram style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+					</a>
+				) : null}
+				{playerData[0]?.userSocialStat?.tiktok.includes('tiktok') ? (
+					<Link target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.tiktok}>
+						<TikTok style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+					</Link>
+				) : null}
+				{playerData[0]?.userSocialStat?.youtube.includes('youtube') ? (
+					<Link target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.youtube}>
+						<Youtube style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+					</Link>
+				) : null}
+				{playerData[0]?.userSocialStat?.twitch.includes('twitch') ? (
+					<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.twitch}>
+						<Twitch style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+					</a>
+				) : null}
+				<a>{checksumAccount === checksumAddress ? <RegisterSocial /> : null}</a>
+			</SocialBox>
+
+			<StatisticBox>
+				<StyledGridFirst>
+					{playerData[0]?.earned ? (
+						<a>
+							{((playerData[0]?.earned / 1e18) * 1).toFixed(2)} {CHAINS[chainId]?.nameToken}
+						</a>
+					) : (
+						<a>0.00</a>
+					)}
+					{playerData[0]?.spent ? (
+						<a>
+							{((playerData[0]?.spent / 1e18) * 1).toFixed(2)} {CHAINS[chainId]?.nameToken}
+						</a>
+					) : (
+						<a>0.00</a>
+					)}
+					<a>Earned</a>
+				</StyledGridFirst>
+				<StyledGridSecond>
+					<a>Total earned</a>
+					<a>Total spent</a>
+					<a>Global rank</a>
+				</StyledGridSecond>
+			</StatisticBox>
+
+			<ActiveBox sx={{ borderBottom: 1, borderColor: 'rgba(41, 50, 73, 1)' }}>
+				<Tabs value={value} onChange={handleChange}>
+					<StyledTab label="Active Tasks" disableRipple={true} />
+					<StyledTab label="Completed Tasks" disableRipple={true} />
 				</Tabs>
-			</Box>
-			<Box sx={{ width: '100%' }}>
-				<Box sx={{ borderBottom: 1, borderColor: 'rgba(41, 50, 73, 1)', margin: '0 5rem 0 5rem' }}>
-					<Tabs value={value} onChange={handleChange}>
-						<StyledTab label="Active Tasks" disableRipple={true} />
-						<StyledTab label="Completed Tasks" disableRipple={true} />
-					</Tabs>
-				</Box>
-				<TabPanel value={value} index={0}>
-					Active Tasks
-				</TabPanel>
-				<TabPanel value={value} index={1}>
-					Completed Tasks
-				</TabPanel>
-			</Box>
-		</>
+			</ActiveBox>
+			<TabPanel value={value} index={0}>
+				{account ? (
+					checksumAccount !== checksumAddress ? (
+						<div>
+							<CreateTask />
+						</div>
+					) : null
+				) : null}
+			</TabPanel>
+			<TabPanel value={value} index={1}>
+				Completed Tasks
+			</TabPanel>
+		</StyledBox>
 	);
 }

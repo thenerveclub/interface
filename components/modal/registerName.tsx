@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
-import { Box, Button, CircularProgress, Modal, OutlinedInput, Typography } from '@mui/material';
+import { Settings } from '@mui/icons-material';
+import { Box, Button, CircularProgress, IconButton, Modal, OutlinedInput, Typography } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
@@ -24,25 +25,19 @@ const StyledSection = styled.section`
 	}
 `;
 
-const ModalButton = styled(Button)({
-	color: '#fff',
-	boxShadow: '0 0 5px #03A11F',
-	textTransform: 'none',
+const StyledIconButon = styled(IconButton)({
+	display: 'flex',
+	color: '#FF6B00',
 	fontSize: 16,
-	border: '1px solid',
-	lineHeight: 1.5,
-	backgroundColor: 'transparent',
-	borderColor: '#03A11F',
-	borderRadius: 5,
-	'&:hover': {
-		backgroundColor: 'transparent',
-		borderColor: 'rgba(3, 161, 31, 0.5)',
-		boxShadow: '0 0 0.5px #03A11F',
-		transition: 'all 0.75s ease',
-	},
-	'&:active': {
-		boxShadow: 'none',
-		backgroundColor: '#0062cc',
+	animation: 'spin 5s infinite',
+
+	'@keyframes spin': {
+		'0%': {
+			transform: 'rotate(0deg)',
+		},
+		'100%': {
+			transform: 'rotate(360deg)',
+		},
 	},
 });
 
@@ -145,9 +140,9 @@ export default function RegisterName() {
 
 	return (
 		<div>
-			<ModalButton fullWidth={true} variant="outlined" onClick={handleClickOpen}>
-				Register Name
-			</ModalButton>
+			<StyledIconButon onClick={handleClickOpen}>
+				<Settings />
+			</StyledIconButon>
 			<Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
 				<ConnectBox>
 					<Typography

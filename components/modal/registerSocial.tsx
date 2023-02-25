@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
-import { Box, Button, CircularProgress, InputAdornment, Modal, OutlinedInput, Typography } from '@mui/material';
+import { Share } from '@mui/icons-material';
+import { Box, Button, CircularProgress, IconButton, InputAdornment, Modal, OutlinedInput, Typography } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
@@ -23,6 +24,19 @@ const StyledSection = styled.section`
 		grid-gap: 2em;
 	}
 `;
+
+const StyledIconButon = styled(IconButton)({
+	display: 'flex',
+	color: '#FF6B00',
+	fontSize: 16,
+	animation: 'blink 3s infinite',
+
+	'@keyframes blink': {
+		'0%': { opacity: 1 },
+		'50%': { opacity: 0 },
+		'100%': { opacity: 1 },
+	},
+});
 
 const ModalButton = styled(Button)({
 	color: '#fff',
@@ -183,9 +197,9 @@ export default function RegisterSocial() {
 
 	return (
 		<div>
-			<ModalButton disabled={false} variant="outlined" onClick={handleClickOpen}>
-				Register Socials
-			</ModalButton>
+			<StyledIconButon onClick={handleClickOpen}>
+				<Share />
+			</StyledIconButon>
 			<Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
 				<ConnectBox>
 					<Typography

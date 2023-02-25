@@ -13,7 +13,7 @@ const StyledAppBar = styled(AppBar)`
 	box-shadow: none;
 	flex-direction: row;
 	height: 80px;
-	padding: 1rem;
+	padding: 2rem;
 `;
 
 const StyledSectionLeft = styled.section`
@@ -22,7 +22,7 @@ const StyledSectionLeft = styled.section`
 	justify-content: flex-start;
 	align-items: center;
 
-	& > *:first-child {
+	& > *:first-of-type {
 		margin-left: 1rem;
 	}
 `;
