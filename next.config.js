@@ -3,6 +3,13 @@
 /**
  * @type {import('next').NextConfig}
  */
+
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+	enabled: process.env.ANALYZE === 'true',
+});
+
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+
 const nextConfig = {
 	reactStrictMode: true,
 
@@ -15,7 +22,17 @@ const nextConfig = {
 		},
 	},
 
-	webpack(config) {
+	webpack(config, { isServer }) {
+		// Add the next-bundle-analyzer plugin for client builds
+		if (!isServer && process.env.ANALYZE === 'true') {
+			config.plugins.push(
+				new BundleAnalyzerPlugin({
+					analyzerMode: 'server',
+					analyzerPort: 8888,
+				})
+			);
+		}
+
 		config.module.rules.push({
 			test: /\.svg$/i,
 			use: [{ loader: '@svgr/webpack', options: { icon: true } }],
@@ -33,4 +50,4 @@ const nextConfig = {
 	},
 };
 
-module.exports = nextConfig;
+module.exports = withBundleAnalyzer(nextConfig);

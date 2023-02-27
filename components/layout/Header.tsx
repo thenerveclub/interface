@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { AppBar, Box, Container, Toolbar, Typography } from '@mui/material';
-import localFont from '@next/font/local';
 import { useWeb3React } from '@web3-react/core';
+import localFont from 'next/font/local';
 import SelectChain from '../SelectChain';
 import AccountModal from '../modal/Account';
 import Connect from '../modal/Connect';
