@@ -11,8 +11,11 @@ const ConnectButton = styled(Button)({
 	justifyContent: 'flex-start',
 	fontSize: 16,
 	fontWeight: 400,
-	height: 50,
-	backgroundColor: 'transparent',
+	minHeight: 0,
+	height: 40,
+	backgroundColor: 'rgba(152, 161, 192, 0.5)',
+	borderRadius: 10,
+	width: '150px',
 
 	'&:hover': {
 		color: '#FF6B00',
@@ -48,7 +51,7 @@ function ConnectHeader() {
 	return (
 		<div>
 			{!open ? (
-				<ConnectButton fullWidth={true} sx={{ my: 2, color: 'white', display: 'block', fontSize: '16px' }} onClick={handleOpen}>
+				<ConnectButton fullWidth={true} sx={{ color: 'white', display: 'block', fontSize: '16px' }} onClick={handleOpen}>
 					Connect
 				</ConnectButton>
 			) : (

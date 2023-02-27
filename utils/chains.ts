@@ -26,6 +26,7 @@ interface BasicChainInformation {
 	contract?: string;
 	blockTime?: number;
 	graphApi?: string;
+	coingeckoApiId?: string;
 }
 
 interface ExtendedChainInformation extends BasicChainInformation {
@@ -63,6 +64,7 @@ export const CHAINS: {
 	// 	contract: '',
 	// 	blockTime: 10000,
 	// 	graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal',
+	// 	coingeckoApiId: 'ethereum',
 	// },
 	// 3: {
 	//   urls: [process.env.infuraKey ? `https://ropsten.infura.io/v3/${process.env.infuraKey}` : ''].filter(
@@ -85,6 +87,7 @@ export const CHAINS: {
 		contract: '0xd0d83FFcF0102E5cea570e565d8f5dFA2086C39C',
 		blockTime: 10000,
 		graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal-goerli',
+		coingeckoApiId: 'goerli-eth',
 	},
 	// 42: {
 	//   urls: [process.env.infuraKey ? `https://kovan.infura.io/v3/${process.env.infuraKey}` : ''].filter(
@@ -140,6 +143,7 @@ export const CHAINS: {
 		contract: '0x91596B44543016DDb5D410A51619D5552961a23b',
 		blockTime: 10000,
 		graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal',
+		coingeckoApiId: 'matic-network',
 	},
 	// 80001: {
 	// 	urls: [`https://matic-mumbai.chainstacklabs.com`],

@@ -26,10 +26,29 @@ const style = {
 
 const ConnectBox = styled(Box)({
 	display: 'flex',
-	flex: 1,
-	justifyContent: 'space-between',
-	width: '9rem',
+	justifyContent: 'flex-start',
+	backgroundColor: 'rgba(152, 161, 192, 0.5)',
+	borderRadius: 10,
+	minWidth: '150px',
 	color: 'white',
+	height: '40px',
+	alignContent: 'center',
+	alignItems: 'center',
+
+	// gap to the left of the button icon first child
+	'& > *:first-of-type': {
+		marginLeft: '0.5rem',
+	},
+
+	// gap to the right of the button
+	'& > *:not(:first-of-type)': {
+		marginLeft: '0.5rem',
+	},
+
+	// gap to the right of the button last item
+	'& > *:last-of-type': {
+		marginRight: '0.5rem',
+	},
 });
 
 const StyledItemRowIntern = styled.nav`

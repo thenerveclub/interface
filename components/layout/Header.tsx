@@ -12,12 +12,12 @@ const StyledAppBar = styled(AppBar)`
 	background: transparent;
 	box-shadow: none;
 	flex-direction: row;
-	height: 80px;
+	height: 40px;
 	padding: 2rem;
 `;
 
 const StyledSectionLeft = styled.section`
-	width: 25%;
+	min-width: 25%;
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
@@ -27,8 +27,20 @@ const StyledSectionLeft = styled.section`
 	}
 `;
 
+const StyledSectionMiddle = styled.section`
+	min-width: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	@media (max-width: 768px) {
+		display: none;
+		visibility: hidden;
+	}
+`;
+
 const StyledSectionRight = styled.section`
-	width: 75%;
+	min-width: 25%;
 	display: flex;
 	justify-content: flex-end;
 	align-items: center;
@@ -42,31 +54,59 @@ const StyledSectionRight = styled.section`
 	}
 `;
 
+const SearchBoxMobile = styled(Box)`
+	display: none;
+	visibility: hidden;
+
+	@media (max-width: 768px) {
+		display: flex;
+		visibility: visible;
+		min-height: 50px;
+		text-align: center;
+		align-items: center;
+		justify-content: center;
+
+		a {
+			font-size: 30px;
+			cursor: default;
+
+			&:not(:last-child) {
+				margin-right: 1rem;
+			}
+		}
+	}
+`;
+
 export default function Header() {
 	const { account } = useWeb3React();
 
 	return (
-		<StyledAppBar position="static">
-			<StyledSectionLeft>
-				<Typography
-					component="a"
-					style={roboto.style}
-					href="/"
-					sx={{
-						display: 'block',
-						fontSize: '1.25rem',
-						width: 'auto',
-						color: '#fff',
-						textDecoration: 'none',
-					}}
-				>
-					NERVE GLOBAL
-				</Typography>
-			</StyledSectionLeft>
-			<StyledSectionRight>
-				<SelectChain />
-				{account ? <AccountModal /> : <Connect />}
-			</StyledSectionRight>
-		</StyledAppBar>
+		<>
+			<StyledAppBar position="static">
+				<StyledSectionLeft>
+					<Typography
+						component="a"
+						style={roboto.style}
+						href="/"
+						sx={{
+							display: 'block',
+							fontSize: '1.25rem',
+							width: 'auto',
+							color: '#fff',
+							textDecoration: 'none',
+						}}
+					>
+						NERVE GLOBAL
+					</Typography>
+				</StyledSectionLeft>
+				<StyledSectionMiddle>Search Bar</StyledSectionMiddle>
+
+				<StyledSectionRight>
+					<SelectChain />
+					{account ? <AccountModal /> : <Connect />}
+				</StyledSectionRight>
+			</StyledAppBar>
+			<SearchBoxMobile>Search Bar</SearchBoxMobile>
+		</>
 	);
 }

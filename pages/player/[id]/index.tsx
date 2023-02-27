@@ -1,14 +1,14 @@
 import styled from '@emotion/styled';
-import { OpenInNew } from '@mui/icons-material';
-import { Box, Button, Divider, Grid, IconButton, Link, Tab, Tabs, Typography } from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
+import { ContentCopy, OpenInNew } from '@mui/icons-material';
+import { Badge, Box, Button, Grid, Link, Skeleton, Switch, Tab, Tabs, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import Connect from '../../../components/modal/Connect';
 import BlacklistPlayer from '../../../components/modal/blacklistPlayer';
 import CreateTask from '../../../components/modal/createTask';
 import RegisterName from '../../../components/modal/registerName';
 import RegisterSocial from '../../../components/modal/registerSocial';
+import usePlayerData from '../../../hooks/usePlayerData';
+import usePrice from '../../../hooks/usePrice';
 import { CHAINS } from '../../../utils/chains';
 import { CheckNameRegister } from '../../../utils/validation/checkNameRegister';
 import Instagram from '/public/svg/socials/instagram.svg';
@@ -45,6 +45,10 @@ const StyledTab = styled(Tab)`
 
 const StyledBox = styled(Box)`
 	margin: 5rem 5rem auto 5rem;
+
+	@media (max-width: 600px) {
+		margin: 5rem 1rem auto 1rem;
+	}
 `;
 
 const PlayerBox = styled(Box)`
@@ -56,33 +60,43 @@ const PlayerBox = styled(Box)`
 
 	a {
 		font-size: 30px;
+		cursor: default;
 
 		&:not(:last-child) {
 			margin-right: 1rem;
 		}
+	}
+
+	@media (max-width: 600px) {
+		justify-content: center;
 	}
 `;
 
 const AddressBox = styled(Box)`
 	display: flex;
 	flex-direction: row;
-	min-height: 50px;
+	min-height: 25px;
 	text-align: left;
 	align-items: center;
 
 	a {
 		font-size: 16px;
+		cursor: default;
 
 		&:not(:last-child) {
 			margin-right: 1rem;
 		}
+	}
+
+	@media (max-width: 600px) {
+		justify-content: center;
 	}
 `;
 
 const SocialBox = styled(Box)`
 	display: flex;
 	flex-direction: row;
-	min-height: 50px;
+	min-height: 25px;
 	align-items: center;
 
 	a {
@@ -92,11 +106,46 @@ const SocialBox = styled(Box)`
 			margin-right: 2.5rem;
 		}
 	}
+
+	@media (max-width: 600px) {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+
+		a {
+			font-size: 30px;
+			text-align: center;
+			width: 100%;
+
+			&:not(:last-child) {
+				margin-right: 0rem;
+			}
+		}
+	}
+`;
+
+const StyledBadge = styled(Badge)`
+	& .MuiBadge-dot {
+		background-color: #ff0000;
+		animation: blink 3s infinite;
+
+		@keyframes blink {
+			0% {
+				opacity: 1;
+			}
+			50% {
+				opacity: 0;
+			}
+			100% {
+				opacity: 1;
+			}
+		}
+	}
 `;
 
 const StatisticBox = styled(Box)`
 	width: 100%;
-	margin: 3rem 0 auto 0;
+	margin: 2rem 0 auto 0;
 	text-align: center;
 `;
 
@@ -107,9 +156,13 @@ const StyledGridFirst = styled(Grid)`
 	color: #fff;
 
 	a {
+		display: flex;
 		color: #fff;
 		font-size: 16px;
 		width: 150px;
+		cursor: default;
+		justify-content: center;
+		align-items: center;
 	}
 `;
 
@@ -124,122 +177,93 @@ const StyledGridSecond = styled(Grid)`
 		color: rgba(152, 161, 192, 1);
 		font-size: 16px;
 		width: 150px;
+		cursor: default;
 	}
 `;
 
 const ActiveBox = styled(Box)`
-	margin: 3rem 0 auto 0;
+	margin: 3rem auto 0 auto;
+	border-bottom: 1px solid rgba(41, 50, 73, 1);
+
+	@media (max-width: 600px) {
+		width: 300px;
+		justify-content: center;
+		align-items: center;
+	}
+`;
+
+const StyledTabs = styled(Tabs)`
+	@media (max-width: 600px) {
+		width: 350px;
+		justify-content: center;
+		align-items: center;
+	}
 `;
 
 const PanelBox = styled(Box)`
-	margin: 2.5rem 0 auto 0;
+	margin: 1rem auto 0 auto;
+`;
+
+const ActiveFilterBox = styled(Box)`
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	height: 40px;
+`;
+
+const ActiveTabLeftSection = styled(Box)`
+	min-width: 50%;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+`;
+
+const StyledToggleButtonGroup = styled(ToggleButtonGroup)`
+	background-color: rgba(152, 161, 192, 0.5);
+	border-radius: 10px;
+`;
+
+const StyledToggleButton = styled(ToggleButton)`
+	color: rgba(152, 161, 192, 1);
+`;
+
+const ActiveTabRightSection = styled(Box)`
+	min-width: 50%;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+`;
+
+const ActiveTabSection = styled(Box)`
+	display: block;
+	margin: 2rem auto 0 auto;
 `;
 
 export default function PlayerPage() {
-	const [registerStatus] = CheckNameRegister();
+	// Redux
 	const account = useSelector((state: { account: string }) => state.account);
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 
-	// checksum address to lowercase
+	// Token Price
+	const price = usePrice(chainId);
+
+	// Toogle Button For Token Price
+	const [valueUSD, setValueUSD] = useState<boolean>(false);
+	const handleToggle = (event, newValueUSD) => {
+		setValueUSD(newValueUSD);
+	};
+
+	// Checked Name Register
+	const [registerStatus] = CheckNameRegister();
+
+	// Address Checksumed And Lowercased
 	const checksumAddress = registerStatus?.toLowerCase();
 	const checksumAccount = account?.toLowerCase();
 
-	// Get Task ID
-	const path = (global.window && window.location.pathname)?.toString() || '';
-	const playerName = path.split('/').pop();
-	const playerNameAddress = playerName?.toLowerCase();
+	// Player Data
+	const playerData = usePlayerData(checksumAddress, chainId);
 
-	// 0x52b28292846c59da23114496d6e6bfc875f54ff5
-
-	// Query The Graph -> Dare Data
-	const QueryForDare = `
-{
-  tasks(where: { id:"0xa2"}) 
-  {
-    description
-    recipientAddress
-    recipientName
-    endTask
-    proofLink
-    positiveVotes
-    negativeVotes
-    amount
-    entranceAmount
-    participants
-  }
-}
-`;
-
-	const [tad, setTAD] = useState<any[]>([]);
-	useEffect(() => {
-		const getTAD = async () => {
-			try {
-				const response = await fetch(CHAINS[chainId]?.graphApi, {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ query: QueryForDare }),
-				});
-				if (response.ok) {
-					const data = await response.json();
-					setTAD(data.data.tasks);
-				} else {
-					console.log('Array is Empty');
-				}
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		const interval = setInterval(getTAD, 60000);
-
-		return () => clearInterval(interval);
-	}, []);
-
-	// Query The Graph -> Player Data
-	const [playerData, setPlayerData] = useState<any[]>([]);
-
-	useEffect(() => {
-		const getTask = async () => {
-			const QueryForPlayerData = `
-    {
-      userDashStats(where: {id: "${checksumAddress}"}) {
-        id
-        earned
-        spent
-        userName
-        userSocialStat {
-          instagram
-          tiktok
-          twitch
-          twitter
-          youtube
-        }
-      }
-    }
-    `;
-
-			try {
-				const fetchTask = await fetch(CHAINS[chainId]?.graphApi, {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ query: QueryForPlayerData }),
-				});
-
-				const data = await fetchTask.json();
-				setPlayerData(data.data.userDashStats);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-
-		const interval = setInterval(getTask, 60000);
-
-		// Call the function on first page load
-		getTask();
-
-		// Clear the interval on unmount
-		return () => clearInterval(interval);
-	}, [chainId, checksumAddress]);
-
+	// Tab Panel
 	function TabPanel(props: TabPanelProps) {
 		const { children, value, index, ...other } = props;
 
@@ -255,7 +279,6 @@ export default function PlayerPage() {
 	}
 
 	const [value, setValue] = useState(0);
-
 	const handleChange = (event: React.SyntheticEvent, newValue: number) => {
 		setValue(newValue);
 	};
@@ -263,19 +286,29 @@ export default function PlayerPage() {
 	return (
 		<StyledBox>
 			<PlayerBox>
-				<a>{playerData[0]?.userName}</a>
+				{playerData[0]?.userName ? <a>{playerData[0]?.userName}</a> : <a>{checksumAddress?.toUpperCase()}</a>}
 				<a>{account ? checksumAccount === checksumAddress ? <RegisterName /> : <BlacklistPlayer /> : null}</a>
 			</PlayerBox>
-
 			<AddressBox>
-				<a>
-					({playerData[0]?.id.substring(0, 6)}...{playerData[0]?.id.substring(playerData[0]?.id.length - 4).toUpperCase()})
+				{playerData[0]?.id ? (
+					<a>
+						({playerData[0]?.id.substring(0, 6)}...{playerData[0]?.id.substring(playerData[0]?.id.length - 4).toUpperCase()})
+					</a>
+				) : (
+					<a>
+						({checksumAddress?.substring(0, 6)}...{checksumAddress?.substring(checksumAddress?.length - 4).toUpperCase()})
+					</a>
+				)}
+				<a
+					onClick={() => navigator.clipboard.writeText(playerData[0]?.id ? playerData[0]?.id.toUpperCase() : checksumAddress.toUpperCase())}
+					style={{ cursor: 'pointer' }}
+				>
+					<ContentCopy style={{ display: 'flex', fontSize: '14px', fill: 'rgba(152, 161, 192, 1)' }} />
 				</a>
-				<a href={CHAINS[chainId]?.blockExplorerUrls[0] + 'address/' + playerData[0]?.id} target="_blank">
+				<a href={CHAINS[chainId]?.blockExplorerUrls[0] + 'address/' + playerData[0]?.id} target="_blank" style={{ cursor: 'pointer' }}>
 					<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(152, 161, 192, 1)' }} />
 				</a>
 			</AddressBox>
-
 			<SocialBox>
 				{playerData[0]?.userSocialStat?.twitter.includes('twitter') ? (
 					<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.twitter}>
@@ -299,29 +332,68 @@ export default function PlayerPage() {
 				) : null}
 				{playerData[0]?.userSocialStat?.twitch.includes('twitch') ? (
 					<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.twitch}>
-						<Twitch style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+						<StyledBadge variant="dot">
+							<Twitch style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+						</StyledBadge>
 					</a>
 				) : null}
 				<a>{checksumAccount === checksumAddress ? <RegisterSocial /> : null}</a>
 			</SocialBox>
-
 			<StatisticBox>
 				<StyledGridFirst>
 					{playerData[0]?.earned ? (
-						<a>
-							{((playerData[0]?.earned / 1e18) * 1).toFixed(2)} {CHAINS[chainId]?.nameToken}
-						</a>
+						valueUSD === false ? (
+							<a>
+								{((playerData[0]?.earned / 1e18) * 1).toFixed(2)} {CHAINS[chainId]?.nameToken}
+							</a>
+						) : (
+							<a>{((playerData[0]?.earned / 1e18) * price).toFixed(2)} USD</a>
+						)
 					) : (
-						<a>0.00</a>
+						<a>
+							<Skeleton
+								sx={{
+									backgroundColor: 'rgba(152, 161, 192, 0.4)',
+									borderRadius: '10px',
+								}}
+								variant="text"
+								width={75}
+								height={30}
+							/>
+						</a>
 					)}
 					{playerData[0]?.spent ? (
-						<a>
-							{((playerData[0]?.spent / 1e18) * 1).toFixed(2)} {CHAINS[chainId]?.nameToken}
-						</a>
+						valueUSD === false ? (
+							<a>
+								{((playerData[0]?.spent / 1e18) * 1).toFixed(2)} {CHAINS[chainId]?.nameToken}
+							</a>
+						) : (
+							<a>{((playerData[0]?.spent / 1e18) * price).toFixed(2)} USD</a>
+						)
 					) : (
-						<a>0.00</a>
+						<a>
+							<Skeleton
+								sx={{
+									backgroundColor: 'rgba(152, 161, 192, 0.4)',
+									borderRadius: '10px',
+								}}
+								variant="text"
+								width={75}
+								height={30}
+							/>
+						</a>
 					)}
-					<a>Earned</a>
+					<a>
+						<Skeleton
+							sx={{
+								backgroundColor: 'rgba(152, 161, 192, 0.4)',
+								borderRadius: '10px',
+							}}
+							variant="text"
+							width={75}
+							height={30}
+						/>
+					</a>
 				</StyledGridFirst>
 				<StyledGridSecond>
 					<a>Total earned</a>
@@ -329,24 +401,34 @@ export default function PlayerPage() {
 					<a>Global rank</a>
 				</StyledGridSecond>
 			</StatisticBox>
-
-			<ActiveBox sx={{ borderBottom: 1, borderColor: 'rgba(41, 50, 73, 1)' }}>
-				<Tabs value={value} onChange={handleChange}>
+			<ActiveBox>
+				<StyledTabs value={value} onChange={handleChange}>
 					<StyledTab label="Active Tasks" disableRipple={true} />
 					<StyledTab label="Completed Tasks" disableRipple={true} />
-				</Tabs>
+				</StyledTabs>
 			</ActiveBox>
 			<TabPanel value={value} index={0}>
-				{account ? (
-					checksumAccount !== checksumAddress ? (
-						<div>
-							<CreateTask />
-						</div>
-					) : null
-				) : null}
+				<ActiveFilterBox>
+					<ActiveTabLeftSection>
+						<StyledToggleButtonGroup value={valueUSD} exclusive onChange={handleToggle}>
+							<StyledToggleButton value={false}>{CHAINS[chainId]?.nameToken}</StyledToggleButton>
+							<StyledToggleButton value={true}>USD</StyledToggleButton>
+						</StyledToggleButtonGroup>
+					</ActiveTabLeftSection>
+					<ActiveTabRightSection>{account ? checksumAccount !== checksumAddress ? <CreateTask /> : null : null}</ActiveTabRightSection>
+				</ActiveFilterBox>
+				<ActiveTabSection>Active Tasks</ActiveTabSection>
 			</TabPanel>
 			<TabPanel value={value} index={1}>
-				Completed Tasks
+				<ActiveFilterBox>
+					<ActiveTabLeftSection>
+						<StyledToggleButtonGroup value={valueUSD} exclusive onChange={handleToggle}>
+							<StyledToggleButton value={false}>{CHAINS[chainId]?.nameToken}</StyledToggleButton>
+							<StyledToggleButton value={true}>USD</StyledToggleButton>
+						</StyledToggleButtonGroup>
+					</ActiveTabLeftSection>
+				</ActiveFilterBox>
+				<ActiveTabSection>Completed Tasks</ActiveTabSection>
 			</TabPanel>
 		</StyledBox>
 	);

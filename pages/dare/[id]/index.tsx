@@ -9,6 +9,7 @@ import Connect from '../../../components/modal/Connect';
 import Join from '../../../components/modal/joinTask';
 import Vote from '../../../components/modal/voteTask';
 import NerveGlobalABI from '../../../constants/abi/nerveGlobal.json';
+import usePrice from '../../../hooks/usePrice';
 import { CHAINS } from '../../../utils/chains';
 import Instagram from '/public/svg/socials/instagram.svg';
 import TikTok from '/public/svg/socials/tiktok.svg';
@@ -349,12 +350,16 @@ const StyledSection = styled.section`
 `;
 
 export default function DarePage() {
+	// Redux
+	const chainId = useSelector((state: { chainId: number }) => state.chainId);
+
+	// Token Price
+	const price = usePrice(chainId);
+
 	// Get Task ID
 	const path = (global.window && window.location.pathname)?.toString() || '';
 	const dareNumber = path.split('/').pop();
 	const Id = '0x'.concat(dareNumber);
-
-	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 
 	// Query The Graph -> Dares
 	const [tad, setTAD] = useState<any[]>([]);
@@ -432,8 +437,6 @@ export default function DarePage() {
 	 }
 	}
 `;
-
-	const matic = Number(usePrice());
 
 	// Merge The Graph Queries
 	let merged = [] as any;
@@ -620,11 +623,11 @@ export default function DarePage() {
 								</StyledItemRowIntern>
 								<StyledItemRowIntern>
 									<p>Entry Amount</p>
-									<p>${((merged.entranceAmount / 1e18) * matic).toFixed(2)}</p>
+									<p>${((merged.entranceAmount / 1e18) * price).toFixed(2)}</p>
 								</StyledItemRowIntern>
 								<StyledItemRowIntern>
 									<p>Total Amount</p>
-									<p>${((merged.amount / 1e18) * matic).toFixed(2)}</p>
+									<p>${((merged.amount / 1e18) * price).toFixed(2)}</p>
 								</StyledItemRowIntern>
 
 								{account ? (
@@ -651,20 +654,4 @@ export default function DarePage() {
 			</StyledSection>
 		</>
 	);
-}
-
-function usePrice() {
-	const [maticPrice, setPrice] = useState<number[]>([]);
-
-	useEffect(() => {
-		fetch('https://api.coingecko.com/api/v3/simple/price?ids=matic-network&vs_currencies=usd', {
-			method: 'GET',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(Object),
-		})
-			.then((response) => response.json())
-			.then((data) => setPrice(data['matic-network'].usd));
-	}, []);
-
-	return maticPrice;
 }

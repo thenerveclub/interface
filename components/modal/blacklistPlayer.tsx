@@ -1,19 +1,6 @@
 import styled from '@emotion/styled';
 import { ReportGmailerrorred, WarningAmber } from '@mui/icons-material';
-import {
-	Box,
-	Button,
-	Checkbox,
-	CircularProgress,
-	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogTitle,
-	Grid,
-	IconButton,
-	Modal,
-	Typography,
-} from '@mui/material';
+import { Box, Button, Checkbox, CircularProgress, Grid, IconButton, Modal, Typography } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
@@ -54,7 +41,29 @@ const StyledGridSecond = styled(Grid)`
 	font-size: 16px;
 	color: #fff;
 	justify-content: center;
+	min-width: 150px;
+	margin: 3rem auto 0 auto;
+
+	a {
+		color: #fff;
+		font-size: 16px;
+		align-self: center;
+
+		&:hover {
+			cursor: default;
+		}
+	}
+`;
+
+const StyledGridThird = styled(Grid)`
+	display: flex;
+	flex-direction: row;
+	font-size: 16px;
+	color: #fff;
+	justify-content: center;
 	margin-top: 3rem;
+	min-width: 150px;
+	margin: 1rem auto 0 auto;
 
 	a {
 		color: rgba(152, 161, 192, 1);
@@ -98,7 +107,7 @@ const ConnectBox = styled(Box)({
 	justifyContent: 'center',
 	alignItems: 'center',
 	padding: '1rem',
-	height: 400,
+	height: 450,
 	width: 350,
 	backgroundColor: 'rgba(6, 16, 25, 1)',
 	border: '0.25px solid rgba(76, 76, 90, 1)',
@@ -126,6 +135,7 @@ const BuyButton = styled(Button)({
 	},
 
 	'&:disabled': {
+		color: 'rgba(152, 161, 192, 1)',
 		backgroundColor: 'rgba(255,0,0,0.5)',
 	},
 });
@@ -161,7 +171,7 @@ export default function BlacklistPlayer() {
 		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			await nerveGlobal.userToBlacklist(checksumAddress, { gasLimit: 250000 });
+			await nerveGlobal.setBlacklistUser(checksumAddress, { gasLimit: 250000 });
 			enqueueSnackbar('Transaction signed succesfully!', {
 				variant: 'success',
 			});
@@ -181,7 +191,7 @@ export default function BlacklistPlayer() {
 			<Modal open={open} onClose={handleClose}>
 				<ConnectBox>
 					<Typography
-						style={{ fontSize: '25px', color: '#fff', fontWeight: 'bold', margin: '1.5rem auto 2rem auto' }}
+						style={{ fontSize: '25px', color: '#fff', fontWeight: 'bold', margin: '1.5rem auto 2rem auto', cursor: 'default' }}
 						align="center"
 						id="modal-modal-title"
 					>
@@ -194,8 +204,16 @@ export default function BlacklistPlayer() {
 							</StyledIconButtonDisabled>
 							<a>Blacklisting of users cannot be undone. You can never receive a dare from the blacklisted user again.</a>
 						</StyledGridFirst>
-						<Checkbox checked={checked} onChange={handleChange} inputProps={{ 'aria-label': 'controlled' }} style={{ color: '#fff' }} />
 						<StyledGridSecond>
+							<Checkbox
+								checked={checked}
+								onChange={handleChange}
+								inputProps={{ 'aria-label': 'controlled' }}
+								style={{ display: 'flex', color: '#fff' }}
+							/>
+							<a>Understood</a>
+						</StyledGridSecond>
+						<StyledGridThird>
 							{checked ? (
 								pendingTx ? (
 									<BuyButton startIcon={<CircularProgress thickness={2.5} size={20} />} disabled={true}>
@@ -207,7 +225,7 @@ export default function BlacklistPlayer() {
 							) : (
 								<BuyButton disabled={true}>Blacklist</BuyButton>
 							)}
-						</StyledGridSecond>
+						</StyledGridThird>
 					</StatisticBox>
 				</ConnectBox>
 			</Modal>

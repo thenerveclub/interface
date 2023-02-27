@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { CheckIcon, WarningAmber } from '@mui/icons-material';
+import { WarningAmber } from '@mui/icons-material';
 import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, keyframes } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -10,7 +10,6 @@ import EthereumLogo from '/public/svg/chains/ethereum.svg';
 import PolygonLogo from '/public/svg/chains/polygon.svg';
 
 const WarningAmberIcon = styled(WarningAmber)({
-	margin: '0 0.75rem 0 0',
 	color: 'red',
 	animation: 'blink 2s infinite',
 
@@ -28,7 +27,13 @@ const MenuItemStyled = styled(MenuItem)({
 	width: '90%',
 	margin: '0 auto 0 auto',
 	padding: '0.5rem',
-	borderRadius: '12px',
+	borderRadius: '10px',
+
+	a: {
+		'&: last-of-type': {
+			marginLeft: '0.5rem',
+		},
+	},
 
 	'&:focus': {
 		background: '#fff',
@@ -77,14 +82,43 @@ export default function BasicSelect() {
 					onChange={handleChange}
 					sx={{
 						color: '#fff',
-						height: '100%',
-						verticalAlign: 'middle',
+						display: 'block',
+						backgroundColor: 'rgba(152, 161, 192, 0.5)',
+						borderRadius: '10px',
+						minWidth: '150px',
+						minHeight: '40px',
+						padding: '0 0 0 0',
 
 						'& .MuiOutlinedInput-notchedOutline': {
 							border: 'none',
 						},
 
+						'& .MuiSelect-select': {
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+							padding: '0 0 0 0',
+							alignContent: 'center',
+							verticalAlign: 'middle',
+							height: '40px',
+							textAlign: 'center',
+
+							a: {
+								'&: last-of-type': {
+									marginLeft: '0.5rem',
+									marginRight: '0.5rem',
+								},
+
+								'@media (max-width: 600px)': {
+									display: 'none',
+									visibility: 'hidden',
+									marginLeft: '0',
+								},
+							},
+						},
+
 						'& .MuiSelect-icon': {
+							display: 'flex',
 							color: '#fff',
 						},
 					}}
@@ -105,12 +139,12 @@ export default function BasicSelect() {
 					}}
 				>
 					<MenuItemStyled value={137} disabled={chainId === 137}>
-						<PolygonLogo style={{ margin: '0 0.9rem 0 0', verticalAlign: 'middle' }} width="22" height="22" alt="Logo" />
-						Polygon
+						<PolygonLogo style={{ display: 'flex' }} width="22" height="22" alt="Logo" />
+						<a>Polygon</a>
 					</MenuItemStyled>
 					<MenuItemStyled value={5} disabled={chainId === 5}>
-						<EthereumLogo style={{ margin: '0 0.81rem 0 0.1rem', verticalAlign: 'middle' }} width="22" height="22" alt="Logo" />
-						Goerli
+						<EthereumLogo style={{ display: 'flex' }} width="22" height="22" alt="Logo" />
+						<a>Goerli</a>
 					</MenuItemStyled>
 				</Select>
 			) : (
@@ -147,16 +181,16 @@ export default function BasicSelect() {
 					}}
 				>
 					<MenuItemStyled value={chainId} disabled={true}>
-						<WarningAmberIcon style={{ verticalAlign: 'middle' }} />
-						Unsupported Chain
+						<WarningAmberIcon style={{ display: 'flex' }} />
+						<a>Unsupported Chain</a>
 					</MenuItemStyled>
 					<MenuItemStyled value={137} disabled={chainId === 137}>
-						<PolygonLogo style={{ margin: '0 0.9rem 0 0', verticalAlign: 'middle' }} width="22" height="22" alt="Logo" />
-						Polygon
+						<PolygonLogo style={{ display: 'flex' }} width="22" height="22" alt="Logo" />
+						<a>Polygon</a>
 					</MenuItemStyled>
 					<MenuItemStyled value={5} disabled={chainId === 5}>
-						<EthereumLogo style={{ margin: '0 0.81rem 0 0.1rem', verticalAlign: 'middle' }} width="22" height="22" alt="Logo" />
-						Goerli
+						<EthereumLogo style={{ display: 'flex' }} width="22" height="22" alt="Logo" />
+						<a>Goerli</a>
 					</MenuItemStyled>
 				</Select>
 			)}

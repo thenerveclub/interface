@@ -27,20 +27,21 @@ const StyledSection = styled.section`
 
 const ModalButton = styled(Button)({
 	color: '#fff',
-	boxShadow: '0 0 5px #03A11F',
+	// boxShadow: '0 0 5px #FF7F00',
 	textTransform: 'none',
 	fontSize: 16,
-	border: '1px solid',
+	border: 'none',
 	lineHeight: 1.5,
-	backgroundColor: 'transparent',
-	borderColor: '#03A11F',
-	borderRadius: 5,
+	backgroundColor: 'rgba(255, 127.5,0, 1)	',
+	borderRadius: 10,
+
 	'&:hover': {
 		backgroundColor: 'transparent',
 		borderColor: 'rgba(3, 161, 31, 0.5)',
 		boxShadow: '0 0 0.5px #03A11F',
 		transition: 'all 0.75s ease',
 	},
+
 	'&:active': {
 		boxShadow: 'none',
 		backgroundColor: '#0062cc',
@@ -66,6 +67,35 @@ const BuyButton = styled(Button)({
 		backgroundColor: '#0062cc',
 	},
 });
+
+const StatisticBoxFirst = styled(Box)`
+	display: flex;
+	flex-direction: row;
+	width: 85%;
+	margin: 0 auto 0 auto;
+	justify-content: space-evenly;
+	justify-items: center;
+	justify-content: center;
+	align-items: center;
+	align-content: center;
+`;
+
+const StatisticBoxSecond = styled(Box)`
+	display: block;
+	width: 85%;
+	margin: 2rem auto 0 auto;
+`;
+
+const SectionBox = styled(Box)`
+	display: block;
+	margin: 0 auto 0 auto;
+
+	a {
+		color: #fff;
+		font-size: 16px;
+		cursor: default;
+	}
+`;
 
 const CancelButton = styled(Button)({
 	color: '#fff',
@@ -96,9 +126,9 @@ const ConnectBox = styled(Box)({
 	justifyContent: 'center',
 	alignItems: 'center',
 	padding: '1rem',
-	height: 500,
-	width: 350,
-	backgroundColor: 'grey',
+	height: 450,
+	width: 650,
+	backgroundColor: 'rgba(6, 16, 25, 1)',
 	border: '0.25px solid rgba(76, 76, 90, 1)',
 	borderRadius: '10px',
 	boxShadow: '0 0 25px rgba(76,130,251,0.25)',
@@ -107,11 +137,28 @@ const ConnectBox = styled(Box)({
 	pb: 2,
 });
 
+const TaskSectionLeft = styled(Box)`
+	min-width: 50%;
+	display: flex;
+	justify-content: flex-start;
+`;
+
+const TaskSectionRight = styled(Box)`
+	min-width: 50%;
+	display: flex;
+	justify-content: flex-end;
+`;
+
 export default function CreateTask() {
 	const [open, setOpen] = useState(false);
 	const { provider } = useWeb3React();
 	const { enqueueSnackbar } = useSnackbar();
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
+	const [pendingTx, setPendingTx] = useState(false);
+	const [minimumValue, setMinimumValue] = useState('0');
+	const [registerStatus] = CheckNameRegister();
+	const [description, setDescription] = useState(null);
+	const [duration, setDuration] = useState(null);
 
 	const handleClickOpen = () => {
 		setOpen(true);
@@ -120,11 +167,6 @@ export default function CreateTask() {
 	const handleClose = () => {
 		setOpen(false);
 	};
-	const [pendingTx, setPendingTx] = useState(false);
-	const [minimumValue, setMinimumValue] = useState('0');
-	const [registerStatus] = CheckNameRegister();
-	const [description, setDescription] = useState(null);
-	const [duration, setDuration] = useState(null);
 
 	const value = ethers.utils.parseEther(minimumValue);
 
@@ -150,53 +192,90 @@ export default function CreateTask() {
 	}
 
 	return (
-		<div>
-			<ModalButton disabled={false} variant="outlined" onClick={handleClickOpen}>
-				Create Task
-			</ModalButton>
-			<Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+		<>
+			<ModalButton onClick={handleClickOpen}>Create Task</ModalButton>
+			<Modal open={open} onClose={handleClose}>
 				<ConnectBox>
 					<Typography
-						style={{ fontSize: '25px', color: '#fff', fontWeight: 'bold', margin: '0 auto 2.5rem auto' }}
+						style={{ fontSize: '25px', color: '#fff', fontWeight: 'bold', margin: '1.5rem auto 2rem auto', cursor: 'default' }}
 						align="center"
 						id="modal-modal-title"
 					>
 						Create Task
 					</Typography>
-					<OutlinedInput
-						fullWidth={true}
-						id="outlined-adornment-name"
-						type="name"
-						required={false}
-						startAdornment={<InputAdornment position="start">$</InputAdornment>}
-						onChange={(event) => setMinimumValue(event.target.value)}
-					/>
-					<OutlinedInput
-						fullWidth={true}
-						id="outlined-adornment-name"
-						type="name"
-						required={false}
-						onChange={(event) => setDescription(event.target.value)}
-					/>
-					<OutlinedInput
-						fullWidth={true}
-						id="outlined-adornment-name"
-						type="name"
-						required={false}
-						onChange={(event) => setDuration(event.target.value)}
-					/>
-					<StyledSection style={{ margin: '2.5rem auto 0 auto' }}>
-						<CancelButton onClick={handleClose}>Cancel</CancelButton>
-						{pendingTx ? (
-							<BuyButton startIcon={<CircularProgress thickness={2.5} size={20} />} disabled={true}>
-								Pending
-							</BuyButton>
-						) : (
-							<BuyButton onClick={onRegisterSocial}>Register</BuyButton>
-						)}
-					</StyledSection>
+					<StatisticBoxFirst>
+						<TaskSectionLeft>
+							<SectionBox>
+								<a>Start amount</a>
+								<OutlinedInput
+									id="outlined-adornment-name"
+									type="name"
+									required={false}
+									sx={{
+										'& .MuiOutlinedInput-notchedOutline': {
+											borderColor: '#fff',
+										},
+
+										'& .MuiOutlinedInput-inputAdornedStart': {
+											color: '#fff',
+										},
+									}}
+									startAdornment={
+										<InputAdornment sx={{ color: '#fff', display: 'flex', cursor: 'default' }} position="start">
+											$
+										</InputAdornment>
+									}
+									onChange={(event) => setMinimumValue(event.target.value)}
+								/>
+							</SectionBox>
+						</TaskSectionLeft>
+						<TaskSectionRight>
+							<SectionBox>
+								<a>Time in minutes</a>
+								<OutlinedInput
+									id="outlined-adornment-name"
+									type="name"
+									required={false}
+									sx={{
+										'& .MuiOutlinedInput-notchedOutline': {
+											borderColor: '#fff',
+										},
+									}}
+									onChange={(event) => setDuration(event.target.value)}
+								/>
+							</SectionBox>
+						</TaskSectionRight>
+					</StatisticBoxFirst>
+					<StatisticBoxSecond>
+						<SectionBox>
+							<a>Task description</a>
+							<OutlinedInput
+								fullWidth={true}
+								id="outlined-adornment-name"
+								type="name"
+								required={false}
+								multiline={true}
+								rows={3}
+								sx={{
+									'& .MuiOutlinedInput-notchedOutline': {
+										borderColor: '#fff',
+									},
+								}}
+								onChange={(event) => setDescription(event.target.value)}
+							/>
+						</SectionBox>
+						<StyledSection style={{ margin: '2.5rem auto 0 auto' }}>
+							{pendingTx ? (
+								<BuyButton startIcon={<CircularProgress thickness={2.5} size={20} />} disabled={true}>
+									Pending
+								</BuyButton>
+							) : (
+								<BuyButton onClick={onRegisterSocial}>Register</BuyButton>
+							)}
+						</StyledSection>
+					</StatisticBoxSecond>
 				</ConnectBox>
 			</Modal>
-		</div>
+		</>
 	);
 }
