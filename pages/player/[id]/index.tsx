@@ -308,6 +308,14 @@ export default function PlayerPage() {
 					height="<height>"
 					width="<width>"
 				></iframe>
+
+				<iframe
+					width="560"
+					height="315"
+					src="https://www.youtube-nocookie.com/embed/9Uua7kjK6KE?controls=0&start=0&end=0&autoplay=1&mute=1&loop=1&origin=localhost"
+					title="YouTube video player"
+					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+				></iframe>
 			</PlayerBox>
 			<AddressBox>
 				{playerData[0]?.id ? (
