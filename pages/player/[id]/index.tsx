@@ -9,6 +9,8 @@ import RegisterName from '../../../components/modal/registerName';
 import RegisterSocial from '../../../components/modal/registerSocial';
 import usePlayerData from '../../../hooks/usePlayerData';
 import usePrice from '../../../hooks/usePrice';
+import useTwitchStatus from '../../../hooks/useTwitchStatus';
+import useYouTubeStatus from '../../../hooks/useYouTubeStatus';
 import { CHAINS } from '../../../utils/chains';
 import { CheckNameRegister } from '../../../utils/validation/checkNameRegister';
 import Instagram from '/public/svg/socials/instagram.svg';
@@ -263,6 +265,19 @@ export default function PlayerPage() {
 	// Player Data
 	const playerData = usePlayerData(checksumAddress, chainId);
 
+	// Twitch Live Status
+	const twitchLink = playerData[0]?.userSocialStat?.twitch.includes('twitch') ? playerData[0]?.userSocialStat?.twitch : '';
+	const twitchSplit = twitchLink?.split('/');
+	const twitchChannelName = twitchSplit[twitchSplit.length - 1];
+	const isTwitchLive = useTwitchStatus(twitchChannelName);
+
+	// YouTube Live Status
+	const youTubeLink = playerData[0]?.userSocialStat?.youtube.includes('youtube') ? playerData[0]?.userSocialStat?.youtube : '';
+	const youTubeSplit = youTubeLink?.split('/@');
+	const youTubeChannelName = youTubeSplit[youTubeSplit.length - 1];
+	const isYouTubeLive = useYouTubeStatus(youTubeChannelName);
+	console.log('YT LIVE ???', isYouTubeLive);
+
 	// Tab Panel
 	function TabPanel(props: TabPanelProps) {
 		const { children, value, index, ...other } = props;
@@ -288,6 +303,7 @@ export default function PlayerPage() {
 			<PlayerBox>
 				{playerData[0]?.userName ? <a>{playerData[0]?.userName}</a> : <a>{checksumAddress?.toUpperCase()}</a>}
 				<a>{account ? checksumAccount === checksumAddress ? <RegisterName /> : <BlacklistPlayer /> : null}</a>
+				<iframe src="https://player.twitch.tv/?channel=eliasn97&parent=localhost" height="<height>" width="<width>"></iframe>
 			</PlayerBox>
 			<AddressBox>
 				{playerData[0]?.id ? (
@@ -332,9 +348,13 @@ export default function PlayerPage() {
 				) : null}
 				{playerData[0]?.userSocialStat?.twitch.includes('twitch') ? (
 					<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.twitch}>
-						<StyledBadge variant="dot">
+						{isTwitchLive ? (
+							<StyledBadge variant="dot">
+								<Twitch style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+							</StyledBadge>
+						) : (
 							<Twitch style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
-						</StyledBadge>
+						)}
 					</a>
 				) : null}
 				<a>{checksumAccount === checksumAddress ? <RegisterSocial /> : null}</a>
