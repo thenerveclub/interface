@@ -113,7 +113,8 @@ function usePrice() {
 			body: JSON.stringify(Object),
 		})
 			.then((response) => response.json())
-			.then((data) => setPrice(data['matic-network'].usd));
+			.then((data) => setPrice(data['matic-network'].usd))
+			.catch((error) => console.error(error));
 	}, []);
 
 	return maticPrice;

@@ -6,17 +6,14 @@ const usePrice = (chainId: number) => {
 
 	useEffect(() => {
 		const coingeckoApiId = CHAINS[chainId]?.coingeckoApiId;
-		if (!coingeckoApiId) return; // Exit early if chain ID is not valid
+		if (!coingeckoApiId) return;
 
 		const url = `https://api.coingecko.com/api/v3/simple/price?ids=${coingeckoApiId}&vs_currencies=usd`;
 
-		fetch(url, {
-			method: 'GET',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(Object),
-		})
+		fetch(url)
 			.then((response) => response.json())
-			.then((data) => setPrice(data[coingeckoApiId].usd));
+			.then((data) => setPrice(data[coingeckoApiId]?.usd || 0))
+			.catch((error) => console.error(error));
 	}, [chainId]);
 
 	return price;

@@ -8,8 +8,8 @@ const useTwitchLiveStatus = (twitchChannelName: string) => {
 			try {
 				const response = await fetch(`https://api.twitch.tv/helix/streams?user_login=${twitchChannelName}`, {
 					headers: {
-						'Client-ID': `'${process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID}'`,
-						Authorization: `Bearer '${process.env.NEXT_PUBLIC_TWITCH_BEARER_TOKEN}'`,
+						'Client-ID': process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID,
+						Authorization: `Bearer ${process.env.NEXT_PUBLIC_TWITCH_BEARER_TOKEN}`,
 					},
 				});
 

@@ -269,14 +269,16 @@ export default function PlayerPage() {
 	const twitchLink = playerData[0]?.userSocialStat?.twitch.includes('twitch') ? playerData[0]?.userSocialStat?.twitch : '';
 	const twitchSplit = twitchLink?.split('/');
 	const twitchChannelName = twitchSplit[twitchSplit.length - 1];
+	console.log('TWITCH LIVE ???', twitchChannelName);
 	const isTwitchLive = useTwitchStatus(twitchChannelName);
+	console.log('TWITCH LIVE ???', isTwitchLive);
 
 	// YouTube Live Status
-	const youTubeLink = playerData[0]?.userSocialStat?.youtube.includes('youtube') ? playerData[0]?.userSocialStat?.youtube : '';
-	const youTubeSplit = youTubeLink?.split('/@');
-	const youTubeChannelName = youTubeSplit[youTubeSplit.length - 1];
-	const isYouTubeLive = useYouTubeStatus(youTubeChannelName);
-	console.log('YT LIVE ???', isYouTubeLive);
+	// const youTubeLink = playerData[0]?.userSocialStat?.youtube.includes('youtube') ? playerData[0]?.userSocialStat?.youtube : '';
+	// const youTubeSplit = youTubeLink?.split('/@');
+	// const youTubeChannelName = youTubeSplit[youTubeSplit.length - 1];
+	// const isYouTubeLive = useYouTubeStatus(youTubeChannelName);
+	// console.log('YT LIVE ???', isYouTubeLive);
 
 	// Tab Panel
 	function TabPanel(props: TabPanelProps) {
@@ -312,7 +314,7 @@ export default function PlayerPage() {
 				<iframe
 					width="560"
 					height="315"
-					src="https://www.youtube-nocookie.com/embed/o605PgKGpzw?autoplay=1"
+					src="https://www.youtube-nocookie.com/embed/o605PgKGpzw"
 					title="YouTube video player"
 					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 				></iframe>
