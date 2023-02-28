@@ -4,6 +4,10 @@ const useTwitchLiveStatus = (twitchChannelName: string) => {
 	const [isTwitchLive, setIsTwitchLive] = useState(false);
 
 	useEffect(() => {
+		if (!twitchChannelName) {
+			return;
+		}
+
 		const fetchLiveStatus = async () => {
 			try {
 				const response = await fetch(`https://api.twitch.tv/helix/streams?user_login=${twitchChannelName}`, {

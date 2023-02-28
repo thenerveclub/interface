@@ -10,7 +10,7 @@ import RegisterSocial from '../../../components/modal/registerSocial';
 import usePlayerData from '../../../hooks/usePlayerData';
 import usePrice from '../../../hooks/usePrice';
 import useTwitchStatus from '../../../hooks/useTwitchStatus';
-import useYouTubeStatus from '../../../hooks/useYouTubeStatus';
+// import useYouTubeStatus from '../../../hooks/useYouTubeStatus';
 import { CHAINS } from '../../../utils/chains';
 import { CheckNameRegister } from '../../../utils/validation/checkNameRegister';
 import Instagram from '/public/svg/socials/instagram.svg';
@@ -286,11 +286,7 @@ export default function PlayerPage() {
 
 		return (
 			<div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
-				{value === index && (
-					<PanelBox>
-						<Typography>{children}</Typography>
-					</PanelBox>
-				)}
+				{value === index && <PanelBox>{children}</PanelBox>}
 			</div>
 		);
 	}
@@ -445,24 +441,36 @@ export default function PlayerPage() {
 				<ActiveFilterBox>
 					<ActiveTabLeftSection>
 						<StyledToggleButtonGroup value={valueUSD} exclusive onChange={handleToggle}>
-							<StyledToggleButton value={false}>{CHAINS[chainId]?.nameToken}</StyledToggleButton>
-							<StyledToggleButton value={true}>USD</StyledToggleButton>
+							<StyledToggleButton value={false}>
+								<a>{CHAINS[chainId]?.nameToken}</a>
+							</StyledToggleButton>
+							<StyledToggleButton value={true}>
+								<a>USD</a>
+							</StyledToggleButton>
 						</StyledToggleButtonGroup>
 					</ActiveTabLeftSection>
 					<ActiveTabRightSection>{account ? checksumAccount !== checksumAddress ? <CreateTask /> : null : null}</ActiveTabRightSection>
 				</ActiveFilterBox>
-				<ActiveTabSection>Active Tasks</ActiveTabSection>
+				<ActiveTabSection>
+					<a>Active Tasks</a>
+				</ActiveTabSection>
 			</TabPanel>
 			<TabPanel value={value} index={1}>
 				<ActiveFilterBox>
 					<ActiveTabLeftSection>
 						<StyledToggleButtonGroup value={valueUSD} exclusive onChange={handleToggle}>
-							<StyledToggleButton value={false}>{CHAINS[chainId]?.nameToken}</StyledToggleButton>
-							<StyledToggleButton value={true}>USD</StyledToggleButton>
+							<StyledToggleButton value={false}>
+								<a>{CHAINS[chainId]?.nameToken}</a>
+							</StyledToggleButton>
+							<StyledToggleButton value={true}>
+								<a>USD</a>
+							</StyledToggleButton>
 						</StyledToggleButtonGroup>
 					</ActiveTabLeftSection>
 				</ActiveFilterBox>
-				<ActiveTabSection>Completed Tasks</ActiveTabSection>
+				<ActiveTabSection>
+					<a>Completed Tasks</a>
+				</ActiveTabSection>
 			</TabPanel>
 		</StyledBox>
 	);
