@@ -303,10 +303,7 @@ export default function PlayerPage() {
 		<>
 			<Head>
 				<title>Player Page</title>
-				<meta
-					http-equiv="Content-Security-Policy"
-					content="frame-ancestors http://localhost:* https://localhost:*; frame-src https://player.twitch.tv"
-				/>
+				<meta http-equiv="Content-Security-Policy" content="default-src 'self'; frame-ancestors https://player.twitch.tv;" />
 			</Head>
 			<StyledBox>
 				<PlayerBox>
