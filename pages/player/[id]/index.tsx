@@ -304,7 +304,7 @@ export default function PlayerPage() {
 				{playerData[0]?.userName ? <a>{playerData[0]?.userName}</a> : <a>{checksumAddress?.toUpperCase()}</a>}
 				<a>{account ? checksumAccount === checksumAddress ? <RegisterName /> : <BlacklistPlayer /> : null}</a>
 				<iframe
-					src="https://player.twitch.tv/?channel=eliasn97&parent=localhost&parent=interface-alpha.vercel.app"
+					src="https://player.twitch.tv/?channel=amouranth&parent=localhost&parent=interface-alpha.vercel.app&autoplay=false"
 					height="<height>"
 					width="<width>"
 				></iframe>
@@ -312,7 +312,7 @@ export default function PlayerPage() {
 				<iframe
 					width="560"
 					height="315"
-					src="https://www.youtube-nocookie.com/embed/9Uua7kjK6KE?controls=0&start=0&end=0&autoplay=1&mute=1&loop=1&origin=localhost"
+					src="https://www.youtube-nocookie.com/embed/o605PgKGpzw?autoplay=1"
 					title="YouTube video player"
 					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 				></iframe>
