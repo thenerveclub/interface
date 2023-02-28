@@ -8,8 +8,8 @@ const useTwitchLiveStatus = (twitchChannelName: string) => {
 			try {
 				const response = await fetch(`https://api.twitch.tv/helix/streams?user_login=${twitchChannelName}`, {
 					headers: {
-						'Client-ID': process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID,
-						Authorization: `Bearer ${process.env.NEXT_PUBLIC_TWITCH_BEARER_TOKEN}`,
+						'Client-ID': `'${process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID}'`,
+						Authorization: `Bearer '${process.env.NEXT_PUBLIC_TWITCH_BEARER_TOKEN}'`,
 					},
 				});
 
@@ -32,8 +32,8 @@ const useTwitchLiveStatus = (twitchChannelName: string) => {
 export default useTwitchLiveStatus;
 
 // Get Authorization Token
-// const clientId = process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID;
-// const clientSecret = process.env.NEXT_PUBLIC_TWITCH_CLIENT_SECRET;
+// const clientId = `'process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID'`;
+// const clientSecret = `'process.env.NEXT_PUBLIC_TWITCH_CLIENT_SECRET'`;
 // const grantType = 'client_credentials';
 
 // fetch(`https://id.twitch.tv/oauth2/token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=${grantType}`, {
