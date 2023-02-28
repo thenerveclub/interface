@@ -1,5 +1,26 @@
 {
-	"private": true,
+	"name": "NerveGlobal",
+	"description": "Nerve Global DApp Interface",
+	"version": "1.0.0",
+	"license": "GPL-3.0-or-later",
+	"engines": {
+		"npm": "please-use-yarn",
+		"node": "v19.3.0",
+		"yarn": "1.22.19"
+	},
+	"homepage": "https://github.com/nerveglobal/interface#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/nerveglobal/interface.git"
+	},
+	"bugs": {
+		"url": "https://github.com/nerveglobal/interface/issues"
+	},
+	"keywords": [
+		"react",
+		"nerve",
+		"typescript"
+	],
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
