@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { ContentCopy, OpenInNew } from '@mui/icons-material';
 import { Badge, Box, Button, Grid, Link, Skeleton, Switch, Tab, Tabs, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import BlacklistPlayer from '../../../components/modal/blacklistPlayer';
@@ -299,77 +300,115 @@ export default function PlayerPage() {
 	};
 
 	return (
-		<StyledBox>
-			<PlayerBox>
-				{playerData[0]?.userName ? <a>{playerData[0]?.userName}</a> : <a>{checksumAddress?.toUpperCase()}</a>}
-				<a>{account ? checksumAccount === checksumAddress ? <RegisterName /> : <BlacklistPlayer /> : null}</a>
-				<iframe src="https://player.twitch.tv/?channel=eliasn97&parent=localhost" height="<height>" width="<width>"></iframe>
-			</PlayerBox>
-			<AddressBox>
-				{playerData[0]?.id ? (
-					<a>
-						({playerData[0]?.id.substring(0, 6)}...{playerData[0]?.id.substring(playerData[0]?.id.length - 4).toUpperCase()})
+		<>
+			<Head>
+				<title>Player Page</title>
+				<meta http-equiv="Content-Security-Policy" content="frame-src https://player.twitch.tv;" />
+			</Head>
+			<StyledBox>
+				<PlayerBox>
+					{playerData[0]?.userName ? <a>{playerData[0]?.userName}</a> : <a>{checksumAddress?.toUpperCase()}</a>}
+					<a>{account ? checksumAccount === checksumAddress ? <RegisterName /> : <BlacklistPlayer /> : null}</a>
+					<iframe src="https://player.twitch.tv/?channel=eliasn97&parent=localhost" height="<height>" width="<width>"></iframe>
+				</PlayerBox>
+				<AddressBox>
+					{playerData[0]?.id ? (
+						<a>
+							({playerData[0]?.id.substring(0, 6)}...{playerData[0]?.id.substring(playerData[0]?.id.length - 4).toUpperCase()})
+						</a>
+					) : (
+						<a>
+							({checksumAddress?.substring(0, 6)}...{checksumAddress?.substring(checksumAddress?.length - 4).toUpperCase()})
+						</a>
+					)}
+					<a
+						onClick={() => navigator.clipboard.writeText(playerData[0]?.id ? playerData[0]?.id.toUpperCase() : checksumAddress.toUpperCase())}
+						style={{ cursor: 'pointer' }}
+					>
+						<ContentCopy style={{ display: 'flex', fontSize: '14px', fill: 'rgba(152, 161, 192, 1)' }} />
 					</a>
-				) : (
-					<a>
-						({checksumAddress?.substring(0, 6)}...{checksumAddress?.substring(checksumAddress?.length - 4).toUpperCase()})
+					<a href={CHAINS[chainId]?.blockExplorerUrls[0] + 'address/' + playerData[0]?.id} target="_blank" style={{ cursor: 'pointer' }}>
+						<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(152, 161, 192, 1)' }} />
 					</a>
-				)}
-				<a
-					onClick={() => navigator.clipboard.writeText(playerData[0]?.id ? playerData[0]?.id.toUpperCase() : checksumAddress.toUpperCase())}
-					style={{ cursor: 'pointer' }}
-				>
-					<ContentCopy style={{ display: 'flex', fontSize: '14px', fill: 'rgba(152, 161, 192, 1)' }} />
-				</a>
-				<a href={CHAINS[chainId]?.blockExplorerUrls[0] + 'address/' + playerData[0]?.id} target="_blank" style={{ cursor: 'pointer' }}>
-					<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(152, 161, 192, 1)' }} />
-				</a>
-			</AddressBox>
-			<SocialBox>
-				{playerData[0]?.userSocialStat?.twitter.includes('twitter') ? (
-					<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.twitter}>
-						<Twitter style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
-					</a>
-				) : null}
-				{playerData[0]?.userSocialStat?.instagram.includes('instagram') ? (
-					<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.instagram}>
-						<Instagram style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
-					</a>
-				) : null}
-				{playerData[0]?.userSocialStat?.tiktok.includes('tiktok') ? (
-					<Link target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.tiktok}>
-						<TikTok style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
-					</Link>
-				) : null}
-				{playerData[0]?.userSocialStat?.youtube.includes('youtube') ? (
-					<Link target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.youtube}>
-						<Youtube style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
-					</Link>
-				) : null}
-				{playerData[0]?.userSocialStat?.twitch.includes('twitch') ? (
-					<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.twitch}>
-						{isTwitchLive ? (
-							<StyledBadge variant="dot">
+				</AddressBox>
+				<SocialBox>
+					{playerData[0]?.userSocialStat?.twitter.includes('twitter') ? (
+						<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.twitter}>
+							<Twitter style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+						</a>
+					) : null}
+					{playerData[0]?.userSocialStat?.instagram.includes('instagram') ? (
+						<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.instagram}>
+							<Instagram style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+						</a>
+					) : null}
+					{playerData[0]?.userSocialStat?.tiktok.includes('tiktok') ? (
+						<Link target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.tiktok}>
+							<TikTok style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+						</Link>
+					) : null}
+					{playerData[0]?.userSocialStat?.youtube.includes('youtube') ? (
+						<Link target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.youtube}>
+							<Youtube style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+						</Link>
+					) : null}
+					{playerData[0]?.userSocialStat?.twitch.includes('twitch') ? (
+						<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.twitch}>
+							{isTwitchLive ? (
+								<StyledBadge variant="dot">
+									<Twitch style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+								</StyledBadge>
+							) : (
 								<Twitch style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
-							</StyledBadge>
+							)}
+						</a>
+					) : null}
+					<a>{checksumAccount === checksumAddress ? <RegisterSocial /> : null}</a>
+				</SocialBox>
+				<StatisticBox>
+					<StyledGridFirst>
+						{playerData[0]?.earned ? (
+							valueUSD === false ? (
+								<a>
+									{((playerData[0]?.earned / 1e18) * 1).toFixed(2)} {CHAINS[chainId]?.nameToken}
+								</a>
+							) : (
+								<a>{((playerData[0]?.earned / 1e18) * price).toFixed(2)} USD</a>
+							)
 						) : (
-							<Twitch style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+							<a>
+								<Skeleton
+									sx={{
+										backgroundColor: 'rgba(152, 161, 192, 0.4)',
+										borderRadius: '10px',
+									}}
+									variant="text"
+									width={75}
+									height={30}
+								/>
+							</a>
 						)}
-					</a>
-				) : null}
-				<a>{checksumAccount === checksumAddress ? <RegisterSocial /> : null}</a>
-			</SocialBox>
-			<StatisticBox>
-				<StyledGridFirst>
-					{playerData[0]?.earned ? (
-						valueUSD === false ? (
-							<a>
-								{((playerData[0]?.earned / 1e18) * 1).toFixed(2)} {CHAINS[chainId]?.nameToken}
-							</a>
+						{playerData[0]?.spent ? (
+							valueUSD === false ? (
+								<a>
+									{((playerData[0]?.spent / 1e18) * 1).toFixed(2)} {CHAINS[chainId]?.nameToken}
+								</a>
+							) : (
+								<a>{((playerData[0]?.spent / 1e18) * price).toFixed(2)} USD</a>
+							)
 						) : (
-							<a>{((playerData[0]?.earned / 1e18) * price).toFixed(2)} USD</a>
-						)
-					) : (
+							<a>
+								<Skeleton
+									sx={{
+										backgroundColor: 'rgba(152, 161, 192, 0.4)',
+										borderRadius: '10px',
+									}}
+									variant="text"
+									width={75}
+									height={30}
+								/>
+							</a>
+						)}
 						<a>
 							<Skeleton
 								sx={{
@@ -381,75 +420,43 @@ export default function PlayerPage() {
 								height={30}
 							/>
 						</a>
-					)}
-					{playerData[0]?.spent ? (
-						valueUSD === false ? (
-							<a>
-								{((playerData[0]?.spent / 1e18) * 1).toFixed(2)} {CHAINS[chainId]?.nameToken}
-							</a>
-						) : (
-							<a>{((playerData[0]?.spent / 1e18) * price).toFixed(2)} USD</a>
-						)
-					) : (
-						<a>
-							<Skeleton
-								sx={{
-									backgroundColor: 'rgba(152, 161, 192, 0.4)',
-									borderRadius: '10px',
-								}}
-								variant="text"
-								width={75}
-								height={30}
-							/>
-						</a>
-					)}
-					<a>
-						<Skeleton
-							sx={{
-								backgroundColor: 'rgba(152, 161, 192, 0.4)',
-								borderRadius: '10px',
-							}}
-							variant="text"
-							width={75}
-							height={30}
-						/>
-					</a>
-				</StyledGridFirst>
-				<StyledGridSecond>
-					<a>Total earned</a>
-					<a>Total spent</a>
-					<a>Global rank</a>
-				</StyledGridSecond>
-			</StatisticBox>
-			<ActiveBox>
-				<StyledTabs value={value} onChange={handleChange}>
-					<StyledTab label="Active Tasks" disableRipple={true} />
-					<StyledTab label="Completed Tasks" disableRipple={true} />
-				</StyledTabs>
-			</ActiveBox>
-			<TabPanel value={value} index={0}>
-				<ActiveFilterBox>
-					<ActiveTabLeftSection>
-						<StyledToggleButtonGroup value={valueUSD} exclusive onChange={handleToggle}>
-							<StyledToggleButton value={false}>{CHAINS[chainId]?.nameToken}</StyledToggleButton>
-							<StyledToggleButton value={true}>USD</StyledToggleButton>
-						</StyledToggleButtonGroup>
-					</ActiveTabLeftSection>
-					<ActiveTabRightSection>{account ? checksumAccount !== checksumAddress ? <CreateTask /> : null : null}</ActiveTabRightSection>
-				</ActiveFilterBox>
-				<ActiveTabSection>Active Tasks</ActiveTabSection>
-			</TabPanel>
-			<TabPanel value={value} index={1}>
-				<ActiveFilterBox>
-					<ActiveTabLeftSection>
-						<StyledToggleButtonGroup value={valueUSD} exclusive onChange={handleToggle}>
-							<StyledToggleButton value={false}>{CHAINS[chainId]?.nameToken}</StyledToggleButton>
-							<StyledToggleButton value={true}>USD</StyledToggleButton>
-						</StyledToggleButtonGroup>
-					</ActiveTabLeftSection>
-				</ActiveFilterBox>
-				<ActiveTabSection>Completed Tasks</ActiveTabSection>
-			</TabPanel>
-		</StyledBox>
+					</StyledGridFirst>
+					<StyledGridSecond>
+						<a>Total earned</a>
+						<a>Total spent</a>
+						<a>Global rank</a>
+					</StyledGridSecond>
+				</StatisticBox>
+				<ActiveBox>
+					<StyledTabs value={value} onChange={handleChange}>
+						<StyledTab label="Active Tasks" disableRipple={true} />
+						<StyledTab label="Completed Tasks" disableRipple={true} />
+					</StyledTabs>
+				</ActiveBox>
+				<TabPanel value={value} index={0}>
+					<ActiveFilterBox>
+						<ActiveTabLeftSection>
+							<StyledToggleButtonGroup value={valueUSD} exclusive onChange={handleToggle}>
+								<StyledToggleButton value={false}>{CHAINS[chainId]?.nameToken}</StyledToggleButton>
+								<StyledToggleButton value={true}>USD</StyledToggleButton>
+							</StyledToggleButtonGroup>
+						</ActiveTabLeftSection>
+						<ActiveTabRightSection>{account ? checksumAccount !== checksumAddress ? <CreateTask /> : null : null}</ActiveTabRightSection>
+					</ActiveFilterBox>
+					<ActiveTabSection>Active Tasks</ActiveTabSection>
+				</TabPanel>
+				<TabPanel value={value} index={1}>
+					<ActiveFilterBox>
+						<ActiveTabLeftSection>
+							<StyledToggleButtonGroup value={valueUSD} exclusive onChange={handleToggle}>
+								<StyledToggleButton value={false}>{CHAINS[chainId]?.nameToken}</StyledToggleButton>
+								<StyledToggleButton value={true}>USD</StyledToggleButton>
+							</StyledToggleButtonGroup>
+						</ActiveTabLeftSection>
+					</ActiveFilterBox>
+					<ActiveTabSection>Completed Tasks</ActiveTabSection>
+				</TabPanel>
+			</StyledBox>
+		</>
 	);
 }
