@@ -269,16 +269,14 @@ export default function PlayerPage() {
 	const twitchLink = playerData[0]?.userSocialStat?.twitch.includes('twitch') ? playerData[0]?.userSocialStat?.twitch : '';
 	const twitchSplit = twitchLink?.split('/');
 	const twitchChannelName = twitchSplit[twitchSplit.length - 1];
-	console.log('TWITCH LIVE ???', twitchChannelName);
 	const isTwitchLive = useTwitchStatus(twitchChannelName);
-	console.log('TWITCH LIVE ???', isTwitchLive);
 
 	// YouTube Live Status
 	// const youTubeLink = playerData[0]?.userSocialStat?.youtube.includes('youtube') ? playerData[0]?.userSocialStat?.youtube : '';
 	// const youTubeSplit = youTubeLink?.split('/@');
 	// const youTubeChannelName = youTubeSplit[youTubeSplit.length - 1];
+	// const youTubeChannelName = 'inscope21';
 	// const isYouTubeLive = useYouTubeStatus(youTubeChannelName);
-	// console.log('YT LIVE ???', isYouTubeLive);
 
 	// Tab Panel
 	function TabPanel(props: TabPanelProps) {
@@ -307,13 +305,13 @@ export default function PlayerPage() {
 					width="<width>"
 				></iframe>
 
-				<iframe
+				{/* <iframe
 					width="560"
 					height="315"
 					src="https://www.youtube-nocookie.com/embed/o605PgKGpzw"
 					title="YouTube video player"
-					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-				></iframe>
+					allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+				></iframe> */}
 			</PlayerBox>
 			<AddressBox>
 				{playerData[0]?.id ? (
@@ -347,14 +345,20 @@ export default function PlayerPage() {
 					</a>
 				) : null}
 				{playerData[0]?.userSocialStat?.tiktok.includes('tiktok') ? (
-					<Link target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.tiktok}>
+					<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.tiktok}>
 						<TikTok style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
-					</Link>
+					</a>
 				) : null}
 				{playerData[0]?.userSocialStat?.youtube.includes('youtube') ? (
-					<Link target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.youtube}>
+					<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.youtube}>
+						{/* {isYouTubeLive ? (
+							<StyledBadge variant="dot">
+								<Youtube style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+							</StyledBadge>
+						) : ( */}
 						<Youtube style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
-					</Link>
+						{/* )} */}
+					</a>
 				) : null}
 				{playerData[0]?.userSocialStat?.twitch.includes('twitch') ? (
 					<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.twitch}>

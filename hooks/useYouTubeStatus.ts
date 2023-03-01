@@ -4,6 +4,7 @@
 // 	const [ID, setID] = useState(null);
 // 	console.log('ID', ID);
 // 	const [isYouTubeLive, setIsYouTubeLive] = useState(false);
+// 	const [youTubeVideoId, setYouTubeVideoId] = useState('');
 
 // 	useEffect(() => {
 // 		const apiKey = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
@@ -11,7 +12,7 @@
 // 		const fetchChannelId = async () => {
 // 			try {
 // 				const response = await fetch(
-// 					`https://youtube.googleapis.com/youtube/v3/channels?part=snippet&forUsername=${youTubeChannelName}&key=${apiKey}`
+// 					`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=${youTubeChannelName}&key=${apiKey}`
 // 				);
 // 				const data = await response.json();
 // 				console.log('YOUTUBE DATA', data);
@@ -24,13 +25,18 @@
 
 // 		fetchChannelId();
 
-// 		const apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${ID}&part=id&eventType=live&type=video`;
+// 		const apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=UCLT2Kpo1BlaCx54CIVSxP-w&part=id&eventType=live&type=video`;
 
 // 		const fetchLiveStatus = async () => {
 // 			try {
 // 				const response = await fetch(apiUrl);
 // 				const data = await response.json();
 // 				setIsYouTubeLive(data.items.length > 0);
+
+// 				if (isYouTubeLive) {
+// 					const videoId = data.items[0].id.videoId;
+// 					setYouTubeVideoId(videoId);
+// 				}
 // 			} catch (error) {
 // 				console.error(error);
 // 			}
