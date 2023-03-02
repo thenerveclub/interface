@@ -4,7 +4,6 @@ import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, keyf
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { CHAINS, getAddChainParameters } from '../utils/chains';
-import { coinbaseWallet } from '../utils/connectors/coinbaseWallet';
 import { metaMask } from '../utils/connectors/metaMask';
 import EthereumLogo from '/public/svg/chains/ethereum.svg';
 import PolygonLogo from '/public/svg/chains/polygon.svg';

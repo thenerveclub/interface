@@ -37,7 +37,7 @@ export function CheckNameRegister() {
 
 				return () => clearInterval(interval);
 			} catch (error) {
-				console.log('error', error);
+				console.log(error);
 			}
 		}
 	}, [isAddress, pathLastPart, contractProvider]);

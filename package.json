@@ -46,7 +46,7 @@
 		"@web3-react/core": "8.0.35-beta.0",
 		"@web3-react/metamask": "8.0.28-beta.0",
 		"@web3-react/types": "8.0.20-beta.0",
-		"@web3-react/walletconnect": "8.0.35-beta.0",
+		"@web3-react/walletconnect": "^8.0.37-beta.0",
 		"eslint-config-next": "^13.0.0",
 		"ethers": "^5.7.2",
 		"next": "^13.1.6",

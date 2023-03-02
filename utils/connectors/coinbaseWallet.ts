@@ -7,7 +7,7 @@ export const [coinbaseWallet, hooks] = initializeConnector<CoinbaseWallet>(
 		new CoinbaseWallet({
 			actions,
 			options: {
-				url: URLS,
+				url: URLS[1],
 				appName: 'web3-react',
 			},
 		})

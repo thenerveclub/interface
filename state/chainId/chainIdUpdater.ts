@@ -1,10 +1,12 @@
 import { useWeb3React } from '@web3-react/core';
-import { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import { store } from '../index';
 import { chainIdSlice } from './chainIdSlice';
 
-const Child = memo(() => {
+const ChainIdUpdater = memo(() => {
 	const { chainId } = useWeb3React();
+	// Use the initial state of the chainId slice
+	const initialChainId = store.getState().chainId;
 
 	const updateChainId = useCallback(
 		(chainId) => {
@@ -14,7 +16,8 @@ const Child = memo(() => {
 	);
 
 	useEffect(() => {
-		if (typeof chainId === 'number') {
+		// If the chainId changes, update the chainId slice
+		if (typeof chainId === 'number' && chainId !== initialChainId) {
 			updateChainId(chainId);
 		}
 	}, [chainId, updateChainId]);
@@ -22,4 +25,4 @@ const Child = memo(() => {
 	return null;
 });
 
-export default Child;
+export default ChainIdUpdater;

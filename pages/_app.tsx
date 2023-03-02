@@ -23,7 +23,7 @@ function Updaters() {
 
 export default function MyApp({ Component, pageProps }) {
 	useEffect(() => {
-		const connectorsToConnect = [metaMask, coinbaseWallet, walletConnect];
+		const connectorsToConnect = [metaMask, walletConnect, coinbaseWallet];
 		connectorsToConnect.forEach(async (connector) => {
 			try {
 				// if (connector.connectEagerly) {

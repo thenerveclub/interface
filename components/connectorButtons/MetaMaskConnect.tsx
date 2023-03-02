@@ -10,12 +10,5 @@ export default function MetaMaskConnect() {
 	const isActive = useIsActive();
 	const [error, setError] = useState(undefined);
 
-	// attempt to connect eagerly on mount
-	useEffect(() => {
-		void metaMask.connectEagerly().catch(() => {
-			console.debug('Failed to connect eagerly to metamask');
-		});
-	}, []);
-
 	return <Card connector={metaMask} chainId={chainId} isActivating={isActivating} isActive={isActive} error={error} setError={setError} />;
 }

@@ -3,7 +3,7 @@ import { memo, useCallback, useEffect } from 'react';
 import { store } from '../index';
 import { accountSlice } from './accountSlice';
 
-const Child = memo(() => {
+const AccountUpdater = memo(() => {
 	const { account } = useWeb3React();
 
 	const updateAccount = useCallback(
@@ -22,4 +22,4 @@ const Child = memo(() => {
 	return null;
 });
 
-export default Child;
+export default AccountUpdater;

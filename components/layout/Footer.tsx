@@ -55,30 +55,30 @@ export default function BlockNumber() {
 	const { networkProvider } = getProvider(memoizedChainId);
 
 	// TEST
-	const [blockNumber, setBlockNumber] = useState(0);
-	console.log('blockNumber', blockNumber);
-	useEffect(() => {
-		let isMounted = true;
+	// const [blockNumber, setBlockNumber] = useState(0);
+	// console.log('blockNumber', blockNumber);
+	// useEffect(() => {
+	// 	let isMounted = true;
 
-		const updateBlockNumber = (block: number) => {
-			if (isMounted) {
-				setBlockNumber(block);
-			}
-		};
+	// 	const updateBlockNumber = (block: number) => {
+	// 		if (isMounted) {
+	// 			setBlockNumber(block);
+	// 		}
+	// 	};
 
-		if (provider) {
-			provider.getBlockNumber().then(updateBlockNumber);
-			provider.on('block', updateBlockNumber);
-		}
+	// 	if (provider) {
+	// 		provider.getBlockNumber().then(updateBlockNumber);
+	// 		provider.on('block', updateBlockNumber);
+	// 	}
 
-		return () => {
-			isMounted = false;
+	// 	return () => {
+	// 		isMounted = false;
 
-			if (provider) {
-				provider.removeListener('block', updateBlockNumber);
-			}
-		};
-	}, [provider]);
+	// 		if (provider) {
+	// 			provider.removeListener('block', updateBlockNumber);
+	// 		}
+	// 	};
+	// }, [provider]);
 	// TEST END
 
 	// let chainId = 137;
