@@ -2,13 +2,11 @@ import styled from '@emotion/styled';
 import { Button, CircularProgress } from '@mui/material';
 import type { CoinbaseWallet } from '@web3-react/coinbase-wallet';
 import type { Web3ReactHooks } from '@web3-react/core';
-import { GnosisSafe } from '@web3-react/gnosis-safe';
 import { MetaMask } from '@web3-react/metamask';
-import { Network } from '@web3-react/network';
 import { WalletConnect } from '@web3-react/walletconnect';
 import { useCallback, useState } from 'react';
 import { getAddChainParameters } from '../utils/chains';
-import { getLogo, getName } from '../utils/connector';
+import { getLogo, getName } from '../utils/connectorsNameAndLogo';
 
 const ConnectButton = styled(Button)({
 	color: '#000',
@@ -33,24 +31,18 @@ export function ConnectOnly({
 	error,
 	setError,
 }: {
-	connector: MetaMask | WalletConnect | CoinbaseWallet | Network | GnosisSafe;
+	connector: MetaMask | WalletConnect | CoinbaseWallet;
 	chainId: ReturnType<Web3ReactHooks['useChainId']>;
 	isActivating: ReturnType<Web3ReactHooks['useIsActivating']>;
 	isActive: ReturnType<Web3ReactHooks['useIsActive']>;
 	error: Error | undefined;
 	setError: (error: Error | undefined) => void;
 }) {
-	const isNetwork = connector instanceof Network;
 	const [desiredChainId] = useState(137);
 
 	const onClick = useCallback((): void => {
 		setError(undefined);
-		if (connector instanceof GnosisSafe) {
-			connector
-				.activate()
-				.then(() => setError(undefined))
-				.catch(setError);
-		} else if (connector instanceof WalletConnect || connector instanceof Network) {
+		if (connector instanceof WalletConnect) {
 			connector
 				.activate(desiredChainId === -1 ? undefined : desiredChainId)
 				.then(() => setError(undefined))
@@ -104,12 +96,7 @@ export function ConnectOnly({
 							isActivating
 								? undefined
 								: () =>
-										connector instanceof GnosisSafe
-											? void connector
-													.activate()
-													.then(() => setError(undefined))
-													.catch(setError)
-											: connector instanceof WalletConnect || connector instanceof Network
+										connector instanceof WalletConnect
 											? connector
 													.activate(desiredChainId === -1 ? undefined : desiredChainId)
 													.then(() => setError(undefined))

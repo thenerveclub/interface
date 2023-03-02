@@ -47,14 +47,40 @@ const LocalGasStationIconAnimated = styled(LocalGasStation)({
 });
 
 export default function BlockNumber() {
-	const chainId = useSelector((state: { chainId: number }) => {
-		console.log('useSelector called');
-		return state.chainId;
-	});
-	console.log('MyComponent rendering'); // add this line
+	// Redux
+	const chainId = useSelector((state: { chainId: number }) => state.chainId);
+	const provider = useSelector((state: { provider: any }) => state.provider);
 
 	const memoizedChainId = useMemo(() => chainId, [chainId]);
 	const { networkProvider } = getProvider(memoizedChainId);
+
+	// TEST
+	const [blockNumber, setBlockNumber] = useState(0);
+	console.log('blockNumber', blockNumber);
+	useEffect(() => {
+		let isMounted = true;
+
+		const updateBlockNumber = (block: number) => {
+			if (isMounted) {
+				setBlockNumber(block);
+			}
+		};
+
+		if (provider) {
+			provider.getBlockNumber().then(updateBlockNumber);
+			provider.on('block', updateBlockNumber);
+		}
+
+		return () => {
+			isMounted = false;
+
+			if (provider) {
+				provider.removeListener('block', updateBlockNumber);
+			}
+		};
+	}, [provider]);
+	// TEST END
+
 	// let chainId = 137;
 	// const [blockNumber, setBlockNumber] = useState(0);
 	// const [gasPrice, setGasPrice] = useState('0');

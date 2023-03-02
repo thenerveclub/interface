@@ -176,18 +176,26 @@ export default function CreateTask() {
 		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			await nerveGlobal.createTask(registerStatus, description, duration, 'en', '0', '0', {
+			const tx = await nerveGlobal.createTask(registerStatus, description, duration, 'en', '0', '0', {
 				value: value,
 				gasLimit: 250000,
 			});
 			enqueueSnackbar('Transaction signed succesfully!', {
 				variant: 'success',
 			});
+			await tx.wait();
+			if (tx.hash) {
+				enqueueSnackbar('Transaction mined succesfully!', {
+					variant: 'success',
+				});
+				setPendingTx(false);
+			}
 		} catch (error) {
 			enqueueSnackbar('Transaction failed!', {
 				variant: 'error',
 			});
 			setPendingTx(false);
+			console.log(error);
 		}
 	}
 
