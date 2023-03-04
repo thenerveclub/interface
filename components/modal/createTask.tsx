@@ -135,6 +135,16 @@ const ConnectBox = styled(Box)({
 	pt: 4,
 	px: 2,
 	pb: 2,
+
+	animation: 'slide-up 0.25s ease-out forwards',
+	'@keyframes slide-up': {
+		'0%': {
+			transform: 'translateX(-50%) translateY(100%)',
+		},
+		'150%': {
+			transform: 'translateX(-50%) translateY(0)',
+		},
+	},
 });
 
 const TaskSectionLeft = styled(Box)`

@@ -1,16 +1,35 @@
 import styled from '@emotion/styled';
 import { ContentCopy, OpenInNew } from '@mui/icons-material';
-import { Badge, Box, Button, Grid, Link, Skeleton, Switch, Tab, Tabs, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import {
+	Badge,
+	Box,
+	Button,
+	Fade,
+	Grid,
+	Link,
+	Skeleton,
+	Switch,
+	Tab,
+	Tabs,
+	ToggleButton,
+	ToggleButtonGroup,
+	Tooltip,
+	Typography,
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import BlacklistPlayer from '../../../components/modal/blacklistPlayer';
 import CreateTask from '../../../components/modal/createTask';
 import RegisterName from '../../../components/modal/registerName';
 import RegisterSocial from '../../../components/modal/registerSocial';
+import useActivePlayerTasks from '../../../hooks/useActivePlayerTasks';
+import useCompletedPlayerTasks from '../../../hooks/useCompletedPlayerTasks';
 import usePlayerData from '../../../hooks/usePlayerData';
 import usePrice from '../../../hooks/usePrice';
 import useTwitchStatus from '../../../hooks/useTwitchStatus';
 // import useYouTubeStatus from '../../../hooks/useYouTubeStatus';
+import useRankingEarned from '../../../hooks/useRankingEarned';
+import useRankingSpent from '../../../hooks/useRankingSpent';
 import { CHAINS } from '../../../utils/chains';
 import { CheckNameRegister } from '../../../utils/validation/checkNameRegister';
 import Instagram from '/public/svg/socials/instagram.svg';
@@ -46,7 +65,7 @@ const StyledTab = styled(Tab)`
 `;
 
 const StyledBox = styled(Box)`
-	margin: 5rem 5rem auto 5rem;
+	margin: 7.5rem 5rem auto 5rem;
 
 	@media (max-width: 600px) {
 		margin: 5rem 1rem auto 1rem;
@@ -237,14 +256,62 @@ const ActiveTabRightSection = styled(Box)`
 `;
 
 const ActiveTabSection = styled(Box)`
-	display: block;
+	display: grid;
+	align-items: center;
 	margin: 2rem auto 0 auto;
+	grid-template-columns: repeat(6, 1fr);
+	grid-gap: 2em;
+
+	li {
+		grid-column: span 2;
+	}
+
+	li:last-child:nth-child(3n - 1) {
+		grid-column-end: -2;
+	}
+
+	li:nth-last-child(2):nth-child(3n + 1) {
+		grid-column-end: 4;
+	}
+
+	/* Dealing with single orphan */
+	li:last-child:nth-child(3n - 2) {
+		grid-column-end: 5;
+	}
+
+	@media (max-width: 960px) {
+		display: grid;
+		align-items: center;
+		margin: 0 auto 0 auto;
+		grid-template-columns: 1fr;
+		grid-gap: 2em;
+	}
+`;
+
+const TaskCard = styled(Box)`
+	width: 500px;
+	height: 215px;
+	margin: 0 auto 0 auto;
+	background-color: rgba(41, 50, 73, 1);
+	border: 1px solid;
+	padding: 2rem;
+	border-radius: 24px;
+	cursor: pointer;
+
+	@media (max-width: 960px) {
+		width: 100%;
+		margin: 0 auto 0 auto;
+	}
 `;
 
 export default function PlayerPage() {
 	// Redux
 	const account = useSelector((state: { account: string }) => state.account);
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
+	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
+
+	// Network Check
+	const isNetworkAvailable = availableChains.includes(chainId);
 
 	// Token Price
 	const price = usePrice(chainId);
@@ -264,6 +331,16 @@ export default function PlayerPage() {
 
 	// Player Data
 	const playerData = usePlayerData(checksumAddress, chainId);
+
+	// Active Player Tasks
+	const activePlayerTasks = useActivePlayerTasks(checksumAddress, chainId);
+
+	// Completed Player Tasks
+	const completedPlayerTasks = useCompletedPlayerTasks(checksumAddress, chainId);
+
+	// Ranking Data
+	const rankingEarned = useRankingEarned(checksumAddress, chainId);
+	const rankingSpent = useRankingSpent(checksumAddress, chainId);
 
 	// Twitch Live Status
 	const twitchLink = playerData[0]?.userSocialStat?.twitch.includes('twitch') ? playerData[0]?.userSocialStat?.twitch : '';
@@ -294,16 +371,27 @@ export default function PlayerPage() {
 		setValue(newValue);
 	};
 
+	// Copy Address To Clipboard && Tooltip
+	const [copied, setCopied] = useState(false);
+	function handleCopyAddress() {
+		navigator.clipboard.writeText(playerData[0]?.id ? playerData[0]?.id.toUpperCase() : checksumAddress.toUpperCase());
+		setCopied(true);
+
+		setTimeout(() => {
+			setCopied(false);
+		}, 2000); // Reset to "Copy Address" after 2 seconds
+	}
+
 	return (
 		<StyledBox>
 			<PlayerBox>
 				{playerData[0]?.userName ? <a>{playerData[0]?.userName}</a> : <a>{checksumAddress?.toUpperCase()}</a>}
 				<a>{account ? checksumAccount === checksumAddress ? <RegisterName /> : <BlacklistPlayer /> : null}</a>
-				<iframe
+				{/* <iframe
 					src="https://player.twitch.tv/?channel=amouranth&parent=localhost&parent=interface-alpha.vercel.app&autoplay=false"
 					height="<height>"
 					width="<width>"
-				></iframe>
+				></iframe> */}
 
 				{/* <iframe
 					width="560"
@@ -323,12 +411,17 @@ export default function PlayerPage() {
 						({checksumAddress?.substring(0, 6)}...{checksumAddress?.substring(checksumAddress?.length - 4).toUpperCase()})
 					</a>
 				)}
-				<a
-					onClick={() => navigator.clipboard.writeText(playerData[0]?.id ? playerData[0]?.id.toUpperCase() : checksumAddress.toUpperCase())}
-					style={{ cursor: 'pointer' }}
+				<Tooltip
+					title={copied ? 'Copied!' : 'Copy Address'}
+					placement="bottom"
+					disableInteractive
+					TransitionComponent={Fade}
+					TransitionProps={{ timeout: 600 }}
 				>
-					<ContentCopy style={{ display: 'flex', fontSize: '14px', fill: 'rgba(152, 161, 192, 1)' }} />
-				</a>
+					<a onClick={handleCopyAddress} style={{ cursor: 'pointer' }}>
+						<ContentCopy style={{ display: 'flex', fontSize: '14px', fill: 'rgba(152, 161, 192, 1)' }} />
+					</a>
+				</Tooltip>
 				<a href={CHAINS[chainId]?.blockExplorerUrls[0] + 'address/' + playerData[0]?.id} target="_blank" style={{ cursor: 'pointer' }}>
 					<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(152, 161, 192, 1)' }} />
 				</a>
@@ -417,17 +510,31 @@ export default function PlayerPage() {
 							/>
 						</a>
 					)}
-					<a>
-						<Skeleton
-							sx={{
-								backgroundColor: 'rgba(152, 161, 192, 0.4)',
-								borderRadius: '10px',
-							}}
-							variant="text"
-							width={75}
-							height={30}
-						/>
-					</a>
+					{playerData[0]?.spent ? (
+						<Tooltip
+							title="Player Ranking: Most Earned | Most Spent"
+							placement="top"
+							disableInteractive
+							TransitionComponent={Fade}
+							TransitionProps={{ timeout: 600 }}
+						>
+							<a>
+								{rankingEarned} | {rankingSpent}
+							</a>
+						</Tooltip>
+					) : (
+						<a>
+							<Skeleton
+								sx={{
+									backgroundColor: 'rgba(152, 161, 192, 0.4)',
+									borderRadius: '10px',
+								}}
+								variant="text"
+								width={75}
+								height={30}
+							/>
+						</a>
+					)}
 				</StyledGridFirst>
 				<StyledGridSecond>
 					<a>Total earned</a>
@@ -445,9 +552,7 @@ export default function PlayerPage() {
 				<ActiveFilterBox>
 					<ActiveTabLeftSection>
 						<StyledToggleButtonGroup value={valueUSD} exclusive onChange={handleToggle}>
-							<StyledToggleButton value={false}>
-								<a>{CHAINS[chainId]?.nameToken}</a>
-							</StyledToggleButton>
+							<StyledToggleButton value={false}>{isNetworkAvailable ? <a>{CHAINS[chainId]?.nameToken}</a> : <a>MATIC</a>}</StyledToggleButton>
 							<StyledToggleButton value={true}>
 								<a>USD</a>
 							</StyledToggleButton>
@@ -456,16 +561,25 @@ export default function PlayerPage() {
 					<ActiveTabRightSection>{account ? checksumAccount !== checksumAddress ? <CreateTask /> : null : null}</ActiveTabRightSection>
 				</ActiveFilterBox>
 				<ActiveTabSection>
-					<a>Active Tasks</a>
+					{activePlayerTasks.map((tad) => (
+						<li style={{ listStyle: 'none' }} key={tad.participants}>
+							<StyledGridSecond>
+								<a target="_blank" rel="noreferrer" href={'https://app.nerveglobal.com/task/' + tad.id}>
+									<TaskCard>
+										{tad.description}
+										{tad.id}
+									</TaskCard>
+								</a>
+							</StyledGridSecond>
+						</li>
+					))}
 				</ActiveTabSection>
 			</TabPanel>
 			<TabPanel value={value} index={1}>
 				<ActiveFilterBox>
 					<ActiveTabLeftSection>
 						<StyledToggleButtonGroup value={valueUSD} exclusive onChange={handleToggle}>
-							<StyledToggleButton value={false}>
-								<a>{CHAINS[chainId]?.nameToken}</a>
-							</StyledToggleButton>
+							<StyledToggleButton value={false}>{isNetworkAvailable ? <a>{CHAINS[chainId]?.nameToken}</a> : <a>MATIC</a>}</StyledToggleButton>
 							<StyledToggleButton value={true}>
 								<a>USD</a>
 							</StyledToggleButton>
@@ -473,7 +587,15 @@ export default function PlayerPage() {
 					</ActiveTabLeftSection>
 				</ActiveFilterBox>
 				<ActiveTabSection>
-					<a>Completed Tasks</a>
+					{completedPlayerTasks.map((tad) => (
+						<li style={{ listStyle: 'none' }} key={tad.participants}>
+							<StyledGridSecond>
+								<a target="_blank" rel="noreferrer" href={'https://app.nerveglobal.com/task/' + tad.id}>
+									<TaskCard>{tad.description}</TaskCard>
+								</a>
+							</StyledGridSecond>
+						</li>
+					))}
 				</ActiveTabSection>
 			</TabPanel>
 		</StyledBox>

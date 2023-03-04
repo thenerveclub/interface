@@ -9,6 +9,16 @@ import { useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
 import { CHAINS } from '../../utils/chains';
 
+const StatisticBox = styled(Box)`
+	width: 90%;
+	margin: 0 auto 0 auto;
+
+	a {
+		font-size: 16px;
+		cursor: default;
+	}
+`;
+
 const StyledSection = styled.section`
 	display: flex;
 	align-items: center;
@@ -109,15 +119,25 @@ const ConnectBox = styled(Box)({
 	justifyContent: 'center',
 	alignItems: 'center',
 	padding: '1rem',
-	height: 500,
-	width: 350,
-	backgroundColor: 'grey',
+	height: 'auto',
+	width: 400,
+	backgroundColor: 'rgba(6, 16, 25, 1)',
 	border: '0.25px solid rgba(76, 76, 90, 1)',
 	borderRadius: '10px',
 	boxShadow: '0 0 25px rgba(76,130,251,0.25)',
 	pt: 4,
 	px: 2,
 	pb: 2,
+
+	animation: 'slide-up 0.25s ease-out forwards',
+	'@keyframes slide-up': {
+		'0%': {
+			transform: 'translateX(-50%) translateY(100%)',
+		},
+		'150%': {
+			transform: 'translateX(-50%) translateY(0)',
+		},
+	},
 });
 
 export default function RegisterSocial() {
@@ -214,60 +234,129 @@ export default function RegisterSocial() {
 			<Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
 				<ConnectBox>
 					<Typography
-						style={{ fontSize: '25px', color: '#fff', fontWeight: 'bold', margin: '0 auto 2.5rem auto' }}
+						style={{ fontSize: '25px', color: '#fff', fontWeight: 'bold', margin: '1.5rem auto 2rem auto', cursor: 'default' }}
 						align="center"
 						id="modal-modal-title"
 					>
-						Register Name
+						Register Socials
 					</Typography>
-					<OutlinedInput
-						fullWidth={true}
-						id="outlined-adornment-name"
-						type="name"
-						required={false}
-						onChange={(event) => setInstagram(event.target.value)}
-					/>
-					<OutlinedInput
-						fullWidth={true}
-						id="outlined-adornment-name"
-						type="name"
-						required={false}
-						onChange={(event) => setTwitter(event.target.value)}
-					/>
-					<OutlinedInput
-						fullWidth={true}
-						id="outlined-adornment-name"
-						type="name"
-						required={false}
-						startAdornment={<InputAdornment position="start">@</InputAdornment>}
-						onChange={(event) => setTikTok(event.target.value)}
-					/>
-					<OutlinedInput
-						fullWidth={true}
-						id="outlined-adornment-name"
-						type="name"
-						required={false}
-						onChange={(event) => setTwitch(event.target.value)}
-					/>
-					<OutlinedInput
-						fullWidth={true}
-						id="outlined-adornment-name"
-						type="name"
-						required={false}
-						title='Please enter your youtube channel name. Example: "NerveGlobal"'
-						startAdornment={<InputAdornment position="start">@</InputAdornment>}
-						onChange={(event) => setYoutube(event.target.value)}
-					/>
-					<StyledSection style={{ margin: '2.5rem auto 0 auto' }}>
-						<CancelButton onClick={handleClose}>Cancel</CancelButton>
-						{pendingTx ? (
-							<BuyButton startIcon={<CircularProgress thickness={2.5} size={20} />} disabled={true}>
-								Pending
-							</BuyButton>
-						) : (
-							<BuyButton onClick={onRegisterSocial}>Register</BuyButton>
-						)}
-					</StyledSection>
+					<StatisticBox>
+						<a>Instagram</a>
+						<OutlinedInput
+							sx={{
+								color: '#fff',
+								'& .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
+								'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
+							}}
+							fullWidth={true}
+							id="outlined-adornment-name"
+							type="name"
+							required={false}
+							startAdornment={
+								<InputAdornment
+									sx={{ color: 'red', display: 'flex', cursor: 'default', '& .MuiTypography-root': { color: 'rgba(152, 161, 192, 1)' } }}
+									position="start"
+								>
+									instagram.com/
+								</InputAdornment>
+							}
+							onChange={(event) => setInstagram(event.target.value)}
+						/>
+						<a>Twitter</a>
+						<OutlinedInput
+							sx={{
+								color: '#fff',
+								'& .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
+								'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
+							}}
+							fullWidth={true}
+							id="outlined-adornment-name"
+							type="name"
+							required={false}
+							startAdornment={
+								<InputAdornment
+									sx={{ color: 'red', display: 'flex', cursor: 'default', '& .MuiTypography-root': { color: 'rgba(152, 161, 192, 1)' } }}
+									position="start"
+								>
+									twitter.com/
+								</InputAdornment>
+							}
+							onChange={(event) => setTwitter(event.target.value)}
+						/>
+						<a>TikTok</a>
+						<OutlinedInput
+							sx={{
+								color: '#fff',
+								'& .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
+								'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
+							}}
+							fullWidth={true}
+							id="outlined-adornment-name"
+							type="name"
+							required={false}
+							startAdornment={
+								<InputAdornment
+									sx={{ color: 'red', display: 'flex', cursor: 'default', '& .MuiTypography-root': { color: 'rgba(152, 161, 192, 1)' } }}
+									position="start"
+								>
+									tiktok.com/@
+								</InputAdornment>
+							}
+							onChange={(event) => setTikTok(event.target.value)}
+						/>
+						<a>Twitch</a>
+						<OutlinedInput
+							sx={{
+								color: '#fff',
+								'& .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
+								'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
+							}}
+							fullWidth={true}
+							id="outlined-adornment-name"
+							type="name"
+							required={false}
+							startAdornment={
+								<InputAdornment
+									sx={{ color: 'red', display: 'flex', cursor: 'default', '& .MuiTypography-root': { color: 'rgba(152, 161, 192, 1)' } }}
+									position="start"
+								>
+									twitch.tv/
+								</InputAdornment>
+							}
+							onChange={(event) => setTwitch(event.target.value)}
+						/>
+						<a>YouTube</a>
+						<OutlinedInput
+							sx={{
+								color: '#fff',
+								'& .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
+								'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
+							}}
+							fullWidth={true}
+							id="outlined-adornment-name"
+							type="name"
+							required={false}
+							startAdornment={
+								<InputAdornment
+									sx={{ color: 'red', display: 'flex', cursor: 'default', '& .MuiTypography-root': { color: 'rgba(152, 161, 192, 1)' } }}
+									position="start"
+								>
+									youtube.com/@
+								</InputAdornment>
+							}
+							onChange={(event) => setYoutube(event.target.value)}
+						/>
+						<StyledSection style={{ margin: '2rem auto 1.5rem auto' }}>
+							<CancelButton onClick={handleClose}>Cancel</CancelButton>
+							{pendingTx ? (
+								<BuyButton startIcon={<CircularProgress thickness={2.5} size={20} />} disabled={true}>
+									Pending
+								</BuyButton>
+							) : (
+								<BuyButton onClick={onRegisterSocial}>Register</BuyButton>
+							)}
+						</StyledSection>
+					</StatisticBox>
 				</ConnectBox>
 			</Modal>
 		</div>

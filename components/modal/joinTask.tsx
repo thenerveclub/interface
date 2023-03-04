@@ -49,8 +49,8 @@ export default function JoinTask() {
 
 	// Get Task ID
 	const path = (global.window && window.location.pathname)?.toString() || '';
-	const dareNumber = path.split('/').pop();
-	const Id = '0x'.concat(dareNumber);
+	const taskNumber = path.split('/').pop();
+	const Id = '0x'.concat(taskNumber);
 
 	// Join Function
 	async function onJoin() {
@@ -84,7 +84,7 @@ export default function JoinTask() {
 	return (
 		<div>
 			<Button fullWidth={true} variant="outlined" onClick={handleClickOpen}>
-				Join Dare
+				Join Task
 			</Button>
 			<Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
 				<Box sx={style}>

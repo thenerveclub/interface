@@ -9,6 +9,16 @@ import { useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
 import { CHAINS } from '../../utils/chains';
 
+const StatisticBox = styled(Box)`
+	width: 90%;
+	margin: 0 auto 0 auto;
+
+	a {
+		font-size: 16px;
+		cursor: default;
+	}
+`;
+
 const StyledSection = styled.section`
 	display: flex;
 	align-items: center;
@@ -90,8 +100,8 @@ const ConnectBox = styled(Box)({
 	justifyContent: 'center',
 	alignItems: 'center',
 	padding: '1rem',
-	height: 400,
-	width: 350,
+	height: 'auto',
+	width: 400,
 	backgroundColor: 'rgba(6, 16, 25, 1)',
 	border: '0.25px solid rgba(76, 76, 90, 1)',
 	borderRadius: '10px',
@@ -99,6 +109,16 @@ const ConnectBox = styled(Box)({
 	pt: 4,
 	px: 2,
 	pb: 2,
+
+	animation: 'slide-up 0.25s ease-out forwards',
+	'@keyframes slide-up': {
+		'0%': {
+			transform: 'translateX(-50%) translateY(100%)',
+		},
+		'150%': {
+			transform: 'translateX(-50%) translateY(0)',
+		},
+	},
 });
 
 export default function RegisterName() {
@@ -157,29 +177,36 @@ export default function RegisterName() {
 			<Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
 				<ConnectBox>
 					<Typography
-						style={{ fontSize: '25px', color: '#fff', fontWeight: 'bold', margin: '0 auto 2.5rem auto' }}
+						style={{ fontSize: '25px', color: '#fff', fontWeight: 'bold', margin: '1.5rem auto 2rem auto', cursor: 'default' }}
 						align="center"
 						id="modal-modal-title"
 					>
 						Register Name
 					</Typography>
-					<OutlinedInput
-						fullWidth={true}
-						id="outlined-adornment-name"
-						type="name"
-						required={false}
-						onChange={(event) => setName(event.target.value)}
-					/>
-					<StyledSection style={{ margin: '2.5rem auto 0 auto' }}>
-						<CancelButton onClick={handleClose}>Cancel</CancelButton>
-						{pendingTx ? (
-							<BuyButton startIcon={<CircularProgress thickness={2.5} size={20} />} disabled={true}>
-								Pending
-							</BuyButton>
-						) : (
-							<BuyButton onClick={onRegisterName}>Register</BuyButton>
-						)}
-					</StyledSection>
+					<StatisticBox>
+						<OutlinedInput
+							sx={{
+								color: '#fff',
+								'& .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
+								'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
+							}}
+							fullWidth={true}
+							id="outlined-adornment-name"
+							type="name"
+							required={false}
+							onChange={(event) => setName(event.target.value)}
+						/>
+						<StyledSection style={{ margin: '2rem auto 1.5rem auto' }}>
+							<CancelButton onClick={handleClose}>Cancel</CancelButton>
+							{pendingTx ? (
+								<BuyButton startIcon={<CircularProgress thickness={2.5} size={20} />} disabled={true}>
+									Pending
+								</BuyButton>
+							) : (
+								<BuyButton onClick={onRegisterName}>Register</BuyButton>
+							)}
+						</StyledSection>
+					</StatisticBox>
 				</ConnectBox>
 			</Modal>
 		</div>

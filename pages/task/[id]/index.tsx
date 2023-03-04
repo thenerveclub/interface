@@ -349,7 +349,7 @@ const StyledSection = styled.section`
 	}
 `;
 
-export default function DarePage() {
+export default function TaskPage() {
 	// Redux
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 
@@ -358,8 +358,8 @@ export default function DarePage() {
 
 	// Get Task ID
 	const path = (global.window && window.location.pathname)?.toString() || '';
-	const dareNumber = path.split('/').pop();
-	const Id = '0x'.concat(dareNumber);
+	const taskNumber = path.split('/').pop();
+	const Id = '0x'.concat(taskNumber);
 
 	// Query The Graph -> Dares
 	const [tad, setTAD] = useState<any[]>([]);
@@ -382,7 +382,7 @@ export default function DarePage() {
 
 	const QueryForDare = `
 {
-  tasks(where: { id:"${Id}"}) 
+  tasks(where: { id:"${taskNumber}"}) 
   {
    description
 	recipientAddress
@@ -428,7 +428,7 @@ export default function DarePage() {
 	// TODO -> Get ${account} as userAddress
 	const QueryForUser = `
 {
-	userTasks(where: { id:"0x52B28292846c59dA23114496d6e6BfC875f54FF5-${Id}"}) {
+	userTasks(where: { id:"0x52B28292846c59dA23114496d6e6BfC875f54FF5-${taskNumber}"}) {
 	  userStake
 	  voted
 	  vote
@@ -455,7 +455,7 @@ export default function DarePage() {
 		const nerveGlobal = new ethers.Contract('0x91596B44543016DDb5D410A51619D5552961a23b', NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			await nerveGlobal.redeemUser(Id, { gasLimit: 250000 });
+			await nerveGlobal.redeemUser(taskNumber, { gasLimit: 250000 });
 			enqueueSnackbar('Transaction signed succesfully!', {
 				variant: 'success',
 			});
@@ -548,17 +548,12 @@ export default function DarePage() {
 											key={merged.recipientName}
 											target="_blank"
 											rel="noreferrer"
-											href={'https://app.nerveglobal.com/player/#' + merged.recipientName}
+											href={'https://app.nerveglobal.com/player/' + merged.recipientName}
 										>
 											{merged.recipientName}↗
 										</a>
 									) : (
-										<a
-											key={merged.recipientAddress}
-											target="_blank"
-											rel="noreferrer"
-											href={'https://app.nerveglobal.com/#' + merged.recipientAddress}
-										>
+										<a key={merged.recipientAddress} target="_blank" rel="noreferrer" href={'https://app.nerveglobal.com/' + merged.recipientAddress}>
 											{merged.recipientAddress.substring(0, 6)}...{merged.recipientAddress.substring(merged.recipientAddress.length - 4)}
 										</a>
 									)}

@@ -24,8 +24,8 @@ export default function VoteTask() {
 
 	// Get Task ID
 	const path = (global.window && window.location.pathname)?.toString() || '';
-	const dareNumber = path.split('/').pop();
-	const Id = '0x'.concat(dareNumber);
+	const taskNumber = path.split('/').pop();
+	const Id = '0x'.concat(taskNumber);
 
 	// Vote Function -> True
 	async function voteFunctionTrue() {
@@ -88,10 +88,10 @@ export default function VoteTask() {
 	return (
 		<div>
 			<Button fullWidth={true} variant="outlined" onClick={handleClickOpen}>
-				Vote Dare
+				Vote Task
 			</Button>
 			<Dialog open={open} onClose={handleClose}>
-				<DialogTitle>Vote Dare</DialogTitle>
+				<DialogTitle>Vote Task</DialogTitle>
 				<DialogContent>
 					{pendingTx ? <Button>Pending</Button> : <Button onClick={voteFunctionTrue}>True</Button>}
 					{pendingTx ? <Button>Pending</Button> : <Button onClick={voteFunctionFalse}>False</Button>}

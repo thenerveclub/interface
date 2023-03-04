@@ -116,6 +116,16 @@ const ConnectBox = styled(Box)({
 	pt: 4,
 	px: 2,
 	pb: 2,
+
+	animation: 'slide-up 0.25s ease-out forwards',
+	'@keyframes slide-up': {
+		'0%': {
+			transform: 'translateX(-50%) translateY(100%)',
+		},
+		'150%': {
+			transform: 'translateX(-50%) translateY(0)',
+		},
+	},
 });
 
 const BuyButton = styled(Button)({
@@ -213,7 +223,7 @@ export default function BlacklistPlayer() {
 							<StyledIconButtonDisabled disabled={true}>
 								<WarningAmber style={{ fontSize: '50px', margin: '0 auto 0 auto' }} />
 							</StyledIconButtonDisabled>
-							<a>Blacklisting of users cannot be undone. You can never receive a dare from the blacklisted user again.</a>
+							<a>Blacklisting of users cannot be undone. You can never receive a task from the blacklisted user again.</a>
 						</StyledGridFirst>
 						<StyledGridSecond>
 							<Checkbox

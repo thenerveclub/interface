@@ -1,7 +1,9 @@
 import styled from '@emotion/styled';
 import { AppBar, Box, Container, Toolbar, Typography } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import { useWeb3React } from '@web3-react/core';
 import localFont from 'next/font/local';
+import { useEffect, useState } from 'react';
 import SelectChain from '../SelectChain';
 import AccountModal from '../modal/Account';
 import Connect from '../modal/Connect';
@@ -9,11 +11,13 @@ import Connect from '../modal/Connect';
 const roboto = localFont({ src: '../../public/fonts/TrueLies.woff2', display: 'swap' });
 
 const StyledAppBar = styled(AppBar)`
-	background: transparent;
-	box-shadow: none;
 	flex-direction: row;
 	height: 40px;
 	padding: 2rem;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
 `;
 
 const StyledSectionLeft = styled.section`
@@ -79,10 +83,30 @@ const SearchBoxMobile = styled(Box)`
 
 export default function Header() {
 	const { account } = useWeb3React();
+	useEffect(() => {
+		const handleScroll = () => {
+			const scrollPosition = window.scrollY;
+			const header = document.getElementById('header');
+			const headerHeight = header ? header.clientHeight : 0;
+			const scrollThreshold = headerHeight / 2; // Speed of scroll
+			const opacity = Math.min(scrollPosition / scrollThreshold, 1);
+			const color = alpha('#000014', opacity);
+			const shadow = alpha('rgba(41, 50, 73, 1)', opacity);
+
+			header.style.backgroundColor = color;
+			header.style.boxShadow = `0px 1px 1px ${shadow}`;
+		};
+
+		window.addEventListener('scroll', handleScroll);
+
+		return () => {
+			window.removeEventListener('scroll', handleScroll);
+		};
+	}, []);
 
 	return (
 		<>
-			<StyledAppBar position="static">
+			<StyledAppBar id="header">
 				<StyledSectionLeft>
 					<Typography
 						component="a"

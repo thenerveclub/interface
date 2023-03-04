@@ -40,11 +40,13 @@ const MenuItemStyled = styled(MenuItem)({
 });
 
 export default function BasicSelect() {
-	const chainId = useSelector((state: { chainId: number }) => {
-		return state.chainId;
-	});
-	const availableNetworks = [137, 5];
-	const isNetworkAvailable = availableNetworks.includes(chainId);
+	// Redux
+	const account = useSelector((state: { account: string }) => state.account);
+	const chainId = useSelector((state: { chainId: number }) => state.chainId);
+	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
+
+	// Network Check
+	const isNetworkAvailable = availableChains.includes(chainId);
 	const [age, setAge] = useState(chainId);
 	// Update age state variable whenever chainId changes
 	useEffect(() => {

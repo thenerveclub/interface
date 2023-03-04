@@ -6,17 +6,19 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { CHAINS } from '../../utils/chains';
 import { getProvider } from '../../utils/nerveGlobalProvider';
+import Discord from '/public/svg/socials/discord.svg';
+import Instagram from '/public/svg/socials/instagram.svg';
+import TikTok from '/public/svg/socials/tiktok.svg';
+import Twitter from '/public/svg/socials/twitter.svg';
 
 const StyledFooter = styled.footer`
-	max-width: auto;
-	display: flex-end;
+	width: auto;
+	height: 40px;
+	display: flex;
 	flex: 1;
+	margin: 5rem auto 0.5rem auto;
 	justify-content: space-between;
-	align-items: center;
-	padding: 0 10px 10px 0;
-	position: absolute;
-	bottom: 0;
-	right: 0;
+	padding: 0 50px 0 50px;
 
 	@media (max-width: 1155px) {
 		display: block;
@@ -25,6 +27,26 @@ const StyledFooter = styled.footer`
 	@media (max-width: 960px) {
 		padding: 1rem;
 	}
+`;
+
+const LeftItem = styled.div`
+	flex: 1;
+	text-align: left;
+`;
+
+const CenterItem = styled.div`
+	flex: 1;
+	text-align: center;
+
+	// Gap between social icons
+	& > *:not(:last-child) {
+		margin-right: 1rem;
+	}
+`;
+
+const RightItem = styled.div`
+	flex: 1;
+	text-align: right;
 `;
 
 const StyledPollingDot = styled.div`
@@ -161,6 +183,22 @@ export default function BlockNumber() {
 
 	return (
 		<StyledFooter>
+			<LeftItem></LeftItem>
+			<CenterItem>
+				<a target="_blank" rel="noreferrer" href="https://twitter.com/nerveglobal_">
+					<Twitter style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 0.75)' }} />
+				</a>
+				<a target="_blank" rel="noreferrer" href="https://www.instagram.com/nerveglobal">
+					<Instagram style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 0.75)' }} />
+				</a>
+				<a target="_blank" rel="noreferrer" href="https://www.tiktok.com/@nerveglobal">
+					<TikTok style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 0.75)' }} />
+				</a>
+				<a target="_blank" rel="noreferrer" href="https://discord.gg/Xuh5enTNB6">
+					<Discord style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 0.75)' }} />
+				</a>
+			</CenterItem>
+			<RightItem>Item 3</RightItem>
 			{/* {memoizedChainId === 137 ? (
 				<div>
 					<Tooltip
@@ -280,7 +318,6 @@ export default function BlockNumber() {
 					</Tooltip>
 				</div>
 			)} */}
-			hallo
 		</StyledFooter>
 	);
 }
