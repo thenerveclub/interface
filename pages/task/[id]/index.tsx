@@ -1,21 +1,31 @@
 import styled from '@emotion/styled';
-import { Button, Divider } from '@mui/material';
+import { Box, Button, Divider } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { BigNumber, ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import Claim from '../../../components/Claim';
 import Connect from '../../../components/modal/Connect';
 import Join from '../../../components/modal/joinTask';
 import Vote from '../../../components/modal/voteTask';
 import NerveGlobalABI from '../../../constants/abi/nerveGlobal.json';
 import usePrice from '../../../hooks/usePrice';
 import { CHAINS } from '../../../utils/chains';
+import VoteBar from './components/VoteBar';
 import Instagram from '/public/svg/socials/instagram.svg';
 import TikTok from '/public/svg/socials/tiktok.svg';
 import Twitch from '/public/svg/socials/twitch.svg';
 import Twitter from '/public/svg/socials/twitter.svg';
 import Youtube from '/public/svg/socials/youtube.svg';
+
+const StyledBox = styled(Box)`
+	margin: 7.5rem 5rem auto 5rem;
+
+	@media (max-width: 600px) {
+		margin: 5rem 1rem auto 1rem;
+	}
+`;
 
 const StyledInstagram = styled(Instagram)`
 	path {
@@ -447,33 +457,6 @@ export default function TaskPage() {
 	// User joined?
 	let joined = queryForUser.length === 0 ? false : true;
 
-	//Claim Function
-	const [pendingTx, setPendingTx] = useState(false);
-	const { enqueueSnackbar } = useSnackbar();
-	async function claimFunction() {
-		const signer = provider.getSigner();
-		const nerveGlobal = new ethers.Contract('0x91596B44543016DDb5D410A51619D5552961a23b', NerveGlobalABI, signer);
-		try {
-			setPendingTx(true);
-			await nerveGlobal.redeemUser(taskNumber, { gasLimit: 250000 });
-			enqueueSnackbar('Transaction signed succesfully!', {
-				variant: 'success',
-			});
-		} catch (error) {
-			enqueueSnackbar('Transaction failed!', {
-				variant: 'error',
-				action: (key) => (
-					<Fragment>
-						<Button size="small" onClick={() => alert(`${error}${key}`)}>
-							Detail
-						</Button>
-					</Fragment>
-				),
-			});
-			setPendingTx(false);
-		}
-	}
-
 	// TODO Countdown Timer
 	const [dareTimer, setDareTimer] = useState(false);
 	const [days, setDays] = useState(0);
@@ -512,7 +495,7 @@ export default function TaskPage() {
 	}, []);
 
 	return (
-		<>
+		<StyledBox>
 			<StyledSection>
 				{merged.map((merged) => (
 					<li style={{ listStyle: 'none' }} key={merged.participants}>
@@ -533,6 +516,7 @@ export default function TaskPage() {
 										<p>Negative Votes</p>
 										<p>{merged.negativeVotes}</p>
 									</StyledItemRowIntern>
+									<VoteBar positiveVotes={10} negativeVotes={10} notVotedYet={30} />
 								</AnalyticsCard>
 
 								{/* <AnalyticsCard>
@@ -631,9 +615,7 @@ export default function TaskPage() {
 									) : merged.voted === false ? (
 										<Vote />
 									) : dareTimer && merged.positiveVotes - merged.negativeVotes < 0 ? (
-										<Button fullWidth={true} onClick={claimFunction}>
-											Claim
-										</Button>
+										<Claim />
 									) : (
 										<Button fullWidth={true} color="primary" disabled={true}>
 											Wait for vote
@@ -647,6 +629,6 @@ export default function TaskPage() {
 					</li>
 				))}
 			</StyledSection>
-		</>
+		</StyledBox>
 	);
 }

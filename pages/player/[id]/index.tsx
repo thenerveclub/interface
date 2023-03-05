@@ -1,48 +1,21 @@
-import styled from '@emotion/styled';
 import { ContentCopy, OpenInNew } from '@mui/icons-material';
-import {
-	Badge,
-	Box,
-	Button,
-	Fade,
-	Grid,
-	Link,
-	Skeleton,
-	Switch,
-	Tab,
-	Tabs,
-	ToggleButton,
-	ToggleButtonGroup,
-	Tooltip,
-	Typography,
-} from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import BlacklistPlayer from '../../../components/modal/blacklistPlayer';
 import CreateTask from '../../../components/modal/createTask';
 import RegisterName from '../../../components/modal/registerName';
-import RegisterSocial from '../../../components/modal/registerSocial';
-import useActivePlayerTasks from '../../../hooks/useActivePlayerTasks';
-import useCompletedPlayerTasks from '../../../hooks/useCompletedPlayerTasks';
 import usePlayerData from '../../../hooks/usePlayerData';
-import usePrice from '../../../hooks/usePrice';
 import useTwitchStatus from '../../../hooks/useTwitchStatus';
 // import useYouTubeStatus from '../../../hooks/useYouTubeStatus';
-import useRankingEarned from '../../../hooks/useRankingEarned';
-import useRankingSpent from '../../../hooks/useRankingSpent';
+import styled from '@emotion/styled';
+import { Box, Button, Fade, Grid, Link, Skeleton, Tab, Tabs, ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material';
+import useActivePlayerTasks from '../../../hooks/useActivePlayerTasks';
+import useCompletedPlayerTasks from '../../../hooks/useCompletedPlayerTasks';
+import usePrice from '../../../hooks/usePrice';
 import { CHAINS } from '../../../utils/chains';
 import { CheckNameRegister } from '../../../utils/validation/checkNameRegister';
-import Instagram from '/public/svg/socials/instagram.svg';
-import TikTok from '/public/svg/socials/tiktok.svg';
-import Twitch from '/public/svg/socials/twitch.svg';
-import Twitter from '/public/svg/socials/twitter.svg';
-import Youtube from '/public/svg/socials/youtube.svg';
-
-interface TabPanelProps {
-	children?: React.ReactNode;
-	index: number;
-	value: number;
-}
+import PlayerStatistics from './components/PlayerStatistics';
+import SocialBox from './components/SocialBox';
 
 const StyledTab = styled(Tab)`
 	color: #fff;
@@ -114,94 +87,6 @@ const AddressBox = styled(Box)`
 	}
 `;
 
-const SocialBox = styled(Box)`
-	display: flex;
-	flex-direction: row;
-	min-height: 25px;
-	align-items: center;
-
-	a {
-		font-size: 30px;
-
-		&:not(:last-child) {
-			margin-right: 2.5rem;
-		}
-	}
-
-	@media (max-width: 600px) {
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
-
-		a {
-			font-size: 30px;
-			text-align: center;
-			width: 100%;
-
-			&:not(:last-child) {
-				margin-right: 0rem;
-			}
-		}
-	}
-`;
-
-const StyledBadge = styled(Badge)`
-	& .MuiBadge-dot {
-		background-color: #ff0000;
-		animation: blink 3s infinite;
-
-		@keyframes blink {
-			0% {
-				opacity: 1;
-			}
-			50% {
-				opacity: 0;
-			}
-			100% {
-				opacity: 1;
-			}
-		}
-	}
-`;
-
-const StatisticBox = styled(Box)`
-	width: 100%;
-	margin: 2rem 0 auto 0;
-	text-align: center;
-`;
-
-const StyledGridFirst = styled(Grid)`
-	display: flex;
-	flex-direction: row;
-	font-size: 16px;
-	color: #fff;
-
-	a {
-		display: flex;
-		color: #fff;
-		font-size: 16px;
-		width: 150px;
-		cursor: default;
-		justify-content: center;
-		align-items: center;
-	}
-`;
-
-const StyledGridSecond = styled(Grid)`
-	display: flex;
-	flex-direction: row;
-	font-size: 16px;
-	color: #fff;
-	margin-top: 0.25rem;
-
-	a {
-		color: rgba(152, 161, 192, 1);
-		font-size: 16px;
-		width: 150px;
-		cursor: default;
-	}
-`;
-
 const ActiveBox = styled(Box)`
 	margin: 3rem auto 0 auto;
 	border-bottom: 1px solid rgba(41, 50, 73, 1);
@@ -260,22 +145,22 @@ const ActiveTabSection = styled(Box)`
 	align-items: center;
 	margin: 2rem auto 0 auto;
 	grid-template-columns: repeat(6, 1fr);
-	grid-gap: 2em;
+	grid-gap: 1rem;
 
 	li {
 		grid-column: span 2;
 	}
 
-	li:last-child:nth-child(3n - 1) {
+	li:last-child:nth-of-type(3n - 1) {
 		grid-column-end: -2;
 	}
 
-	li:nth-last-child(2):nth-child(3n + 1) {
+	li:nth-last-of-type(2):nth-of-type(3n + 1) {
 		grid-column-end: 4;
 	}
 
 	/* Dealing with single orphan */
-	li:last-child:nth-child(3n - 2) {
+	li:last-child:nth-of-type(3n - 2) {
 		grid-column-end: 5;
 	}
 
@@ -289,20 +174,174 @@ const ActiveTabSection = styled(Box)`
 `;
 
 const TaskCard = styled(Box)`
-	width: 500px;
-	height: 215px;
+	width: 350px;
+	max-width: 350px;
+	height: 300px;
+	max-height: 300px;
 	margin: 0 auto 0 auto;
-	background-color: rgba(41, 50, 73, 1);
+	background-color: rgba(0, 0, 20, 0.25);
+	backdrop-filter: blur(15px) brightness(70%);
 	border: 1px solid;
-	padding: 2rem;
+	border-color: rgba(41, 50, 73, 1);
 	border-radius: 24px;
-	cursor: pointer;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	width: 90%;
+
+	a {
+		display: flex;
+		margin: 0 auto 0 auto;
+		font-size: 16px;
+		cursor: default;
+		justify-content: center;
+		align-items: center;
+	}
 
 	@media (max-width: 960px) {
 		width: 100%;
 		margin: 0 auto 0 auto;
 	}
 `;
+
+const TaskBoxSection = styled(Box)`
+	display: flex;
+	flex-direction: row;
+	height: 25px;
+	width: 100%;
+	flex: 1;
+	margin: 0 auto 0 auto;
+	position: absolute;
+	top: 10px;
+
+	a {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		height: 175px;
+		width: 90%;
+		overflow: auto;
+		font-size: 16px;
+		cursor: default;
+		text-align: center;
+	}
+
+	@media (max-width: 600px) {
+		justify-content: center;
+	}
+`;
+
+const TaskBoxSectionOne = styled(Box)`
+	display: flex;
+	flex-direction: row;
+	height: 25px;
+	width: 100%;
+	flex: 1;
+	margin: 0 auto 0 auto;
+	position: absolute;
+	bottom: 85px;
+
+	a {
+		display: flex;
+		flex: 1;
+		height: 25px;
+		font-size: 16px;
+		cursor: default;
+		align-items: center;
+		justify-content: center;
+
+		&:first-of-type {
+			justify-content: flex-start;
+			margin-left: 1.5rem;
+		}
+
+		&:last-child {
+			justify-content: flex-end;
+			margin-right: 1.5rem;
+		}
+	}
+
+	@media (max-width: 600px) {
+		justify-content: center;
+	}
+`;
+
+const TaskBoxSectionTwo = styled(Box)`
+	display: flex;
+	flex-direction: row;
+	height: 25px;
+	width: 100%;
+	flex: 1;
+	margin: 0 auto 0 auto;
+	position: absolute;
+	bottom: 60px;
+
+	a {
+		display: flex;
+		flex: 1;
+		height: 25px;
+		font-size: 16px;
+		cursor: default;
+		align-items: center;
+		justify-content: center;
+
+		&:first-of-type {
+			justify-content: flex-start;
+			margin-left: 1.5rem;
+		}
+
+		&:last-child {
+			justify-content: flex-end;
+			margin-right: 1.5rem;
+		}
+	}
+
+	@media (max-width: 600px) {
+		justify-content: center;
+	}
+`;
+
+const TaskBoxButton = styled(Box)`
+	display: flex;
+	width: 90%;
+	margin: 0 auto 0 auto;
+	height: 40px;
+
+	a {
+		cursor: pointer;
+		height: 40px;
+		text-decoration: none;
+		color: #fff;
+	}
+
+	@media (max-width: 600px) {
+		justify-content: center;
+	}
+`;
+
+const TaskButton = styled(Button)`
+	color: #fff;
+	height: 40px;
+	width: 90%;
+	border: none;
+	background-color: rgba(255, 127.5, 0, 1);
+	border-radius: 10px;
+	position: absolute;
+	bottom: 10px;
+	text-transform: none;
+	font-size: 16px;
+
+	&:hover {
+		background-color: rgba(255, 127.5, 0, 1);
+	}
+`;
+
+interface TabPanelProps {
+	children?: React.ReactNode;
+	index: number;
+	value: number;
+}
 
 export default function PlayerPage() {
 	// Redux
@@ -334,13 +373,7 @@ export default function PlayerPage() {
 
 	// Active Player Tasks
 	const activePlayerTasks = useActivePlayerTasks(checksumAddress, chainId);
-
-	// Completed Player Tasks
 	const completedPlayerTasks = useCompletedPlayerTasks(checksumAddress, chainId);
-
-	// Ranking Data
-	const rankingEarned = useRankingEarned(checksumAddress, chainId);
-	const rankingSpent = useRankingSpent(checksumAddress, chainId);
 
 	// Twitch Live Status
 	const twitchLink = playerData[0]?.userSocialStat?.twitch.includes('twitch') ? playerData[0]?.userSocialStat?.twitch : '';
@@ -426,122 +459,8 @@ export default function PlayerPage() {
 					<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(152, 161, 192, 1)' }} />
 				</a>
 			</AddressBox>
-			<SocialBox>
-				{playerData[0]?.userSocialStat?.twitter.includes('twitter') ? (
-					<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.twitter}>
-						<Twitter style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
-					</a>
-				) : null}
-				{playerData[0]?.userSocialStat?.instagram.includes('instagram') ? (
-					<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.instagram}>
-						<Instagram style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
-					</a>
-				) : null}
-				{playerData[0]?.userSocialStat?.tiktok.includes('tiktok') ? (
-					<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.tiktok}>
-						<TikTok style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
-					</a>
-				) : null}
-				{playerData[0]?.userSocialStat?.youtube.includes('youtube') ? (
-					<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.youtube}>
-						{/* {isYouTubeLive ? (
-							<StyledBadge variant="dot">
-								<Youtube style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
-							</StyledBadge>
-						) : ( */}
-						<Youtube style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
-						{/* )} */}
-					</a>
-				) : null}
-				{playerData[0]?.userSocialStat?.twitch.includes('twitch') ? (
-					<a target="_blank" rel="noreferrer" href={playerData[0]?.userSocialStat?.twitch}>
-						{isTwitchLive ? (
-							<StyledBadge variant="dot">
-								<Twitch style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
-							</StyledBadge>
-						) : (
-							<Twitch style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
-						)}
-					</a>
-				) : null}
-				<a>{checksumAccount === checksumAddress ? <RegisterSocial /> : null}</a>
-			</SocialBox>
-			<StatisticBox>
-				<StyledGridFirst>
-					{playerData[0]?.earned ? (
-						valueUSD === false ? (
-							<a>
-								{((playerData[0]?.earned / 1e18) * 1).toFixed(2)} {CHAINS[chainId]?.nameToken}
-							</a>
-						) : (
-							<a>{((playerData[0]?.earned / 1e18) * price).toFixed(2)} USD</a>
-						)
-					) : (
-						<a>
-							<Skeleton
-								sx={{
-									backgroundColor: 'rgba(152, 161, 192, 0.4)',
-									borderRadius: '10px',
-								}}
-								variant="text"
-								width={75}
-								height={30}
-							/>
-						</a>
-					)}
-					{playerData[0]?.spent ? (
-						valueUSD === false ? (
-							<a>
-								{((playerData[0]?.spent / 1e18) * 1).toFixed(2)} {CHAINS[chainId]?.nameToken}
-							</a>
-						) : (
-							<a>{((playerData[0]?.spent / 1e18) * price).toFixed(2)} USD</a>
-						)
-					) : (
-						<a>
-							<Skeleton
-								sx={{
-									backgroundColor: 'rgba(152, 161, 192, 0.4)',
-									borderRadius: '10px',
-								}}
-								variant="text"
-								width={75}
-								height={30}
-							/>
-						</a>
-					)}
-					{playerData[0]?.spent ? (
-						<Tooltip
-							title="Player Ranking: Most Earned | Most Spent"
-							placement="top"
-							disableInteractive
-							TransitionComponent={Fade}
-							TransitionProps={{ timeout: 600 }}
-						>
-							<a>
-								{rankingEarned} | {rankingSpent}
-							</a>
-						</Tooltip>
-					) : (
-						<a>
-							<Skeleton
-								sx={{
-									backgroundColor: 'rgba(152, 161, 192, 0.4)',
-									borderRadius: '10px',
-								}}
-								variant="text"
-								width={75}
-								height={30}
-							/>
-						</a>
-					)}
-				</StyledGridFirst>
-				<StyledGridSecond>
-					<a>Total earned</a>
-					<a>Total spent</a>
-					<a>Global rank</a>
-				</StyledGridSecond>
-			</StatisticBox>
+			<SocialBox />
+			<PlayerStatistics valueUSD={valueUSD} isNetworkAvailable={isNetworkAvailable} />
 			<ActiveBox>
 				<StyledTabs value={value} onChange={handleChange}>
 					<StyledTab label="Active Tasks" disableRipple={true} />
@@ -562,15 +481,65 @@ export default function PlayerPage() {
 				</ActiveFilterBox>
 				<ActiveTabSection>
 					{activePlayerTasks.map((tad) => (
-						<li style={{ listStyle: 'none' }} key={tad.participants}>
-							<StyledGridSecond>
-								<a target="_blank" rel="noreferrer" href={'https://app.nerveglobal.com/task/' + tad.id}>
-									<TaskCard>
-										{tad.description}
-										{tad.id}
-									</TaskCard>
-								</a>
-							</StyledGridSecond>
+						<li style={{ listStyle: 'none' }} key={tad}>
+							<TaskCard>
+								<TaskBoxSection>
+									<a>{tad.description}</a>
+								</TaskBoxSection>
+								<TaskBoxSectionOne>
+									<a>#{tad.id}</a>
+									{tad?.participants && tad?.participants <= 0 ? <a>{tad.participants} Participants</a> : <a>{tad.participants} Participant</a>}
+								</TaskBoxSectionOne>
+								<TaskBoxSectionTwo>
+									{tad?.amount ? (
+										valueUSD === false ? (
+											<a>
+												{((tad?.amount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
+											</a>
+										) : (
+											<a>${((tad?.amount / 1e18) * price).toFixed(2)}</a>
+										)
+									) : (
+										<span>
+											<Skeleton
+												sx={{
+													backgroundColor: 'rgba(152, 161, 192, 0.4)',
+													borderRadius: '10px',
+												}}
+												variant="text"
+												width={75}
+												height={30}
+											/>
+										</span>
+									)}
+									{tad?.entranceAmount ? (
+										valueUSD === false ? (
+											<a>
+												{((tad?.entranceAmount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
+											</a>
+										) : (
+											<a>${((tad?.entranceAmount / 1e18) * price).toFixed(2)}</a>
+										)
+									) : (
+										<span>
+											<Skeleton
+												sx={{
+													backgroundColor: 'rgba(152, 161, 192, 0.4)',
+													borderRadius: '10px',
+												}}
+												variant="text"
+												width={75}
+												height={30}
+											/>
+										</span>
+									)}
+								</TaskBoxSectionTwo>
+								<TaskBoxButton>
+									<a target="_blank" rel="noreferrer" href={'https://app.nerveglobal.com/task/' + tad.id}>
+										<TaskButton>View Task</TaskButton>
+									</a>
+								</TaskBoxButton>
+							</TaskCard>
 						</li>
 					))}
 				</ActiveTabSection>
@@ -588,12 +557,65 @@ export default function PlayerPage() {
 				</ActiveFilterBox>
 				<ActiveTabSection>
 					{completedPlayerTasks.map((tad) => (
-						<li style={{ listStyle: 'none' }} key={tad.participants}>
-							<StyledGridSecond>
-								<a target="_blank" rel="noreferrer" href={'https://app.nerveglobal.com/task/' + tad.id}>
-									<TaskCard>{tad.description}</TaskCard>
-								</a>
-							</StyledGridSecond>
+						<li style={{ listStyle: 'none' }} key={tad.id}>
+							<TaskCard>
+								<TaskBoxSection>
+									<a>{tad.description}</a>
+								</TaskBoxSection>
+								<TaskBoxSectionOne>
+									<a>#{tad.id}</a>
+									{tad?.participants && tad?.participants <= 0 ? <a>{tad.participants} Participants</a> : <a>{tad.participants} Participant</a>}
+								</TaskBoxSectionOne>
+								<TaskBoxSectionTwo>
+									{tad?.amount ? (
+										valueUSD === false ? (
+											<a>
+												{((tad?.amount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
+											</a>
+										) : (
+											<a>${((tad?.amount / 1e18) * price).toFixed(2)}</a>
+										)
+									) : (
+										<span>
+											<Skeleton
+												sx={{
+													backgroundColor: 'rgba(152, 161, 192, 0.4)',
+													borderRadius: '10px',
+												}}
+												variant="text"
+												width={75}
+												height={30}
+											/>
+										</span>
+									)}
+									{tad?.entranceAmount ? (
+										valueUSD === false ? (
+											<a>
+												{((tad?.entranceAmount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
+											</a>
+										) : (
+											<a>${((tad?.entranceAmount / 1e18) * price).toFixed(2)}</a>
+										)
+									) : (
+										<span>
+											<Skeleton
+												sx={{
+													backgroundColor: 'rgba(152, 161, 192, 0.4)',
+													borderRadius: '10px',
+												}}
+												variant="text"
+												width={75}
+												height={30}
+											/>
+										</span>
+									)}
+								</TaskBoxSectionTwo>
+								<TaskBoxButton>
+									<a target="_blank" rel="noreferrer" href={'https://app.nerveglobal.com/task/' + tad.id}>
+										<TaskButton>View Task</TaskButton>
+									</a>
+								</TaskBoxButton>
+							</TaskCard>
 						</li>
 					))}
 				</ActiveTabSection>

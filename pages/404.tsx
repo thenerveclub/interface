@@ -12,7 +12,13 @@ const StyledBox = styled(Box)`
 export default function IndexPage() {
 	return (
 		<StyledBox>
-			<h1>Nerve Global Interface</h1>
+			<h1>404 - Page Not Found</h1>
+			<p>The page could not be found.</p>
+			<p>
+				<a href="/">
+					<a>Go back to the homepage</a>
+				</a>
+			</p>
 		</StyledBox>
 	);
 }

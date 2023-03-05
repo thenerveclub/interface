@@ -68,54 +68,15 @@ const BuyButton = styled(Button)({
 	},
 });
 
-const StatisticBoxFirst = styled(Box)`
-	display: flex;
-	flex-direction: row;
-	width: 85%;
-	margin: 0 auto 0 auto;
-	justify-content: space-evenly;
-	justify-items: center;
-	justify-content: center;
-	align-items: center;
-	align-content: center;
-`;
-
-const StatisticBoxSecond = styled(Box)`
-	display: block;
-	width: 85%;
-	margin: 2rem auto 0 auto;
-`;
-
-const SectionBox = styled(Box)`
-	display: block;
+const StatisticBox = styled(Box)`
+	width: 90%;
 	margin: 0 auto 0 auto;
 
 	a {
-		color: #fff;
 		font-size: 16px;
 		cursor: default;
 	}
 `;
-
-const CancelButton = styled(Button)({
-	color: '#fff',
-	textTransform: 'none',
-	width: '100px',
-	fontSize: 16,
-	fontWeight: 400,
-	lineHeight: 1.5,
-	height: '100%',
-	backgroundColor: 'rgba(161, 31, 3, 1)',
-	borderRadius: 5,
-	'&:hover': {
-		backgroundColor: 'rgba(161, 31, 3, 1)',
-		transition: 'all 0.75s ease',
-	},
-	'&:active': {
-		boxShadow: 'none',
-		backgroundColor: '#0062cc',
-	},
-});
 
 const ConnectBox = styled(Box)({
 	position: 'absolute' as 'absolute',
@@ -126,8 +87,8 @@ const ConnectBox = styled(Box)({
 	justifyContent: 'center',
 	alignItems: 'center',
 	padding: '1rem',
-	height: 450,
-	width: 650,
+	height: 'auto',
+	width: 400,
 	backgroundColor: 'rgba(6, 16, 25, 1)',
 	border: '0.25px solid rgba(76, 76, 90, 1)',
 	borderRadius: '10px',
@@ -146,18 +107,6 @@ const ConnectBox = styled(Box)({
 		},
 	},
 });
-
-const TaskSectionLeft = styled(Box)`
-	min-width: 50%;
-	display: flex;
-	justify-content: flex-start;
-`;
-
-const TaskSectionRight = styled(Box)`
-	min-width: 50%;
-	display: flex;
-	justify-content: flex-end;
-`;
 
 export default function CreateTask() {
 	const [open, setOpen] = useState(false);
@@ -221,68 +170,57 @@ export default function CreateTask() {
 					>
 						Create Task
 					</Typography>
-					<StatisticBoxFirst>
-						<TaskSectionLeft>
-							<SectionBox>
-								<a>Start amount</a>
-								<OutlinedInput
-									id="outlined-adornment-name"
-									type="name"
-									required={false}
-									sx={{
-										'& .MuiOutlinedInput-notchedOutline': {
-											borderColor: '#fff',
-										},
-
-										'& .MuiOutlinedInput-inputAdornedStart': {
-											color: '#fff',
-										},
-									}}
-									startAdornment={
-										<InputAdornment sx={{ color: '#fff', display: 'flex', cursor: 'default' }} position="start">
-											$
-										</InputAdornment>
-									}
-									onChange={(event) => setMinimumValue(event.target.value)}
-								/>
-							</SectionBox>
-						</TaskSectionLeft>
-						<TaskSectionRight>
-							<SectionBox>
-								<a>Time in minutes</a>
-								<OutlinedInput
-									id="outlined-adornment-name"
-									type="name"
-									required={false}
-									sx={{
-										'& .MuiOutlinedInput-notchedOutline': {
-											borderColor: '#fff',
-										},
-									}}
-									onChange={(event) => setDuration(event.target.value)}
-								/>
-							</SectionBox>
-						</TaskSectionRight>
-					</StatisticBoxFirst>
-					<StatisticBoxSecond>
-						<SectionBox>
-							<a>Task description</a>
-							<OutlinedInput
-								fullWidth={true}
-								id="outlined-adornment-name"
-								type="name"
-								required={false}
-								multiline={true}
-								rows={3}
-								sx={{
-									'& .MuiOutlinedInput-notchedOutline': {
-										borderColor: '#fff',
-									},
-								}}
-								onChange={(event) => setDescription(event.target.value)}
-							/>
-						</SectionBox>
-						<StyledSection style={{ margin: '2.5rem auto 0 auto' }}>
+					<StatisticBox>
+						<a>Start amount</a>
+						<OutlinedInput
+							sx={{
+								color: '#fff',
+								'& .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
+								'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
+							}}
+							fullWidth={true}
+							id="outlined-adornment-name"
+							type="name"
+							required={false}
+							startAdornment={
+								<InputAdornment
+									sx={{ color: 'red', display: 'flex', cursor: 'default', '& .MuiTypography-root': { color: 'rgba(152, 161, 192, 1)' } }}
+									position="start"
+								>
+									$
+								</InputAdornment>
+							}
+							onChange={(event) => setMinimumValue(event.target.value)}
+						/>
+						<a>Time in minutes</a>
+						<OutlinedInput
+							sx={{
+								color: '#fff',
+								'& .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
+								'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
+							}}
+							fullWidth={true}
+							id="outlined-adornment-name"
+							type="name"
+							required={false}
+							onChange={(event) => setDuration(event.target.value)}
+						/>
+						<a>Task description</a>
+						<OutlinedInput
+							sx={{
+								color: '#fff',
+								'& .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
+								'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
+							}}
+							fullWidth={true}
+							id="outlined-adornment-name"
+							type="name"
+							required={false}
+							multiline={true}
+							rows={3}
+							onChange={(event) => setDescription(event.target.value)}
+						/>
+						<StyledSection style={{ margin: '2rem auto 1.5rem auto' }}>
 							{pendingTx ? (
 								<BuyButton startIcon={<CircularProgress thickness={2.5} size={20} />} disabled={true}>
 									Pending
@@ -291,7 +229,7 @@ export default function CreateTask() {
 								<BuyButton onClick={onRegisterSocial}>Register</BuyButton>
 							)}
 						</StyledSection>
-					</StatisticBoxSecond>
+					</StatisticBox>
 				</ConnectBox>
 			</Modal>
 		</>

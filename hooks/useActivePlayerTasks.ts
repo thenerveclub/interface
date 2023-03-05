@@ -9,12 +9,17 @@ export const useTAD = (checksumAddress: string, chainId: number) => {
    {
       tasks(where: { endTask_gt:"${timestamp}", recipientAddress:"${checksumAddress}", finished: false }, orderBy:amount, orderDirection:desc, first: 100) 
       {
-       id
-       description
-       recipientAddress
-       endTask
-       proofLink
-       amount
+		 id
+		 initiatorAddress
+		 initiatorName
+		 endTask
+		 entranceAmount
+		 negativeVotes
+		 positiveVotes
+		 participants
+		 proofLink
+		 description
+		 amount
       }
     }
   `;
@@ -30,7 +35,11 @@ export const useTAD = (checksumAddress: string, chainId: number) => {
 
 				const data = await response.json();
 
-				setTAD(data.data.tasks);
+				if (data && data.data && data.data.tasks) {
+					setTAD(data.data.tasks);
+				} else {
+					console.log('Empty response');
+				}
 			} catch (error) {
 				console.error(error);
 			}

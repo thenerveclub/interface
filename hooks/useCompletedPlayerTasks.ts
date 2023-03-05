@@ -7,16 +7,19 @@ export const useTAD = (checksumAddress: string, chainId: number) => {
 
 	const QueryForDare = `
    {
-      tasks(where: { endTask_gt:"${timestamp}", recipientAddress:"${checksumAddress}", positiveVotes_gte: "1", negativeVotes_lte: "0" }, orderBy:amount, orderDirection:desc, first: 100) 
+      tasks(where: { endTask_lt:"${timestamp}", recipientAddress:"${checksumAddress}", positiveVotes_gte: "0", negativeVotes_lte: "0" }, orderBy:amount, orderDirection:desc, first: 100) 
       {
-       id
-       description
-       recipientAddress
-       endTask
-       proofLink
-       amount
+		 id
+		 initiatorAddress
+		 initiatorName
+		 endTask
+		 entranceAmount
+		 negativeVotes
 		 positiveVotes
-       negativeVotes
+		 participants
+		 proofLink
+		 description
+		 amount
       }
     }
   `;
@@ -32,7 +35,11 @@ export const useTAD = (checksumAddress: string, chainId: number) => {
 
 				const data = await response.json();
 
-				setTAD(data.data.tasks);
+				if (data && data.data && data.data.tasks) {
+					setTAD(data.data.tasks);
+				} else {
+					console.log('Empty response');
+				}
 			} catch (error) {
 				console.error(error);
 			}
