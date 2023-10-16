@@ -223,7 +223,7 @@ export default function BlacklistPlayer() {
 							<StyledIconButtonDisabled disabled={true}>
 								<WarningAmber style={{ fontSize: '50px', margin: '0 auto 0 auto' }} />
 							</StyledIconButtonDisabled>
-							<a>Blacklisting of users cannot be undone. You can never receive a task from the blacklisted user again.</a>
+							<a>Blacklisting of users cannot be undone. You can never receive a dare from the blacklisted user again.</a>
 						</StyledGridFirst>
 						<StyledGridSecond>
 							<Checkbox

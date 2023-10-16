@@ -27,13 +27,15 @@ const StyledSection = styled.section`
 
 const ModalButton = styled(Button)({
 	color: '#fff',
-	// boxShadow: '0 0 5px #FF7F00',
 	textTransform: 'none',
 	fontSize: 16,
 	border: 'none',
 	lineHeight: 1.5,
 	backgroundColor: 'rgba(255, 127.5,0, 1)	',
-	borderRadius: 10,
+	borderRadius: 15,
+	height: '40px',
+	width: '125px',
+	marginLeft: '1rem',
 
 	'&:hover': {
 		backgroundColor: 'transparent',

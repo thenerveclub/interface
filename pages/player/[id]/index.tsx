@@ -17,11 +17,38 @@ import { CheckNameRegister } from '../../../utils/validation/checkNameRegister';
 import PlayerStatistics from './components/PlayerStatistics';
 import SocialBox from './components/SocialBox';
 
+const StyledSection = styled(Box)`
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+`;
+
+const StyledLeftSectionBox = styled(Box)`
+	display: inline-flex;
+	flex-direction: column;
+	width: 50%;
+
+	@media (max-width: 600px) {
+		width: 100%;
+	}
+`;
+
+const StyledRightSectionBox = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	width: 50%;
+
+	@media (max-width: 600px) {
+		display: none;
+		visibility: hidden;
+	}
+`;
+
 const StyledTab = styled(Tab)`
-	color: #fff;
-	font-size: 16px;
+	color: rgba(128, 128, 138, 1);
+	font-size: 1rem;
 	text-transform: none;
-	min-width: 150px;
+	min-width: 9.375rem;
 
 	&.Mui-selected {
 		border-bottom: 1px solid #fff;
@@ -29,7 +56,7 @@ const StyledTab = styled(Tab)`
 	}
 
 	&.MuiTab-root {
-		color: rgba(152, 161, 192, 1);
+		color: rgba(128, 128, 138, 1);
 
 		&.Mui-selected {
 			color: #fff;
@@ -74,7 +101,8 @@ const AddressBox = styled(Box)`
 	align-items: center;
 
 	a {
-		font-size: 16px;
+		color: rgba(128, 128, 138, 1);
+		font-size: 14px;
 		cursor: default;
 
 		&:not(:last-child) {
@@ -89,7 +117,7 @@ const AddressBox = styled(Box)`
 
 const ActiveBox = styled(Box)`
 	margin: 3rem auto 0 auto;
-	border-bottom: 1px solid rgba(41, 50, 73, 1);
+	border-bottom: 1px solid rgba(128, 128, 138, 1);
 
 	@media (max-width: 600px) {
 		width: 300px;
@@ -115,6 +143,11 @@ const ActiveFilterBox = styled(Box)`
 	flex-direction: row;
 	width: 100%;
 	height: 40px;
+
+	@media (max-width: 600px) {
+		flex-direction: column;
+		align-items: center;
+	}
 `;
 
 const ActiveTabLeftSection = styled(Box)`
@@ -125,19 +158,41 @@ const ActiveTabLeftSection = styled(Box)`
 `;
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)`
-	background-color: rgba(152, 161, 192, 0.5);
-	border-radius: 10px;
+	background-color: rgba(38, 38, 56, 1);
+	border: 1px solid rgba(74, 74, 98, 1);
+	border-radius: 15px;
+	height: 40px;
+	width: 125px;
 `;
 
 const StyledToggleButton = styled(ToggleButton)`
-	color: rgba(152, 161, 192, 1);
+	color: rgba(128, 128, 138, 1);
+
+	&.Mui-selected {
+		color: #fff;
+		background-color: rgba(58, 58, 76, 1);
+		border-radius: 15px;
+
+		&:hover {
+			background-color: rgba(58, 58, 76, 1);
+		}
+	}
+
+	&:hover {
+		background-color: rgba(58, 58, 76, 1);
+		border-radius: 15px;
+	}
 `;
 
 const ActiveTabRightSection = styled(Box)`
-	min-width: 50%;
+	min-width: 100%;
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-end;
+
+	@media (max-width: 600px) {
+		justify-content: center;
+	}
 `;
 
 const ActiveTabSection = styled(Box)`
@@ -167,7 +222,7 @@ const ActiveTabSection = styled(Box)`
 	@media (max-width: 960px) {
 		display: grid;
 		align-items: center;
-		margin: 0 auto 0 auto;
+		margin: 1rem auto 0 auto;
 		grid-template-columns: 1fr;
 		grid-gap: 2em;
 	}
@@ -417,50 +472,63 @@ export default function PlayerPage() {
 
 	return (
 		<StyledBox>
-			<PlayerBox>
-				{playerData[0]?.userName ? <a>{playerData[0]?.userName}</a> : <a>{checksumAddress?.toUpperCase()}</a>}
-				<a>{account ? checksumAccount === checksumAddress ? <RegisterName /> : <BlacklistPlayer /> : null}</a>
-				{/* <iframe
-					src="https://player.twitch.tv/?channel=amouranth&parent=localhost&parent=interface-alpha.vercel.app&autoplay=false"
-					height="<height>"
-					width="<width>"
-				></iframe> */}
+			<StyledSection>
+				<StyledLeftSectionBox>
+					<PlayerBox>
+						{playerData[0]?.userName ? <a>{playerData[0]?.userName}</a> : <a>{checksumAddress?.toUpperCase()}</a>}
+						<a>{account ? checksumAccount === checksumAddress ? <RegisterName /> : <BlacklistPlayer /> : null}</a>
+					</PlayerBox>
+					<AddressBox>
+						{playerData[0]?.id ? (
+							<a>
+								({playerData[0]?.id.substring(0, 6)}...{playerData[0]?.id.substring(playerData[0]?.id.length - 4).toUpperCase()})
+							</a>
+						) : (
+							<a>
+								({checksumAddress?.substring(0, 6)}...{checksumAddress?.substring(checksumAddress?.length - 4).toUpperCase()})
+							</a>
+						)}
+						<Tooltip
+							title={copied ? 'Copied!' : 'Copy Address'}
+							placement="bottom"
+							disableInteractive
+							TransitionComponent={Fade}
+							TransitionProps={{ timeout: 600 }}
+						>
+							<a onClick={handleCopyAddress} style={{ cursor: 'pointer' }}>
+								<ContentCopy style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
+							</a>
+						</Tooltip>
+						<Tooltip title="View On Explorer" placement="bottom" disableInteractive TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}>
+							<a href={CHAINS[chainId]?.blockExplorerUrls[0] + 'address/' + playerData[0]?.id} target="_blank" style={{ cursor: 'pointer' }}>
+								<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
+							</a>
+						</Tooltip>
+					</AddressBox>
+					<SocialBox />
+					<PlayerStatistics valueUSD={valueUSD} isNetworkAvailable={isNetworkAvailable} />
+				</StyledLeftSectionBox>
+				<StyledRightSectionBox>
+					<iframe
+						src={`https://player.twitch.tv/?channel=${twitchChannelName}&parent=localhost&parent=interface-alpha.vercel.app&autoplay=false`}
+						height="250px"
+						width="500px"
+						frameBorder="0"
+						scrolling="no"
+						allowFullScreen={true}
+						allow="autoplay; fullscreen; picture-in-picture"
+						style={{ display: isTwitchLive ? 'block' : 'none', margin: '0 auto' }}
+					></iframe>
 
-				{/* <iframe
+					{/* <iframe
 					width="560"
 					height="315"
 					src="https://www.youtube-nocookie.com/embed/o605PgKGpzw"
 					title="YouTube video player"
 					allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 				></iframe> */}
-			</PlayerBox>
-			<AddressBox>
-				{playerData[0]?.id ? (
-					<a>
-						({playerData[0]?.id.substring(0, 6)}...{playerData[0]?.id.substring(playerData[0]?.id.length - 4).toUpperCase()})
-					</a>
-				) : (
-					<a>
-						({checksumAddress?.substring(0, 6)}...{checksumAddress?.substring(checksumAddress?.length - 4).toUpperCase()})
-					</a>
-				)}
-				<Tooltip
-					title={copied ? 'Copied!' : 'Copy Address'}
-					placement="bottom"
-					disableInteractive
-					TransitionComponent={Fade}
-					TransitionProps={{ timeout: 600 }}
-				>
-					<a onClick={handleCopyAddress} style={{ cursor: 'pointer' }}>
-						<ContentCopy style={{ display: 'flex', fontSize: '14px', fill: 'rgba(152, 161, 192, 1)' }} />
-					</a>
-				</Tooltip>
-				<a href={CHAINS[chainId]?.blockExplorerUrls[0] + 'address/' + playerData[0]?.id} target="_blank" style={{ cursor: 'pointer' }}>
-					<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(152, 161, 192, 1)' }} />
-				</a>
-			</AddressBox>
-			<SocialBox />
-			<PlayerStatistics valueUSD={valueUSD} isNetworkAvailable={isNetworkAvailable} />
+				</StyledRightSectionBox>
+			</StyledSection>
 			<ActiveBox>
 				<StyledTabs value={value} onChange={handleChange}>
 					<StyledTab label="Active Tasks" disableRipple={true} />
@@ -469,15 +537,16 @@ export default function PlayerPage() {
 			</ActiveBox>
 			<TabPanel value={value} index={0}>
 				<ActiveFilterBox>
-					<ActiveTabLeftSection>
+					{/* <ActiveTabLeftSection></ActiveTabLeftSection> */}
+					<ActiveTabRightSection>
 						<StyledToggleButtonGroup value={valueUSD} exclusive onChange={handleToggle}>
 							<StyledToggleButton value={false}>{isNetworkAvailable ? <a>{CHAINS[chainId]?.nameToken}</a> : <a>MATIC</a>}</StyledToggleButton>
 							<StyledToggleButton value={true}>
 								<a>USD</a>
 							</StyledToggleButton>
 						</StyledToggleButtonGroup>
-					</ActiveTabLeftSection>
-					<ActiveTabRightSection>{account ? checksumAccount !== checksumAddress ? <CreateTask /> : null : null}</ActiveTabRightSection>
+						{account ? checksumAccount !== checksumAddress ? <CreateTask /> : null : null}
+					</ActiveTabRightSection>
 				</ActiveFilterBox>
 				<ActiveTabSection>
 					{activePlayerTasks.map((tad) => (
@@ -535,7 +604,7 @@ export default function PlayerPage() {
 									)}
 								</TaskBoxSectionTwo>
 								<TaskBoxButton>
-									<a target="_blank" rel="noreferrer" href={'https://app.nerveglobal.com/task/' + tad.id}>
+									<a target="_blank" rel="noreferrer" href={'https://app.nerveglobal.com/dare/' + tad.id}>
 										<TaskButton>View Task</TaskButton>
 									</a>
 								</TaskBoxButton>
@@ -546,14 +615,15 @@ export default function PlayerPage() {
 			</TabPanel>
 			<TabPanel value={value} index={1}>
 				<ActiveFilterBox>
-					<ActiveTabLeftSection>
+					{/* <ActiveTabLeftSection></ActiveTabLeftSection> */}
+					<ActiveTabRightSection>
 						<StyledToggleButtonGroup value={valueUSD} exclusive onChange={handleToggle}>
 							<StyledToggleButton value={false}>{isNetworkAvailable ? <a>{CHAINS[chainId]?.nameToken}</a> : <a>MATIC</a>}</StyledToggleButton>
 							<StyledToggleButton value={true}>
 								<a>USD</a>
 							</StyledToggleButton>
 						</StyledToggleButtonGroup>
-					</ActiveTabLeftSection>
+					</ActiveTabRightSection>
 				</ActiveFilterBox>
 				<ActiveTabSection>
 					{completedPlayerTasks.map((tad) => (
@@ -611,7 +681,7 @@ export default function PlayerPage() {
 									)}
 								</TaskBoxSectionTwo>
 								<TaskBoxButton>
-									<a target="_blank" rel="noreferrer" href={'https://app.nerveglobal.com/task/' + tad.id}>
+									<a target="_blank" rel="noreferrer" href={'https://app.nerveglobal.com/dare/' + tad.id}>
 										<TaskButton>View Task</TaskButton>
 									</a>
 								</TaskBoxButton>

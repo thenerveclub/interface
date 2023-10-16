@@ -18,6 +18,7 @@ const useTwitchLiveStatus = (twitchChannelName: string) => {
 				});
 
 				const data = await response.json();
+				console.log(data);
 				setIsTwitchLive(!!data.data?.length);
 			} catch (error) {
 				console.error(error);
@@ -36,8 +37,8 @@ const useTwitchLiveStatus = (twitchChannelName: string) => {
 export default useTwitchLiveStatus;
 
 // Get Authorization Token
-// const clientId = `'process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID'`;
-// const clientSecret = `'process.env.NEXT_PUBLIC_TWITCH_CLIENT_SECRET'`;
+// const clientId = `${process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID}`;
+// const clientSecret = `${process.env.NEXT_PUBLIC_TWITCH_CLIENT_SECRET}`;
 // const grantType = 'client_credentials';
 
 // fetch(`https://id.twitch.tv/oauth2/token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=${grantType}`, {

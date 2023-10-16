@@ -63,7 +63,7 @@ export const themeDark = createTheme({
 			main: '#000014',
 		},
 		secondary: {
-			main: '#f50057',
+			main: '#00f2fc',
 		},
 		info: {
 			main: colors.info,

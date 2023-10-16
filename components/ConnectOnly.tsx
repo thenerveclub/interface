@@ -3,7 +3,7 @@ import { Button, CircularProgress } from '@mui/material';
 import type { CoinbaseWallet } from '@web3-react/coinbase-wallet';
 import type { Web3ReactHooks } from '@web3-react/core';
 import { MetaMask } from '@web3-react/metamask';
-import { WalletConnect } from '@web3-react/walletconnect';
+import { WalletConnect as WalletConnectV2 } from '@web3-react/walletconnect-v2';
 import { useCallback, useState } from 'react';
 import { getAddChainParameters } from '../utils/chains';
 import { getLogo, getName } from '../utils/connectorsNameAndLogo';
@@ -31,7 +31,7 @@ export function ConnectOnly({
 	error,
 	setError,
 }: {
-	connector: MetaMask | WalletConnect | CoinbaseWallet;
+	connector: MetaMask | WalletConnectV2 | CoinbaseWallet;
 	chainId: ReturnType<Web3ReactHooks['useChainId']>;
 	isActivating: ReturnType<Web3ReactHooks['useIsActivating']>;
 	isActive: ReturnType<Web3ReactHooks['useIsActive']>;
@@ -42,7 +42,7 @@ export function ConnectOnly({
 
 	const onClick = useCallback((): void => {
 		setError(undefined);
-		if (connector instanceof WalletConnect) {
+		if (connector instanceof WalletConnectV2) {
 			connector
 				.activate(desiredChainId === -1 ? undefined : desiredChainId)
 				.then(() => setError(undefined))
@@ -96,7 +96,7 @@ export function ConnectOnly({
 							isActivating
 								? undefined
 								: () =>
-										connector instanceof WalletConnect
+										connector instanceof WalletConnectV2
 											? connector
 													.activate(desiredChainId === -1 ? undefined : desiredChainId)
 													.then(() => setError(undefined))

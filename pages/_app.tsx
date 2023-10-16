@@ -9,7 +9,7 @@ import { store } from '../state/index';
 import connectors from '../utils/connectors';
 import { coinbaseWallet } from '../utils/connectors/coinbaseWallet';
 import { metaMask } from '../utils/connectors/metaMask';
-import { walletConnect } from '../utils/connectors/walletConnect';
+import { walletConnectV2 } from '../utils/connectors/walletConnectV2';
 import { getName } from '../utils/connectorsNameAndLogo';
 
 function Updaters() {
@@ -23,7 +23,7 @@ function Updaters() {
 
 export default function MyApp({ Component, pageProps }) {
 	useEffect(() => {
-		const connectorsToConnect = [metaMask, walletConnect, coinbaseWallet];
+		const connectorsToConnect = [metaMask, walletConnectV2, coinbaseWallet];
 		connectorsToConnect.forEach(async (connector) => {
 			try {
 				// if (connector.connectEagerly) {

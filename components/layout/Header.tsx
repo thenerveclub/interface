@@ -1,14 +1,15 @@
 import styled from '@emotion/styled';
-import { AppBar, Box, Container, Toolbar, Typography } from '@mui/material';
+import { AppBar, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { useWeb3React } from '@web3-react/core';
 import localFont from 'next/font/local';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import SearchBar from '../SearchBar';
 import SelectChain from '../SelectChain';
 import AccountModal from '../modal/Account';
 import Connect from '../modal/Connect';
 
-const roboto = localFont({ src: '../../public/fonts/TrueLies.woff2', display: 'swap' });
+const TrueLies = localFont({ src: '../../public/fonts/TrueLies.woff2', display: 'swap' });
 
 const StyledAppBar = styled(AppBar)`
 	flex-direction: row;
@@ -18,6 +19,17 @@ const StyledAppBar = styled(AppBar)`
 	top: 0;
 	left: 0;
 	right: 0;
+
+	@media (max-width: 768px) {
+		flex-direction: column;
+		height: auto;
+
+		//switch order of middle and last section
+		& > *:nth-of-type(2) {
+			order: 2;
+			margin-top: 1rem;
+		}
+	}
 `;
 
 const StyledSectionLeft = styled.section`
@@ -29,6 +41,11 @@ const StyledSectionLeft = styled.section`
 	& > *:first-of-type {
 		margin-left: 1rem;
 	}
+
+	@media (max-width: 768px) {
+		display: none;
+		visibility: hidden;
+	}
 `;
 
 const StyledSectionMiddle = styled.section`
@@ -38,8 +55,7 @@ const StyledSectionMiddle = styled.section`
 	align-items: center;
 
 	@media (max-width: 768px) {
-		display: none;
-		visibility: hidden;
+		width: 100%;
 	}
 `;
 
@@ -56,33 +72,24 @@ const StyledSectionRight = styled.section`
 	& > *:last-child {
 		margin-right: 1rem;
 	}
-`;
-
-const SearchBoxMobile = styled(Box)`
-	display: none;
-	visibility: hidden;
 
 	@media (max-width: 768px) {
-		display: flex;
-		visibility: visible;
-		min-height: 50px;
-		text-align: center;
-		align-items: center;
-		justify-content: center;
+		width: 100%;
+		justify-content: space-between;
 
-		a {
-			font-size: 30px;
-			cursor: default;
+		& > *:not(:last-child) {
+			margin-right: 0;
+		}
 
-			&:not(:last-child) {
-				margin-right: 1rem;
-			}
+		& > *:last-child {
+			margin-right: 0;
 		}
 	}
 `;
 
 export default function Header() {
 	const { account } = useWeb3React();
+
 	useEffect(() => {
 		const handleScroll = () => {
 			const scrollPosition = window.scrollY;
@@ -110,7 +117,7 @@ export default function Header() {
 				<StyledSectionLeft>
 					<Typography
 						component="a"
-						style={roboto.style}
+						style={TrueLies.style}
 						href="/"
 						sx={{
 							display: 'block',
@@ -123,14 +130,14 @@ export default function Header() {
 						NERVE GLOBAL
 					</Typography>
 				</StyledSectionLeft>
-				<StyledSectionMiddle>Search Bar</StyledSectionMiddle>
-
+				<StyledSectionMiddle>
+					<SearchBar />
+				</StyledSectionMiddle>
 				<StyledSectionRight>
 					<SelectChain />
 					{account ? <AccountModal /> : <Connect />}
 				</StyledSectionRight>
 			</StyledAppBar>
-			<SearchBoxMobile>Search Bar</SearchBoxMobile>
 		</>
 	);
 }

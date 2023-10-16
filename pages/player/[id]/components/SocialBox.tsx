@@ -80,7 +80,12 @@ export default function SocialBoxComponent() {
 	const twitchLink = playerData[0]?.userSocialStat?.twitch.includes('twitch') ? playerData[0]?.userSocialStat?.twitch : '';
 	const twitchSplit = twitchLink?.split('/');
 	const twitchChannelName = twitchSplit[twitchSplit.length - 1];
+
+	console.log(twitchChannelName);
+
 	const isTwitchLive = useTwitchStatus(twitchChannelName);
+
+	console.log(isTwitchLive);
 
 	return (
 		<SocialBox>

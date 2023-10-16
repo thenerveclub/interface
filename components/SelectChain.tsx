@@ -8,8 +8,39 @@ import { metaMask } from '../utils/connectors/metaMask';
 import EthereumLogo from '/public/svg/chains/ethereum.svg';
 import PolygonLogo from '/public/svg/chains/polygon.svg';
 
+const StyledSelect = styled(Select)({
+	color: '#fff',
+	backgroundColor: 'rgba(38, 38, 56, 1)',
+	border: '1px solid rgba(74, 74, 98, 1)',
+	borderRadius: 15,
+	minHeight: '40px',
+	height: '40px',
+	minWidth: '150px',
+	transition: 'all 0.5s ease-in-out',
+
+	'&:hover': {
+		backgroundColor: 'rgba(58, 58, 76, 1)',
+	},
+	'& .MuiOutlinedInput-notchedOutline': {
+		border: 'none',
+	},
+	'& .MuiSelect-select': {
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center',
+		alignContent: 'center',
+		verticalAlign: 'middle',
+		height: '40px',
+		textAlign: 'center',
+	},
+	'& .MuiSelect-icon': {
+		color: '#fff',
+	},
+});
+
 const WarningAmberIcon = styled(WarningAmber)({
 	color: 'red',
+	fontSize: '1.25rem',
 	animation: 'blink 2s infinite',
 
 	'@keyframes blink': {
@@ -20,13 +51,13 @@ const WarningAmberIcon = styled(WarningAmber)({
 });
 
 const MenuItemStyled = styled(MenuItem)({
-	color: '#000',
-	backgroundColor: '#fff',
+	color: 'rgba(255, 255, 255, 1)',
+	backgroundColor: 'rgba(38, 38, 56, 1)',
 	verticalAlign: 'middle',
-	width: '90%',
+	width: '100%',
 	margin: '0 auto 0 auto',
 	padding: '0.5rem',
-	borderRadius: '10px',
+	cursor: 'pointer', // Adding a pointer cursor for hover state
 
 	a: {
 		'&: last-of-type': {
@@ -35,7 +66,7 @@ const MenuItemStyled = styled(MenuItem)({
 	},
 
 	'&:focus': {
-		background: '#fff',
+		backgroundColor: 'rgba(38, 38, 56, 1)',
 	},
 });
 
@@ -77,94 +108,56 @@ export default function BasicSelect() {
 	return (
 		<>
 			{isNetworkAvailable ? (
-				<Select
+				<StyledSelect
 					variant="outlined"
 					value={age}
 					onChange={handleChange}
-					sx={{
-						color: '#fff',
-						display: 'block',
-						backgroundColor: 'rgba(152, 161, 192, 0.5)',
-						borderRadius: '10px',
-						minWidth: '150px',
-						minHeight: '40px',
-						padding: '0 0 0 0',
-
-						'& .MuiOutlinedInput-notchedOutline': {
-							border: 'none',
-						},
-
-						'& .MuiSelect-select': {
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'center',
-							padding: '0 0 0 0',
-							alignContent: 'center',
-							verticalAlign: 'middle',
-							height: '40px',
-							textAlign: 'center',
-
-							a: {
-								'&: last-of-type': {
-									marginLeft: '0.5rem',
-									marginRight: '0.5rem',
-								},
-
-								'@media (max-width: 600px)': {
-									display: 'none',
-									visibility: 'hidden',
-									marginLeft: '0',
-								},
-							},
-						},
-
-						'& .MuiSelect-icon': {
-							display: 'flex',
-							color: '#fff',
-						},
-					}}
 					MenuProps={{
 						PaperProps: {
 							sx: {
-								'& .MuiMenuItem-root.Mui-selected': {
-									backgroundColor: '#fff',
-								},
+								backgroundColor: 'rgba(38, 38, 56, 1)',
+								border: '1px solid rgba(74, 74, 98, 1)',
+								borderRadius: '15px',
+								width: 'auto',
+								// '& .MuiMenuItem-root.Mui-selected': {
+								// 	backgroundColor: 'rgba(128, 128, 138, 1)',
+								// },
 								'& .MuiMenuItem-root': {
-									backgroundColor: '#fff',
+									backgroundColor: 'rgba(38, 38, 56, 1)',
 								},
 								'& .MuiMenuItem-root:hover': {
-									backgroundColor: 'rgba(152, 161, 192, 0.5)',
+									backgroundColor: 'rgba(58, 58, 76, 1)',
 								},
 							},
 						},
 					}}
 				>
 					<MenuItemStyled value={137} disabled={chainId === 137}>
-						<PolygonLogo style={{ display: 'flex' }} width="22" height="22" alt="Logo" />
+						<PolygonLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
 						<a>Polygon</a>
 					</MenuItemStyled>
 					<MenuItemStyled value={5} disabled={chainId === 5}>
-						<EthereumLogo style={{ display: 'flex' }} width="22" height="22" alt="Logo" />
+						<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
 						<a>Goerli</a>
 					</MenuItemStyled>
-				</Select>
+				</StyledSelect>
 			) : (
-				<Select
+				<StyledSelect
 					value={age}
 					onChange={handleChange}
-					sx={{
-						color: '#fff',
-						height: '100%',
-						verticalAlign: 'middle',
+					// sx={{
+					// 	color: '#fff',
+					// 	height: '100%',
+					// 	verticalAlign: 'middle',
 
-						'& .MuiOutlinedInput-notchedOutline': {
-							border: 'none',
-						},
+					// 	'& .MuiOutlinedInput-notchedOutline': {
+					// 		border: 'none',
+					// 	},
 
-						'& .MuiSelect-icon': {
-							color: '#fff',
-						},
-					}}
+					// 	'& .MuiSelect-icon': {
+					// 		color: '#fff',
+					// 	},
+					// }}
 					MenuProps={{
 						PaperProps: {
 							sx: {
@@ -175,14 +168,14 @@ export default function BasicSelect() {
 									backgroundColor: '#fff',
 								},
 								'& .MuiMenuItem-root:hover': {
-									backgroundColor: 'rgba(152, 161, 192, 0.5)',
+									backgroundColor: 'rgba(200, 200, 200, 0.5)',
 								},
 							},
 						},
 					}}
 				>
 					<MenuItemStyled value={chainId} disabled={true}>
-						<WarningAmberIcon style={{ display: 'flex' }} />
+						<WarningAmberIcon style={{ display: 'flex', marginRight: '0.5rem' }} />
 						<a>Unsupported Chain</a>
 					</MenuItemStyled>
 					<MenuItemStyled value={137} disabled={chainId === 137}>
@@ -193,7 +186,7 @@ export default function BasicSelect() {
 						<EthereumLogo style={{ display: 'flex' }} width="22" height="22" alt="Logo" />
 						<a>Goerli</a>
 					</MenuItemStyled>
-				</Select>
+				</StyledSelect>
 			)}
 		</>
 	);

@@ -1,11 +1,11 @@
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet';
 import { Web3ReactHooks } from '@web3-react/core';
 import { MetaMask } from '@web3-react/metamask';
-import { WalletConnect } from '@web3-react/walletconnect';
+import { WalletConnect as WalletConnectV2 } from '@web3-react/walletconnect-v2';
 import { ConnectOnly } from './ConnectOnly';
 
 interface Props {
-	connector: MetaMask | WalletConnect | CoinbaseWallet;
+	connector: MetaMask | WalletConnectV2 | CoinbaseWallet;
 	chainId: ReturnType<Web3ReactHooks['useChainId']>;
 	isActivating: ReturnType<Web3ReactHooks['useIsActivating']>;
 	isActive: ReturnType<Web3ReactHooks['useIsActive']>;
