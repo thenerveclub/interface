@@ -1,11 +1,12 @@
 import styled from '@emotion/styled';
-import { Box, CssBaseline } from '@mui/material/';
+import { CssBaseline, useMediaQuery } from '@mui/material/';
 import { ThemeProvider } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import React, { ReactNode } from 'react';
+import { useSelector } from 'react-redux';
 import Footer from './Footer';
 import Header from './Header';
-import { themeDark } from './styles';
+import { themeDark, themeLight } from './styles';
 
 type Props = {
 	children?: ReactNode;
@@ -25,13 +26,27 @@ const Main = styled.div<{ is404: boolean }>`
 `;
 
 const Layout = ({ children = 'This is the default title' }: Props) => {
+	// Access the Redux store's theme state
+	const { currentTheme, prefersSystemSetting } = useSelector((state) => state.theme);
+
+	// Determine if the user's system prefers dark mode
+	const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
+	// Determine which theme to use
+	let appliedTheme;
+	if (prefersSystemSetting) {
+		appliedTheme = prefersDarkMode ? themeDark : themeLight;
+	} else {
+		appliedTheme = currentTheme === 'light' ? themeLight : themeDark;
+	}
+
 	const router = useRouter();
 	const is404 = router.pathname === '/404';
 	console.log('is404', is404);
 
 	return (
 		<>
-			<ThemeProvider theme={themeDark}>
+			<ThemeProvider theme={appliedTheme}>
 				<CssBaseline />
 				<Header />
 				<Main is404={is404}>{children}</Main>

@@ -8,6 +8,7 @@ import SearchBar from '../SearchBar';
 import SelectChain from '../SelectChain';
 import AccountModal from '../modal/Account';
 import Connect from '../modal/Connect';
+import Setting from '../modal/Settings';
 
 const TrueLies = localFont({ src: '../../public/fonts/TrueLies.woff2', display: 'swap' });
 
@@ -20,9 +21,10 @@ const StyledAppBar = styled(AppBar)`
 	left: 0;
 	right: 0;
 
-	@media (max-width: 768px) {
+	@media (max-width: 1280px) {
 		flex-direction: column;
 		height: auto;
+		padding: 0.75rem;
 
 		//switch order of middle and last section
 		& > *:nth-of-type(2) {
@@ -42,7 +44,7 @@ const StyledSectionLeft = styled.section`
 		margin-left: 1rem;
 	}
 
-	@media (max-width: 768px) {
+	@media (max-width: 1280px) {
 		display: none;
 		visibility: hidden;
 	}
@@ -54,8 +56,43 @@ const StyledSectionMiddle = styled.section`
 	justify-content: center;
 	align-items: center;
 
+	@media (max-width: 1280px) {
+		width: 100%;
+		justify-content: right;
+
+		& > *:not(:last-child) {
+			margin-left: 0;
+		}
+
+		& > *:last-child {
+			margin-left: 0;
+		}
+	}
+
 	@media (max-width: 768px) {
 		width: 100%;
+		justify-content: right;
+
+		& > *:not(:last-child) {
+			margin-left: 1rem;
+		}
+
+		& > *:last-child {
+			margin-left: 1rem;
+		}
+	}
+
+	@media (max-width: 480px) {
+		width: 100%;
+		justify-content: space-between;
+
+		& > *:not(:last-child) {
+			margin-left: 0;
+		}
+
+		& > *:last-child {
+			margin-left: 0;
+		}
 	}
 `;
 
@@ -66,24 +103,70 @@ const StyledSectionRight = styled.section`
 	align-items: center;
 
 	& > *:not(:last-child) {
-		margin-right: 1rem;
+		margin-left: 1rem;
 	}
 
 	& > *:last-child {
-		margin-right: 1rem;
+		margin-left: 1rem;
+	}
+
+	@media (max-width: 1280px) {
+		width: 100%;
+		justify-content: right;
+
+		& > *:not(:last-child) {
+			margin-left: 1rem;
+		}
+
+		& > *:last-child {
+			margin-left: 1rem;
+		}
 	}
 
 	@media (max-width: 768px) {
 		width: 100%;
-		justify-content: space-between;
+		justify-content: rigth;
 
 		& > *:not(:last-child) {
-			margin-right: 0;
+			margin-left: 1rem;
 		}
 
 		& > *:last-child {
-			margin-right: 0;
+			margin-left: 1rem;
 		}
+	}
+
+	@media (max-width: 480px) {
+		width: 100%;
+		justify-content: space-between;
+
+		& > *:not(:last-child) {
+			margin-left: 0;
+		}
+
+		& > *:last-child {
+			margin-left: 0;
+		}
+	}
+`;
+
+const MobileSettings = styled.div`
+	display: none;
+	visibility: hidden;
+
+	@media (max-width: 480px) {
+		display: block;
+		visibility: visible;
+	}
+`;
+
+const DesktopSettings = styled.div`
+	display: block;
+	visibility: visible;
+
+	@media (max-width: 480px) {
+		display: none;
+		visibility: hidden;
 	}
 `;
 
@@ -132,10 +215,16 @@ export default function Header() {
 				</StyledSectionLeft>
 				<StyledSectionMiddle>
 					<SearchBar />
+					<MobileSettings>
+						<Setting />
+					</MobileSettings>
 				</StyledSectionMiddle>
 				<StyledSectionRight>
 					<SelectChain />
 					{account ? <AccountModal /> : <Connect />}
+					<DesktopSettings>
+						<Setting />
+					</DesktopSettings>
 				</StyledSectionRight>
 			</StyledAppBar>
 		</>

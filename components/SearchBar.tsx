@@ -37,8 +37,8 @@ const SearchBarContainer = styled(Paper)({
 	},
 	position: 'relative', // Added relative positioning to act as a reference for the absolute positioning of the results list
 
-	'@media (max-width: 600px)': {
-		width: '100%', // Set width to 100% for smaller screens
+	'@media (max-width: 768px)': {
+		width: '75%', // Set width to 100% for smaller screens
 	},
 });
 
