@@ -1,35 +1,79 @@
 import { createTheme } from '@mui/material/styles';
 
-const colors = {
-	primary: '#00adb5',
-	secondary: '#95defb',
-	success: '#4CAF50',
-	info: '#eb6133',
-	danger: '#FF5722',
-	warning: '#FFC107',
-	dark: '#0e1b20',
-	light: '#aaa',
-	muted: '#abafb3',
-	border: '#DDDFE1',
-	inverse: '#2F3D4A',
-	shaft: '#333',
-	dove_gray: '#d5d5d5',
-	body_bg: '#f3f6f9',
-	///////////////
-	// Solid Color
-	///////////////
-	white: '#fff',
-	black: '#000',
-};
-
 export const themeLight = createTheme({
-	typography: {
-		fontFamily: 'TrueLies',
+	components: {
+		MuiCssBaseline: {
+			styleOverrides: {
+				body: {
+					backgroundColor: '#F2F2F7',
+					backgroundImage: 'none',
+					backgroundRepeat: 'no-repeat',
+					backgroundAttachment: 'fixed',
+				},
+			},
+		},
+		MuiButton: {
+			defaultProps: {
+				disableRipple: true,
+			},
+			styleOverrides: {
+				root: {
+					backgroundColor: '#FFFFFF',
+					color: '#1A1A1A',
+					'&:hover': {
+						backgroundColor: '#F0F0F3',
+					},
+				},
+			},
+		},
 	},
 	palette: {
 		background: {
-			default: '#e4f0e2',
+			default: '#FFFFFF',
+			paper: '#FFFFFF',
 		},
+		text: {
+			primary: '#1A1A1A',
+			secondary: '#8E8E93',
+			disabled: '#D1D1D6',
+		},
+		primary: {
+			main: '#007AFF',
+			light: '#60A5FA',
+			dark: '#075BB3',
+			contrastText: '#FFFFFF',
+		},
+		secondary: {
+			main: '#34C759',
+			light: '#6FE086',
+			dark: '#008A2E',
+			contrastText: '#FFFFFF',
+		},
+		error: {
+			main: '#FF3B30',
+			light: '#FF665E',
+			dark: '#C70000',
+			contrastText: '#FFFFFF',
+		},
+		warning: {
+			main: '#FF9500',
+			light: '#FFB84D',
+			dark: '#C76F00',
+			contrastText: '#FFFFFF',
+		},
+		info: {
+			main: '#5AC8FA',
+			light: '#8DD5FF',
+			dark: '#0095D5',
+			contrastText: '#FFFFFF',
+		},
+		success: {
+			main: '#34C759',
+			light: '#6FE086',
+			dark: '#008A2E',
+			contrastText: '#FFFFFF',
+		},
+		divider: '#D1D1D6',
 	},
 });
 
@@ -50,31 +94,58 @@ export const themeDark = createTheme({
 				disableRipple: true,
 			},
 			styleOverrides: {
-				// Name of the slot
 				root: {
-					// Some CSS
 					backgroundColor: '#202020',
 				},
 			},
 		},
 	},
 	palette: {
-		primary: {
-			main: '#000014',
-		},
-		secondary: {
-			main: '#00f2fc',
-		},
-		info: {
-			main: colors.info,
-		},
 		background: {
-			default: `#000014`,
+			default: '#000014',
+			paper: '#000014',
 		},
 		text: {
-			primary: '#ffffff',
-			secondary: '#000014',
-			disabled: '#5D6785',
+			primary: '#FFFFFF',
+			secondary: '#8E8E93',
+			disabled: '#D1D1D6',
 		},
+		primary: {
+			main: '#007AFF',
+			light: '#60A5FA',
+			dark: '#075BB3',
+			contrastText: '#FFFFFF',
+		},
+		secondary: {
+			main: '#34C759',
+			light: '#6FE086',
+			dark: '#008A2E',
+			contrastText: '#FFFFFF',
+		},
+		error: {
+			main: '#FF3B30',
+			light: '#FF665E',
+			dark: '#C70000',
+			contrastText: '#FFFFFF',
+		},
+		warning: {
+			main: '#FF9500',
+			light: '#FFB84D',
+			dark: '#C76F00',
+			contrastText: '#FFFFFF',
+		},
+		info: {
+			main: '#5AC8FA',
+			light: '#8DD5FF',
+			dark: '#0095D5',
+			contrastText: '#FFFFFF',
+		},
+		success: {
+			main: '#34C759',
+			light: '#6FE086',
+			dark: '#008A2E',
+			contrastText: '#FFFFFF',
+		},
+		divider: '#D1D1D6',
 	},
 });

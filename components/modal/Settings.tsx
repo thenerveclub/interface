@@ -48,6 +48,26 @@ const ConnectButton = styled(Button)({
 	},
 });
 
+const StyledButton = styled(Button)({
+	display: 'flex',
+	alignItems: 'center', // Vertically aligns all content
+	justifyContent: 'center',
+	color: 'rgba(128, 128, 138, 1)',
+	textTransform: 'none',
+	fontWeight: 400,
+	height: 40,
+	backgroundColor: 'transparent',
+	border: 'none !important',
+	borderRadius: 15,
+	width: '100%',
+	transition: 'all 0.5s ease-in-out',
+
+	'&:hover': {
+		color: 'rgba(255, 255, 255, 1)',
+		backgroundColor: 'transparent',
+	},
+});
+
 const ConnectBox = styled(Box)({
 	position: 'absolute' as 'absolute',
 	top: '50%',
@@ -77,8 +97,10 @@ const StyledButtonGroup = styled(ButtonGroup)({
 	display: 'flex',
 	justifyContent: 'center',
 	alignItems: 'center',
-	width: '100%',
+	width: '90%',
 	margin: '2rem auto 0 auto',
+	border: '1px solid rgba(74, 74, 98, 1)',
+	borderRadius: '15px',
 });
 
 function ConnectHeader() {
@@ -136,15 +158,15 @@ function ConnectHeader() {
 						Preferences
 					</Typography>
 					<StyledButtonGroup variant="contained" aria-label="outlined primary button group" fullWidth={true}>
-						<Button onClick={handleUseSystemSetting}>
+						<StyledButton onClick={handleUseSystemSetting}>
 							<SettingsBrightnessOutlinedIcon />
-						</Button>
-						<Button onClick={handleSetLightTheme}>
+						</StyledButton>
+						<StyledButton onClick={handleSetLightTheme}>
 							<LightModeOutlinedIcon />
-						</Button>
-						<Button onClick={handleSetDarkTheme}>
+						</StyledButton>
+						<StyledButton onClick={handleSetDarkTheme}>
 							<DarkModeOutlinedIcon />
-						</Button>
+						</StyledButton>
 					</StyledButtonGroup>
 				</ConnectBox>
 			</Modal>

@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { Box } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import localFont from 'next/font/local';
 import Head from 'next/head';
 
@@ -22,7 +23,7 @@ const StyledLayout = styled(Box)`
 	}
 `;
 
-const StyledBox = styled(Box)`
+const StyledBox = styled(Box)<{ theme: any }>`
 	margin: 7.5rem auto 0 auto;
 
 	h1 {
@@ -31,6 +32,7 @@ const StyledBox = styled(Box)`
 		font-weight: 100;
 		font-family: ${TrueLies.style.fontFamily};
 		textdecoration: 'none';
+		color: ${(props) => props.theme.palette.text.primary};
 	}
 
 	h4 {
@@ -72,6 +74,8 @@ const StyledTrendingGrid = styled(Box)`
 `;
 
 export default function IndexPage() {
+	const theme = useTheme();
+
 	return (
 		<>
 			<Head>
@@ -90,7 +94,7 @@ export default function IndexPage() {
 				<meta name="twitter:image" content="https://dapp.nerveglobal.com/favicon.ico" />
 			</Head>
 			<StyledLayout>
-				<StyledBox>
+				<StyledBox theme={theme}>
 					<h1>Shape the Stream!</h1>
 					<h4>
 						The ultimate playground where spectators fuel content with financial rewards, empowering players to push boundaries and foster vibrant

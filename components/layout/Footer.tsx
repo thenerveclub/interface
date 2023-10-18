@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { useTheme } from '@mui/material/styles';
 import Discord from '/public/svg/socials/discord.svg';
 import Instagram from '/public/svg/socials/instagram.svg';
 import TikTok from '/public/svg/socials/tiktok.svg';
@@ -42,7 +43,7 @@ const RightItem = styled.div`
 	text-align: right;
 `;
 
-const StyledTwitter = styled(Twitter)`
+const StyledTwitter = styled(Twitter)<{ theme: any }>`
 	path {
 		fill: rgba(128, 128, 138, 1);
 		transition: fill 0.5s ease-in-out; // Add transition for fill color
@@ -56,12 +57,12 @@ const StyledTwitter = styled(Twitter)`
 	&:hover {
 		// transform: rotate(-10deg);
 		path {
-			fill: #fff;
+			fill: ${({ theme }) => theme.palette.text.primary};
 		}
 	}
 `;
 
-const StyledInstagram = styled(Instagram)`
+const StyledInstagram = styled(Instagram)<{ theme: any }>`
 	path {
 		fill: rgba(128, 128, 138, 1);
 		transition: fill 0.5s ease-in-out; // Add transition for fill color
@@ -75,12 +76,12 @@ const StyledInstagram = styled(Instagram)`
 	&:hover {
 		// transform: rotate(-10deg);
 		path {
-			fill: #fff;
+			fill: ${(props) => props.theme.palette.text.primary};
 		}
 	}
 `;
 
-const StyledTikTok = styled(TikTok)`
+const StyledTikTok = styled(TikTok)<{ theme: any }>`
 	path {
 		fill: rgba(128, 128, 138, 1);
 		transition: fill 0.5s ease-in-out; // Add transition for fill color
@@ -94,12 +95,12 @@ const StyledTikTok = styled(TikTok)`
 	&:hover {
 		// transform: rotate(-10deg);
 		path {
-			fill: #fff;
+			fill: ${(props) => props.theme.palette.text.primary};
 		}
 	}
 `;
 
-const StyledDiscord = styled(Discord)`
+const StyledDiscord = styled(Discord)<{ theme: any }>`
 	path {
 		fill: rgba(128, 128, 138, 1);
 		transition: fill 0.5s ease-in-out; // Add transition for fill color
@@ -113,27 +114,29 @@ const StyledDiscord = styled(Discord)`
 	&:hover {
 		// transform: rotate(-10deg);
 		path {
-			fill: #fff;
+			fill: ${(props) => props.theme.palette.text.primary};
 		}
 	}
 `;
 
 export default function BlockNumber() {
+	const theme = useTheme();
+
 	return (
 		<StyledFooter>
 			<LeftItem></LeftItem>
 			<CenterItem>
 				<a target="_blank" rel="noreferrer" href="https://twitter.com/nerveglobal_">
-					<StyledTwitter />
+					<StyledTwitter theme={theme} />
 				</a>
 				<a target="_blank" rel="noreferrer" href="https://www.instagram.com/nerveglobal">
-					<StyledInstagram />
+					<StyledInstagram theme={theme} />
 				</a>
 				<a target="_blank" rel="noreferrer" href="https://www.tiktok.com/@nerveglobal">
-					<StyledTikTok />
+					<StyledTikTok theme={theme} />
 				</a>
 				<a target="_blank" rel="noreferrer" href="https://discord.gg/Xuh5enTNB6">
-					<StyledDiscord />
+					<StyledDiscord theme={theme} />
 				</a>
 			</CenterItem>
 			<RightItem></RightItem>

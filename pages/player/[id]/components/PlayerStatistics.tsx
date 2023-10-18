@@ -34,13 +34,13 @@ const StyledGridFirst = styled(Grid)`
 const StyledGridSecond = styled(Grid)`
 	display: flex;
 	flex-direction: row;
-	font-size: 1rem;
 	color: #fff;
 	margin-top: 0.25rem;
 
 	a {
-		color: rgba(128, 128, 138, 1);
 		font-size: 0.875rem;
+		font-weight: 400;
+		color: rgba(128, 128, 138, 1);
 		width: 150px;
 		cursor: default;
 	}

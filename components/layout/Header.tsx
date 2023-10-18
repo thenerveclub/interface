@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { AppBar, Typography } from '@mui/material';
-import { alpha } from '@mui/material/styles';
+import { alpha, useTheme } from '@mui/material/styles';
 import { useWeb3React } from '@web3-react/core';
 import localFont from 'next/font/local';
 import { useEffect } from 'react';
@@ -171,6 +171,7 @@ const DesktopSettings = styled.div`
 `;
 
 export default function Header() {
+	const theme = useTheme();
 	const { account } = useWeb3React();
 
 	useEffect(() => {
@@ -180,7 +181,7 @@ export default function Header() {
 			const headerHeight = header ? header.clientHeight : 0;
 			const scrollThreshold = headerHeight / 2; // Speed of scroll
 			const opacity = Math.min(scrollPosition / scrollThreshold, 1);
-			const color = alpha('#000014', opacity);
+			const color = alpha(`${theme.palette.background.default}`, opacity);
 			const shadow = alpha('rgba(41, 50, 73, 1)', opacity);
 
 			header.style.backgroundColor = color;
@@ -206,7 +207,7 @@ export default function Header() {
 							display: 'block',
 							fontSize: '1.25rem',
 							width: 'auto',
-							color: '#fff',
+							color: `${theme.palette.text.primary}`,
 							textDecoration: 'none',
 						}}
 					>
