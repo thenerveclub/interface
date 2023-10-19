@@ -95,7 +95,7 @@ export default function IndexPage() {
 			</Head>
 			<StyledLayout>
 				<StyledBox theme={theme}>
-					<h1>Shape the Stream!</h1>
+					<h1>Shape the Stream</h1>
 					<h4>
 						The ultimate playground where spectators fuel content with financial rewards, empowering players to push boundaries and foster vibrant
 						communities.

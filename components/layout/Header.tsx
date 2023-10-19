@@ -12,11 +12,13 @@ import Setting from '../modal/Settings';
 
 const TrueLies = localFont({ src: '../../public/fonts/TrueLies.woff2', display: 'swap' });
 
-const StyledAppBar = styled(AppBar)`
+const StyledAppBar = styled(AppBar)<{ theme: any }>`
 	flex-direction: row;
 	height: 40px;
 	padding: 2rem;
 	position: fixed;
+	background-color: 'transparent';
+	box-shadow: none;
 	top: 0;
 	left: 0;
 	right: 0;
@@ -174,30 +176,30 @@ export default function Header() {
 	const theme = useTheme();
 	const { account } = useWeb3React();
 
-	useEffect(() => {
-		const handleScroll = () => {
-			const scrollPosition = window.scrollY;
-			const header = document.getElementById('header');
-			const headerHeight = header ? header.clientHeight : 0;
-			const scrollThreshold = headerHeight / 2; // Speed of scroll
-			const opacity = Math.min(scrollPosition / scrollThreshold, 1);
-			const color = alpha(`${theme.palette.background.default}`, opacity);
-			const shadow = alpha('rgba(41, 50, 73, 1)', opacity);
+	// useEffect(() => {
+	// 	const handleScroll = () => {
+	// 		const scrollPosition = window.scrollY;
+	// 		const header = document.getElementById('header');
+	// 		const headerHeight = header ? header.clientHeight : 0;
+	// 		const scrollThreshold = headerHeight / 2; // Speed of scroll
+	// 		const opacity = Math.min(scrollPosition / scrollThreshold, 1);
+	// 		const color = alpha('transparent', opacity);
+	// 		const shadow = alpha('rgba(41, 50, 73, 1)', opacity);
 
-			header.style.backgroundColor = color;
-			header.style.boxShadow = `0px 1px 1px ${shadow}`;
-		};
+	// 		header.style.backgroundColor = color;
+	// 		header.style.boxShadow = `0px 1px 1px ${shadow}`;
+	// 	};
 
-		window.addEventListener('scroll', handleScroll);
+	// 	window.addEventListener('scroll', handleScroll);
 
-		return () => {
-			window.removeEventListener('scroll', handleScroll);
-		};
-	}, []);
+	// 	return () => {
+	// 		window.removeEventListener('scroll', handleScroll);
+	// 	};
+	// }, []);
 
 	return (
 		<>
-			<StyledAppBar id="header">
+			<StyledAppBar theme={theme}>
 				<StyledSectionLeft>
 					<Typography
 						component="a"
@@ -207,7 +209,7 @@ export default function Header() {
 							display: 'block',
 							fontSize: '1.25rem',
 							width: 'auto',
-							color: `${theme.palette.text.primary}`,
+							color: 'text.primary',
 							textDecoration: 'none',
 						}}
 					>

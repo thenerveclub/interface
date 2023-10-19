@@ -46,9 +46,10 @@ const StyledGridSecond = styled(Grid)`
 	}
 `;
 
-export default function SocialBoxComponent({ valueUSD, isNetworkAvailable }: { valueUSD: boolean; isNetworkAvailable: boolean }) {
+export default function SocialBoxComponent({ isNetworkAvailable }: { isNetworkAvailable: boolean }) {
 	// Redux
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
+	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
 
 	// Checked Name Register
 	const [registerStatus] = CheckNameRegister();
@@ -70,7 +71,7 @@ export default function SocialBoxComponent({ valueUSD, isNetworkAvailable }: { v
 		<StatisticBox>
 			<StyledGridFirst>
 				{playerData[0]?.earned ? (
-					valueUSD === false ? (
+					currencyValue === false ? (
 						<a>
 							{((playerData[0]?.earned / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
 						</a>
@@ -91,7 +92,7 @@ export default function SocialBoxComponent({ valueUSD, isNetworkAvailable }: { v
 					</a>
 				)}
 				{playerData[0]?.spent ? (
-					valueUSD === false ? (
+					currencyValue === false ? (
 						<a>
 							{((playerData[0]?.spent / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
 						</a>

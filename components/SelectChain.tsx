@@ -1,6 +1,7 @@
+import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { WarningAmber } from '@mui/icons-material';
-import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, keyframes } from '@mui/material';
+import { Box, FormControl, InputLabel, List, MenuItem, Paper, Select, SelectChangeEvent, keyframes } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { CHAINS, getAddChainParameters } from '../utils/chains';
@@ -8,69 +9,89 @@ import { metaMask } from '../utils/connectors/metaMask';
 import EthereumLogo from '/public/svg/chains/ethereum.svg';
 import PolygonLogo from '/public/svg/chains/polygon.svg';
 
-const StyledSelect = styled(Select)({
-	color: '#fff',
-	backgroundColor: 'rgba(38, 38, 56, 1)',
-	border: '1px solid rgba(74, 74, 98, 1)',
-	borderRadius: 15,
-	minHeight: '40px',
-	height: '40px',
-	minWidth: '150px',
-	transition: 'all 0.5s ease-in-out',
+const StyledSelect = styled(Select)<{ theme: any; open: any }>`
+	color: #fff;
+	background-color: transparent;
+	border: 1px solid ${({ theme, open }) => (open ? theme.palette.warning.main : theme.palette.secondary.main)};
+	border-radius: ${({ theme, open }) =>
+		open ? `${theme.customShape.borderRadius} ${theme.customShape.borderRadius} 0px 0px` : theme.shape.borderRadius};
+	min-height: 40px;
+	height: 40px;
+	min-width: 150px;
+	transition: all 0.5s ease-in-out;
 
-	'&:hover': {
-		backgroundColor: 'rgba(58, 58, 76, 1)',
-	},
-	'& .MuiOutlinedInput-notchedOutline': {
-		border: 'none',
-	},
-	'& .MuiSelect-select': {
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'center',
-		alignContent: 'center',
-		verticalAlign: 'middle',
-		height: '40px',
-		textAlign: 'center',
-	},
-	'& .MuiSelect-icon': {
-		color: '#fff',
-	},
-});
+	&:hover {
+		border: 1px solid ${({ theme }) => theme.palette.warning.main};
+	}
 
-const WarningAmberIcon = styled(WarningAmber)({
-	color: 'red',
-	fontSize: '1.25rem',
-	animation: 'blink 2s infinite',
+	& .MuiOutlinedInput-notchedOutline {
+		border: none;
+	}
 
-	'@keyframes blink': {
-		'0%': { opacity: 1 },
-		'50%': { opacity: 0 },
-		'100%': { opacity: 1 },
-	},
-});
+	& .MuiSelect-select {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		align-content: center;
+		vertical-align: middle;
+		height: 40px;
+		text-align: center;
+	}
 
-const MenuItemStyled = styled(MenuItem)({
-	color: 'rgba(255, 255, 255, 1)',
-	backgroundColor: 'rgba(38, 38, 56, 1)',
-	verticalAlign: 'middle',
-	width: '100%',
-	margin: '0 auto 0 auto',
-	padding: '0.5rem',
-	cursor: 'pointer', // Adding a pointer cursor for hover state
+	& .MuiSelect-icon {
+		color: #fff;
+	}
+`;
 
-	a: {
-		'&: last-of-type': {
-			marginLeft: '0.5rem',
-		},
-	},
+const WarningAmberIcon = styled(WarningAmber)<{ theme: any }>`
+	color: ${({ theme }) => theme.palette.error.main};
+	font-size: 1.25rem;
+	animation: blink 2s infinite;
 
-	'&:focus': {
-		backgroundColor: 'rgba(38, 38, 56, 1)',
-	},
-});
+	@keyframes blink {
+		0% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0;
+		}
+		100% {
+			opacity: 1;
+		}
+	}
+`;
+
+const MenuItemStyled = styled(MenuItem)`
+	color: rgba(255, 255, 255, 1);
+	background-color: rgba(38, 38, 56, 1);
+	vertical-align: middle;
+	width: 100%;
+	margin: 0 auto 0 auto;
+	padding: 0.5rem;
+	cursor: pointer; // Adding a pointer cursor for hover state
+
+	& a:last-of-type {
+		margin-left: 0.5rem;
+	}
+
+	&:focus {
+		background-color: rgba(38, 38, 56, 1);
+	}
+`;
+
+const SearchResultTitle = styled.div<{ theme: any }>`
+	font-size: 0.75rem;
+	color: rgba(255, 255, 255, 1);
+	background-color: transparent;
+	padding: 0.5rem;
+	font-weight: bold;
+	text-align: left;
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+`;
 
 export default function BasicSelect() {
+	const theme = useTheme();
 	// Redux
 	const account = useSelector((state: { account: string }) => state.account);
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
@@ -105,10 +126,24 @@ export default function BasicSelect() {
 		}
 	};
 
+	const [menuOpen, setMenuOpen] = useState(false);
+
+	const handleOpen = () => {
+		setMenuOpen(true);
+	};
+
+	const handleClose = () => {
+		setMenuOpen(false);
+	};
+
 	return (
 		<>
 			{isNetworkAvailable ? (
 				<StyledSelect
+					open={menuOpen}
+					onOpen={handleOpen}
+					onClose={handleClose}
+					theme={theme}
 					variant="outlined"
 					value={age}
 					onChange={handleChange}
@@ -116,8 +151,9 @@ export default function BasicSelect() {
 						PaperProps: {
 							sx: {
 								backgroundColor: 'rgba(38, 38, 56, 1)',
-								border: '1px solid rgba(74, 74, 98, 1)',
-								borderRadius: '15px',
+								// border: `1px solid ${theme.palette.warning.main}`,
+								outline: `1px solid ${theme.palette.warning.main}`,
+								borderRadius: 0,
 								width: 'auto',
 								// '& .MuiMenuItem-root.Mui-selected': {
 								// 	backgroundColor: 'rgba(128, 128, 138, 1)',
@@ -132,10 +168,12 @@ export default function BasicSelect() {
 						},
 					}}
 				>
+					<SearchResultTitle theme={theme}>Mainnet</SearchResultTitle>
 					<MenuItemStyled value={137} disabled={chainId === 137}>
 						<PolygonLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
 						<a>Polygon</a>
 					</MenuItemStyled>
+					<SearchResultTitle theme={theme}>Testnet</SearchResultTitle>
 					<MenuItemStyled value={5} disabled={chainId === 5}>
 						<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
 						<a>Goerli</a>
@@ -143,21 +181,12 @@ export default function BasicSelect() {
 				</StyledSelect>
 			) : (
 				<StyledSelect
+					open={menuOpen}
+					onOpen={handleOpen}
+					onClose={handleClose}
+					theme={theme}
 					value={age}
 					onChange={handleChange}
-					// sx={{
-					// 	color: '#fff',
-					// 	height: '100%',
-					// 	verticalAlign: 'middle',
-
-					// 	'& .MuiOutlinedInput-notchedOutline': {
-					// 		border: 'none',
-					// 	},
-
-					// 	'& .MuiSelect-icon': {
-					// 		color: '#fff',
-					// 	},
-					// }}
 					MenuProps={{
 						PaperProps: {
 							sx: {
@@ -175,13 +204,15 @@ export default function BasicSelect() {
 					}}
 				>
 					<MenuItemStyled value={chainId} disabled={true}>
-						<WarningAmberIcon style={{ display: 'flex', marginRight: '0.5rem' }} />
+						<WarningAmberIcon theme={theme} style={{ display: 'flex', marginRight: '0.5rem' }} />
 						<a>Unsupported Chain</a>
 					</MenuItemStyled>
+					<SearchResultTitle theme={theme}>Mainnet</SearchResultTitle>
 					<MenuItemStyled value={137} disabled={chainId === 137}>
 						<PolygonLogo style={{ display: 'flex' }} width="22" height="22" alt="Logo" />
 						<a>Polygon</a>
 					</MenuItemStyled>
+					<SearchResultTitle theme={theme}>Testnet</SearchResultTitle>
 					<MenuItemStyled value={5} disabled={chainId === 5}>
 						<EthereumLogo style={{ display: 'flex' }} width="22" height="22" alt="Logo" />
 						<a>Goerli</a>

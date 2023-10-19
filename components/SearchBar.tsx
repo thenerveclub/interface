@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import SearchIcon from '@mui/icons-material/Search';
 import { ClickAwayListener, IconButton, InputBase, List, Paper } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -9,105 +10,122 @@ import usePlayerDataSearchList from '../hooks/usePlayerDataSearchList';
 import EthereumLogo from '/public/svg/chains/ethereum.svg';
 import PolygonLogo from '/public/svg/chains/polygon.svg';
 
-const SearchBarContainer = styled(Paper)({
-	display: 'flex',
-	width: '50%',
-	alignItems: 'center',
-	backgroundColor: 'rgba(38, 38, 56, 1)',
-	border: '1px solid rgba(74, 74, 98, 1)',
-	borderRadius: 15,
-	padding: '0 8px',
-	minHeight: '40px',
-	height: '40px',
-	transition: 'all 0.5s ease-in-out',
+const SearchBarContainer = styled(Paper)<{ theme: any }>`
+	display: flex;
+	width: 50%;
+	align-items: center;
+	background-color: transparent;
+	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
+	border-radius: ${({ theme }) => theme.shape.borderRadius};
+	min-height: 40px;
+	height: 40px;
+	transition: all 0.5s ease-in-out;
 
-	'&:hover': {
-		backgroundColor: 'rgba(58, 58, 76, 1)',
-	},
-	'& input': {
-		color: '#fff',
-		// marginLeft: '8px', // Added margin for a little spacing between the icon and text input
-	},
-	'& input::placeholder': {
-		// fontSize: '0.875rem',
-		color: 'rgba(128, 128, 138, 1)',
-	},
-	'& .MuiSvgIcon-root': {
-		color: '#fff',
-	},
-	position: 'relative', // Added relative positioning to act as a reference for the absolute positioning of the results list
+	&:hover {
+		border: 1px solid ${({ theme }) => theme.palette.warning.main};
+	}
+	&:focus-within {
+		border-bottom-left-radius: 0px;
+		border-bottom-right-radius: 0px;
+		border: 1px solid ${({ theme }) => theme.palette.warning.main};
+		background-color: ${({ theme }) => theme.palette.background.default};
+	}
+	& input {
+		color: ${({ theme }) => theme.palette.text.primary};
+	}
+	& input::placeholder {
+		color: ${({ theme }) => theme.palette.secondary.main};
+	}
+	& .MuiSvgIcon-root {
+		color: ${({ theme }) => theme.palette.text.primary};
+	}
+	position: relative;
 
-	'@media (max-width: 768px)': {
-		width: '75%', // Set width to 100% for smaller screens
-	},
-});
+	@media (max-width: 768px) {
+		width: 75%;
+	}
+`;
 
-const SearchResultList = styled(List)({
-	color: '#000',
-	backgroundColor: 'rgba(38, 38, 56, 1)',
-	border: '1px solid rgba(74, 74, 98, 1)',
-	borderRadius: 15,
-	position: 'absolute',
-	width: '100%',
-	maxHeight: '500px',
-	overflowY: 'auto',
-	top: '100%', // Position the top of the list right at the bottom of the input
-	left: '0', // Align left edge with the search bar
-	right: '0', // Align right edge with the search bar
-	borderTopLeftRadius: '15px', // Add top left border radius
-	borderTopRightRadius: '15px', // Add top right border radius
-});
+const SearchResultList = styled(List)<{ theme: any }>`
+	color: #000;
+	background-color: ${({ theme }) => theme.palette.background.default};
+	border-radius: ${({ theme }) => theme.shape.borderRadius};
+	outline: 1px solid ${({ theme }) => theme.palette.warning.main};
+	outline-offset: 0px;
+	position: absolute;
+	width: 100%;
+	max-height: 500px;
+	overflow-y: auto;
+	top: 100%;
+	left: 0;
+	right: 0;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
 
-const SearchResultItemStyled = styled.div({
-	color: '#fff',
-	backgroundColor: 'rgba(38, 38, 56, 1)',
-	verticalAlign: 'middle',
-	width: '100%',
-	margin: '0 auto 0 auto',
-	padding: '0.5rem',
-	cursor: 'pointer',
-	display: 'flex',
-	flexDirection: 'column',
+	&::-webkit-scrollbar {
+		width: 4px;
+	}
+	&::-webkit-scrollbar-track {
+		background: transparent;
+	}
+	&::-webkit-scrollbar-thumb {
+		background: ${({ theme }) => theme.palette.warning.main};
+		border-radius: 12px;
+	}
+	&::-webkit-scrollbar-thumb:hover {
+		background: ${({ theme }) => theme.palette.secondary.main};
+	}
+`;
 
-	a: {
-		fontSize: '0.75rem',
-		color: 'rgba(128, 128, 138, 1)',
-		textDecoration: 'none',
-	},
+const SearchResultItemStyled = styled.div<{ theme: any }>`
+	color: ${({ theme }) => theme.palette.text.primary};
+	background-color: ${({ theme }) => theme.palette.background.default};
+	vertical-align: middle;
+	width: 100%;
+	height: 100%;
+	margin: 0 auto;
+	padding: 1rem;
+	cursor: pointer;
+	display: flex;
+	flex-direction: column;
 
-	'&:focus, &:hover': {
-		backgroundColor: 'rgba(58, 58, 76, 1)',
-	},
+	& a {
+		font-size: 0.75rem;
+		color: ${({ theme }) => theme.palette.text.secondary};
+		text-decoration: none;
+	}
 
-	'& .item-top': {
-		display: 'flex',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-	},
+	&:focus,
+	&:hover {
+		background-color: rgba(58, 58, 76, 1);
+	}
 
-	'& .item-bottom': {
-		display: 'flex',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		fontSize: '0.8rem',
-		marginTop: '0.25rem',
-	},
-});
+	& .item-top,
+	& .item-bottom {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
 
-const SearchResultTitle = styled.div({
-	fontSize: '0.75rem',
-	color: 'rgba(255, 255, 255, 1)',
-	backgroundColor: 'transparent', // Or whatever background color you'd like
-	padding: '0.5rem',
-	fontWeight: 'bold',
-	textAlign: 'left',
-	borderTopLeftRadius: '15px', // If you want rounded corners on the top
-	borderTopRightRadius: '15px', // If you want rounded corners on the top
-	// borderTop: '1px solid #ddd', // Optional: A line to separate from previous items
-	// marginTop: '1rem', // Added margin-top for spacing
-});
+	& .item-bottom {
+		font-size: 0.8rem;
+		margin-top: 0.25rem;
+	}
+`;
+
+const SearchResultTitle = styled.div<{ theme: any }>`
+	font-size: 0.75rem;
+	color: rgba(255, 255, 255, 1);
+	background-color: transparent;
+	padding: 0.5rem;
+	font-weight: bold;
+	text-align: left;
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+`;
 
 export default function SearchBar() {
+	const theme = useTheme();
 	// Redux
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 
@@ -149,25 +167,26 @@ export default function SearchBar() {
 
 	return (
 		<ClickAwayListener onClickAway={() => setListVisible(false)}>
-			<SearchBarContainer component="form" onSubmit={(e) => e.preventDefault()}>
-				<IconButton type="submit" aria-label="search" style={{ cursor: 'default' }} disableRipple>
-					<SearchIcon style={{ color: 'rgba(128, 128, 138, 1)' }} />
+			<SearchBarContainer theme={theme} onSubmit={(e) => e.preventDefault()} elevation={0}>
+				<IconButton type="submit" aria-label="search" style={{ cursor: 'default', backgroundColor: 'transparent' }} disableRipple>
+					<SearchIcon style={{ color: theme.palette.secondary.main }} />
 				</IconButton>
 				<InputBase
 					fullWidth={true}
-					placeholder="Search players…"
+					style={{ fontSize: '1rem' }}
+					placeholder="Search players and dares…"
 					inputProps={{ 'aria-label': 'search' }}
 					value={searchValue}
 					onChange={handleSearchChange}
 					onFocus={handleFocus}
 				/>
 				{isListVisible && (
-					<SearchResultList>
+					<SearchResultList theme={theme}>
 						{playerSearchList.length > 0 && (
 							<>
-								<SearchResultTitle>Players</SearchResultTitle>
+								<SearchResultTitle theme={theme}>Players</SearchResultTitle>
 								{playerSearchList.map((player) => (
-									<SearchResultItemStyled key={player.id} onClick={() => handleListPlayerItemClick(player.userName)}>
+									<SearchResultItemStyled theme={theme} key={player.id} onClick={() => handleListPlayerItemClick(player.userName)}>
 										<div className="item-top">
 											<span className="player-name">{player.userName}</span>
 											{/* <span className="player-number">{player.someNumber}</span> */}
@@ -182,9 +201,11 @@ export default function SearchBar() {
 						)}
 						{dareSearchList.length > 0 && (
 							<>
-								<SearchResultTitle style={{ marginTop: playerSearchList.length > 0 ? '1rem' : '0px' }}>Dares</SearchResultTitle>
+								<SearchResultTitle theme={theme} style={{ marginTop: playerSearchList.length > 0 ? '1rem' : '0px' }}>
+									Dares
+								</SearchResultTitle>
 								{dareSearchList.map((dare) => (
-									<SearchResultItemStyled key={dare.id} onClick={() => handleListDareItemClick(dare.id)}>
+									<SearchResultItemStyled theme={theme} key={dare.id} onClick={() => handleListDareItemClick(dare.id)}>
 										<div className="item-top">
 											<span>{dare.description.length > 25 ? `${dare.description.substring(0, 25)}...` : dare.description}</span>
 
@@ -214,7 +235,9 @@ export default function SearchBar() {
 							</>
 						)}
 						{playerSearchList.length === 0 && dareSearchList.length === 0 && searchValue.trim() !== '' && (
-							<SearchResultTitle style={{ display: 'flex', justifyContent: 'center' }}>No players or dares were found.</SearchResultTitle>
+							<SearchResultTitle theme={theme} style={{ display: 'flex', justifyContent: 'center' }}>
+								No players or dares were found.
+							</SearchResultTitle>
 						)}
 					</SearchResultList>
 				)}

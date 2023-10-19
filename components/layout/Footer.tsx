@@ -45,7 +45,7 @@ const RightItem = styled.div`
 
 const StyledTwitter = styled(Twitter)<{ theme: any }>`
 	path {
-		fill: rgba(128, 128, 138, 1);
+		fill: ${({ theme }) => theme.palette.secondary.main};
 		transition: fill 0.5s ease-in-out; // Add transition for fill color
 	}
 
@@ -57,14 +57,14 @@ const StyledTwitter = styled(Twitter)<{ theme: any }>`
 	&:hover {
 		// transform: rotate(-10deg);
 		path {
-			fill: ${({ theme }) => theme.palette.text.primary};
+			fill: ${({ theme }) => theme.palette.secondary.contrastText};
 		}
 	}
 `;
 
 const StyledInstagram = styled(Instagram)<{ theme: any }>`
 	path {
-		fill: rgba(128, 128, 138, 1);
+		fill: ${({ theme }) => theme.palette.secondary.main};
 		transition: fill 0.5s ease-in-out; // Add transition for fill color
 	}
 
@@ -76,14 +76,14 @@ const StyledInstagram = styled(Instagram)<{ theme: any }>`
 	&:hover {
 		// transform: rotate(-10deg);
 		path {
-			fill: ${(props) => props.theme.palette.text.primary};
+			fill: ${({ theme }) => theme.palette.secondary.contrastText};
 		}
 	}
 `;
 
 const StyledTikTok = styled(TikTok)<{ theme: any }>`
 	path {
-		fill: rgba(128, 128, 138, 1);
+		fill: ${({ theme }) => theme.palette.secondary.main};
 		transition: fill 0.5s ease-in-out; // Add transition for fill color
 	}
 
@@ -95,14 +95,14 @@ const StyledTikTok = styled(TikTok)<{ theme: any }>`
 	&:hover {
 		// transform: rotate(-10deg);
 		path {
-			fill: ${(props) => props.theme.palette.text.primary};
+			fill: ${({ theme }) => theme.palette.secondary.contrastText};
 		}
 	}
 `;
 
 const StyledDiscord = styled(Discord)<{ theme: any }>`
 	path {
-		fill: rgba(128, 128, 138, 1);
+		fill: ${({ theme }) => theme.palette.secondary.main};
 		transition: fill 0.5s ease-in-out; // Add transition for fill color
 	}
 
@@ -114,7 +114,7 @@ const StyledDiscord = styled(Discord)<{ theme: any }>`
 	&:hover {
 		// transform: rotate(-10deg);
 		path {
-			fill: ${(props) => props.theme.palette.text.primary};
+			fill: ${({ theme }) => theme.palette.secondary.contrastText};
 		}
 	}
 `;
