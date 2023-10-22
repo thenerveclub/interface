@@ -4,7 +4,7 @@ export const themeSlice = createSlice({
 	name: 'theme',
 	initialState: {
 		currentTheme: 'dark',
-		prefersSystemSetting: false,
+		prefersSystemSetting: true,
 	},
 	reducers: {
 		setTheme: (state, action) => {

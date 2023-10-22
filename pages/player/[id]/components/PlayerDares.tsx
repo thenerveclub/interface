@@ -318,7 +318,7 @@ export default function PlayerDares() {
 	const dispatch = useDispatch();
 	const account = useSelector((state: { account: string }) => state.account);
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
-   const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
+	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
 	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
 
 	// Checked Name Register
@@ -336,10 +336,9 @@ export default function PlayerDares() {
 
 	// Toogle Button For Token Price
 	const handleToggle = (event, newCurrency) => {
-      // update currencyValue in redux
-      dispatch(currencySlice.actions.updateCurrency(newCurrency));
-  };
-  
+		// update currencyValue in redux
+		dispatch(currencySlice.actions.updateCurrency(newCurrency));
+	};
 
 	// Active Player Tasks
 	const activePlayerTasks = useActivePlayerTasks(checksumAddress, chainId);
@@ -373,6 +372,16 @@ export default function PlayerDares() {
 				<ActiveFilterBox>
 					{/* <ActiveTabLeftSection></ActiveTabLeftSection> */}
 					<ActiveTabRightSection>
+						{/* // Filter StyledSection */}
+						<StyledToggleButtonGroup value={currencyValue} exclusive onChange={handleToggle}>
+							<StyledToggleButton disabled={currencyValue === false} value={false}>
+								{isNetworkAvailable ? <a>{CHAINS[chainId]?.nameToken}</a> : <a>MATIC</a>}
+							</StyledToggleButton>
+							<StyledToggleButton disabled={currencyValue === true} value={true}>
+								<a>USD</a>
+							</StyledToggleButton>
+						</StyledToggleButtonGroup>
+
 						<StyledToggleButtonGroup value={currencyValue} exclusive onChange={handleToggle}>
 							<StyledToggleButton disabled={currencyValue === false} value={false}>
 								{isNetworkAvailable ? <a>{CHAINS[chainId]?.nameToken}</a> : <a>MATIC</a>}

@@ -1,12 +1,15 @@
 import styled from '@emotion/styled';
 import SearchIcon from '@mui/icons-material/Search';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { ClickAwayListener, IconButton, InputBase, List, Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import useDareDataSearchList from '../hooks/useDareDataSearchList';
-import usePlayerDataSearchList from '../hooks/usePlayerDataSearchList';
+import useTrendingDareList from '../hooks/searchData/trending/useTrendingDareList';
+import useTrendingPlayerList from '../hooks/searchData/trending/useTrendingPlayerList';
+import useDareDataSearchList from '../hooks/searchData/useDareDataSearchList';
+import usePlayerDataSearchList from '../hooks/searchData/usePlayerDataSearchList';
 import EthereumLogo from '/public/svg/chains/ethereum.svg';
 import PolygonLogo from '/public/svg/chains/polygon.svg';
 
@@ -114,8 +117,10 @@ const SearchResultItemStyled = styled.div<{ theme: any }>`
 `;
 
 const SearchResultTitle = styled.div<{ theme: any }>`
+	display: flex;
+	align-items: center;
 	font-size: 0.75rem;
-	color: rgba(255, 255, 255, 1);
+	color: ${({ theme }) => theme.palette.secondary.main};
 	background-color: transparent;
 	padding: 0.5rem;
 	font-weight: bold;
@@ -129,8 +134,12 @@ export default function SearchBar() {
 	// Redux
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 
+	const [isFocused, setIsFocused] = useState(false); // New state for focus
+
 	const [searchValue, setSearchValue] = useState('');
 	const playerSearchList = usePlayerDataSearchList(137, searchValue);
+	const trendingPlayersList = useTrendingPlayerList(137); // New hook to get players based on search value
+	const trendingDareList = useTrendingDareList(137);
 	const dareSearchList = useDareDataSearchList(137, searchValue); // New hook to get dares based on search value
 	const [isListVisible, setListVisible] = useState(false);
 	const router = useRouter();
@@ -141,9 +150,8 @@ export default function SearchBar() {
 	};
 
 	const handleFocus = () => {
-		if (searchValue.trim()) {
-			setListVisible(true); // Show search results when input is focused and there's a term to search
-		}
+		setIsFocused(true); // Set isFocused to true when the input is focused
+		setListVisible(true); // Show search results when input is focused
 	};
 
 	const handleListPlayerItemClick = (playerId) => {
@@ -182,7 +190,59 @@ export default function SearchBar() {
 				/>
 				{isListVisible && (
 					<SearchResultList theme={theme}>
-						{playerSearchList.length > 0 && (
+						{searchValue.trim() === '' && (
+							<>
+								<SearchResultTitle theme={theme}>
+									<TrendingUpIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main }} />
+									Trending Players
+								</SearchResultTitle>
+								{trendingPlayersList.map((trendingPlayer) => (
+									<SearchResultItemStyled theme={theme} key={trendingPlayer.id} onClick={() => handleListPlayerItemClick(trendingPlayer.userName)}>
+										<div className="item-top">
+											<span className="player-name">{trendingPlayer.userName}</span>
+											{/* <span className="player-number">{player.someNumber}</span> */}
+										</div>
+										<div className="item-bottom">
+											<a>{trendingPlayer.id}</a>
+											{/* <span className="player-additional-text">Earned</span> */}
+										</div>
+									</SearchResultItemStyled>
+								))}
+								<SearchResultTitle theme={theme}>
+									<TrendingUpIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main }} />
+									Trending Dares
+								</SearchResultTitle>
+								{trendingDareList.map((trendingDare) => (
+									<SearchResultItemStyled theme={theme} key={trendingDare.id} onClick={() => handleListDareItemClick(trendingDare.id)}>
+										<div className="item-top">
+											<span>{trendingDare.description.length > 25 ? `${trendingDare.description.substring(0, 25)}...` : trendingDare.description}</span>
+
+											<span>
+												{formatNumber(trendingDare.amount)}{' '}
+												{chainId === 137 ? (
+													<PolygonLogo
+														style={{
+															display: 'inline-block',
+															verticalAlign: 'middle',
+														}}
+														width="16"
+														height="16"
+														alt="Logo"
+													/>
+												) : (
+													<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+												)}
+											</span>
+										</div>
+										<div className="item-bottom">
+											<a>{trendingDare.participants} participants</a>
+											<a>Stake</a>
+										</div>
+									</SearchResultItemStyled>
+								))}
+							</>
+						)}
+						{searchValue.trim() !== '' && playerSearchList.length > 0 && (
 							<>
 								<SearchResultTitle theme={theme}>Players</SearchResultTitle>
 								{playerSearchList.map((player) => (
@@ -199,7 +259,7 @@ export default function SearchBar() {
 								))}
 							</>
 						)}
-						{dareSearchList.length > 0 && (
+						{searchValue.trim() !== '' && dareSearchList.length > 0 && (
 							<>
 								<SearchResultTitle theme={theme} style={{ marginTop: playerSearchList.length > 0 ? '1rem' : '0px' }}>
 									Dares
@@ -234,7 +294,7 @@ export default function SearchBar() {
 								))}
 							</>
 						)}
-						{playerSearchList.length === 0 && dareSearchList.length === 0 && searchValue.trim() !== '' && (
+						{searchValue.trim() !== '' && playerSearchList.length === 0 && dareSearchList.length === 0 && searchValue.trim() !== '' && (
 							<SearchResultTitle theme={theme} style={{ display: 'flex', justifyContent: 'center' }}>
 								No players or dares were found.
 							</SearchResultTitle>

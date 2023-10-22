@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { CHAINS } from '../utils/chains';
+import { CHAINS } from '../../utils/chains';
 
-const useDareDataSearchList = (chainId: number, keyWord: string) => {
+const useTrendingDareDataSearchList = (chainId: number, keyWord: string) => {
 	const [dareSearchList, setDareSearchList] = useState<any[]>([]);
 
 	useEffect(() => {
@@ -29,7 +29,6 @@ const useDareDataSearchList = (chainId: number, keyWord: string) => {
 				});
 
 				const data = await fetchDareData.json();
-				console.log('check', data.data.tasks);
 				setDareSearchList(data.data.tasks);
 			} catch (error) {
 				console.error(error);
@@ -42,4 +41,4 @@ const useDareDataSearchList = (chainId: number, keyWord: string) => {
 	return dareSearchList;
 };
 
-export default useDareDataSearchList;
+export default useTrendingDareDataSearchList;

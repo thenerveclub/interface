@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { CHAINS } from '../utils/chains';
+import { CHAINS } from '../../utils/chains';
 
 const usePlayerDataSearchList = (chainId: number, keyWord: string) => {
 	const [playerSearchList, setPlayerSearchList] = useState<any[]>([]);
@@ -30,7 +30,6 @@ const usePlayerDataSearchList = (chainId: number, keyWord: string) => {
 				});
 
 				const data = await fetchPlayerData.json();
-				console.log(data.data.globalStats[0].users);
 				setPlayerSearchList(data.data.globalStats[0].users);
 			} catch (error) {
 				console.error(error);
