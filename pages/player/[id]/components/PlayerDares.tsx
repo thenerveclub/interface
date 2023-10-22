@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { Box, Button, Fade, Grid, Link, Skeleton, Tab, Tabs, ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import SelectFilter from '../../../../components/SelectFilter';
 import CreateTask from '../../../../components/modal/createTask';
 import useActivePlayerTasks from '../../../../hooks/useActivePlayerTasks';
 import useCompletedPlayerTasks from '../../../../hooks/useCompletedPlayerTasks';
@@ -373,14 +374,7 @@ export default function PlayerDares() {
 					{/* <ActiveTabLeftSection></ActiveTabLeftSection> */}
 					<ActiveTabRightSection>
 						{/* // Filter StyledSection */}
-						<StyledToggleButtonGroup value={currencyValue} exclusive onChange={handleToggle}>
-							<StyledToggleButton disabled={currencyValue === false} value={false}>
-								{isNetworkAvailable ? <a>{CHAINS[chainId]?.nameToken}</a> : <a>MATIC</a>}
-							</StyledToggleButton>
-							<StyledToggleButton disabled={currencyValue === true} value={true}>
-								<a>USD</a>
-							</StyledToggleButton>
-						</StyledToggleButtonGroup>
+						<SelectFilter />
 
 						<StyledToggleButtonGroup value={currencyValue} exclusive onChange={handleToggle}>
 							<StyledToggleButton disabled={currencyValue === false} value={false}>
