@@ -4,6 +4,7 @@ import { accountSlice } from './account/accountSlice';
 import { availableChainsSlice, chainIdSlice } from './chainId/chainIdSlice';
 import { themeSlice } from './theme/themeSlice';
 import { currencySlice } from './currency/currencySlice';
+import { sortSlice } from './sort/sortSlice';
 
 export const store = configureStore({
 	reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
 		availableChains: availableChainsSlice.reducer,
 		theme: themeSlice.reducer,
 		currency: currencySlice.reducer,
+		sort: sortSlice.reducer,
 	},
 	middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
 });

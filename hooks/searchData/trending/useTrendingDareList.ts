@@ -12,7 +12,7 @@ const useTrendingDareList = (chainId: number) => {
 				  first: 3
 				  orderBy: amount
 				  orderDirection: desc
-				  where: {finished: false, executed: false}
+				  where: {finished: false, executed: false, endTask_gt: ${Math.floor(Date.now() / 1000)}}
 				) {
 				  id
 				  amount

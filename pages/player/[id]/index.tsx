@@ -14,9 +14,9 @@ import useCompletedPlayerTasks from '../../../hooks/useCompletedPlayerTasks';
 import usePrice from '../../../hooks/usePrice';
 import { CHAINS } from '../../../utils/chains';
 import { CheckNameRegister } from '../../../utils/validation/checkNameRegister';
-import PlayerStatistics from './components/PlayerStatistics';
-import PlayerSocials from './components/PlayerSocials';
 import PlayerDares from './components/PlayerDares';
+import PlayerSocials from './components/PlayerSocials';
+import PlayerStatistics from './components/PlayerStatistics';
 
 const StyledSection = styled(Box)`
 	display: flex;
@@ -95,8 +95,6 @@ const AddressBox = styled(Box)`
 		justify-content: center;
 	}
 `;
-
-
 
 export default function PlayerPage() {
 	// Redux

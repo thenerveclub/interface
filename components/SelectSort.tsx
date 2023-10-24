@@ -1,9 +1,10 @@
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
-import { WarningAmber } from '@mui/icons-material';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { sortSlice } from '../state/sort/sortSlice';
 
 const StyledSelect = styled(Select)<{ theme: any; open: any }>`
 	color: #fff;
@@ -68,15 +69,17 @@ const SearchResultTitle = styled.div<{ theme: any }>`
 	border-top-right-radius: 15px;
 `;
 
-export default function SelectFilter() {
+export default function SelectSort() {
+	// Redux
+	const dispatch = useDispatch();
+	const sort = useSelector((state: { sort: number }) => state.sort);
+
 	const theme = useTheme();
-	const [selectedValue, setSelectedValue] = useState('1');
+	const [menuOpen, setMenuOpen] = useState(false);
 
 	const handleChange = (event: SelectChangeEvent) => {
-		setSelectedValue(event.target.value as string);
+		dispatch(sortSlice.actions.updateSort(event.target.value));
 	};
-
-	const [menuOpen, setMenuOpen] = useState(false);
 
 	const handleOpen = () => {
 		setMenuOpen(true);
@@ -94,19 +97,15 @@ export default function SelectFilter() {
 				onClose={handleClose}
 				theme={theme}
 				variant="outlined"
-				value={selectedValue}
+				value={sort}
 				onChange={handleChange}
 				MenuProps={{
 					PaperProps: {
 						sx: {
 							backgroundColor: 'rgba(38, 38, 56, 1)',
-							// border: `1px solid ${theme.palette.warning.main}`,
 							outline: `1px solid ${theme.palette.warning.main}`,
 							borderRadius: 0,
 							width: 'auto',
-							// '& .MuiMenuItem-root.Mui-selected': {
-							// 	backgroundColor: 'rgba(128, 128, 138, 1)',
-							// },
 							'& .MuiMenuItem-root': {
 								backgroundColor: 'rgba(38, 38, 56, 1)',
 							},
@@ -118,32 +117,31 @@ export default function SelectFilter() {
 				}}
 			>
 				<SearchResultTitle theme={theme}>Stake</SearchResultTitle>
-				<MenuItemStyled value={1}>
+				<MenuItemStyled value={1} disabled={sort === 1 ? true : false}>
 					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main, transform: 'scaleY(-1)' }} />
-
-					<a>Low to High</a>
+					<a>{sort === 1 ? 'Stake: Low to High' : 'Low to High'}</a>
 				</MenuItemStyled>
-				<MenuItemStyled value={2}>
+				<MenuItemStyled value={2} disabled={sort === 2 ? true : false}>
 					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main }} />
-					<a>High to Low</a>
+					<a>{sort === 2 ? 'Stake: High to Low' : 'High to Low'}</a>
 				</MenuItemStyled>
 				<SearchResultTitle theme={theme}>Participants</SearchResultTitle>
-				<MenuItemStyled value={3}>
+				<MenuItemStyled value={3} disabled={sort === 3 ? true : false}>
 					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main, transform: 'scaleY(-1)' }} />
-					<a>Low to High</a>
+					<a>{sort === 3 ? 'Participants: Low to High' : 'Low to High'}</a>
 				</MenuItemStyled>
-				<MenuItemStyled value={4}>
+				<MenuItemStyled value={4} disabled={sort === 4 ? true : false}>
 					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main }} />
-					<a>High to Low</a>
+					<a>{sort === 4 ? 'Participants: High to Low' : 'High to Low'}</a>
 				</MenuItemStyled>
 				<SearchResultTitle theme={theme}>Entrance Amount</SearchResultTitle>
-				<MenuItemStyled value={3}>
+				<MenuItemStyled value={5} disabled={sort === 5 ? true : false}>
 					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main, transform: 'scaleY(-1)' }} />
-					<a>Low to High</a>
+					<a>{sort === 5 ? 'Entrance Amount: Low to High' : 'Low to High'}</a>
 				</MenuItemStyled>
-				<MenuItemStyled value={4}>
+				<MenuItemStyled value={6} disabled={sort === 6 ? true : false}>
 					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main }} />
-					<a>High to Low</a>
+					<a>{sort === 6 ? 'Entrance Amount: High to Low' : 'High to Low'}</a>
 				</MenuItemStyled>
 			</StyledSelect>
 		</>

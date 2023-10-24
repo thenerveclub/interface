@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 import { Box, Button, Fade, Grid, Link, Skeleton, Tab, Tabs, ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import SelectFilter from '../../../../components/SelectFilter';
+import SelectSort from '../../../../components/SelectSort';
 import CreateTask from '../../../../components/modal/createTask';
 import useActivePlayerTasks from '../../../../hooks/useActivePlayerTasks';
 import useCompletedPlayerTasks from '../../../../hooks/useCompletedPlayerTasks';
@@ -79,6 +79,7 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)`
 	border-radius: 15px;
 	height: 40px;
 	width: 125px;
+	margin-left: 1rem;
 `;
 
 const StyledToggleButton = styled(ToggleButton)`
@@ -321,6 +322,7 @@ export default function PlayerDares() {
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
 	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
+	const sort = useSelector((state: { sort: number }) => state.sort);
 
 	// Checked Name Register
 	const [registerStatus] = CheckNameRegister();
@@ -345,6 +347,12 @@ export default function PlayerDares() {
 	const activePlayerTasks = useActivePlayerTasks(checksumAddress, chainId);
 	const completedPlayerTasks = useCompletedPlayerTasks(checksumAddress, chainId);
 
+	const [filteredActiveTasks, setFilteredActiveTasks] = useState(activePlayerTasks);
+	const [filteredCompletedTasks, setFilteredCompletedTasks] = useState(completedPlayerTasks);
+
+	console.log('completedPlayerTasks', completedPlayerTasks);
+	console.log('filteredCompletedTasks', filteredCompletedTasks);
+
 	// Tab Panel
 	function TabPanel(props: TabPanelProps) {
 		const { children, value, index, ...other } = props;
@@ -361,6 +369,37 @@ export default function PlayerDares() {
 		setValue(newValue);
 	};
 
+	useEffect(() => {
+		// Create a function that returns sorted tasks based on the sort option
+		const sortTasks = (tasks, sortOption) => {
+			if (!tasks) return [];
+			switch (sortOption) {
+				case 1:
+					return [...tasks].sort((a, b) => a.amount - b.amount);
+				case 2:
+					return [...tasks].sort((a, b) => b.amount - a.amount);
+				case 3:
+					return [...tasks].sort((a, b) => a.participants - b.participants);
+				case 4:
+					return [...tasks].sort((a, b) => b.participants - a.participants);
+				case 5:
+					return [...tasks].sort((a, b) => a.entranceAmount - b.entranceAmount);
+				case 6:
+					return [...tasks].sort((a, b) => b.entranceAmount - a.entranceAmount);
+				default:
+					return tasks; // return original tasks if no sort option matches
+			}
+		};
+
+		// Apply the sorting function to both active and completed tasks
+		const sortedActiveTasks = sortTasks(activePlayerTasks, sort);
+		const sortedCompletedTasks = sortTasks(completedPlayerTasks, sort);
+
+		// Update the state with the sorted tasks
+		setFilteredActiveTasks(sortedActiveTasks);
+		setFilteredCompletedTasks(sortedCompletedTasks);
+	}, [sort, activePlayerTasks, completedPlayerTasks]); // dependencies include sort value and the tasks themselves
+
 	return (
 		<>
 			<ActiveBox>
@@ -374,7 +413,7 @@ export default function PlayerDares() {
 					{/* <ActiveTabLeftSection></ActiveTabLeftSection> */}
 					<ActiveTabRightSection>
 						{/* // Filter StyledSection */}
-						<SelectFilter />
+						<SelectSort />
 
 						<StyledToggleButtonGroup value={currencyValue} exclusive onChange={handleToggle}>
 							<StyledToggleButton disabled={currencyValue === false} value={false}>
@@ -388,7 +427,7 @@ export default function PlayerDares() {
 					</ActiveTabRightSection>
 				</ActiveFilterBox>
 				<ActiveTabSection>
-					{activePlayerTasks.map((tad) => (
+					{filteredActiveTasks.map((tad) => (
 						<li style={{ listStyle: 'none' }} key={tad}>
 							<TaskCard>
 								<TaskBoxSection>
@@ -456,6 +495,8 @@ export default function PlayerDares() {
 				<ActiveFilterBox>
 					{/* <ActiveTabLeftSection></ActiveTabLeftSection> */}
 					<ActiveTabRightSection>
+						{/* // Filter StyledSection */}
+						<SelectSort />
 						<StyledToggleButtonGroup value={currencyValue} exclusive onChange={handleToggle}>
 							<StyledToggleButton disabled={currencyValue === false} value={false}>
 								{isNetworkAvailable ? <a>{CHAINS[chainId]?.nameToken}</a> : <a>MATIC</a>}
@@ -467,7 +508,7 @@ export default function PlayerDares() {
 					</ActiveTabRightSection>
 				</ActiveFilterBox>
 				<ActiveTabSection>
-					{completedPlayerTasks.map((tad) => (
+					{filteredCompletedTasks.map((tad) => (
 						<li style={{ listStyle: 'none' }} key={tad.id}>
 							<TaskCard>
 								<TaskBoxSection>
