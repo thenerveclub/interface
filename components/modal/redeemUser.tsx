@@ -28,7 +28,7 @@ const BuyButton = styled(Button)({
 	},
 });
 
-export default function RegisterName() {
+export default function RedeemUser() {
 	const { provider } = useWeb3React();
 	const { enqueueSnackbar } = useSnackbar();
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
@@ -45,7 +45,7 @@ export default function RegisterName() {
 		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			const tx = await nerveGlobal.redeemUser(taskNumber, { gasLimit: 250000 });
+			const tx = await nerveGlobal.redeemUser(taskNumber);
 			enqueueSnackbar('Transaction signed succesfully!', {
 				variant: 'success',
 			});

@@ -1,9 +1,8 @@
 import styled from '@emotion/styled';
 import { AppBar, Typography } from '@mui/material';
-import { alpha, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import { useWeb3React } from '@web3-react/core';
 import localFont from 'next/font/local';
-import { useEffect } from 'react';
 import SearchBar from '../SearchBar';
 import SelectChain from '../SelectChain';
 import AccountModal from '../modal/menu/Account';

@@ -7,7 +7,6 @@ import TuneIcon from '@mui/icons-material/Tune';
 import { Box, Button, ButtonGroup, Modal, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import * as React from 'react';
-import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { currencySlice } from '../../../state/currency/currencySlice';
 import { setTheme, setUseSystemSetting } from '../../../state/theme/themeSlice';
@@ -109,7 +108,7 @@ const StyledButtonGroup = styled(ButtonGroup)<{ theme: any }>`
 	border-radius: ${({ theme }) => theme.shape.borderRadius};
 `;
 
-function ConnectHeader() {
+function SettingsModal() {
 	const theme = useTheme();
 	// Redux
 	const dispatch = useDispatch(); // Hook to dispatch actions
@@ -192,4 +191,4 @@ function ConnectHeader() {
 	);
 }
 
-export default ConnectHeader;
+export default SettingsModal;

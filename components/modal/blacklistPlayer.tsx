@@ -181,7 +181,7 @@ export default function BlacklistPlayer() {
 		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			const tx = await nerveGlobal.setBlacklistUser(checksumAddress, { gasLimit: 250000 });
+			const tx = await nerveGlobal.setBlacklistUser(checksumAddress);
 			enqueueSnackbar('Transaction signed succesfully!', {
 				variant: 'success',
 			});

@@ -146,7 +146,7 @@ export default function RegisterName() {
 		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			const tx = await nerveGlobal.registerName(nameToHex, { gasLimit: 250000 });
+			const tx = await nerveGlobal.registerName(nameToHex);
 			enqueueSnackbar('Transaction signed succesfully!', {
 				variant: 'success',
 			});

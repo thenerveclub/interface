@@ -203,7 +203,7 @@ export default function RegisterSocial() {
 		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			const tx = await nerveGlobal.registerSocial(links, indices, { gasLimit: 250000 });
+			const tx = await nerveGlobal.registerSocial(links, indices);
 			enqueueSnackbar('Transaction signed succesfully!', {
 				variant: 'success',
 			});

@@ -5,7 +5,7 @@ import { BigNumber, ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import Join from '../../../components/modal/joinTask';
+import Join from '../../../components/modal/joinDare';
 import Connect from '../../../components/modal/menu/Connect';
 import Claim from '../../../components/modal/redeemUser';
 import Vote from '../../../components/modal/voteTask';

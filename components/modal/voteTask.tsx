@@ -33,7 +33,7 @@ export default function VoteTask() {
 		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			const tx = await nerveGlobal.voteTask(Id, true, { gasLimit: 250000 });
+			const tx = await nerveGlobal.voteTask(Id, true);
 			enqueueSnackbar('Transaction signed succesfully!', {
 				variant: 'success',
 			});
@@ -62,7 +62,7 @@ export default function VoteTask() {
 		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			const tx = await nerveGlobal.voteTask(Id, false, { gasLimit: 250000 });
+			const tx = await nerveGlobal.voteTask(Id, false);
 			enqueueSnackbar('Transaction signed succesfully!', {
 				variant: 'success',
 			});

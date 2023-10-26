@@ -139,7 +139,6 @@ export default function CreateTask() {
 			setPendingTx(true);
 			const tx = await nerveGlobal.createTask(registerStatus, description, duration, 'en', '0', '0', {
 				value: value,
-				gasLimit: 250000,
 			});
 			enqueueSnackbar('Transaction signed succesfully!', {
 				variant: 'success',

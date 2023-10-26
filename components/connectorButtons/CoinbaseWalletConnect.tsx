@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { coinbaseWallet, hooks } from '../../utils/connectors/coinbaseWallet';
 import { Card } from '../ConnectOnlyCard';
 

@@ -1,10 +1,10 @@
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { WarningAmber } from '@mui/icons-material';
-import { Box, FormControl, InputLabel, List, MenuItem, Paper, Select, SelectChangeEvent, keyframes } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react';
+import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { CHAINS, getAddChainParameters } from '../utils/chains';
+import { getAddChainParameters } from '../utils/chains';
 import { metaMask } from '../utils/connectors/metaMask';
 import EthereumLogo from '/public/svg/chains/ethereum.svg';
 import PolygonLogo from '/public/svg/chains/polygon.svg';
@@ -90,10 +90,9 @@ const SearchResultTitle = styled.div<{ theme: any }>`
 	border-top-right-radius: 15px;
 `;
 
-export default function BasicSelect() {
+export default function SelectChain() {
 	const theme = useTheme();
 	// Redux
-	const account = useSelector((state: { account: string }) => state.account);
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { hooks, metaMask } from '../../utils/connectors/metaMask';
 import { Card } from '../ConnectOnlyCard';
 

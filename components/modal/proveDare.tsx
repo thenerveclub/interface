@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
 import { CHAINS } from '../../utils/chains';
 
-export default function VoteTask() {
+export default function ProveDare() {
 	const [open, setOpen] = useState(false);
 	const { provider } = useWeb3React();
 	const { enqueueSnackbar } = useSnackbar();
@@ -33,7 +33,7 @@ export default function VoteTask() {
 		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			const tx = await nerveGlobal.proveTask(Id, true, { gasLimit: 250000 });
+			const tx = await nerveGlobal.proveTask(Id, true);
 			enqueueSnackbar('Transaction signed succesfully!', {
 				variant: 'success',
 			});
@@ -62,7 +62,7 @@ export default function VoteTask() {
 		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			const tx = await nerveGlobal.voteTask(Id, false, { gasLimit: 250000 });
+			const tx = await nerveGlobal.voteTask(Id, false);
 			enqueueSnackbar('Transaction signed succesfully!', {
 				variant: 'success',
 			});

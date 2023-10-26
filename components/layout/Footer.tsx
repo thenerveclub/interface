@@ -119,7 +119,7 @@ const StyledDiscord = styled(Discord)<{ theme: any }>`
 	}
 `;
 
-export default function BlockNumber() {
+export default function Footer() {
 	const theme = useTheme();
 
 	return (

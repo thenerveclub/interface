@@ -22,16 +22,7 @@ const style = {
 	pb: 3,
 };
 
-const Transition = forwardRef(function Transition(
-	props: TransitionProps & {
-		children: React.ReactElement<any, any>;
-	},
-	ref: React.Ref<unknown>
-) {
-	return <Slide direction="up" ref={ref} {...props} />;
-});
-
-export default function JoinTask() {
+export default function JoinDare() {
 	const [open, setOpen] = useState(false);
 	const { provider } = useWeb3React();
 	const { enqueueSnackbar } = useSnackbar();
@@ -58,7 +49,7 @@ export default function JoinTask() {
 		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			const tx = await nerveGlobal.joinTask(Id, { value: value, gasLimit: 250000 });
+			const tx = await nerveGlobal.joinTask(Id, { value: value });
 			enqueueSnackbar('Transaction signed succesfully!', {
 				variant: 'success',
 			});

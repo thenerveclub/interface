@@ -71,7 +71,7 @@ const ConnectBox = styled(Box)<{ theme: any }>`
 	}
 `;
 
-function ConnectHeader() {
+function ConnectModal() {
 	const theme = useTheme();
 	const [open, setOpen] = React.useState(false);
 	const [isClosing, setIsClosing] = React.useState(false); // <-- New state to track closing status
@@ -144,4 +144,4 @@ function ConnectHeader() {
 	);
 }
 
-export default ConnectHeader;
+export default ConnectModal;
