@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { Box } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import * as React from 'react';
-import Identicon from '../Identicon';
+import Identicon from '../../Identicon';
 
 const ConnectBox = styled(Box)({
 	display: 'flex',

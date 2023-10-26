@@ -5,8 +5,8 @@ import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import NerveGlobalABI from '../constants/abi/nerveGlobal.json';
-import { CHAINS } from '../utils/chains';
+import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
+import { CHAINS } from '../../utils/chains';
 
 const BuyButton = styled(Button)({
 	color: '#000',
@@ -45,7 +45,7 @@ export default function RegisterName() {
 		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			const tx = await nerveGlobal.redeemUser(taskNumber, { gasLimit: 250000 });
+			const tx = await nerveGlobal.redeemRecipient(taskNumber, { gasLimit: 250000 });
 			enqueueSnackbar('Transaction signed succesfully!', {
 				variant: 'success',
 			});

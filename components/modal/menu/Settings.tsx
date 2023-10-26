@@ -9,8 +9,8 @@ import { useTheme } from '@mui/material/styles';
 import * as React from 'react';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { currencySlice } from '../../state/currency/currencySlice';
-import { setTheme, setUseSystemSetting } from '../../state/theme/themeSlice';
+import { currencySlice } from '../../../state/currency/currencySlice';
+import { setTheme, setUseSystemSetting } from '../../../state/theme/themeSlice';
 
 // Define the keyframes for the slide-down animation
 const slideDown = keyframes`

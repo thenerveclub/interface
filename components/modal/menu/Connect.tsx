@@ -3,9 +3,9 @@ import styled from '@emotion/styled';
 import { Box, Button, CircularProgress, Modal, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import * as React from 'react';
-import CoinbaseWalletConnect from '../connectorButtons/CoinbaseWalletConnect';
-import MetaMaskConnect from '../connectorButtons/MetaMaskConnect';
-import { WalletConnect } from '../connectorButtons/WalletConnect';
+import CoinbaseWalletConnect from '../../connectorButtons/CoinbaseWalletConnect';
+import MetaMaskConnect from '../../connectorButtons/MetaMaskConnect';
+import { WalletConnect } from '../../connectorButtons/WalletConnect';
 
 // Define the keyframes for the slide-down animation
 const slideDown = keyframes`

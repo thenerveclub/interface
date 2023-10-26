@@ -6,9 +6,9 @@ import localFont from 'next/font/local';
 import { useEffect } from 'react';
 import SearchBar from '../SearchBar';
 import SelectChain from '../SelectChain';
-import AccountModal from '../modal/Account';
-import Connect from '../modal/Connect';
-import Setting from '../modal/Settings';
+import AccountModal from '../modal/menu/Account';
+import Connect from '../modal/menu/Connect';
+import Setting from '../modal/menu/Settings';
 
 const TrueLies = localFont({ src: '../../public/fonts/TrueLies.woff2', display: 'swap' });
 
