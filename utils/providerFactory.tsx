@@ -11,7 +11,7 @@ const getProvider = (function () {
 		}
 
 		const providerUrls = CHAINS[chainId]?.urls[0];
-		const networkProvider = new ethers.providers.JsonRpcProvider(providerUrls);
+		const networkProvider = new ethers.providers.StaticJsonRpcProvider(providerUrls);
 
 		const getContractProvider = () => {
 			try {

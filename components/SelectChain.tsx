@@ -1,7 +1,7 @@
-import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { WarningAmber } from '@mui/icons-material';
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getAddChainParameters } from '../utils/chains';
@@ -10,7 +10,8 @@ import EthereumLogo from '/public/svg/chains/ethereum.svg';
 import PolygonLogo from '/public/svg/chains/polygon.svg';
 
 const StyledSelect = styled(Select)<{ theme: any; open: any }>`
-	color: #fff;
+	color: ${({ theme }) => theme.palette.text.primary};
+	font-weight: 500;
 	background-color: transparent;
 	border: 1px solid ${({ theme, open }) => (open ? theme.palette.warning.main : theme.palette.secondary.main)};
 	border-radius: ${({ theme, open }) =>
@@ -39,7 +40,7 @@ const StyledSelect = styled(Select)<{ theme: any; open: any }>`
 	}
 
 	& .MuiSelect-icon {
-		color: #fff;
+		color: ${({ theme }) => theme.palette.text.primary};
 	}
 `;
 
@@ -61,8 +62,8 @@ const WarningAmberIcon = styled(WarningAmber)<{ theme: any }>`
 	}
 `;
 
-const MenuItemStyled = styled(MenuItem)`
-	color: rgba(255, 255, 255, 1);
+const MenuItemStyled = styled(MenuItem)<{ theme: any }>`
+	color: ${({ theme }) => theme.palette.text.primary};
 	background-color: rgba(38, 38, 56, 1);
 	vertical-align: middle;
 	width: 100%;
@@ -81,7 +82,7 @@ const MenuItemStyled = styled(MenuItem)`
 
 const SearchResultTitle = styled.div<{ theme: any }>`
 	font-size: 0.75rem;
-	color: rgba(255, 255, 255, 1);
+	color: ${({ theme }) => theme.palette.secondary.main};
 	background-color: transparent;
 	padding: 0.5rem;
 	font-weight: bold;
@@ -149,7 +150,7 @@ export default function SelectChain() {
 					MenuProps={{
 						PaperProps: {
 							sx: {
-								backgroundColor: 'rgba(38, 38, 56, 1)',
+								backgroundColor: theme.palette.background.default,
 								// border: `1px solid ${theme.palette.warning.main}`,
 								outline: `1px solid ${theme.palette.warning.main}`,
 								borderRadius: 0,
@@ -158,22 +159,22 @@ export default function SelectChain() {
 								// 	backgroundColor: 'rgba(128, 128, 138, 1)',
 								// },
 								'& .MuiMenuItem-root': {
-									backgroundColor: 'rgba(38, 38, 56, 1)',
+									backgroundColor: theme.palette.background.default,
 								},
 								'& .MuiMenuItem-root:hover': {
-									backgroundColor: 'rgba(58, 58, 76, 1)',
+									backgroundColor: theme.palette.secondary.light,
 								},
 							},
 						},
 					}}
 				>
 					<SearchResultTitle theme={theme}>Mainnet</SearchResultTitle>
-					<MenuItemStyled value={137} disabled={chainId === 137}>
+					<MenuItemStyled theme={theme} value={137} disabled={chainId === 137}>
 						<PolygonLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
 						<a>Polygon</a>
 					</MenuItemStyled>
 					<SearchResultTitle theme={theme}>Testnet</SearchResultTitle>
-					<MenuItemStyled value={5} disabled={chainId === 5}>
+					<MenuItemStyled theme={theme} value={5} disabled={chainId === 5}>
 						<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
 						<a>Goerli</a>
 					</MenuItemStyled>
@@ -202,17 +203,17 @@ export default function SelectChain() {
 						},
 					}}
 				>
-					<MenuItemStyled value={chainId} disabled={true}>
+					<MenuItemStyled theme={theme} value={chainId} disabled={true}>
 						<WarningAmberIcon theme={theme} style={{ display: 'flex', marginRight: '0.5rem' }} />
 						<a>Unsupported Chain</a>
 					</MenuItemStyled>
 					<SearchResultTitle theme={theme}>Mainnet</SearchResultTitle>
-					<MenuItemStyled value={137} disabled={chainId === 137}>
+					<MenuItemStyled theme={theme} value={137} disabled={chainId === 137}>
 						<PolygonLogo style={{ display: 'flex' }} width="22" height="22" alt="Logo" />
 						<a>Polygon</a>
 					</MenuItemStyled>
 					<SearchResultTitle theme={theme}>Testnet</SearchResultTitle>
-					<MenuItemStyled value={5} disabled={chainId === 5}>
+					<MenuItemStyled theme={theme} value={5} disabled={chainId === 5}>
 						<EthereumLogo style={{ display: 'flex' }} width="22" height="22" alt="Logo" />
 						<a>Goerli</a>
 					</MenuItemStyled>

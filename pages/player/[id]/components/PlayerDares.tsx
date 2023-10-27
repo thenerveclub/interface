@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { Box, Button, Fade, Grid, Link, Skeleton, Tab, Tabs, ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SelectSort from '../../../../components/SelectSort';
@@ -11,23 +12,31 @@ import { currencySlice } from '../../../../state/currency/currencySlice';
 import { CHAINS } from '../../../../utils/chains';
 import { CheckNameRegister } from '../../../../utils/validation/checkNameRegister';
 
-const StyledTab = styled(Tab)`
-	color: rgba(128, 128, 138, 1);
-	font-size: 1rem;
-	text-transform: none;
-	min-width: 9.375rem;
-
-	&.Mui-selected {
-		border-bottom: 1px solid #fff;
-		z-index: 1;
+const StyledTabs = styled(Tabs)<{ theme: any }>`
+	// target child element
+	& .MuiTabs-indicator {
+		background-color: ${({ theme }) => theme.palette.warning.main};
 	}
 
-	&.MuiTab-root {
-		color: rgba(128, 128, 138, 1);
+	@media (max-width: 600px) {
+		width: 350px;
+		justify-content: center;
+		align-items: center;
+	}
+`;
 
-		&.Mui-selected {
-			color: #fff;
-		}
+const StyledTab = styled(Tab)<{ theme: any }>`
+	font-size: 0.925rem;
+	font-weight: 400;
+	text-transform: none;
+	min-width: 9.375rem;
+	color: ${({ theme }) => theme.palette.secondary.main};
+	background-color: transparent;
+
+	&.Mui-selected {
+		color: ${({ theme }) => theme.palette.text.primary};
+		font-weight: 500;
+		font-size: 1rem;
 	}
 `;
 
@@ -37,14 +46,6 @@ const ActiveBox = styled(Box)`
 
 	@media (max-width: 600px) {
 		width: 300px;
-		justify-content: center;
-		align-items: center;
-	}
-`;
-
-const StyledTabs = styled(Tabs)`
-	@media (max-width: 600px) {
-		width: 350px;
 		justify-content: center;
 		align-items: center;
 	}
@@ -73,31 +74,35 @@ const ActiveTabLeftSection = styled(Box)`
 	justify-content: flex-start;
 `;
 
-const StyledToggleButtonGroup = styled(ToggleButtonGroup)`
-	background-color: rgba(38, 38, 56, 1);
-	border: 1px solid rgba(74, 74, 98, 1);
-	border-radius: 15px;
+const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{ theme: any }>`
+	background-color: transparent;
 	height: 40px;
-	width: 125px;
+	width: 150px;
 	margin-left: 1rem;
-`;
+	cursor: not-allowed;
 
-const StyledToggleButton = styled(ToggleButton)`
-	color: rgba(128, 128, 138, 1);
-
-	&.Mui-selected {
-		color: #fff;
-		background-color: rgba(58, 58, 76, 1);
-		border-radius: 15px;
-
+	& .MuiToggleButton-root {
 		&:hover {
-			background-color: rgba(58, 58, 76, 1);
+			background-color: transparent;
+			border: 1px solid ${({ theme }) => theme.palette.warning.main};
+			border-left: 1px solid ${({ theme }) => theme.palette.warning.main};
 		}
 	}
+`;
 
-	&:hover {
-		background-color: rgba(58, 58, 76, 1);
-		border-radius: 15px;
+const StyledToggleButton = styled(ToggleButton)<{ theme: any }>`
+	color: ${({ theme }) => theme.palette.secondary.main};
+	background-color: transparent;
+	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
+	border-radius: ${({ theme }) => theme.customShape.borderRadius};
+	cursor: pointer;
+	font-weight: 500;
+	width: 150px;
+
+	&.Mui-selected {
+		color: ${({ theme }) => theme.palette.text.primary};
+		background-color: transparent;
+		border: 1px solid ${({ theme }) => theme.palette.secondary.main};
 	}
 `;
 
@@ -145,17 +150,17 @@ const ActiveTabSection = styled(Box)`
 	}
 `;
 
-const TaskCard = styled(Box)`
+const TaskCard = styled(Box)<{ theme: any }>`
 	width: 350px;
 	max-width: 350px;
 	height: 300px;
 	max-height: 300px;
 	margin: 0 auto 0 auto;
-	background-color: rgba(0, 0, 20, 0.25);
+	background-color: ${({ theme }) => theme.palette.background.default};
 	backdrop-filter: blur(15px) brightness(70%);
 	border: 1px solid;
 	border-color: rgba(41, 50, 73, 1);
-	border-radius: 24px;
+	border-radius: ${({ theme }) => theme.customShape.borderRadius};
 	align-items: center;
 	justify-content: center;
 	position: relative;
@@ -316,6 +321,7 @@ interface TabPanelProps {
 }
 
 export default function PlayerDares() {
+	const theme = useTheme();
 	// Redux
 	const dispatch = useDispatch();
 	const account = useSelector((state: { account: string }) => state.account);
@@ -350,8 +356,8 @@ export default function PlayerDares() {
 	const [filteredActiveTasks, setFilteredActiveTasks] = useState(activePlayerTasks);
 	const [filteredCompletedTasks, setFilteredCompletedTasks] = useState(completedPlayerTasks);
 
-	console.log('completedPlayerTasks', completedPlayerTasks);
-	console.log('filteredCompletedTasks', filteredCompletedTasks);
+	// console.log('completedPlayerTasks', completedPlayerTasks);
+	// console.log('filteredCompletedTasks', filteredCompletedTasks);
 
 	// Tab Panel
 	function TabPanel(props: TabPanelProps) {
@@ -364,9 +370,9 @@ export default function PlayerDares() {
 		);
 	}
 
-	const [value, setValue] = useState(0);
+	const [tabValue, setTabValue] = useState(1);
 	const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-		setValue(newValue);
+		setTabValue(newValue);
 	};
 
 	useEffect(() => {
@@ -403,23 +409,23 @@ export default function PlayerDares() {
 	return (
 		<>
 			<ActiveBox>
-				<StyledTabs value={value} onChange={handleChange}>
-					<StyledTab label="Active Tasks" disableRipple={true} />
-					<StyledTab label="Completed Tasks" disableRipple={true} />
+				<StyledTabs theme={theme} value={tabValue} onChange={handleChange}>
+					<StyledTab theme={theme} value={1} label="Active Tasks" />
+					<StyledTab theme={theme} value={2} label="Completed Tasks" />
 				</StyledTabs>
 			</ActiveBox>
-			<TabPanel value={value} index={0}>
+			<TabPanel value={tabValue} index={1}>
 				<ActiveFilterBox>
 					{/* <ActiveTabLeftSection></ActiveTabLeftSection> */}
 					<ActiveTabRightSection>
 						{/* // Filter StyledSection */}
 						<SelectSort />
 
-						<StyledToggleButtonGroup value={currencyValue} exclusive onChange={handleToggle}>
-							<StyledToggleButton disabled={currencyValue === false} value={false}>
+						<StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
+							<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
 								{isNetworkAvailable ? <a>{CHAINS[chainId]?.nameToken}</a> : <a>MATIC</a>}
 							</StyledToggleButton>
-							<StyledToggleButton disabled={currencyValue === true} value={true}>
+							<StyledToggleButton theme={theme} disabled={currencyValue === true} value={true}>
 								<a>USD</a>
 							</StyledToggleButton>
 						</StyledToggleButtonGroup>
@@ -429,7 +435,7 @@ export default function PlayerDares() {
 				<ActiveTabSection>
 					{filteredActiveTasks.map((tad) => (
 						<li style={{ listStyle: 'none' }} key={tad}>
-							<TaskCard>
+							<TaskCard theme={theme}>
 								<TaskBoxSection>
 									<a>{tad.description}</a>
 								</TaskBoxSection>
@@ -491,17 +497,17 @@ export default function PlayerDares() {
 					))}
 				</ActiveTabSection>
 			</TabPanel>
-			<TabPanel value={value} index={1}>
+			<TabPanel value={tabValue} index={2}>
 				<ActiveFilterBox>
 					{/* <ActiveTabLeftSection></ActiveTabLeftSection> */}
 					<ActiveTabRightSection>
 						{/* // Filter StyledSection */}
 						<SelectSort />
-						<StyledToggleButtonGroup value={currencyValue} exclusive onChange={handleToggle}>
-							<StyledToggleButton disabled={currencyValue === false} value={false}>
+						<StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
+							<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
 								{isNetworkAvailable ? <a>{CHAINS[chainId]?.nameToken}</a> : <a>MATIC</a>}
 							</StyledToggleButton>
-							<StyledToggleButton disabled={currencyValue === true} value={true}>
+							<StyledToggleButton theme={theme} disabled={currencyValue === true} value={true}>
 								<a>USD</a>
 							</StyledToggleButton>
 						</StyledToggleButtonGroup>
@@ -510,7 +516,7 @@ export default function PlayerDares() {
 				<ActiveTabSection>
 					{filteredCompletedTasks.map((tad) => (
 						<li style={{ listStyle: 'none' }} key={tad.id}>
-							<TaskCard>
+							<TaskCard theme={theme}>
 								<TaskBoxSection>
 									<a>{tad.description}</a>
 								</TaskBoxSection>

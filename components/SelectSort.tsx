@@ -1,13 +1,14 @@
-import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sortSlice } from '../state/sort/sortSlice';
 
 const StyledSelect = styled(Select)<{ theme: any; open: any }>`
-	color: #fff;
+	color: ${({ theme }) => theme.palette.text.primary};
+	font-weight: 500;
 	background-color: transparent;
 	border: 1px solid ${({ theme, open }) => (open ? theme.palette.warning.main : theme.palette.secondary.main)};
 	border-radius: ${({ theme, open }) =>
@@ -18,6 +19,7 @@ const StyledSelect = styled(Select)<{ theme: any; open: any }>`
 	transition: all 0.5s ease-in-out;
 
 	&:hover {
+		background-color: ${({ theme }) => theme.palette.background.default};
 		border: 1px solid ${({ theme }) => theme.palette.warning.main};
 	}
 
@@ -36,12 +38,12 @@ const StyledSelect = styled(Select)<{ theme: any; open: any }>`
 	}
 
 	& .MuiSelect-icon {
-		color: #fff;
+		color: ${({ theme }) => theme.palette.text.primary};
 	}
 `;
 
-const MenuItemStyled = styled(MenuItem)`
-	color: rgba(255, 255, 255, 1);
+const MenuItemStyled = styled(MenuItem)<{ theme: any }>`
+	color: ${({ theme }) => theme.palette.text.primary};
 	background-color: rgba(38, 38, 56, 1);
 	vertical-align: middle;
 	width: 100%;
@@ -60,7 +62,7 @@ const MenuItemStyled = styled(MenuItem)`
 
 const SearchResultTitle = styled.div<{ theme: any }>`
 	font-size: 0.75rem;
-	color: rgba(255, 255, 255, 1);
+	color: ${({ theme }) => theme.palette.secondary.main};
 	background-color: transparent;
 	padding: 0.5rem;
 	font-weight: bold;
@@ -102,45 +104,45 @@ export default function SelectSort() {
 				MenuProps={{
 					PaperProps: {
 						sx: {
-							backgroundColor: 'rgba(38, 38, 56, 1)',
+							backgroundColor: theme.palette.background.default,
 							outline: `1px solid ${theme.palette.warning.main}`,
 							borderRadius: 0,
 							width: 'auto',
 							'& .MuiMenuItem-root': {
-								backgroundColor: 'rgba(38, 38, 56, 1)',
+								backgroundColor: theme.palette.background.default,
 							},
 							'& .MuiMenuItem-root:hover': {
-								backgroundColor: 'rgba(58, 58, 76, 1)',
+								backgroundColor: theme.palette.secondary.light,
 							},
 						},
 					},
 				}}
 			>
 				<SearchResultTitle theme={theme}>Stake</SearchResultTitle>
-				<MenuItemStyled value={1} disabled={sort === 1 ? true : false}>
-					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main, transform: 'scaleY(-1)' }} />
+				<MenuItemStyled theme={theme} value={1} disabled={sort === 1 ? true : false}>
+					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.text.primary, transform: 'scaleY(-1)' }} />
 					<a>{sort === 1 ? 'Stake: Low to High' : 'Low to High'}</a>
 				</MenuItemStyled>
-				<MenuItemStyled value={2} disabled={sort === 2 ? true : false}>
-					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main }} />
+				<MenuItemStyled theme={theme} value={2} disabled={sort === 2 ? true : false}>
+					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.text.primary }} />
 					<a>{sort === 2 ? 'Stake: High to Low' : 'High to Low'}</a>
 				</MenuItemStyled>
 				<SearchResultTitle theme={theme}>Participants</SearchResultTitle>
-				<MenuItemStyled value={3} disabled={sort === 3 ? true : false}>
-					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main, transform: 'scaleY(-1)' }} />
+				<MenuItemStyled theme={theme} value={3} disabled={sort === 3 ? true : false}>
+					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.text.primary, transform: 'scaleY(-1)' }} />
 					<a>{sort === 3 ? 'Participants: Low to High' : 'Low to High'}</a>
 				</MenuItemStyled>
-				<MenuItemStyled value={4} disabled={sort === 4 ? true : false}>
-					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main }} />
+				<MenuItemStyled theme={theme} value={4} disabled={sort === 4 ? true : false}>
+					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.text.primary }} />
 					<a>{sort === 4 ? 'Participants: High to Low' : 'High to Low'}</a>
 				</MenuItemStyled>
 				<SearchResultTitle theme={theme}>Entrance Amount</SearchResultTitle>
-				<MenuItemStyled value={5} disabled={sort === 5 ? true : false}>
-					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main, transform: 'scaleY(-1)' }} />
+				<MenuItemStyled theme={theme} value={5} disabled={sort === 5 ? true : false}>
+					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.text.primary, transform: 'scaleY(-1)' }} />
 					<a>{sort === 5 ? 'Entrance Amount: Low to High' : 'Low to High'}</a>
 				</MenuItemStyled>
-				<MenuItemStyled value={6} disabled={sort === 6 ? true : false}>
-					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main }} />
+				<MenuItemStyled theme={theme} value={6} disabled={sort === 6 ? true : false}>
+					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.text.primary }} />
 					<a>{sort === 6 ? 'Entrance Amount: High to Low' : 'High to Low'}</a>
 				</MenuItemStyled>
 			</StyledSelect>

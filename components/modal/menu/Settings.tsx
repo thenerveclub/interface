@@ -35,7 +35,7 @@ const SettingsButton = styled(Button)<{ theme: any }>`
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	color: rgba(128, 128, 138, 1);
+	color: ${({ theme }) => theme.palette.text.primary};
 	text-transform: none;
 	font-weight: 400;
 	min-height: 40px;

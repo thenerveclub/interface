@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { Button, CircularProgress } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import type { CoinbaseWallet } from '@web3-react/coinbase-wallet';
 import type { Web3ReactHooks } from '@web3-react/core';
 import { MetaMask } from '@web3-react/metamask';
@@ -8,20 +9,20 @@ import { useCallback, useState } from 'react';
 import { getAddChainParameters } from '../utils/chains';
 import { getLogo, getName } from '../utils/connectorsNameAndLogo';
 
-const ConnectButton = styled(Button)({
-	color: '#000',
-	textTransform: 'none',
-	justifyContent: 'flex-start',
-	fontSize: 16,
-	fontWeight: 400,
-	height: 50,
-	backgroundColor: 'rgba(89, 89, 91, 1)',
-	borderRadius: 5,
-	'&:hover': {
-		backgroundColor: 'rgba(102, 102, 114, 1)',
-		transition: 'all 0.75s ease',
-	},
-});
+const ConnectButton = styled(Button)<{ theme: any }>`
+	color: #000;
+	text-transform: none;
+	justify-content: flex-start;
+	font-size: 16px;
+	font-weight: 500;
+	height: 50px;
+	border-radius: ${({ theme }) => theme.customShape.borderRadius};
+
+	&:hover {
+		background-color: ${({ theme }) => theme.palette.secondary.light};
+		transition: all 0.75s ease;
+	}
+`;
 
 export function ConnectOnly({
 	connector,
@@ -38,6 +39,7 @@ export function ConnectOnly({
 	error: Error | undefined;
 	setError: (error: Error | undefined) => void;
 }) {
+	const theme = useTheme();
 	const [desiredChainId] = useState(137);
 
 	const onClick = useCallback((): void => {
@@ -58,7 +60,7 @@ export function ConnectOnly({
 	if (error) {
 		return (
 			<div style={{ display: 'flex', flexDirection: 'column' }}>
-				<ConnectButton style={{ justifyContent: 'center' }} onClick={onClick}>
+				<ConnectButton theme={theme} style={{ justifyContent: 'center' }} onClick={onClick}>
 					Try {getName(connector)} again?
 				</ConnectButton>
 			</div>
@@ -66,7 +68,12 @@ export function ConnectOnly({
 	} else if (isActivating) {
 		return (
 			<div style={{ display: 'flex', flexDirection: 'column' }}>
-				<ConnectButton style={{ justifyContent: 'center' }} startIcon={<CircularProgress thickness={2.5} size={25} />} disabled={true}>
+				<ConnectButton
+					theme={theme}
+					style={{ justifyContent: 'center' }}
+					startIcon={<CircularProgress color="warning" thickness={2.5} size={25} />}
+					disabled={true}
+				>
 					Connecting
 				</ConnectButton>
 			</div>
@@ -75,6 +82,7 @@ export function ConnectOnly({
 		return (
 			<div style={{ display: 'flex', flexDirection: 'column' }}>
 				<ConnectButton
+					theme={theme}
 					onClick={() => {
 						if (connector?.deactivate) {
 							void connector.deactivate();
@@ -92,6 +100,7 @@ export function ConnectOnly({
 			<>
 				<div style={{ display: 'flex', flexDirection: 'column' }}>
 					<ConnectButton
+						theme={theme}
 						onClick={
 							isActivating
 								? undefined

@@ -6,6 +6,7 @@ import { forwardRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
 import { CHAINS } from '../../utils/chains';
+import useBalanceTracker from '../../hooks/useBalanceTracker';
 
 const style = {
 	position: 'absolute' as 'absolute',
@@ -28,6 +29,7 @@ export default function JoinDare() {
 	const { enqueueSnackbar } = useSnackbar();
 	const [value, setValue] = useState(null);
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
+	const balance = useBalanceTracker();
 
 	const handleClickOpen = () => {
 		setOpen(true);

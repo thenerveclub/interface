@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
 import { CHAINS } from '../chains';
-import { getProvider } from '../nerveGlobalProvider';
+import { getProvider } from '../providerFactory';
 
 export function CheckNameRegister() {
 	const [registerStatus, setRegisterStatus] = useState<string | null>(null);

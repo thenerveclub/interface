@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
+import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { Box, Fade, Grid, Skeleton, Tooltip } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
 import usePlayerData from '../../../../hooks/usePlayerData';
 import usePrice from '../../../../hooks/usePrice';
@@ -14,15 +16,14 @@ const StatisticBox = styled(Box)`
 	text-align: center;
 `;
 
-const StyledGridFirst = styled(Grid)`
+const StyledGridFirst = styled(Grid)<{ theme: any }>`
 	display: flex;
 	flex-direction: row;
 	font-size: 16px;
-	color: #fff;
 
 	a {
 		display: flex;
-		color: #fff;
+		color: ${({ theme }) => theme.palette.text.primary};
 		font-size: 16px;
 		width: 150px;
 		cursor: default;
@@ -47,6 +48,7 @@ const StyledGridSecond = styled(Grid)`
 `;
 
 export default function SocialBoxComponent({ isNetworkAvailable }: { isNetworkAvailable: boolean }) {
+	const theme = useTheme();
 	// Redux
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
@@ -69,7 +71,7 @@ export default function SocialBoxComponent({ isNetworkAvailable }: { isNetworkAv
 
 	return (
 		<StatisticBox>
-			<StyledGridFirst>
+			<StyledGridFirst theme={theme}>
 				{playerData[0]?.earned ? (
 					currencyValue === false ? (
 						<a>
@@ -113,17 +115,28 @@ export default function SocialBoxComponent({ isNetworkAvailable }: { isNetworkAv
 					</a>
 				)}
 				{playerData[0]?.spent ? (
-					<Tooltip
-						title="Player Ranking: Most Earned | Most Spent"
-						placement="top"
-						disableInteractive
-						TransitionComponent={Fade}
-						TransitionProps={{ timeout: 600 }}
-					>
+					<>
 						<a>
 							{rankingEarned} | {rankingSpent}
+							<Tooltip
+								title="Player Ranking: Most Earned | Most Spent"
+								placement="top"
+								disableInteractive
+								TransitionComponent={Fade}
+								TransitionProps={{ timeout: 600 }}
+							>
+								<InfoOutlined
+									style={{
+										display: 'flex',
+										marginLeft: '0.5rem',
+										fontSize: '1rem',
+										color: theme.palette.secondary.main,
+										cursor: 'help',
+									}}
+								/>
+							</Tooltip>
 						</a>
-					</Tooltip>
+					</>
 				) : (
 					<a>
 						<Skeleton

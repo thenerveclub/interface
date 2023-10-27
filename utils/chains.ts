@@ -20,6 +20,7 @@ const CELO: AddEthereumChainParameter['nativeCurrency'] = {
 
 interface BasicChainInformation {
 	urls: string[];
+	url?: string;
 	name: string;
 	nameToken: string;
 	blockExplorerUrls: string[];
@@ -81,6 +82,7 @@ export const CHAINS: {
 	// Goerli
 	5: {
 		urls: [`https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`],
+		url: `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
 		name: 'Görli',
 		nameToken: 'GoerliETH',
 		blockExplorerUrls: ['https://goerli.etherscan.io/'],
@@ -136,6 +138,7 @@ export const CHAINS: {
 	// Polygon
 	137: {
 		urls: [`https://polygon-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`],
+		url: `https://polygon-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
 		name: 'Polygon Mainnet',
 		nameToken: 'MATIC',
 		nativeCurrency: MATIC,
@@ -167,10 +170,10 @@ export const CHAINS: {
 };
 
 export const URLS: { [chainId: number]: string } = Object.keys(CHAINS).reduce<{ [chainId: number]: string }>((accumulator, chainId) => {
-	const validURLs: string = CHAINS[Number(chainId)].urls;
+	const urls: string[] = CHAINS[Number(chainId)].urls;
 
-	if (validURLs.length) {
-		accumulator[Number(chainId)] = validURLs;
+	if (urls && urls.length) {
+		accumulator[Number(chainId)] = urls[0];
 	}
 
 	return accumulator;

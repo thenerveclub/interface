@@ -215,7 +215,9 @@ export default function SearchBar() {
 								{trendingDareList.map((trendingDare) => (
 									<SearchResultItemStyled theme={theme} key={trendingDare.id} onClick={() => handleListDareItemClick(trendingDare.id)}>
 										<div className="item-top">
-											<span>{trendingDare.description.length > 25 ? `${trendingDare.description.substring(0, 25)}...` : trendingDare.description}</span>
+											<span>
+												{trendingDare.description.length > 25 ? `${trendingDare.description.substring(0, 25)}...` : trendingDare.description}
+											</span>
 
 											<span>
 												{formatNumber(trendingDare.amount)}{' '}

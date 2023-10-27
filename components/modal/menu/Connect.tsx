@@ -31,10 +31,10 @@ const ConnectButton = styled(Button)<{ theme: any }>`
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	color: #fff;
+	color: ${({ theme }) => theme.palette.text.primary};
 	font-size: 16px;
 	text-transform: none;
-	font-weight: 400;
+	font-weight: 500;
 	min-height: 40px;
 	height: 40px;
 	background-color: transparent;
@@ -44,6 +44,7 @@ const ConnectButton = styled(Button)<{ theme: any }>`
 	transition: all 0.5s ease-in-out;
 
 	&:hover {
+		color: ${({ theme }) => theme.palette.text.primary};
 		border: 1px solid ${({ theme }) => theme.palette.warning.main};
 	}
 `;
@@ -56,9 +57,9 @@ const ConnectBox = styled(Box)<{ theme: any }>`
 	margin: 0 auto 0 auto;
 	justify-content: center;
 	align-items: center;
-	padding: 1rem;
-	height: 400px;
-	width: 350px;
+	padding: 2rem;
+	height: auto;
+	width: 400px;
 	background-color: ${({ theme }) => theme.palette.background.default};
 	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
 	border-radius: ${({ theme }) => theme.customShape.borderRadius}};
@@ -88,15 +89,15 @@ function ConnectModal() {
 	return (
 		<div>
 			{!open ? (
-				<ConnectButton theme={theme} fullWidth={true} sx={{ color: 'white', display: 'block', fontSize: '16px' }} onClick={handleOpen}>
+				<ConnectButton theme={theme} fullWidth={true} onClick={handleOpen}>
 					Connect
 				</ConnectButton>
 			) : (
 				<ConnectButton
 					theme={theme}
 					fullWidth={true}
-					sx={{ my: 2, color: 'white', fontSize: '12px' }}
-					startIcon={<CircularProgress color="secondary" thickness={2.5} size={18} />}
+					sx={{ my: 2, color: theme.palette.text.primary, fontSize: '12px' }}
+					startIcon={<CircularProgress color="warning" thickness={2.5} size={18} />}
 				>
 					Connecting
 				</ConnectButton>
@@ -109,7 +110,7 @@ function ConnectModal() {
 					<Typography
 						style={{ fontWeight: 'bold', margin: '0.75rem auto 0.75rem auto' }}
 						align="center"
-						color={'#fff'}
+						color={theme.palette.text.primary}
 						id="modal-modal-title"
 						variant="h6"
 						component="h2"
