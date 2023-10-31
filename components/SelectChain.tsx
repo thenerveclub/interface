@@ -9,16 +9,17 @@ import { metaMask } from '../utils/connectors/metaMask';
 import EthereumLogo from '/public/svg/chains/ethereum.svg';
 import PolygonLogo from '/public/svg/chains/polygon.svg';
 
-const StyledSelect = styled(Select)<{ theme: any; open: any }>`
+const StyledSelect = styled(Select)<{ theme: any; open: any; focus: any }>`
 	color: ${({ theme }) => theme.palette.text.primary};
 	font-weight: 500;
-	background-color: transparent;
-	border: 1px solid ${({ theme, open }) => (open ? theme.palette.warning.main : theme.palette.secondary.main)};
+	background-color: ${({ theme, focus }) => (focus ? theme.palette.background.default : 'transparent')};
+	border: 1px solid ${({ theme, open, focus }) => (open || focus ? theme.palette.warning.main : theme.palette.secondary.main)};
 	border-radius: ${({ theme, open }) =>
 		open ? `${theme.customShape.borderRadius} ${theme.customShape.borderRadius} 0px 0px` : theme.shape.borderRadius};
 	min-height: 40px;
 	height: 40px;
-	min-width: 150px;
+	min-width: 175px;
+	max-width: 225px;
 	transition: all 0.5s ease-in-out;
 
 	&:hover {
@@ -64,12 +65,13 @@ const WarningAmberIcon = styled(WarningAmber)<{ theme: any }>`
 
 const MenuItemStyled = styled(MenuItem)<{ theme: any }>`
 	color: ${({ theme }) => theme.palette.text.primary};
+	font-weight: 500;
+	font-size: 1rem;
 	background-color: rgba(38, 38, 56, 1);
 	vertical-align: middle;
-	width: 100%;
 	margin: 0 auto 0 auto;
 	padding: 0.5rem;
-	cursor: pointer; // Adding a pointer cursor for hover state
+	cursor: pointer;
 
 	& a:last-of-type {
 		margin-left: 0.5rem;
@@ -127,13 +129,16 @@ export default function SelectChain() {
 	};
 
 	const [menuOpen, setMenuOpen] = useState(false);
+	const [isFocused, setIsFocused] = useState(false);
 
 	const handleOpen = () => {
 		setMenuOpen(true);
+		setIsFocused(true);
 	};
 
 	const handleClose = () => {
 		setMenuOpen(false);
+		setIsFocused(false);
 	};
 
 	return (
@@ -147,17 +152,17 @@ export default function SelectChain() {
 					variant="outlined"
 					value={age}
 					onChange={handleChange}
+					focus={isFocused}
 					MenuProps={{
 						PaperProps: {
 							sx: {
 								backgroundColor: theme.palette.background.default,
-								// border: `1px solid ${theme.palette.warning.main}`,
 								outline: `1px solid ${theme.palette.warning.main}`,
 								borderRadius: 0,
-								width: 'auto',
-								// '& .MuiMenuItem-root.Mui-selected': {
-								// 	backgroundColor: 'rgba(128, 128, 138, 1)',
-								// },
+								minWidth: '175px',
+								maxWidth: '225px',
+								padding: '0px',
+								margin: '0 auto 0 auto',
 								'& .MuiMenuItem-root': {
 									backgroundColor: theme.palette.background.default,
 								},
@@ -187,34 +192,39 @@ export default function SelectChain() {
 					theme={theme}
 					value={age}
 					onChange={handleChange}
+					focus={isFocused}
 					MenuProps={{
 						PaperProps: {
 							sx: {
-								'& .MuiMenuItem-root.Mui-selected': {
-									backgroundColor: '#fff',
-								},
+								backgroundColor: theme.palette.background.default,
+								outline: `1px solid ${theme.palette.warning.main}`,
+								borderRadius: 0,
+								minWidth: '175px',
+								maxWidth: '225px',
+								padding: '0px',
+								margin: '0 auto 0 auto',
 								'& .MuiMenuItem-root': {
-									backgroundColor: '#fff',
+									backgroundColor: theme.palette.background.default,
 								},
 								'& .MuiMenuItem-root:hover': {
-									backgroundColor: 'rgba(200, 200, 200, 0.5)',
+									backgroundColor: theme.palette.secondary.light,
 								},
 							},
 						},
 					}}
 				>
 					<MenuItemStyled theme={theme} value={chainId} disabled={true}>
-						<WarningAmberIcon theme={theme} style={{ display: 'flex', marginRight: '0.5rem' }} />
-						<a>Unsupported Chain</a>
+						<WarningAmberIcon theme={theme} style={{ display: 'flex', marginRight: '8px' }} />
+						<a>Unsupported</a>
 					</MenuItemStyled>
 					<SearchResultTitle theme={theme}>Mainnet</SearchResultTitle>
 					<MenuItemStyled theme={theme} value={137} disabled={chainId === 137}>
-						<PolygonLogo style={{ display: 'flex' }} width="22" height="22" alt="Logo" />
+						<PolygonLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
 						<a>Polygon</a>
 					</MenuItemStyled>
 					<SearchResultTitle theme={theme}>Testnet</SearchResultTitle>
 					<MenuItemStyled theme={theme} value={5} disabled={chainId === 5}>
-						<EthereumLogo style={{ display: 'flex' }} width="22" height="22" alt="Logo" />
+						<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
 						<a>Goerli</a>
 					</MenuItemStyled>
 				</StyledSelect>

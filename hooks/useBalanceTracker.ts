@@ -1,11 +1,13 @@
-import { Web3Provider } from '@ethersproject/providers';
-import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { CHAINS } from '../utils/chains';
 
 function useBalanceTracker() {
-	const { account, chainId } = useWeb3React<Web3Provider>();
+	// Redux
+	const account = useSelector((state: { account: string }) => state.account);
+	const chainId = useSelector((state: { chainId: number }) => state.chainId);
+
 	const customRpcUrl = CHAINS[chainId]?.url;
 	const provider = new ethers.providers.StaticJsonRpcProvider(customRpcUrl);
 	const [maticBalance, setMaticBalance] = useState<string>('');

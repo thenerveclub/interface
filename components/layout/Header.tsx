@@ -1,13 +1,15 @@
 import styled from '@emotion/styled';
-import { AppBar, Typography } from '@mui/material';
+import { AppBar } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useWeb3React } from '@web3-react/core';
 import localFont from 'next/font/local';
+import Link from 'next/link';
 import SearchBar from '../SearchBar';
 import SelectChain from '../SelectChain';
 import AccountModal from '../modal/menu/Account';
 import Connect from '../modal/menu/Connect';
 import Setting from '../modal/menu/Settings';
+import { useSelector } from 'react-redux';
 
 const TrueLies = localFont({ src: '../../public/fonts/TrueLies.woff2', display: 'swap' });
 
@@ -35,11 +37,32 @@ const StyledAppBar = styled(AppBar)<{ theme: any }>`
 	}
 `;
 
-const StyledSectionLeft = styled.section`
-	min-width: 25%;
+const StyledSectionLeft = styled.section<{ theme: any }>`
+	min-width: 35%;
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
+
+	h2 {
+		display: flex;
+		// font-family: ${TrueLies.style.fontFamily};
+		font-size: 1rem;
+		font-weight: 500;
+		color: ${(props) => props.theme.palette.text.primary};
+		margin-left: 3rem;
+		text-decoration: none;
+		cursor: pointer;
+	}
+
+	h1 {
+		display: flex;
+		font-family: ${TrueLies.style.fontFamily};
+		font-size: 1.25rem;
+		// font-weight: 500;
+		color: ${(props) => props.theme.palette.text.primary};
+		text-decoration: none;
+		cursor: pointer;
+	}
 
 	& > *:first-of-type {
 		margin-left: 1rem;
@@ -52,7 +75,7 @@ const StyledSectionLeft = styled.section`
 `;
 
 const StyledSectionMiddle = styled.section`
-	min-width: 50%;
+	min-width: 30%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -98,7 +121,7 @@ const StyledSectionMiddle = styled.section`
 `;
 
 const StyledSectionRight = styled.section`
-	min-width: 25%;
+	min-width: 35%;
 	display: flex;
 	justify-content: flex-end;
 	align-items: center;
@@ -173,7 +196,8 @@ const DesktopSettings = styled.div`
 
 export default function Header() {
 	const theme = useTheme();
-	const { account } = useWeb3React();
+	// Redux
+	const account = useSelector((state: { account: string }) => state.account);
 
 	// useEffect(() => {
 	// 	const handleScroll = () => {
@@ -199,21 +223,16 @@ export default function Header() {
 	return (
 		<>
 			<StyledAppBar theme={theme}>
-				<StyledSectionLeft>
-					<Typography
-						component="a"
-						style={TrueLies.style}
-						href="/"
-						sx={{
-							display: 'block',
-							fontSize: '1.25rem',
-							width: 'auto',
-							color: 'text.primary',
-							textDecoration: 'none',
-						}}
-					>
-						NERVE GLOBAL
-					</Typography>
+				<StyledSectionLeft theme={theme}>
+					<Link href="/" passHref style={{ textDecoration: 'none' }}>
+						<h1>NERVE GLOBAL</h1>
+					</Link>
+					<Link href="/rankings/player" passHref style={{ textDecoration: 'none' }}>
+						<h2>Ranking</h2>
+					</Link>
+					<Link href="/rankings/dare" passHref style={{ textDecoration: 'none' }}>
+						<h2>Dare</h2>
+					</Link>
 				</StyledSectionLeft>
 				<StyledSectionMiddle>
 					<SearchBar />

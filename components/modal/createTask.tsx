@@ -164,7 +164,7 @@ export default function CreateTask() {
 						Create Task
 					</Typography>
 					<StatisticBox>
-						<a>Entrance amount</a>
+						<a>Entry amount</a>
 						<Tooltip title="Mandatory contribution for participation." placement="top">
 							<InfoOutlinedIcon style={{ fontSize: '1rem', color: theme.palette.secondary.main, cursor: 'default' }} />
 						</Tooltip>

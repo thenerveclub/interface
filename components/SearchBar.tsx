@@ -15,7 +15,8 @@ import PolygonLogo from '/public/svg/chains/polygon.svg';
 
 const SearchBarContainer = styled(Paper)<{ theme: any }>`
 	display: flex;
-	width: 50%;
+	width: 100%;
+	max-width: 25rem;
 	align-items: center;
 	background-color: transparent;
 	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
@@ -100,7 +101,7 @@ const SearchResultItemStyled = styled.div<{ theme: any }>`
 
 	&:focus,
 	&:hover {
-		background-color: rgba(58, 58, 76, 1);
+		background-color: ${({ theme }) => theme.palette.secondary.light};
 	}
 
 	& .item-top,

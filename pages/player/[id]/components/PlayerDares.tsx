@@ -96,6 +96,7 @@ const StyledToggleButton = styled(ToggleButton)<{ theme: any }>`
 	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
 	border-radius: ${({ theme }) => theme.customShape.borderRadius};
 	cursor: pointer;
+	// font-size: 1rem;
 	font-weight: 500;
 	width: 150px;
 

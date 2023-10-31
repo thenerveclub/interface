@@ -1,11 +1,13 @@
 import styled from '@emotion/styled';
 import { Box, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import localFont from 'next/font/local';
 import Head from 'next/head';
+import Link from 'next/link';
 
 const TrueLies = localFont({ src: '../public/fonts/TrueLies.woff2', display: 'swap' });
 
-const StyledBox = styled(Box)`
+const StyledBox = styled(Box)<{ theme: any }>`
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -17,25 +19,12 @@ const StyledBox = styled(Box)`
 	margin: 0 auto;
 	background-color: transparent;
 
-	@media (max-width: 600px) {
-		width: 95%;
-	}
-`;
-
-const Title = styled(Typography)`
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
-	font-family: ${TrueLies.style.fontFamily};
-	color: #fff;
-	text-transform: none;
-	font-size: 5rem;
-	cursor: default;
-	margin-bottom: 2.5rem;
-
-	a {
-		color: #fff;
+	h1 {
+		color: ${(props) => props.theme.palette.text.primary};
+		font-family: ${TrueLies.style.fontFamily};
+		font-size: 5rem;
+		font-weight: 500;
+		cursor: pointer;
 		text-decoration: none;
 
 		&:hover {
@@ -44,7 +33,7 @@ const Title = styled(Typography)`
 	}
 
 	@media (max-width: 600px) {
-		font-size: 3rem;
+		width: 95%;
 	}
 `;
 
@@ -69,6 +58,8 @@ const Text = styled(Typography)`
 `;
 
 export default function Page() {
+	const theme = useTheme();
+
 	return (
 		<>
 			<Head>
@@ -87,12 +78,10 @@ export default function Page() {
 				<meta name="twitter:description" content="404 Not Found | Nerve Gloabl" />
 				<meta name="twitter:image" content="https://app.nerveglobal.com/favicon.ico" />
 			</Head>
-			<StyledBox>
-				<Title>
-					<a href={'/'} aria-label="Return to home page">
-						Sorry
-					</a>
-				</Title>
+			<StyledBox theme={theme}>
+				<Link href="/" passHref style={{ textDecoration: 'none' }}>
+					<h1>Sorry</h1>
+				</Link>
 				<Text>
 					<a>We couldn't find that page.</a>
 				</Text>
