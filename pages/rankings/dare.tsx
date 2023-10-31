@@ -217,16 +217,16 @@ export default function RankingDaresPage() {
 		let aValue, bValue;
 
 		if (orderBy === 'voters') {
-			aValue = Number(a.task.positiveVotes) + Number(a.task.negativeVotes);
-			bValue = Number(b.task.positiveVotes) + Number(b.task.negativeVotes);
+			aValue = Number(a.positiveVotes) + Number(a.negativeVotes);
+			bValue = Number(b.positiveVotes) + Number(b.negativeVotes);
 		} else if (orderBy === 'voting') {
-			const totalVotesA = Number(a.task.positiveVotes) + Number(a.task.negativeVotes);
-			const totalVotesB = Number(b.task.positiveVotes) + Number(b.task.negativeVotes);
-			aValue = totalVotesA === 0 ? -1 : (Number(a.task.positiveVotes) / totalVotesA) * 100;
-			bValue = totalVotesB === 0 ? -1 : (Number(b.task.positiveVotes) / totalVotesB) * 100;
+			const totalVotesA = Number(a.positiveVotes) + Number(a.negativeVotes);
+			const totalVotesB = Number(b.positiveVotes) + Number(b.negativeVotes);
+			aValue = totalVotesA === 0 ? -1 : (Number(a.positiveVotes) / totalVotesA) * 100;
+			bValue = totalVotesB === 0 ? -1 : (Number(b.positiveVotes) / totalVotesB) * 100;
 		} else {
-			aValue = Number(a.task[orderBy]);
-			bValue = Number(b.task[orderBy]);
+			aValue = Number(a[orderBy]);
+			bValue = Number(b[orderBy]);
 		}
 
 		if (aValue === -1 && bValue !== -1) return 1; // Move a to the middle
@@ -394,18 +394,18 @@ export default function RankingDaresPage() {
 								<TableCell>{index + 1}</TableCell>
 								<TableCell>
 									<a style={{ cursor: 'pointer' }}>
-										{row.task.description.length > 75 ? row.task.description.substring(0, 75) + '...' : row.task.description}
+										{row.description.length > 75 ? row.description.substring(0, 75) + '...' : row.description}
 									</a>
 								</TableCell>
 								<TableCell style={{ textAlign: 'right' }}>
-									<a style={{ cursor: 'pointer' }}>{formatNumber(row.task.entranceAmount)} MATIC</a>
+									<a style={{ cursor: 'pointer' }}>{formatNumber(row.entranceAmount)} MATIC</a>
 								</TableCell>
 								<TableCell style={{ textAlign: 'right' }}>
-									<a style={{ cursor: 'pointer' }}>{formatNumber(row.task.amount)} MATIC</a>
+									<a style={{ cursor: 'pointer' }}>{formatNumber(row.amount)} MATIC</a>
 								</TableCell>
-								<TableCell style={{ textAlign: 'right' }}>{row.task.participants}</TableCell>
-								<TableCell style={{ textAlign: 'right' }}>{Number(row.task.positiveVotes) + Number(row.task.negativeVotes)}</TableCell>
-								<TableCell style={{ textAlign: 'right' }}>{calculatePositivePercentage(row.task.positiveVotes, row.task.negativeVotes)}</TableCell>
+								<TableCell style={{ textAlign: 'right' }}>{row.participants}</TableCell>
+								<TableCell style={{ textAlign: 'right' }}>{Number(row.positiveVotes) + Number(row.negativeVotes)}</TableCell>
+								<TableCell style={{ textAlign: 'right' }}>{calculatePositivePercentage(row.positiveVotes, row.negativeVotes)}</TableCell>
 							</StyledTableRow>
 						))}
 					</TableBody>

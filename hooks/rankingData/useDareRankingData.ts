@@ -8,18 +8,15 @@ const useDareRankingData = (chainId: number, orderBy: string) => {
 		const getTrendingPlayerList = async () => {
 			const QueryForRankingList = `
 			{
-				userTasks(first: 100, orderBy: ${'task__' + orderBy}, orderDirection: desc) {
+				tasks(first: 100, orderDirection: desc, orderBy: ${orderBy}) {
 				  id
-				  task {
-					 id
-					 description
-					 entranceAmount
-					 amount
-					 participants
-					 negativeVotes
-					 positiveVotes
-					 proofLink
-				  }
+				  description
+				  entranceAmount
+				  amount
+				  participants
+				  negativeVotes
+				  positiveVotes
+				  proofLink
 				  endTask
 				}
 			 }
@@ -33,7 +30,7 @@ const useDareRankingData = (chainId: number, orderBy: string) => {
 				});
 
 				const data = await fetchPlayerData.json();
-				setRankingList(data.data.userTasks);
+				setRankingList(data.data.tasks);
 			} catch (error) {
 				console.error(error);
 			}
