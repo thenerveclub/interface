@@ -89,7 +89,7 @@ export const CHAINS: {
 		contract: '0xd0d83FFcF0102E5cea570e565d8f5dFA2086C39C',
 		blockTime: 10000,
 		graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal-goerli',
-		coingeckoApiId: 'goerli-eth',
+		coingeckoApiId: 'ethereum',
 	},
 	// 42: {
 	//   urls: [process.env.infuraKey ? `https://kovan.infura.io/v3/${process.env.infuraKey}` : ''].filter(

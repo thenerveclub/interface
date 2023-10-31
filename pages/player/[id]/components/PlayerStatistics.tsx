@@ -63,7 +63,7 @@ export default function SocialBoxComponent({ isNetworkAvailable }: { isNetworkAv
 	const playerData = usePlayerData(checksumAddress, chainId);
 
 	// Token Price
-	const price = usePrice(chainId);
+	const price = usePrice();
 
 	// Ranking Data
 	const rankingEarned = useRankingEarned(checksumAddress, chainId);

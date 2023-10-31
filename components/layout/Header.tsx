@@ -1,15 +1,15 @@
 import styled from '@emotion/styled';
 import { AppBar } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { useWeb3React } from '@web3-react/core';
 import localFont from 'next/font/local';
 import Link from 'next/link';
+import { useSelector } from 'react-redux';
 import SearchBar from '../SearchBar';
 import SelectChain from '../SelectChain';
+import SelectLeaderboard from '../SelectLeaderboard';
 import AccountModal from '../modal/menu/Account';
 import Connect from '../modal/menu/Connect';
 import Setting from '../modal/menu/Settings';
-import { useSelector } from 'react-redux';
 
 const TrueLies = localFont({ src: '../../public/fonts/TrueLies.woff2', display: 'swap' });
 
@@ -227,12 +227,7 @@ export default function Header() {
 					<Link href="/" passHref style={{ textDecoration: 'none' }}>
 						<h1>NERVE GLOBAL</h1>
 					</Link>
-					<Link href="/rankings/player" passHref style={{ textDecoration: 'none' }}>
-						<h2>Ranking</h2>
-					</Link>
-					<Link href="/rankings/dare" passHref style={{ textDecoration: 'none' }}>
-						<h2>Dare</h2>
-					</Link>
+					<SelectLeaderboard />
 				</StyledSectionLeft>
 				<StyledSectionMiddle>
 					<SearchBar />

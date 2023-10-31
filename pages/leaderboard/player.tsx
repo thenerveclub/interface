@@ -1,15 +1,17 @@
 import styled from '@emotion/styled';
 import { OpenInNew } from '@mui/icons-material';
+import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import localFont from 'next/font/local';
 import Head from 'next/head';
 import router from 'next/router';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import usePlayerRankingData from '../../hooks/rankingData/usePlayerRankingData';
+import { currencySlice } from '../../state/currency/currencySlice';
 import { CHAINS } from '../../utils/chains';
 import Instagram from '/public/svg/socials/instagram.svg';
 import TikTok from '/public/svg/socials/tiktok.svg';
@@ -191,12 +193,75 @@ const StyledTableRow = styled(TableRow)<{ theme: any }>`
 	}
 `;
 
+const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{ theme: any }>`
+	display: flex;
+	align-self: flex-end;
+	background-color: transparent;
+	height: 40px;
+	width: 150px;
+	margin-left: 1rem;
+	cursor: not-allowed;
+
+	& .MuiToggleButton-root {
+		&:hover {
+			background-color: transparent;
+			border: 1px solid ${({ theme }) => theme.palette.warning.main};
+			border-left: 1px solid ${({ theme }) => theme.palette.warning.main};
+		}
+	}
+`;
+
+const StyledToggleButton = styled(ToggleButton)<{ theme: any }>`
+	color: ${({ theme }) => theme.palette.secondary.main};
+	background-color: transparent;
+	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
+	border-radius: ${({ theme }) => theme.customShape.borderRadius};
+	cursor: pointer;
+	// font-size: 1rem;
+	font-weight: 500;
+	width: 150px;
+
+	&.Mui-selected {
+		color: ${({ theme }) => theme.palette.text.primary};
+		background-color: transparent;
+		border: 1px solid ${({ theme }) => theme.palette.secondary.main};
+	}
+`;
+
+const StyledArrowCircleUpOutlinedIcon = styled(ArrowCircleUpOutlinedIcon)<{ theme: any }>`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 3rem auto 0 auto;
+	// position: fixed;
+	// bottom: 1rem;
+	// right: 1rem;
+	cursor: pointer;
+	font-size: 2rem;
+	color: ${({ theme }) => theme.palette.secondary.main};
+	transition: all 0.5s ease-in-out;
+
+	&:hover {
+		transform: scale(1.1);
+		color: ${({ theme }) => theme.palette.text.primary};
+	}
+`;
+
 export default function RankingPage() {
 	const theme = useTheme();
 
 	// Redux
+	const dispatch = useDispatch();
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
+	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
+	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
 	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
+
+	// Toogle Button For Token Price
+	const handleToggle = (event, newCurrency) => {
+		// update currencyValue in redux
+		dispatch(currencySlice.actions.updateCurrency(newCurrency));
+	};
 
 	// Network Check
 	const isNetworkAvailable = availableChains.includes(chainId);
@@ -204,7 +269,6 @@ export default function RankingPage() {
 	const [order, setOrder] = useState('desc');
 	const [orderBy, setOrderBy] = useState('earned');
 	const data = usePlayerRankingData(isNetworkAvailable ? chainId : 137, orderBy);
-
 
 	const createSortHandler = (property) => (event) => {
 		const isAsc = orderBy === property && order === 'desc';
@@ -236,6 +300,13 @@ export default function RankingPage() {
 		});
 	}
 
+	const handleScrollToTop = () => {
+		window.scrollTo({
+			top: 0,
+			behavior: 'smooth',
+		});
+	};
+
 	return (
 		<>
 			<Head>
@@ -256,8 +327,16 @@ export default function RankingPage() {
 			</Head>
 			<StyledBox>
 				<Title theme={theme}>
-					<a>Ranking</a>
+					<a>Player Leaderboard</a>
 				</Title>
+				<StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
+					<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
+						{isNetworkAvailable ? <a>{CHAINS[chainId]?.nameToken}</a> : <a>MATIC</a>}
+					</StyledToggleButton>
+					<StyledToggleButton theme={theme} disabled={currencyValue === true} value={true}>
+						<a>USD</a>
+					</StyledToggleButton>
+				</StyledToggleButtonGroup>
 				<StyledTable theme={theme}>
 					<TableHead>
 						<TableRow>
@@ -342,12 +421,29 @@ export default function RankingPage() {
 									{row.userSocialStat?.twitch && <StyledTwitch />}
 									{row.userSocialStat?.youtube && <StyledYouTube />}
 								</TableCell>
-								<TableCell style={{ textAlign: 'right' }}>{formatNumber(row.earned)} MATIC</TableCell>
-								<TableCell style={{ textAlign: 'right' }}>{formatNumber(row.spent)} MATIC</TableCell>
+								<TableCell style={{ textAlign: 'right' }}>
+									{currencyValue === false ? (
+										<a>
+											{formatNumber(row.earned)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
+										</a>
+									) : (
+										<a>${formatNumber(row.earned * currencyPrice)}</a>
+									)}
+								</TableCell>
+								<TableCell style={{ textAlign: 'right' }}>
+									{currencyValue === false ? (
+										<a>
+											{formatNumber(row.spent)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
+										</a>
+									) : (
+										<a>${formatNumber(row.spent * currencyPrice)}</a>
+									)}
+								</TableCell>
 							</StyledTableRow>
 						))}
 					</TableBody>
 				</StyledTable>
+				<StyledArrowCircleUpOutlinedIcon theme={theme} onClick={handleScrollToTop} />
 			</StyledBox>
 		</>
 	);

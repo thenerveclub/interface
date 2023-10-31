@@ -328,6 +328,7 @@ export default function PlayerDares() {
 	const account = useSelector((state: { account: string }) => state.account);
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
+	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
 	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
 	const sort = useSelector((state: { sort: number }) => state.sort);
 
@@ -340,9 +341,6 @@ export default function PlayerDares() {
 
 	// Network Check
 	const isNetworkAvailable = availableChains.includes(chainId);
-
-	// Token Price
-	const price = usePrice(chainId);
 
 	// Toogle Button For Token Price
 	const handleToggle = (event, newCurrency) => {
@@ -451,7 +449,7 @@ export default function PlayerDares() {
 												{((tad?.amount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
 											</a>
 										) : (
-											<a>${((tad?.amount / 1e18) * price).toFixed(2)}</a>
+											<a>${((tad?.amount / 1e18) * currencyPrice).toFixed(2)}</a>
 										)
 									) : (
 										<span>
@@ -472,7 +470,7 @@ export default function PlayerDares() {
 												{((tad?.entranceAmount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
 											</a>
 										) : (
-											<a>${((tad?.entranceAmount / 1e18) * price).toFixed(2)}</a>
+											<a>${((tad?.entranceAmount / 1e18) * currencyPrice).toFixed(2)}</a>
 										)
 									) : (
 										<span>
@@ -532,7 +530,7 @@ export default function PlayerDares() {
 												{((tad?.amount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
 											</a>
 										) : (
-											<a>${((tad?.amount / 1e18) * price).toFixed(2)}</a>
+											<a>${((tad?.amount / 1e18) * currencyPrice).toFixed(2)}</a>
 										)
 									) : (
 										<span>
@@ -553,7 +551,7 @@ export default function PlayerDares() {
 												{((tad?.entranceAmount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
 											</a>
 										) : (
-											<a>${((tad?.entranceAmount / 1e18) * price).toFixed(2)}</a>
+											<a>${((tad?.entranceAmount / 1e18) * currencyPrice).toFixed(2)}</a>
 										)
 									) : (
 										<span>

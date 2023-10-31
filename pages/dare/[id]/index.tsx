@@ -364,7 +364,7 @@ export default function TaskPage() {
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 
 	// Token Price
-	const price = usePrice(chainId);
+	const price = usePrice();
 
 	// Get Task ID
 	const path = (global.window && window.location.pathname)?.toString() || '';

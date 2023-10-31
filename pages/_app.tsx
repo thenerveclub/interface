@@ -3,6 +3,7 @@ import { SnackbarProvider } from 'notistack';
 import { useEffect } from 'react';
 import { Provider, useDispatch } from 'react-redux';
 import Layout from '../components/layout/Layout';
+import usePrice from '../hooks/usePrice';
 import Account from '../state/account/accountUpdater';
 import ChainId from '../state/chainId/chainIdUpdater';
 import { store } from '../state/index';
@@ -15,6 +16,7 @@ import { getName } from '../utils/connectorsNameAndLogo';
 
 function Updaters() {
 	const dispatch = useDispatch();
+	usePrice();
 
 	useEffect(() => {
 		const savedTheme = localStorage.getItem('theme');
