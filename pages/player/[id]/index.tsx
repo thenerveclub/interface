@@ -198,7 +198,7 @@ export default function PlayerPage() {
 				></iframe> */}
 				</StyledRightSectionBox>
 			</StyledSection>
-			<PlayerDares />
+			<PlayerDares registerStatus={registerStatus} checksumAddress={checksumAddress} checksumAccount={checksumAccount} />
 		</StyledBox>
 	);
 }

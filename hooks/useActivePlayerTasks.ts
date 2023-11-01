@@ -46,13 +46,13 @@ export const useTAD = (checksumAddress: string, chainId: number) => {
 		};
 
 		// Refresh every 60 seconds
-		const interval = setInterval(getTAD, 60000);
+		// const interval = setInterval(getTAD, 60000);
 
 		// Call the function on first page load
 		getTAD();
 
 		// Clear the interval on unmount
-		return () => clearInterval(interval);
+		// return () => clearInterval(interval);
 
 		// Refresh the data when the chainId or checksumAddress changes
 	}, [chainId, checksumAddress]);

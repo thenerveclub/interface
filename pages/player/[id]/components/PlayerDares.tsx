@@ -1,16 +1,15 @@
 import styled from '@emotion/styled';
-import { Box, Button, Fade, Grid, Link, Skeleton, Tab, Tabs, ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material';
+import { Box, Button, Skeleton, Tab, Tabs, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import router from 'next/router';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SelectSort from '../../../../components/SelectSort';
 import CreateTask from '../../../../components/modal/createTask';
 import useActivePlayerTasks from '../../../../hooks/useActivePlayerTasks';
 import useCompletedPlayerTasks from '../../../../hooks/useCompletedPlayerTasks';
-import usePrice from '../../../../hooks/usePrice';
 import { currencySlice } from '../../../../state/currency/currencySlice';
 import { CHAINS } from '../../../../utils/chains';
-import { CheckNameRegister } from '../../../../utils/validation/checkNameRegister';
 
 const StyledTabs = styled(Tabs)<{ theme: any }>`
 	// target child element
@@ -159,8 +158,7 @@ const TaskCard = styled(Box)<{ theme: any }>`
 	margin: 0 auto 0 auto;
 	background-color: ${({ theme }) => theme.palette.background.default};
 	backdrop-filter: blur(15px) brightness(70%);
-	border: 1px solid;
-	border-color: rgba(41, 50, 73, 1);
+	border: 0.5px solid ${({ theme }) => theme.palette.secondary.main};
 	border-radius: ${({ theme }) => theme.customShape.borderRadius};
 	align-items: center;
 	justify-content: center;
@@ -321,7 +319,15 @@ interface TabPanelProps {
 	value: number;
 }
 
-export default function PlayerDares() {
+export default function PlayerDares({
+	registerStatus,
+	checksumAddress,
+	checksumAccount,
+}: {
+	registerStatus: any;
+	checksumAddress: any;
+	checksumAccount: any;
+}) {
 	const theme = useTheme();
 	// Redux
 	const dispatch = useDispatch();
@@ -331,13 +337,6 @@ export default function PlayerDares() {
 	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
 	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
 	const sort = useSelector((state: { sort: number }) => state.sort);
-
-	// Checked Name Register
-	const [registerStatus] = CheckNameRegister();
-
-	// Address Checksumed And Lowercased
-	const checksumAddress = registerStatus?.toLowerCase();
-	const checksumAccount = account?.toLowerCase();
 
 	// Network Check
 	const isNetworkAvailable = availableChains.includes(chainId);
@@ -487,7 +486,7 @@ export default function PlayerDares() {
 									)}
 								</TaskBoxSectionTwo>
 								<TaskBoxButton>
-									<a target="_blank" rel="noreferrer" href={'https://app.nerveglobal.com/dare/' + tad.id}>
+									<a onClick={() => router.push('/dare/' + tad.id)}>
 										<TaskButton>View Task</TaskButton>
 									</a>
 								</TaskBoxButton>
@@ -568,7 +567,7 @@ export default function PlayerDares() {
 									)}
 								</TaskBoxSectionTwo>
 								<TaskBoxButton>
-									<a target="_blank" rel="noreferrer" href={'https://app.nerveglobal.com/dare/' + tad.id}>
+									<a onClick={() => router.push('/dare/' + tad.id)}>
 										<TaskButton>View Task</TaskButton>
 									</a>
 								</TaskBoxButton>

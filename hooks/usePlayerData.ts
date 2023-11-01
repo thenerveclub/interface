@@ -5,7 +5,7 @@ const usePlayerData = (checksumAddress: string, chainId: number) => {
 	const [playerData, setPlayerData] = useState<any[]>([]);
 
 	useEffect(() => {
-		const getTask = async () => {
+		const getPlayerData = async () => {
 			const QueryForPlayerData = `
         {
           userDashStats(where: {id: "${checksumAddress}"}) {
@@ -38,16 +38,8 @@ const usePlayerData = (checksumAddress: string, chainId: number) => {
 			}
 		};
 
-		// Refresh every 60 seconds
-		const interval = setInterval(getTask, 60000);
+		getPlayerData();
 
-		// Call the function on first page load
-		getTask();
-
-		// Clear the interval on unmount
-		return () => clearInterval(interval);
-
-		// Refresh the data when the chainId or checksumAddress changes
 	}, [chainId, checksumAddress]);
 
 	return playerData;

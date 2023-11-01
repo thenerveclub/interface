@@ -1,17 +1,20 @@
 import { ethers } from 'ethers';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
 import { CHAINS } from '../chains';
 import { getProvider } from '../providerFactory';
 
 export function CheckNameRegister() {
-	const [registerStatus, setRegisterStatus] = useState<string | null>(null);
+	// Redux
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 
+	const [registerStatus, setRegisterStatus] = useState<string | null>(null);
+
 	// Get URL Path
-	const path = (global.window && window.location.pathname)?.toString() || '';
-	const pathLastPart = path.split('/').pop();
+	const router = useRouter();
+	const { id } = router.query;
+	const pathLastPart = id?.toString();
 
 	// Check if pathLastPart is an address
 	const isAddress = ethers.utils.isAddress(pathLastPart);
@@ -40,7 +43,7 @@ export function CheckNameRegister() {
 				console.log(error);
 			}
 		}
-	}, [isAddress, pathLastPart, contractProvider]);
+	}, [pathLastPart, contractProvider]);
 
 	return [registerStatus];
 }
