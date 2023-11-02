@@ -18,7 +18,6 @@ const useTwitchLiveStatus = (twitchChannelName: string) => {
 				});
 
 				const data = await response.json();
-				console.log(data);
 				setIsTwitchLive(!!data.data?.length);
 			} catch (error) {
 				console.error(error);

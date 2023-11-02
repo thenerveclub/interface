@@ -29,7 +29,6 @@ function useBalanceTracker() {
 		provider.on('block', async (blockNumber) => {
 			// Fetch transactions from the block
 			const block = await provider.getBlockWithTransactions(blockNumber);
-			console.log('block', block);
 			const isUserInvolved = block.transactions.some((tx) => tx.from === account || tx.to === account);
 
 			// If user's address is involved in any transaction, update the balance

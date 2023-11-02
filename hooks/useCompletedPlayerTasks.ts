@@ -37,8 +37,6 @@ export const useTAD = (checksumAddress: string, chainId: number) => {
 
 				if (data && data.data && data.data.tasks) {
 					setTAD(data.data.tasks);
-				} else {
-					console.log('Empty response');
 				}
 			} catch (error) {
 				console.error(error);

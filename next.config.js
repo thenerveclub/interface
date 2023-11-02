@@ -48,6 +48,15 @@ const nextConfig = {
 	typescript: {
 		ignoreBuildErrors: true,
 	},
+	async redirects() {
+		return [
+			{
+				source: '/',
+				destination: '/polygon',
+				permanent: true,
+			},
+		];
+	},
 };
 
 module.exports = withBundleAnalyzer(nextConfig);

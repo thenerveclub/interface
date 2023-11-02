@@ -59,11 +59,25 @@ const MenuItemStyled = styled(MenuItem)<{ theme: any }>`
 	}
 `;
 
+const SearchResultTitle = styled.div<{ theme: any }>`
+	font-size: 0.75rem;
+	color: ${({ theme }) => theme.palette.secondary.main};
+	background-color: transparent;
+	padding: 0.5rem;
+	font-weight: bold;
+	text-align: left;
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+`;
+
 export default function SelectLeaderboard() {
 	const theme = useTheme();
+
+	// Local state
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [isFocused, setIsFocused] = useState(false);
 
+	// Open/close menu
 	const handleOpen = () => {
 		setMenuOpen(true);
 		setIsFocused(true);
@@ -106,10 +120,18 @@ export default function SelectLeaderboard() {
 					},
 				}}
 			>
-				<MenuItemStyled theme={theme} onClick={() => router.push('/leaderboard/player')}>
+				<SearchResultTitle theme={theme}>Polygon</SearchResultTitle>
+				<MenuItemStyled theme={theme} onClick={() => router.push(`/polygon/leaderboard/player`)}>
 					<a>Player</a>
 				</MenuItemStyled>
-				<MenuItemStyled theme={theme} onClick={() => router.push('/leaderboard/dare')}>
+				<MenuItemStyled theme={theme} onClick={() => router.push(`/polygon/leaderboard/dare`)}>
+					<a>Dare</a>
+				</MenuItemStyled>
+				<SearchResultTitle theme={theme}>Goerli</SearchResultTitle>
+				<MenuItemStyled theme={theme} onClick={() => router.push(`/goerli/leaderboard/player`)}>
+					<a>Player</a>
+				</MenuItemStyled>
+				<MenuItemStyled theme={theme} onClick={() => router.push(`/goerli/leaderboard/dare`)}>
 					<a>Dare</a>
 				</MenuItemStyled>
 			</StyledSelect>

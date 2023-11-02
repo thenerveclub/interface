@@ -1,12 +1,14 @@
+import styled from '@emotion/styled';
 import { Box, Button, InputAdornment, Modal, OutlinedInput, Slide, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
 import { forwardRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
-import { CHAINS } from '../../utils/chains';
 import useBalanceTracker from '../../hooks/useBalanceTracker';
+import { CHAINS } from '../../utils/chains';
 
 const style = {
 	position: 'absolute' as 'absolute',
@@ -23,7 +25,51 @@ const style = {
 	pb: 3,
 };
 
+const ModalButton = styled(Button)<{ theme: any }>`
+	color: ${({ theme }) => theme.palette.text.primary};
+	text-transform: none;
+	font-size: 16px;
+	border: none;
+	line-height: 1.5;
+	background-color: ${({ theme }) => theme.palette.warning.main};
+	border-radius: ${({ theme }) => theme.shape.borderRadius};
+	height: 40px;
+	width: 350px;
+	margin: 0 auto 0 auto;
+
+	&:hover {
+		background-color: ${({ theme }) => theme.palette.warning.main};
+	}
+`;
+
+const StyledBox = styled(Box)<{ theme: any }>`
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	margin: 0 auto 0 auto;
+	justify-content: center;
+	align-items: center;
+	height: auto;
+	width: 400px;
+	background-color: ${({ theme }) => theme.palette.background.default};
+	border-radius: ${({ theme }) => theme.customShape.borderRadius};
+	box-shadow: 0 0 25px rgba(76, 130, 251, 0.25);
+	padding: 2rem;
+	animation: slide-up 0.25s ease-out forwards;
+
+	@keyframes slide-up {
+		0% {
+			transform: translateX(-50%) translateY(100%);
+		}
+		150% {
+			transform: translateX(-50%) translateY(0);
+		}
+	}
+`;
+
 export default function JoinDare() {
+	const theme = useTheme();
 	const [open, setOpen] = useState(false);
 	const { provider } = useWeb3React();
 	const { enqueueSnackbar } = useSnackbar();
@@ -75,12 +121,12 @@ export default function JoinDare() {
 	}
 
 	return (
-		<div>
-			<Button fullWidth={true} variant="outlined" onClick={handleClickOpen}>
+		<>
+			<ModalButton theme={theme} onClick={handleClickOpen}>
 				Join Task
-			</Button>
+			</ModalButton>
 			<Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
-				<Box sx={style}>
+				<StyledBox theme={theme} sx={style}>
 					<Typography id="modal-modal-title" variant="h6" component="h2">
 						Connect a wallet
 					</Typography>
@@ -103,8 +149,8 @@ export default function JoinDare() {
 					</Typography>
 					<Button onClick={handleClose}>Cancel</Button>
 					{pendingTx ? <Button>Pending</Button> : <Button onClick={onJoin}>Join</Button>}
-				</Box>
+				</StyledBox>
 			</Modal>
-		</div>
+		</>
 	);
 }

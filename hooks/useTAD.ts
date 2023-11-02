@@ -33,8 +33,6 @@ export const useTAD = (dareID: string, graphApi: string, chainId: string) => {
 				if (response.ok) {
 					const data = await response.json();
 					setTAD(data.data.tasks);
-				} else {
-					console.log('Array is Empty');
 				}
 			} catch (error) {
 				console.error(error);

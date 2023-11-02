@@ -132,6 +132,9 @@ const SearchResultTitle = styled.div<{ theme: any }>`
 
 export default function SearchBar() {
 	const theme = useTheme();
+	const router = useRouter();
+	const network = router.query.network as string;
+
 	// Redux
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 
@@ -143,7 +146,6 @@ export default function SearchBar() {
 	const trendingDareList = useTrendingDareList(137);
 	const dareSearchList = useDareDataSearchList(137, searchValue); // New hook to get dares based on search value
 	const [isListVisible, setListVisible] = useState(false);
-	const router = useRouter();
 
 	const handleSearchChange = (e) => {
 		setSearchValue(e.target.value);
@@ -156,13 +158,13 @@ export default function SearchBar() {
 	};
 
 	const handleListPlayerItemClick = (playerId) => {
-		router.push(`/player/${playerId}`);
+		router.push(`/${network}/player/${playerId}`);
 		setSearchValue(''); // clear input
 		setListVisible(false); // Hide the result list
 	};
 
 	const handleListDareItemClick = (dareId) => {
-		router.push(`/dare/${dareId}`);
+		router.push(`/${network}/dare/${dareId}`);
 		setSearchValue(''); // clear input
 		setListVisible(false); // Hide the result list
 	};

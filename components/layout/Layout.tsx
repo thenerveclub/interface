@@ -42,7 +42,6 @@ const Layout = ({ children = 'This is the default title' }: Props) => {
 
 	const router = useRouter();
 	const is404 = router.pathname === '/404';
-	console.log('is404', is404);
 
 	return (
 		<>

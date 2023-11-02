@@ -4,12 +4,12 @@ import { useTheme } from '@mui/material/styles';
 import router from 'next/router';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import SelectSort from '../../../../components/SelectSort';
-import CreateTask from '../../../../components/modal/createTask';
-import useActivePlayerTasks from '../../../../hooks/useActivePlayerTasks';
-import useCompletedPlayerTasks from '../../../../hooks/useCompletedPlayerTasks';
-import { currencySlice } from '../../../../state/currency/currencySlice';
-import { CHAINS } from '../../../../utils/chains';
+import SelectSort from '../../../../../components/SelectSort';
+import CreateTask from '../../../../../components/modal/createTask';
+import useActivePlayerTasks from '../../../../../hooks/useActivePlayerTasks';
+import useCompletedPlayerTasks from '../../../../../hooks/useCompletedPlayerTasks';
+import { currencySlice } from '../../../../../state/currency/currencySlice';
+import { CHAINS } from '../../../../../utils/chains';
 
 const StyledTabs = styled(Tabs)<{ theme: any }>`
 	// target child element
@@ -353,9 +353,6 @@ export default function PlayerDares({
 
 	const [filteredActiveTasks, setFilteredActiveTasks] = useState(activePlayerTasks);
 	const [filteredCompletedTasks, setFilteredCompletedTasks] = useState(completedPlayerTasks);
-
-	// console.log('completedPlayerTasks', completedPlayerTasks);
-	// console.log('filteredCompletedTasks', filteredCompletedTasks);
 
 	// Tab Panel
 	function TabPanel(props: TabPanelProps) {

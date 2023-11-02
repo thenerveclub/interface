@@ -6,33 +6,40 @@ const useDareRankingData = (chainId: number, orderBy: string) => {
 
 	useEffect(() => {
 		const getTrendingPlayerList = async () => {
+			const graphApiEndpoint = CHAINS[chainId]?.graphApi;
+			if (!graphApiEndpoint) {
+				setRankingList([]);
+				return;
+			}
+
 			const QueryForRankingList = `
-			{
-				tasks(first: 100, orderDirection: desc, orderBy: ${orderBy}) {
-				  id
-				  description
-				  entranceAmount
-				  amount
-				  participants
-				  negativeVotes
-				  positiveVotes
-				  proofLink
-				  endTask
-				}
+		  {
+			 tasks(first: 100, orderDirection: desc, orderBy: ${orderBy}) {
+				id
+				description
+				entranceAmount
+				amount
+				participants
+				negativeVotes
+				positiveVotes
+				proofLink
+				endTask
 			 }
-      `;
+		  }`;
 
 			try {
-				const fetchPlayerData = await fetch(CHAINS[chainId]?.graphApi, {
+				const fetchPlayerData = await fetch(graphApiEndpoint, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ query: QueryForRankingList }),
+					cache: 'no-cache',
 				});
 
 				const data = await fetchPlayerData.json();
 				setRankingList(data.data.tasks);
 			} catch (error) {
-				console.error(error);
+				console.error(`Error fetching data for chainId: ${chainId}`, error);
+				setRankingList([]);
 			}
 		};
 

@@ -3,12 +3,11 @@ import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { Box, Fade, Grid, Skeleton, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
-import usePlayerData from '../../../../hooks/usePlayerData';
-import usePrice from '../../../../hooks/usePrice';
-import useRankingEarned from '../../../../hooks/useRankingEarned';
-import useRankingSpent from '../../../../hooks/useRankingSpent';
-import { CHAINS } from '../../../../utils/chains';
-import { CheckNameRegister } from '../../../../utils/validation/checkNameRegister';
+import usePlayerData from '../../../../../hooks/usePlayerData';
+import useRankingEarned from '../../../../../hooks/useRankingEarned';
+import useRankingSpent from '../../../../../hooks/useRankingSpent';
+import { CHAINS } from '../../../../../utils/chains';
+import { CheckNameRegister } from '../../../../../utils/validation/checkNameRegister';
 
 const StatisticBox = styled(Box)`
 	width: 100%;
@@ -52,6 +51,7 @@ export default function SocialBoxComponent({ isNetworkAvailable }: { isNetworkAv
 	// Redux
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
+	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
 
 	// Checked Name Register
 	const [registerStatus] = CheckNameRegister();
@@ -61,9 +61,6 @@ export default function SocialBoxComponent({ isNetworkAvailable }: { isNetworkAv
 
 	// Player Data
 	const playerData = usePlayerData(checksumAddress, chainId);
-
-	// Token Price
-	const price = usePrice();
 
 	// Ranking Data
 	const rankingEarned = useRankingEarned(checksumAddress, chainId);
@@ -78,7 +75,7 @@ export default function SocialBoxComponent({ isNetworkAvailable }: { isNetworkAv
 							{((playerData[0]?.earned / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
 						</a>
 					) : (
-						<a>${((playerData[0]?.earned / 1e18) * price).toFixed(2)}</a>
+						<a>${((playerData[0]?.earned / 1e18) * currencyPrice).toFixed(2)}</a>
 					)
 				) : (
 					<a>
@@ -99,7 +96,7 @@ export default function SocialBoxComponent({ isNetworkAvailable }: { isNetworkAv
 							{((playerData[0]?.spent / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
 						</a>
 					) : (
-						<a>${((playerData[0]?.spent / 1e18) * price).toFixed(2)}</a>
+						<a>${((playerData[0]?.spent / 1e18) * currencyPrice).toFixed(2)}</a>
 					)
 				) : (
 					<a>

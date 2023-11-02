@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 import { Badge, Box } from '@mui/material';
 import { useSelector } from 'react-redux';
-import RegisterSocial from '../../../../components/modal/registerSocial';
-import usePlayerData from '../../../../hooks/usePlayerData';
-import useTwitchStatus from '../../../../hooks/useTwitchStatus';
-import { CheckNameRegister } from '../../../../utils/validation/checkNameRegister';
+import RegisterSocial from '../../../../../components/modal/registerSocial';
+import usePlayerData from '../../../../../hooks/usePlayerData';
+import useTwitchStatus from '../../../../../hooks/useTwitchStatus';
+import { CheckNameRegister } from '../../../../../utils/validation/checkNameRegister';
 import Instagram from '/public/svg/socials/instagram.svg';
 import TikTok from '/public/svg/socials/tiktok.svg';
 import Twitch from '/public/svg/socials/twitch.svg';
@@ -80,12 +80,7 @@ export default function SocialBoxComponent() {
 	const twitchLink = playerData[0]?.userSocialStat?.twitch.includes('twitch') ? playerData[0]?.userSocialStat?.twitch : '';
 	const twitchSplit = twitchLink?.split('/');
 	const twitchChannelName = twitchSplit[twitchSplit.length - 1];
-
-	console.log(twitchChannelName);
-
 	const isTwitchLive = useTwitchStatus(twitchChannelName);
-
-	console.log(isTwitchLive);
 
 	return (
 		<SocialBox>

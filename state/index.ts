@@ -2,10 +2,10 @@ import { configureStore } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
 import { accountSlice } from './account/accountSlice';
 import { availableChainsSlice, chainIdSlice } from './chainId/chainIdSlice';
-import { themeSlice } from './theme/themeSlice';
 import { currencySlice } from './currency/currencySlice';
 import { currencyPriceSlice } from './currencyPrice/currencyPriceSlice';
 import { sortSlice } from './sort/sortSlice';
+import { themeSlice } from './theme/themeSlice';
 
 export const store = configureStore({
 	reducer: {

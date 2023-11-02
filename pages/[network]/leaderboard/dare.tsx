@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { OpenInNew } from '@mui/icons-material';
 import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
@@ -7,114 +6,14 @@ import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, ToggleBu
 import { useTheme } from '@mui/material/styles';
 import localFont from 'next/font/local';
 import Head from 'next/head';
-import router from 'next/router';
+import router, { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import usePlayerRankingData from '../../hooks/rankingData/usePlayerRankingData';
-import { currencySlice } from '../../state/currency/currencySlice';
-import { CHAINS } from '../../utils/chains';
-import Instagram from '/public/svg/socials/instagram.svg';
-import TikTok from '/public/svg/socials/tiktok.svg';
-import Twitch from '/public/svg/socials/twitch.svg';
-import Twitter from '/public/svg/socials/twitter.svg';
-import Youtube from '/public/svg/socials/youtube.svg';
+import useDareRankingData from '../../../hooks/rankingData/useDareRankingData';
+import { currencySlice } from '../../../state/currency/currencySlice';
+import { CHAINS, nameToChainId } from '../../../utils/chains';
 
-const TrueLies = localFont({ src: '../../public/fonts/TrueLies.woff2', display: 'swap' });
-
-const StyledTwitter = styled(Twitter)<{ theme: any }>`
-	path {
-		fill: ${({ theme }) => theme.palette.secondary.main};
-		transition: fill 0.5s ease-in-out; // Add transition for fill color
-	}
-
-	cursor: pointer;
-	width: 18px;
-	height: 18px;
-	transition: all 0.5s ease-in-out;
-
-	&:hover {
-		// transform: rotate(-10deg);
-		path {
-			fill: ${({ theme }) => theme.palette.secondary.contrastText};
-		}
-	}
-`;
-
-const StyledInstagram = styled(Instagram)<{ theme: any }>`
-	path {
-		fill: ${({ theme }) => theme.palette.secondary.main};
-		transition: fill 0.5s ease-in-out; // Add transition for fill color
-	}
-
-	cursor: pointer;
-	width: 18px;
-	height: 18px;
-	transition: all 0.5s ease-in-out;
-
-	&:hover {
-		// transform: rotate(-10deg);
-		path {
-			fill: ${({ theme }) => theme.palette.secondary.contrastText};
-		}
-	}
-`;
-
-const StyledTikTok = styled(TikTok)<{ theme: any }>`
-	path {
-		fill: ${({ theme }) => theme.palette.secondary.main};
-		transition: fill 0.5s ease-in-out; // Add transition for fill color
-	}
-
-	cursor: pointer;
-	width: 18px;
-	height: 18px;
-	transition: all 0.5s ease-in-out;
-
-	&:hover {
-		// transform: rotate(-10deg);
-		path {
-			fill: ${({ theme }) => theme.palette.secondary.contrastText};
-		}
-	}
-`;
-
-const StyledYouTube = styled(Youtube)<{ theme: any }>`
-	path {
-		fill: ${({ theme }) => theme.palette.secondary.main};
-		transition: fill 0.5s ease-in-out; // Add transition for fill color
-	}
-
-	cursor: pointer;
-	width: 18px;
-	height: 18px;
-	transition: all 0.5s ease-in-out;
-
-	&:hover {
-		// transform: rotate(-10deg);
-		path {
-			fill: ${({ theme }) => theme.palette.secondary.contrastText};
-		}
-	}
-`;
-
-const StyledTwitch = styled(Twitch)<{ theme: any }>`
-	path {
-		fill: ${({ theme }) => theme.palette.secondary.main};
-		transition: fill 0.5s ease-in-out; // Add transition for fill color
-	}
-
-	cursor: pointer;
-	width: 18px;
-	height: 18px;
-	transition: all 0.5s ease-in-out;
-
-	&:hover {
-		// transform: rotate(-10deg);
-		path {
-			fill: ${({ theme }) => theme.palette.secondary.contrastText};
-		}
-	}
-`;
+const TrueLies = localFont({ src: '../../../public/fonts/TrueLies.woff2', display: 'swap' });
 
 const StyledBox = styled(Box)`
 	display: flex;
@@ -139,6 +38,7 @@ const Title = styled(Typography)<{ theme: any }>`
 	justify-content: center;
 	align-items: center;
 	font-family: ${TrueLies.style.fontFamily};
+	color: #fff;
 	text-transform: none;
 	font-size: 5rem;
 	cursor: default;
@@ -180,6 +80,7 @@ const StyledButton = styled(Button)<{ theme: any }>`
 
 const StyledTableRow = styled(TableRow)<{ theme: any }>`
 	transition: transform 0.3s, box-shadow 0.3s;
+	cursor: pointer;
 
 	&:nth-of-type(odd) {
 		background-color: ${({ theme }) => theme.palette.background.default};
@@ -247,14 +148,18 @@ const StyledArrowCircleUpOutlinedIcon = styled(ArrowCircleUpOutlinedIcon)<{ them
 	}
 `;
 
-export default function RankingPage() {
+export default function RankingDaresPage() {
 	const theme = useTheme();
+	const router = useRouter();
+	const network = router.query.network as string;
+
+	// Name to Chain ID
+	const chainIdUrl = nameToChainId[network];
 
 	// Redux
 	const dispatch = useDispatch();
-	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
-	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
+	const currencyPrice = useSelector((state: { currencyPrice: any }) => state.currencyPrice);
 	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
 
 	// Toogle Button For Token Price
@@ -264,11 +169,11 @@ export default function RankingPage() {
 	};
 
 	// Network Check
-	const isNetworkAvailable = availableChains.includes(chainId);
+	const isNetworkAvailable = availableChains.includes(chainIdUrl);
 
 	const [order, setOrder] = useState('desc');
-	const [orderBy, setOrderBy] = useState('earned');
-	const data = usePlayerRankingData(isNetworkAvailable ? chainId : 137, orderBy);
+	const [orderBy, setOrderBy] = useState('amount');
+	const data = useDareRankingData(isNetworkAvailable ? chainIdUrl : 137, orderBy);
 
 	const createSortHandler = (property) => (event) => {
 		const isAsc = orderBy === property && order === 'desc';
@@ -277,8 +182,23 @@ export default function RankingPage() {
 	};
 
 	const sortedData = [...data].sort((a, b) => {
-		let aValue = Number(a[orderBy]);
-		let bValue = Number(b[orderBy]);
+		let aValue, bValue;
+
+		if (orderBy === 'voters') {
+			aValue = Number(a.positiveVotes) + Number(a.negativeVotes);
+			bValue = Number(b.positiveVotes) + Number(b.negativeVotes);
+		} else if (orderBy === 'voting') {
+			const totalVotesA = Number(a.positiveVotes) + Number(a.negativeVotes);
+			const totalVotesB = Number(b.positiveVotes) + Number(b.negativeVotes);
+			aValue = totalVotesA === 0 ? -1 : (Number(a.positiveVotes) / totalVotesA) * 100;
+			bValue = totalVotesB === 0 ? -1 : (Number(b.positiveVotes) / totalVotesB) * 100;
+		} else {
+			aValue = Number(a[orderBy]);
+			bValue = Number(b[orderBy]);
+		}
+
+		if (aValue === -1 && bValue !== -1) return 1; // Move a to the middle
+		if (bValue === -1 && aValue !== -1) return -1; // Move b to the middle
 
 		if (order === 'asc') {
 			return aValue - bValue;
@@ -287,9 +207,9 @@ export default function RankingPage() {
 		}
 	});
 
-	const handlePlayer = (playerId) => {
+	const handleDare = (dareID) => {
 		return () => {
-			router.push(`/player/${playerId}`);
+			router.push(`/${network}/dare/${dareID}`);
 		};
 	};
 
@@ -298,6 +218,29 @@ export default function RankingPage() {
 			minimumFractionDigits: 2,
 			maximumFractionDigits: 2,
 		});
+	}
+
+	function calculatePositivePercentage(positiveVotes, negativeVotes) {
+		const numPositiveVotes = Number(positiveVotes);
+		const numNegativeVotes = Number(negativeVotes);
+
+		const totalVotes = numPositiveVotes + numNegativeVotes;
+
+		// Handle cases with no votes
+		if (totalVotes === 0) return <span style={{ color: theme.palette.text.primary }}>0.00%</span>;
+
+		const percentage = (numPositiveVotes / totalVotes) * 100;
+		const formattedPercentage = percentage.toFixed(2) + '%';
+
+		// Determine color and value based on the percentage
+		if (percentage > 50) {
+			return <span style={{ color: 'green' }}>{formattedPercentage}</span>;
+		} else if (percentage === 50) {
+			return <span style={{ color: 'green' }}>{formattedPercentage}</span>;
+		} else {
+			const negativePercentage = (100 - percentage).toFixed(2) + '%';
+			return <span style={{ color: 'red' }}>{negativePercentage}</span>;
+		}
 	}
 
 	const handleScrollToTop = () => {
@@ -327,11 +270,11 @@ export default function RankingPage() {
 			</Head>
 			<StyledBox>
 				<Title theme={theme}>
-					<a>Player Leaderboard</a>
+					<a>Dare Leaderboard</a>
 				</Title>
 				<StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
 					<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
-						{isNetworkAvailable ? <a>{CHAINS[chainId]?.nameToken}</a> : <a>MATIC</a>}
+						{isNetworkAvailable ? <a>{CHAINS[chainIdUrl]?.nameToken}</a> : <a>MATIC</a>}
 					</StyledToggleButton>
 					<StyledToggleButton theme={theme} disabled={currencyValue === true} value={true}>
 						<a>USD</a>
@@ -341,13 +284,11 @@ export default function RankingPage() {
 					<TableHead>
 						<TableRow>
 							<TableCell>#</TableCell>
-							<TableCell>Name</TableCell>
-							<TableCell>Address</TableCell>
-							<TableCell style={{ textAlign: 'center' }}>Socials</TableCell>
+							<TableCell>Description</TableCell>
 							<TableCell>
-								<StyledButton theme={theme} onClick={createSortHandler('earned')}>
-									Earned
-									{orderBy === 'earned' ? (
+								<StyledButton theme={theme} onClick={createSortHandler('entranceAmount')}>
+									Entry Amount
+									{orderBy === 'entranceAmount' ? (
 										order === 'asc' ? (
 											<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
 										) : (
@@ -360,10 +301,62 @@ export default function RankingPage() {
 									)}
 								</StyledButton>
 							</TableCell>
+
 							<TableCell>
-								<StyledButton theme={theme} onClick={createSortHandler('spent')}>
-									Spent
-									{orderBy === 'spent' ? (
+								<StyledButton theme={theme} onClick={createSortHandler('amount')}>
+									Total Amount
+									{orderBy === 'amount' ? (
+										order === 'asc' ? (
+											<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
+										) : (
+											<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
+										)
+									) : order === 'asc' ? (
+										<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
+									) : (
+										<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
+									)}
+								</StyledButton>
+							</TableCell>
+
+							<TableCell>
+								<StyledButton theme={theme} onClick={createSortHandler('participants')}>
+									Participants
+									{orderBy === 'participants' ? (
+										order === 'asc' ? (
+											<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
+										) : (
+											<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
+										)
+									) : order === 'asc' ? (
+										<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
+									) : (
+										<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
+									)}
+								</StyledButton>
+							</TableCell>
+
+							<TableCell>
+								<StyledButton theme={theme} onClick={createSortHandler('voters')}>
+									Voters
+									{orderBy === 'voters' ? (
+										order === 'asc' ? (
+											<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
+										) : (
+											<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
+										)
+									) : order === 'asc' ? (
+										<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
+									) : (
+										<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
+									)}
+								</StyledButton>
+							</TableCell>
+
+							<TableCell>
+								<StyledButton theme={theme} onClick={createSortHandler('voting')}>
+									Voting
+									{orderBy === 'voting' ? (
 										order === 'asc' ? (
 											<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
 										) : (
@@ -379,68 +372,43 @@ export default function RankingPage() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{sortedData.map((row, index) => (
-							<StyledTableRow theme={theme} key={index}>
-								<TableCell>{index + 1}</TableCell>
-								<TableCell>
-									<a style={{ cursor: 'pointer' }} onClick={handlePlayer(row.userName)}>
-										{row.userName ? row.userName : 'N/A'}
-									</a>
-								</TableCell>
-								<TableCell>
-									<a
-										style={{
-											cursor: 'pointer',
-											textDecoration: 'none',
-											color: theme.palette.text.primary,
-											display: 'inline-flex',
-											gap: '5px',
-											alignItems: 'center',
-										}}
-										href={CHAINS[isNetworkAvailable ? chainId : 137]?.blockExplorerUrls[0] + 'address/' + row.id}
-										target="_blank"
-									>
-										{`${row.id.slice(0, 6)}...${row.id.slice(-4)}`}
-										<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
-									</a>
-								</TableCell>
-								<TableCell
-									style={{
-										// display: 'flex',
-										justifyContent: 'center',
-										alignItems: 'center',
-										gap: '15px',
-										minHeight: '100%',
-										textAlign: 'center',
-										margin: '0 auto 0 auto',
-									}}
-								>
-									{row.userSocialStat?.instagram && <StyledInstagram />}
-									{row.userSocialStat?.twitter && <StyledTwitter />}
-									{row.userSocialStat?.tiktok && <StyledTikTok />}
-									{row.userSocialStat?.twitch && <StyledTwitch />}
-									{row.userSocialStat?.youtube && <StyledYouTube />}
-								</TableCell>
-								<TableCell style={{ textAlign: 'right' }}>
-									{currencyValue === false ? (
-										<a>
-											{formatNumber(row.earned)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
-										</a>
-									) : (
-										<a>${formatNumber(row.earned * currencyPrice)}</a>
-									)}
-								</TableCell>
-								<TableCell style={{ textAlign: 'right' }}>
-									{currencyValue === false ? (
-										<a>
-											{formatNumber(row.spent)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
-										</a>
-									) : (
-										<a>${formatNumber(row.spent * currencyPrice)}</a>
-									)}
+						{data.length > 0 ? (
+							sortedData.map((row, index) => (
+								<StyledTableRow theme={theme} key={index} onClick={handleDare(row.id)}>
+									<TableCell>{index + 1}</TableCell>
+									<TableCell>
+										<a style={{ cursor: 'pointer' }}>{row.description.length > 75 ? row.description.substring(0, 75) + '...' : row.description}</a>
+									</TableCell>
+									<TableCell style={{ textAlign: 'right' }}>
+										{currencyValue === false ? (
+											<a style={{ cursor: 'pointer' }}>
+												{formatNumber(row.entranceAmount)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
+											</a>
+										) : (
+											<a style={{ cursor: 'pointer' }}>${formatNumber(row.entranceAmount * currencyPrice[network]?.usd)}</a>
+										)}
+									</TableCell>
+									<TableCell style={{ textAlign: 'right' }}>
+										{currencyValue === false ? (
+											<a style={{ cursor: 'pointer' }}>
+												{formatNumber(row.amount)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
+											</a>
+										) : (
+											<a style={{ cursor: 'pointer' }}>${formatNumber(row.amount * currencyPrice[network]?.usd)}</a>
+										)}
+									</TableCell>
+									<TableCell style={{ textAlign: 'right' }}>{row.participants}</TableCell>
+									<TableCell style={{ textAlign: 'right' }}>{Number(row.positiveVotes) + Number(row.negativeVotes)}</TableCell>
+									<TableCell style={{ textAlign: 'right' }}>{calculatePositivePercentage(row.positiveVotes, row.negativeVotes)}</TableCell>
+								</StyledTableRow>
+							))
+						) : (
+							<StyledTableRow theme={theme}>
+								<TableCell colSpan={7} style={{ textAlign: 'center' }}>
+									No data available on this chain
 								</TableCell>
 							</StyledTableRow>
-						))}
+						)}
 					</TableBody>
 				</StyledTable>
 				<StyledArrowCircleUpOutlinedIcon theme={theme} onClick={handleScrollToTop} />

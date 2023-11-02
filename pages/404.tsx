@@ -4,6 +4,7 @@ import { useTheme } from '@mui/material/styles';
 import localFont from 'next/font/local';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const TrueLies = localFont({ src: '../public/fonts/TrueLies.woff2', display: 'swap' });
 
@@ -59,6 +60,8 @@ const Text = styled(Typography)`
 
 export default function Page() {
 	const theme = useTheme();
+	const router = useRouter();
+	const network = router.query.network as string;
 
 	return (
 		<>
@@ -79,7 +82,7 @@ export default function Page() {
 				<meta name="twitter:image" content="https://app.nerveglobal.com/favicon.ico" />
 			</Head>
 			<StyledBox theme={theme}>
-				<Link href="/" passHref style={{ textDecoration: 'none' }}>
+				<Link href={`/`} passHref style={{ textDecoration: 'none' }}>
 					<h1>Sorry</h1>
 				</Link>
 				<Text>

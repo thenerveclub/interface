@@ -3,8 +3,11 @@ import { Box } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import localFont from 'next/font/local';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { CHAINS } from '../../utils/chains';
 
-const TrueLies = localFont({ src: '../public/fonts/TrueLies.woff2', display: 'swap' });
+const TrueLies = localFont({ src: '../../public/fonts/TrueLies.woff2', display: 'swap' });
 
 const StyledLayout = styled(Box)`
 	display: flex;
@@ -75,6 +78,25 @@ const StyledTrendingGrid = styled(Box)`
 
 export default function IndexPage() {
 	const theme = useTheme();
+	const router = useRouter();
+	const { network } = router.query;
+
+	// Define your valid networks
+	// const validNetworks = ['polygon', 'goerli'];
+
+	// use all urlNames from CHAINS to create a list of valid networks
+	const validNetworks = Object.values(CHAINS).map((chain) => chain.urlName);
+
+	useEffect(() => {
+		// If the network is not valid, redirect to a default network or show a 404 page
+		if (network && !validNetworks.includes(network as string)) {
+			// Redirect to the default network
+			// router.push('/defaultNetwork');
+
+			// Or, redirect to the custom 404 page
+			router.push('/404');
+		}
+	}, [network, router]);
 
 	return (
 		<>
