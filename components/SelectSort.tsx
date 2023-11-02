@@ -6,8 +6,10 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sortSlice } from '../state/sort/sortSlice';
 
-const StyledSelect = styled(Select)<{ theme: any; open: any; focus: any }>`
-	color: ${({ theme }) => theme.palette.text.primary};
+const StyledSelect = styled(Select, {
+	shouldForwardProp: (prop) => prop !== 'focus' && prop !== 'open', // add this line
+ })<{ theme: any; open: any; focus: any }>`
+ 	color: ${({ theme }) => theme.palette.text.primary};
 	// font-size: 1rem;
 	font-weight: 500;
 	background-color: ${({ theme, focus }) => (focus ? theme.palette.background.default : 'transparent')};

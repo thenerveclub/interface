@@ -4,7 +4,9 @@ import { useTheme } from '@mui/material/styles';
 import router from 'next/router';
 import { useState } from 'react';
 
-const StyledSelect = styled(Select)<{ theme: any; open: any; focus: any }>`
+const StyledSelect = styled(Select, {
+	shouldForwardProp: (prop) => prop !== 'focus' && prop !== 'open', // add this line
+})<{ theme: any; open: any; focus: any }>`
 	color: ${({ theme }) => theme.palette.text.primary};
 	font-weight: 500;
 	background-color: ${({ theme, focus }) => (focus ? theme.palette.background.default : 'transparent')};

@@ -5,7 +5,7 @@ const usePlayerDataSearchList = (chainId: number, keyWord: string) => {
 	const [playerSearchList, setPlayerSearchList] = useState<any[]>([]);
 
 	useEffect(() => {
-		const getPlayerData = async () => {
+		const getPlayerDataSearchList = async () => {
 			const QueryForPlayerSearchList = `
 			{
 				globalStats {
@@ -36,7 +36,7 @@ const usePlayerDataSearchList = (chainId: number, keyWord: string) => {
 			}
 		};
 
-		getPlayerData();
+		getPlayerDataSearchList();
 	}, [chainId, keyWord]);
 
 	return playerSearchList;
