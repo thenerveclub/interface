@@ -56,9 +56,10 @@ const StyledSectionLeft = styled.section<{ theme: any }>`
 
 	h1 {
 		display: flex;
+		width: 150px;
 		font-family: ${TrueLies.style.fontFamily};
 		font-size: 1.25rem;
-		// font-weight: 500;
+		font-weight: 500;
 		color: ${(props) => props.theme.palette.text.primary};
 		text-decoration: none;
 		cursor: pointer;
@@ -66,6 +67,7 @@ const StyledSectionLeft = styled.section<{ theme: any }>`
 
 	& > *:first-of-type {
 		margin-left: 1rem;
+		margin-right: 1rem;
 	}
 
 	@media (max-width: 1280px) {
