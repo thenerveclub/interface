@@ -5,6 +5,12 @@ const useTrendingDareDataSearchList = (chainId: number, keyWord: string) => {
 	const [dareSearchList, setDareSearchList] = useState<any[]>([]);
 
 	useEffect(() => {
+		if (!chainId) {
+			// Handle the case where the chainIdUrl is not ready or not valid
+			setDareSearchList([]);
+			return;
+		}
+
 		const getDareData = async () => {
 			const QueryForDareSearchList = `
 			{

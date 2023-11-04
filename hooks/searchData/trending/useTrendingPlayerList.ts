@@ -5,6 +5,12 @@ const useTrendingPlayerList = (chainId: number) => {
 	const [trendingPlayerList, setTrendingPlayerList] = useState<any[]>([]);
 
 	useEffect(() => {
+		if (!chainId) {
+			// Handle the case where the chainIdUrl is not ready or not valid
+			setTrendingPlayerList([]);
+			return;
+		}
+
 		const getTrendingPlayerList = async () => {
 			const QueryForTrendingPlayers = `
 			{

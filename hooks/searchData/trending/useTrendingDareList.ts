@@ -5,6 +5,12 @@ const useTrendingDareList = (chainId: number) => {
 	const [trendingDareList, setTrendingDareList] = useState<any[]>([]);
 
 	useEffect(() => {
+		if (!chainId) {
+			// Handle the case where the chainIdUrl is not ready or not valid
+			setTrendingDareList([]);
+			return;
+		}
+
 		const getTrendingDareData = async () => {
 			const QueryForTrendingDareList = `
 			{
@@ -24,13 +30,13 @@ const useTrendingDareList = (chainId: number) => {
       `;
 
 			try {
-				const fetchDareData = await fetch(CHAINS[chainId]?.graphApi, {
+				const response = await fetch(CHAINS[chainId]?.graphApi, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ query: QueryForTrendingDareList }),
 				});
 
-				const data = await fetchDareData.json();
+				const data = await response.json();
 				setTrendingDareList(data.data.tasks);
 			} catch (error) {
 				console.error(error);

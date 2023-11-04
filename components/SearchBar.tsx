@@ -151,16 +151,16 @@ export default function SearchBar() {
 
 	// Name to Chain ID
 	const chainIdUrl = nameToChainId[network];
-	console.log('chainIdUrl', chainIdUrl);
+	console.log('chainIdUrl', chainIdUrl, typeof chainIdUrl);
 
 	// Redux
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 
 	const [searchValue, setSearchValue] = useState('');
 	const playerSearchList = usePlayerDataSearchList(chainIdUrl, searchValue);
-	const trendingPlayersList = useTrendingPlayerList(chainIdUrl); // New hook to get players based on search value
+	const trendingPlayersList = useTrendingPlayerList(chainIdUrl);
 	const trendingDareList = useTrendingDareList(chainIdUrl);
-	const dareSearchList = useDareDataSearchList(chainIdUrl, searchValue); // New hook to get dares based on search value
+	const dareSearchList = useDareDataSearchList(chainIdUrl, searchValue); 
 	const [isListVisible, setListVisible] = useState(false);
 
 	// Initialize the searchHistory state with the value from localStorage if it exists

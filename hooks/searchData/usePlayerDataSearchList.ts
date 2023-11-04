@@ -5,6 +5,12 @@ const usePlayerDataSearchList = (chainId: number, keyWord: string) => {
 	const [playerSearchList, setPlayerSearchList] = useState<any[]>([]);
 
 	useEffect(() => {
+		if (!chainId) {
+			// Handle the case where the chainIdUrl is not ready or not valid
+			setPlayerSearchList([]);
+			return;
+		}
+
 		const getPlayerDataSearchList = async () => {
 			const QueryForPlayerSearchList = `
 			{
