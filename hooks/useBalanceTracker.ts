@@ -7,8 +7,9 @@ function useBalanceTracker() {
 	// Redux
 	const account = useSelector((state: { account: string }) => state.account);
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
+	const rpcValue = useSelector((state: { rpc: string }) => state.rpc);
 
-	const customRpcUrl = CHAINS[chainId]?.url;
+	const customRpcUrl = CHAINS[chainId]?.[rpcValue];
 	const provider = new ethers.providers.StaticJsonRpcProvider(customRpcUrl);
 	const [maticBalance, setMaticBalance] = useState<string>('');
 

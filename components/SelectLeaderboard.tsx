@@ -3,6 +3,7 @@ import { MenuItem, Select } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import router from 'next/router';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 const StyledSelect = styled(Select, {
 	shouldForwardProp: (prop) => prop !== 'focus' && prop !== 'open', // add this line
@@ -75,6 +76,9 @@ const SearchResultTitle = styled.div<{ theme: any }>`
 export default function SelectLeaderboard() {
 	const theme = useTheme();
 
+	// Redux
+	const testnetsValue = useSelector((state: { testnets: boolean }) => state.testnets);
+
 	// Local state
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [isFocused, setIsFocused] = useState(false);
@@ -129,13 +133,17 @@ export default function SelectLeaderboard() {
 				<MenuItemStyled theme={theme} onClick={() => router.push(`/polygon/leaderboard/dare`)}>
 					<a>Dare</a>
 				</MenuItemStyled>
-				<SearchResultTitle theme={theme}>Goerli</SearchResultTitle>
-				<MenuItemStyled theme={theme} onClick={() => router.push(`/goerli/leaderboard/player`)}>
-					<a>Player</a>
-				</MenuItemStyled>
-				<MenuItemStyled theme={theme} onClick={() => router.push(`/goerli/leaderboard/dare`)}>
-					<a>Dare</a>
-				</MenuItemStyled>
+				{testnetsValue && (
+					<span>
+						<SearchResultTitle theme={theme}>Goerli</SearchResultTitle>
+						<MenuItemStyled theme={theme} onClick={() => router.push(`/goerli/leaderboard/player`)}>
+							<a>Player</a>
+						</MenuItemStyled>
+						<MenuItemStyled theme={theme} onClick={() => router.push(`/goerli/leaderboard/dare`)}>
+							<a>Dare</a>
+						</MenuItemStyled>
+					</span>
+				)}
 			</StyledSelect>
 		</>
 	);

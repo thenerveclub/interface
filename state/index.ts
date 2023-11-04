@@ -4,7 +4,9 @@ import { accountSlice } from './account/accountSlice';
 import { availableChainsSlice, chainIdSlice } from './chainId/chainIdSlice';
 import { currencySlice } from './currency/currencySlice';
 import { currencyPriceSlice } from './currencyPrice/currencyPriceSlice';
+import { rpcSlice } from './rpc/rpcSlice';
 import { sortSlice } from './sort/sortSlice';
+import { testnetsSlice } from './testnets/testnetsSlice';
 import { themeSlice } from './theme/themeSlice';
 
 export const store = configureStore({
@@ -15,6 +17,8 @@ export const store = configureStore({
 		theme: themeSlice.reducer,
 		currency: currencySlice.reducer,
 		currencyPrice: currencyPriceSlice.reducer,
+		rpc: rpcSlice.reducer,
+		testnets: testnetsSlice.reducer,
 		sort: sortSlice.reducer,
 	},
 	middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),

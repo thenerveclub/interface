@@ -3,6 +3,8 @@ import NerveGlobalABI from '../constants/abi/nerveGlobal.json';
 import { CHAINS } from './chains';
 
 const getProvider = (function () {
+	// Redux
+	// const chainId = useSelector((state: { chainId: number }) => state.chainId);
 	let cache = {};
 
 	return function (chainId) {

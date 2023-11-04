@@ -7,6 +7,8 @@ import usePrice from '../hooks/usePrice';
 import Account from '../state/account/accountUpdater';
 import ChainId from '../state/chainId/chainIdUpdater';
 import { store } from '../state/index';
+import { rpcSlice } from '../state/rpc/rpcSlice';
+import { testnetsSlice } from '../state/testnets/testnetsSlice';
 import { themeSlice } from '../state/theme/themeSlice';
 import connectors from '../utils/connectors';
 import { coinbaseWallet } from '../utils/connectors/coinbaseWallet';
@@ -19,10 +21,39 @@ function Updaters() {
 	usePrice();
 
 	useEffect(() => {
+		// Load the theme, prefersSystemSetting, and testnets settings from localStorage when the app starts
 		const savedTheme = localStorage.getItem('theme');
+		const prefersSystemSetting = localStorage.getItem('prefersSystemSetting') === 'true'; // Convert string to boolean
+
 		if (savedTheme) {
 			dispatch(themeSlice.actions.setTheme(savedTheme));
 		}
+
+		// Dispatch the prefersSystemSetting from localStorage
+		dispatch(themeSlice.actions.setUseSystemSetting(prefersSystemSetting));
+
+		const savedTestnets = localStorage.getItem('testnets');
+		if (savedTestnets !== null) {
+			dispatch(testnetsSlice.actions.setShowTestnets(savedTestnets === 'true'));
+		}
+
+		// Load RPC setting from localStorage
+		const savedRPC = localStorage.getItem('rpc');
+		if (savedRPC) {
+			dispatch(rpcSlice.actions.updateRPC(savedRPC));
+		}
+
+		// Subscribe to store changes and persist them to localStorage
+		const unsubscribe = store.subscribe(() => {
+			const state = store.getState();
+			localStorage.setItem('theme', state.theme.currentTheme);
+			localStorage.setItem('prefersSystemSetting', state.theme.prefersSystemSetting.toString());
+			localStorage.setItem('testnets', state.testnets.toString());
+			localStorage.setItem('rpc', state.rpc);
+		});
+
+		// Unsubscribe from the store when the component unmounts
+		return () => unsubscribe();
 	}, [dispatch]);
 
 	return (

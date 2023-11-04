@@ -21,6 +21,9 @@ const CELO: AddEthereumChainParameter['nativeCurrency'] = {
 interface BasicChainInformation {
 	urls: string[];
 	url?: string;
+	publicUrl: string;
+	infura: string;
+	alchemy: string;
 	urlName: string;
 	name: string;
 	nameToken: string;
@@ -64,6 +67,9 @@ export const CHAINS: {
 	5: {
 		urls: [`https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`],
 		url: `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+		publicUrl: 'https://1rpc.io/matic',
+		infura: `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+		alchemy: `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
 		urlName: 'goerli',
 		name: 'Görli',
 		nameToken: 'ETH',
@@ -77,6 +83,9 @@ export const CHAINS: {
 	137: {
 		urls: [`https://polygon-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`],
 		url: `https://polygon-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+		publicUrl: 'https://1rpc.io/matic',
+		infura: `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+		alchemy: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_KEY}`,
 		urlName: 'polygon',
 		name: 'Polygon Mainnet',
 		nameToken: 'MATIC',
@@ -87,6 +96,22 @@ export const CHAINS: {
 		graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal',
 		coingeckoApiId: 'matic-network',
 	},
+	// Sepolia
+	// 11155111: {
+	// 	urls: [`https://sepolia.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`],
+	// 	url: `https://sepolia.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+	// 	publicUrl: 'https://1rpc.io/sepolia',
+	// infura: `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+	// 	alchemy: `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+	// 	urlName: 'sepolia',
+	// 	name: 'Sepolia',
+	// 	nameToken: 'ETH',
+	// 	blockExplorerUrls: ['https://sepolia.etherscan.io/'],
+	// 	contract: '',
+	// 	blockTime: 10000,
+	// 	graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal-goerli',
+	// 	coingeckoApiId: 'ethereum',
+	// },
 };
 
 // Create a reverse mapping from urlName to chainId
