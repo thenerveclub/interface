@@ -369,7 +369,7 @@ function SettingsModal() {
 		setCurrentTheme(userTheme.prefersSystemSetting ? 'system' : userTheme.currentTheme);
 		setShowTestnets(testnetsValue);
 		setSelectedRpc(rpcValue);
-	}, [userTheme]);
+	}, [userTheme, testnetsValue, rpcValue]);
 
 	const handleSetLightTheme = () => {
 		dispatch(setTheme('light')); // Dispatch setTheme action with 'light' payload
