@@ -4,6 +4,7 @@ import { accountSlice } from './account/accountSlice';
 import { availableChainsSlice, chainIdSlice } from './chainId/chainIdSlice';
 import { currencySlice } from './currency/currencySlice';
 import { currencyPriceSlice } from './currencyPrice/currencyPriceSlice';
+import { customRPCSlice } from './customRPC/customRPCSlice';
 import { rpcSlice } from './rpc/rpcSlice';
 import { sortSlice } from './sort/sortSlice';
 import { testnetsSlice } from './testnets/testnetsSlice';
@@ -18,6 +19,7 @@ export const store = configureStore({
 		currency: currencySlice.reducer,
 		currencyPrice: currencyPriceSlice.reducer,
 		rpc: rpcSlice.reducer,
+		customRPC: customRPCSlice.reducer,
 		testnets: testnetsSlice.reducer,
 		sort: sortSlice.reducer,
 	},

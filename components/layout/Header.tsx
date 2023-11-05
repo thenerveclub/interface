@@ -3,6 +3,7 @@ import { AppBar } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import localFont from 'next/font/local';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
 import SearchBar from '../SearchBar';
 import SelectChain from '../SelectChain';
@@ -198,6 +199,9 @@ const DesktopSettings = styled.div`
 
 export default function Header() {
 	const theme = useTheme();
+	const router = useRouter();
+	const network = router.query.network as string;
+
 	// Redux
 	const account = useSelector((state: { account: string }) => state.account);
 
@@ -226,7 +230,7 @@ export default function Header() {
 		<>
 			<StyledAppBar theme={theme}>
 				<StyledSectionLeft theme={theme}>
-					<Link href="/" passHref style={{ textDecoration: 'none' }}>
+					<Link href={`/${network}`} passHref style={{ textDecoration: 'none' }}>
 						<h1>NERVE GLOBAL</h1>
 					</Link>
 					<SelectLeaderboard />

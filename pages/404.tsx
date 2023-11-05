@@ -82,7 +82,7 @@ export default function Page() {
 				<meta name="twitter:image" content="https://app.nerveglobal.com/favicon.ico" />
 			</Head>
 			<StyledBox theme={theme}>
-				<Link href={`/`} passHref style={{ textDecoration: 'none' }}>
+				<Link href={`/${network}`} passHref style={{ textDecoration: 'none' }}>
 					<h1>Sorry</h1>
 				</Link>
 				<Text>

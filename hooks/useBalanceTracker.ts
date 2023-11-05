@@ -8,8 +8,9 @@ function useBalanceTracker() {
 	const account = useSelector((state: { account: string }) => state.account);
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 	const rpcValue = useSelector((state: { rpc: string }) => state.rpc);
+	const customRPCValue = useSelector((state: { customRPC: string }) => state.customRPC);
 
-	const customRpcUrl = CHAINS[chainId]?.[rpcValue];
+	const customRpcUrl = customRPCValue === '' ? CHAINS[chainId]?.[rpcValue] : customRPCValue;
 	const provider = new ethers.providers.StaticJsonRpcProvider(customRpcUrl);
 	const [maticBalance, setMaticBalance] = useState<string>('');
 

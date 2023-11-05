@@ -28,6 +28,7 @@ import { useTheme } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { currencySlice } from '../../../state/currency/currencySlice';
+import { customRPCSlice } from '../../../state/customRPC/customRPCSlice';
 import { rpcSlice } from '../../../state/rpc/rpcSlice';
 import { testnetsSlice } from '../../../state/testnets/testnetsSlice';
 import { setTheme, setUseSystemSetting } from '../../../state/theme/themeSlice';
@@ -352,6 +353,7 @@ function SettingsModal() {
 	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
 	const testnetsValue = useSelector((state: { testnets: boolean }) => state.testnets);
 	const rpcValue = useSelector((state: { rpc: string }) => state.rpc);
+	const customRPCValue = useSelector((state: { customRPC: string }) => state.customRPC);
 
 	// Local state
 	const [currentTheme, setCurrentTheme] = useState(userTheme.prefersSystemSetting === true ? 'system' : userTheme.currentTheme);
@@ -369,7 +371,8 @@ function SettingsModal() {
 		setCurrentTheme(userTheme.prefersSystemSetting ? 'system' : userTheme.currentTheme);
 		setShowTestnets(testnetsValue);
 		setSelectedRpc(rpcValue);
-	}, [userTheme, testnetsValue, rpcValue]);
+		setAppliedRpcUrl(customRPCValue);
+	}, [userTheme, testnetsValue, rpcValue, customRPCValue]);
 
 	const handleSetLightTheme = () => {
 		dispatch(setTheme('light')); // Dispatch setTheme action with 'light' payload
@@ -421,7 +424,7 @@ function SettingsModal() {
 
 	// RPC endpoint
 	const [selectedRpc, setSelectedRpc] = useState(rpcValue);
-	const [customRpcUrl, setCustomRpcUrl] = useState('');
+	const [customRpcUrl, setCustomRpcUrl] = useState(customRPCValue);
 	const [appliedRpcUrl, setAppliedRpcUrl] = useState('');
 
 	const handleCustomRpcChange = (event) => {
@@ -435,7 +438,7 @@ function SettingsModal() {
 
 	const handleSubmitCustomRpc = () => {
 		setAppliedRpcUrl(customRpcUrl);
-		// dispatch(rpcSlice.actions.updateRPC(customRpcUrl));
+		dispatch(customRPCSlice.actions.updateCustomRPC(customRpcUrl));
 	};
 
 	return (
@@ -543,7 +546,7 @@ function SettingsModal() {
 									style={{ display: 'flex', width: '100%', marginLeft: '1rem', color: theme.palette.text.primary }}
 									placeholder="Paste your custom RPC"
 									inputProps={{ 'aria-label': 'search' }}
-									value={customRpcUrl}
+									value={appliedRpcUrl}
 									onChange={handleCustomRpcChange}
 								/>
 							</SearchBarContainer>
