@@ -1,11 +1,17 @@
 import { useEffect, useState } from 'react';
 import { CHAINS } from '../utils/chains';
 
-const usePlayerData = (checksumAddress: string, chainId: number) => {
+const usePlayerData = (chainId: number, checksumAddress: string) => {
 	const [playerData, setPlayerData] = useState<any[]>([]);
 
 	useEffect(() => {
 		const getPlayerData = async () => {
+			const graphApiEndpoint = CHAINS[chainId]?.graphApi;
+			if (!graphApiEndpoint) {
+				setPlayerData([]);
+				return;
+			}
+
 			const QueryForPlayerData = `
         {
           userDashStats(where: {id: "${checksumAddress}"}) {
@@ -25,7 +31,7 @@ const usePlayerData = (checksumAddress: string, chainId: number) => {
       `;
 
 			try {
-				const fetchTask = await fetch(CHAINS[chainId]?.graphApi, {
+				const fetchTask = await fetch(graphApiEndpoint, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ query: QueryForPlayerData }),
@@ -39,7 +45,6 @@ const usePlayerData = (checksumAddress: string, chainId: number) => {
 		};
 
 		getPlayerData();
-
 	}, [chainId, checksumAddress]);
 
 	return playerData;

@@ -139,8 +139,7 @@ const ConnectBox = styled(Box)<{ theme: any }>`
 	width: 350px;
 	background-color: ${({ theme }) => theme.palette.background.default};
 	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
-	border-radius: ${({ theme }) => theme.customShape.borderRadius}};
-	box-shadow: 0 0 25px rgba(76, 130, 251, 0.25);
+	border-radius: ${({ theme }) => theme.customShape.borderRadius};
 
 	animation: ${slideUp} 0.5s ease-in-out forwards;
 	&.closing {
@@ -179,6 +178,7 @@ const StyledTitle = styled(Typography)<{ theme: any }>`
 	padding: 0.5rem;
 	font-weight: bold;
 	text-align: left;
+	cursor: default;
 `;
 
 const StyledDuoTitle = styled(Typography)<{ theme: any }>`
@@ -193,6 +193,7 @@ const StyledDuoTitle = styled(Typography)<{ theme: any }>`
 	padding: 0;
 	font-weight: bold;
 	text-align: left;
+	cursor: default;
 `;
 
 const StyledSelect = styled(Select, {
@@ -372,6 +373,7 @@ function SettingsModal() {
 		setShowTestnets(testnetsValue);
 		setSelectedRpc(rpcValue);
 		setAppliedRpcUrl(customRPCValue);
+		setCustomRpcUrl(customRPCValue);
 	}, [userTheme, testnetsValue, rpcValue, customRPCValue]);
 
 	const handleSetLightTheme = () => {
@@ -425,7 +427,7 @@ function SettingsModal() {
 	// RPC endpoint
 	const [selectedRpc, setSelectedRpc] = useState(rpcValue);
 	const [customRpcUrl, setCustomRpcUrl] = useState(customRPCValue);
-	const [appliedRpcUrl, setAppliedRpcUrl] = useState('');
+	const [appliedRpcUrl, setAppliedRpcUrl] = useState(customRPCValue);
 
 	const handleCustomRpcChange = (event) => {
 		setCustomRpcUrl(event.target.value);
@@ -449,7 +451,7 @@ function SettingsModal() {
 			<StyledModal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
 				<ConnectBox theme={theme} className={isClosing ? 'closing' : ''}>
 					<Typography
-						style={{ fontWeight: 'bold', margin: '0.0 auto 0.75rem auto' }}
+						style={{ fontWeight: 'bold', margin: '0.0 auto 0.75rem auto', cursor: 'default' }}
 						align="center"
 						color={theme.palette.text.primary}
 						id="modal-modal-title"
@@ -523,19 +525,19 @@ function SettingsModal() {
 										backgroundColor: theme.palette.background.default,
 									},
 									'& .MuiMenuItem-root:hover': {
-										backgroundColor: theme.palette.secondary.light,
+										backgroundColor: theme.palette.warning.main,
 									},
 								},
 							},
 						}}
 					>
-						<MenuItemStyled theme={theme} value="infura">
+						<MenuItemStyled theme={theme} value="infura" disabled={selectedRpc === 'infura'}>
 							<a>Infura</a>
 						</MenuItemStyled>
-						<MenuItemStyled theme={theme} value="alchemy">
+						<MenuItemStyled theme={theme} value="alchemy" disabled={selectedRpc === 'alchemy'}>
 							<a>Alchemy</a>
 						</MenuItemStyled>
-						<MenuItemStyled theme={theme} value="custom">
+						<MenuItemStyled theme={theme} value="custom" disabled={selectedRpc === 'custom'}>
 							<a>Custom</a>
 						</MenuItemStyled>
 					</StyledSelect>
@@ -546,7 +548,7 @@ function SettingsModal() {
 									style={{ display: 'flex', width: '100%', marginLeft: '1rem', color: theme.palette.text.primary }}
 									placeholder="Paste your custom RPC"
 									inputProps={{ 'aria-label': 'search' }}
-									value={appliedRpcUrl}
+									value={customRpcUrl}
 									onChange={handleCustomRpcChange}
 								/>
 							</SearchBarContainer>
@@ -564,8 +566,12 @@ function SettingsModal() {
 								>
 									Custom RPC applied.
 								</Typography>
-							) : (
+							) : customRpcUrl !== '' ? (
 								<StyledButtonRPC theme={theme} onClick={handleSubmitCustomRpc}>
+									Apply RPC
+								</StyledButtonRPC>
+							) : (
+								<StyledButtonRPC theme={theme} disabled style={{ cursor: 'not-allowed' }}>
 									Apply RPC
 								</StyledButtonRPC>
 							)}

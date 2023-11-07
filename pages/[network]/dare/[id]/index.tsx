@@ -142,6 +142,20 @@ export default function TaskPage() {
 
 	const prove = false;
 
+
+	// Twitch Live Status
+	// const twitchLink = playerData[0]?.userSocialStat?.twitch.includes('twitch') ? playerData[0]?.userSocialStat?.twitch : '';
+	// const twitchSplit = twitchLink?.split('/');
+	// const twitchChannelName = twitchSplit[twitchSplit.length - 1];
+	// const isTwitchLive = useTwitchStatus(twitchChannelName);
+
+	// YouTube Live Status
+	// const youTubeLink = playerData[0]?.userSocialStat?.youtube.includes('youtube') ? playerData[0]?.userSocialStat?.youtube : '';
+	// const youTubeSplit = youTubeLink?.split('/@');
+	// const youTubeChannelName = youTubeSplit[youTubeSplit.length - 1];
+	// const youTubeChannelName = 'inscope21';
+	// const isYouTubeLive = useYouTubeStatus(youTubeChannelName);
+
 	return (
 		<StyledBox>
 			<Grid container spacing={2}>

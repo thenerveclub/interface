@@ -8,7 +8,6 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
 import { CHAINS } from '../../utils/chains';
-import { CheckNameRegister } from '../../utils/validation/checkNameRegister';
 
 const StatisticBox = styled(Box)`
 	width: 100%;
@@ -150,15 +149,10 @@ const BuyButton = styled(Button)({
 	},
 });
 
-export default function BlacklistPlayer() {
+export default function BlacklistPlayer(checksumAddress, chainId) {
 	const [open, setOpen] = useState(false);
 	const { provider } = useWeb3React();
 	const { enqueueSnackbar } = useSnackbar();
-	const chainId = useSelector((state: { chainId: number }) => state.chainId);
-	const [registerStatus] = CheckNameRegister();
-
-	// checksum address to lowercase
-	const checksumAddress = registerStatus?.toLowerCase();
 
 	const handleClickOpen = () => {
 		setOpen(true);

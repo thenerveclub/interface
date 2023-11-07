@@ -80,7 +80,7 @@ const MenuItemStyled = styled(MenuItem)<{ theme: any }>`
 	}
 
 	&:focus {
-		background-color: rgba(38, 38, 56, 1);
+		background-color: ${({ theme }) => theme.palette.warning.main};
 	}
 `;
 
@@ -170,7 +170,7 @@ export default function SelectChain() {
 									backgroundColor: theme.palette.background.default,
 								},
 								'& .MuiMenuItem-root:hover': {
-									backgroundColor: theme.palette.secondary.light,
+									backgroundColor: theme.palette.warning.main,
 								},
 							},
 						},

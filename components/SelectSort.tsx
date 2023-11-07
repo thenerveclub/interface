@@ -8,8 +8,8 @@ import { sortSlice } from '../state/sort/sortSlice';
 
 const StyledSelect = styled(Select, {
 	shouldForwardProp: (prop) => prop !== 'focus' && prop !== 'open', // add this line
- })<{ theme: any; open: any; focus: any }>`
- 	color: ${({ theme }) => theme.palette.text.primary};
+})<{ theme: any; open: any; focus: any }>`
+	color: ${({ theme }) => theme.palette.text.primary};
 	// font-size: 1rem;
 	font-weight: 500;
 	background-color: ${({ theme, focus }) => (focus ? theme.palette.background.default : 'transparent')};
@@ -53,7 +53,7 @@ const MenuItemStyled = styled(MenuItem)<{ theme: any }>`
 	// font-size: 1rem;
 	margin: 0 auto 0 auto;
 	padding: 0.5rem;
-	cursor: pointer; // Adding a pointer cursor for hover state
+	cursor: pointer;
 
 	& a:last-of-type {
 		margin-left: 0.5rem;
@@ -123,7 +123,7 @@ export default function SelectSort() {
 								backgroundColor: theme.palette.background.default,
 							},
 							'& .MuiMenuItem-root:hover': {
-								backgroundColor: theme.palette.secondary.light,
+								backgroundColor: theme.palette.warning.main,
 							},
 						},
 					},

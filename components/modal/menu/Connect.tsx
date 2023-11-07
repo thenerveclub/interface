@@ -7,6 +7,12 @@ import CoinbaseWalletConnect from '../../connectorButtons/CoinbaseWalletConnect'
 import MetaMaskConnect from '../../connectorButtons/MetaMaskConnect';
 import { WalletConnect } from '../../connectorButtons/WalletConnect';
 
+const StyledModal = styled(Modal)`
+	.MuiModal-backdrop {
+		backdrop-filter: blur(5px);
+	}
+`;
+
 // Define the keyframes for the slide-down animation
 const slideDown = keyframes`
   0% {
@@ -57,13 +63,12 @@ const ConnectBox = styled(Box)<{ theme: any }>`
 	margin: 0 auto 0 auto;
 	justify-content: center;
 	align-items: center;
-	padding: 2rem;
+	padding: 3rem 1rem;
 	height: auto;
-	width: 400px;
+	width: 350px;
 	background-color: ${({ theme }) => theme.palette.background.default};
 	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
-	border-radius: ${({ theme }) => theme.customShape.borderRadius}};
-	box-shadow: 0 0 25px rgba(76, 130, 251, 0.25);
+	border-radius: ${({ theme }) => theme.customShape.borderRadius};
 
 	animation: ${slideUp} 0.5s ease-in-out forwards;
 
@@ -103,12 +108,11 @@ function ConnectModal() {
 				</ConnectButton>
 			)}
 
-			<Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+			<StyledModal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
 				<ConnectBox theme={theme} className={isClosing ? 'closing' : ''}>
 					{' '}
-					{/* Apply the 'closing' class conditionally */}
 					<Typography
-						style={{ fontWeight: 'bold', margin: '0.75rem auto 0.75rem auto' }}
+						style={{ fontWeight: 'bold', margin: '0.0 auto 1.75rem auto', cursor: 'default' }}
 						align="center"
 						color={theme.palette.text.primary}
 						id="modal-modal-title"
@@ -127,20 +131,32 @@ function ConnectModal() {
 							margin: '0.75rem auto 0 auto',
 							textAlign: 'center',
 							padding: '1rem',
+							color: theme.palette.text.secondary,
+							cursor: 'default',
 						}}
 					>
 						By connecting a wallet, you agree to Nerve Global's{' '}
-						<a target="_blank" rel="noreferrer" href={'https://www.nerveglobal.com/disclaimer'}>
+						<a
+							target="_blank"
+							rel="noreferrer"
+							href={'https://www.nerveglobal.com/disclaimer'}
+							style={{ color: theme.palette.text.primary, fontWeight: 'bold' }}
+						>
 							Terms of Service
 						</a>{' '}
 						and acknowledge that you have read and understand the{' '}
-						<a target="_blank" rel="noreferrer" href={'https://www.nerveglobal.com/disclaimer'}>
+						<a
+							target="_blank"
+							rel="noreferrer"
+							href={'https://www.nerveglobal.com/disclaimer'}
+							style={{ color: theme.palette.text.primary, fontWeight: 'bold' }}
+						>
 							Disclaimer
 						</a>
 						{'.'}
 					</Typography>
 				</ConnectBox>
-			</Modal>
+			</StyledModal>
 		</div>
 	);
 }

@@ -10,7 +10,6 @@ import { useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
 import useBalanceTracker from '../../hooks/useBalanceTracker';
 import { CHAINS } from '../../utils/chains';
-import { CheckNameRegister } from '../../utils/validation/checkNameRegister';
 
 const StyledSection = styled.section`
 	display: flex;
@@ -98,7 +97,11 @@ const ConnectBox = styled(Box)<{ theme: any }>`
 	}
 `;
 
-export default function CreateTask() {
+interface CreateTaskProps {
+	registerStatus: any;
+};
+
+const CreateTask: React.FC<CreateTaskProps> = ({ registerStatus }) => {
 	const theme = useTheme();
 	const [open, setOpen] = useState(false);
 	const { provider } = useWeb3React();
@@ -106,7 +109,6 @@ export default function CreateTask() {
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 	const [pendingTx, setPendingTx] = useState(false);
 	const [minimumValue, setMinimumValue] = useState('0');
-	const [registerStatus] = CheckNameRegister();
 	const [description, setDescription] = useState(null);
 	const [duration, setDuration] = useState(null);
 	const balance = useBalanceTracker();
@@ -234,4 +236,6 @@ export default function CreateTask() {
 			</Modal>
 		</>
 	);
-}
+};
+
+export default CreateTask;

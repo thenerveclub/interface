@@ -10,17 +10,21 @@ import { getAddChainParameters } from '../utils/chains';
 import { getLogo, getName } from '../utils/connectorsNameAndLogo';
 
 const ConnectButton = styled(Button)<{ theme: any }>`
-	color: #000;
+	color: ${({ theme }) => theme.palette.text.primary};
 	text-transform: none;
 	justify-content: flex-start;
 	font-size: 16px;
 	font-weight: 500;
 	height: 50px;
+	background-color: ${({ theme }) => theme.palette.background.default};
+	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
 	border-radius: ${({ theme }) => theme.customShape.borderRadius};
 
+	transition: all 0.75s ease;
+
 	&:hover {
-		background-color: ${({ theme }) => theme.palette.secondary.light};
-		transition: all 0.75s ease;
+		background-color: ${({ theme }) => theme.palette.warning.main};
+		border: 1px solid ${({ theme }) => theme.palette.warning.main};
 	}
 `;
 

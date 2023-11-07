@@ -157,7 +157,6 @@ const TaskCard = styled(Box)<{ theme: any }>`
 	max-height: 300px;
 	margin: 0 auto 0 auto;
 	background-color: ${({ theme }) => theme.palette.background.default};
-	backdrop-filter: blur(15px) brightness(70%);
 	border: 0.5px solid ${({ theme }) => theme.palette.secondary.main};
 	border-radius: ${({ theme }) => theme.customShape.borderRadius};
 	align-items: center;
@@ -319,15 +318,14 @@ interface TabPanelProps {
 	value: number;
 }
 
-export default function PlayerDares({
-	registerStatus,
-	checksumAddress,
-	checksumAccount,
-}: {
+interface PlayerDaresProps {
 	registerStatus: any;
-	checksumAddress: any;
-	checksumAccount: any;
-}) {
+	checksumAddress: string;
+	checksumAccount: string;
+	network: string;
+}
+
+const PlayerDares: React.FC<PlayerDaresProps> = ({ registerStatus, checksumAddress, checksumAccount, network }) => {
 	const theme = useTheme();
 	// Redux
 	const dispatch = useDispatch();
@@ -424,7 +422,7 @@ export default function PlayerDares({
 								<a>USD</a>
 							</StyledToggleButton>
 						</StyledToggleButtonGroup>
-						{account ? checksumAccount !== checksumAddress ? <CreateTask /> : null : null}
+						{account ? checksumAccount !== checksumAddress ? <CreateTask registerStatus={registerStatus} /> : null : null}
 					</ActiveTabRightSection>
 				</ActiveFilterBox>
 				<ActiveTabSection>
@@ -445,7 +443,7 @@ export default function PlayerDares({
 												{((tad?.amount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
 											</a>
 										) : (
-											<a>${((tad?.amount / 1e18) * currencyPrice).toFixed(2)}</a>
+											<a>${((tad?.amount / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</a>
 										)
 									) : (
 										<span>
@@ -466,7 +464,7 @@ export default function PlayerDares({
 												{((tad?.entranceAmount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
 											</a>
 										) : (
-											<a>${((tad?.entranceAmount / 1e18) * currencyPrice).toFixed(2)}</a>
+											<a>${((tad?.entranceAmount / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</a>
 										)
 									) : (
 										<span>
@@ -483,7 +481,7 @@ export default function PlayerDares({
 									)}
 								</TaskBoxSectionTwo>
 								<TaskBoxButton>
-									<a onClick={() => router.push('/dare/' + tad.id)}>
+									<a onClick={() => router.push(`/${network}/dare/` + tad.id)}>
 										<TaskButton>View Task</TaskButton>
 									</a>
 								</TaskBoxButton>
@@ -526,7 +524,7 @@ export default function PlayerDares({
 												{((tad?.amount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
 											</a>
 										) : (
-											<a>${((tad?.amount / 1e18) * currencyPrice).toFixed(2)}</a>
+											<a>${((tad?.amount / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</a>
 										)
 									) : (
 										<span>
@@ -547,7 +545,7 @@ export default function PlayerDares({
 												{((tad?.entranceAmount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
 											</a>
 										) : (
-											<a>${((tad?.entranceAmount / 1e18) * currencyPrice).toFixed(2)}</a>
+											<a>${((tad?.entranceAmount / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</a>
 										)
 									) : (
 										<span>
@@ -564,7 +562,7 @@ export default function PlayerDares({
 									)}
 								</TaskBoxSectionTwo>
 								<TaskBoxButton>
-									<a onClick={() => router.push('/dare/' + tad.id)}>
+									<a onClick={() => router.push(`/${network}/dare/` + tad.id)}>
 										<TaskButton>View Task</TaskButton>
 									</a>
 								</TaskBoxButton>
@@ -575,4 +573,6 @@ export default function PlayerDares({
 			</TabPanel>
 		</>
 	);
-}
+};
+
+export default PlayerDares;

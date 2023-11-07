@@ -3,11 +3,9 @@ import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { Box, Fade, Grid, Skeleton, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
-import usePlayerData from '../../../../../hooks/usePlayerData';
 import useRankingEarned from '../../../../../hooks/useRankingEarned';
 import useRankingSpent from '../../../../../hooks/useRankingSpent';
 import { CHAINS } from '../../../../../utils/chains';
-import { CheckNameRegister } from '../../../../../utils/validation/checkNameRegister';
 
 const StatisticBox = styled(Box)`
 	width: 100%;
@@ -46,21 +44,20 @@ const StyledGridSecond = styled(Grid)`
 	}
 `;
 
-export default function SocialBoxComponent({ isNetworkAvailable }: { isNetworkAvailable: boolean }) {
+interface PlayerStatisticsProps {
+	checksumAddress: string;
+	chainId: number;
+	playerData: any;
+	isNetworkAvailable: boolean;
+	network: string;
+}
+
+const PlayerStatistics: React.FC<PlayerStatisticsProps> = ({ checksumAddress, chainId, playerData, isNetworkAvailable, network }) => {
 	const theme = useTheme();
+
 	// Redux
-	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
 	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
-
-	// Checked Name Register
-	const [registerStatus] = CheckNameRegister();
-
-	// Address Checksumed And Lowercased
-	const checksumAddress = registerStatus?.toLowerCase();
-
-	// Player Data
-	const playerData = usePlayerData(checksumAddress, chainId);
 
 	// Ranking Data
 	const rankingEarned = useRankingEarned(checksumAddress, chainId);
@@ -69,13 +66,13 @@ export default function SocialBoxComponent({ isNetworkAvailable }: { isNetworkAv
 	return (
 		<StatisticBox>
 			<StyledGridFirst theme={theme}>
-				{playerData[0]?.earned ? (
+				{playerData?.[0]?.earned ? (
 					currencyValue === false ? (
 						<a>
-							{((playerData[0]?.earned / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
+							{((playerData?.[0]?.earned / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
 						</a>
 					) : (
-						<a>${((playerData[0]?.earned / 1e18) * currencyPrice).toFixed(2)}</a>
+						<a>${((playerData?.[0]?.earned / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</a>
 					)
 				) : (
 					<a>
@@ -90,13 +87,13 @@ export default function SocialBoxComponent({ isNetworkAvailable }: { isNetworkAv
 						/>
 					</a>
 				)}
-				{playerData[0]?.spent ? (
+				{playerData?.[0]?.spent ? (
 					currencyValue === false ? (
 						<a>
-							{((playerData[0]?.spent / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
+							{((playerData?.[0]?.spent / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
 						</a>
 					) : (
-						<a>${((playerData[0]?.spent / 1e18) * currencyPrice).toFixed(2)}</a>
+						<a>${((playerData?.[0]?.spent / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</a>
 					)
 				) : (
 					<a>
@@ -111,7 +108,7 @@ export default function SocialBoxComponent({ isNetworkAvailable }: { isNetworkAv
 						/>
 					</a>
 				)}
-				{playerData[0]?.spent ? (
+				{playerData?.[0]?.spent ? (
 					<>
 						<a>
 							{rankingEarned} | {rankingSpent}
@@ -155,4 +152,6 @@ export default function SocialBoxComponent({ isNetworkAvailable }: { isNetworkAv
 			</StyledGridSecond>
 		</StatisticBox>
 	);
-}
+};
+
+export default PlayerStatistics;

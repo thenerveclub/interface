@@ -6,7 +6,7 @@ import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, ToggleBu
 import { useTheme } from '@mui/material/styles';
 import localFont from 'next/font/local';
 import Head from 'next/head';
-import router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useDareRankingData from '../../../hooks/rankingData/useDareRankingData';

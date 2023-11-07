@@ -120,7 +120,7 @@ export default function SelectLeaderboard() {
 								backgroundColor: theme.palette.background.default,
 							},
 							'& .MuiMenuItem-root:hover': {
-								backgroundColor: theme.palette.secondary.light,
+								backgroundColor: theme.palette.warning.main,
 							},
 						},
 					},
