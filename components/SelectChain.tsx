@@ -181,14 +181,12 @@ export default function SelectChain() {
 						<PolygonLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
 						<a>Polygon</a>
 					</MenuItemStyled>
+					{testnetsValue && <SearchResultTitle theme={theme}>Testnet</SearchResultTitle>}
 					{testnetsValue && (
-						<div>
-							<SearchResultTitle theme={theme}>Testnet</SearchResultTitle>
-							<MenuItemStyled theme={theme} value={5} disabled={chainId === 5}>
-								<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
-								<a>Goerli</a>
-							</MenuItemStyled>
-						</div>
+						<MenuItemStyled theme={theme} value={5} disabled={chainId === 5}>
+							<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+							<a>Goerli</a>
+						</MenuItemStyled>
 					)}
 				</StyledSelect>
 			) : (
@@ -229,14 +227,12 @@ export default function SelectChain() {
 						<PolygonLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
 						<a>Polygon</a>
 					</MenuItemStyled>
+					{testnetsValue && <SearchResultTitle theme={theme}>Testnet</SearchResultTitle>}
 					{testnetsValue && (
-						<div>
-							<SearchResultTitle theme={theme}>Testnet</SearchResultTitle>
-							<MenuItemStyled theme={theme} value={5} disabled={chainId === 5}>
-								<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
-								<a>Goerli</a>
-							</MenuItemStyled>
-						</div>
+						<MenuItemStyled theme={theme} value={5} disabled={chainId === 5}>
+							<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+							<a>Goerli</a>
+						</MenuItemStyled>
 					)}
 				</StyledSelect>
 			)}

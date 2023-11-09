@@ -102,7 +102,7 @@ function ConnectModal() {
 					theme={theme}
 					fullWidth={true}
 					sx={{ my: 2, color: theme.palette.text.primary, fontSize: '12px' }}
-					startIcon={<CircularProgress color="warning" thickness={2.5} size={18} />}
+					startIcon={<CircularProgress color="info" thickness={2.5} size={18} />}
 				>
 					Connecting
 				</ConnectButton>

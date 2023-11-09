@@ -1,5 +1,4 @@
 import { Web3ReactProvider } from '@web3-react/core';
-import local from 'next/font/local';
 import { SnackbarProvider } from 'notistack';
 import { useEffect } from 'react';
 import { Provider, useDispatch } from 'react-redux';

@@ -222,7 +222,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ registerStatus }) => {
 						/>
 						<StyledSection style={{ margin: '2rem auto 1.5rem auto' }}>
 							{pendingTx ? (
-								<BuyButton theme={theme} startIcon={<CircularProgress thickness={2.5} size={20} />} disabled={true}>
+								<BuyButton theme={theme} startIcon={<CircularProgress color="info" thickness={2.5} size={20} />} disabled={true}>
 									Pending
 								</BuyButton>
 							) : (

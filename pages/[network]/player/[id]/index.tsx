@@ -130,9 +130,9 @@ export default function PlayerPage() {
 						<a>
 							{account ? (
 								checksumAccount === checksumAddress ? (
-									<RegisterName />
+									<RegisterName playerData={playerData} chainId={chainId} chainIdUrl={chainIdUrl} />
 								) : (
-									<BlacklistPlayer checksumAddress={checksumAddress} chainId={chainId} />
+									<BlacklistPlayer checksumAddress={checksumAddress} chainId={chainId} chainIdUrl={chainIdUrl} />
 								)
 							) : null}
 						</a>
@@ -164,7 +164,13 @@ export default function PlayerPage() {
 							</a>
 						</Tooltip>
 					</AddressBox>
-					<PlayerSocials checksumAddress={checksumAddress} checksumAccount={checksumAccount} playerData={playerData} />
+					<PlayerSocials
+						checksumAddress={checksumAddress}
+						checksumAccount={checksumAccount}
+						playerData={playerData}
+						chainId={chainId}
+						chainIdUrl={chainIdUrl}
+					/>
 					<PlayerStatistics
 						checksumAddress={checksumAddress}
 						chainId={chainId}

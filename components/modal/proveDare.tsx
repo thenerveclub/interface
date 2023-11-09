@@ -37,9 +37,6 @@ export default function ProveDare() {
 			enqueueSnackbar('Transaction signed succesfully!', {
 				variant: 'success',
 			});
-			enqueueSnackbar('Transaction signed succesfully!', {
-				variant: 'success',
-			});
 			await tx.wait();
 			if (tx.hash) {
 				enqueueSnackbar('Transaction mined succesfully!', {
@@ -63,9 +60,6 @@ export default function ProveDare() {
 		try {
 			setPendingTx(true);
 			const tx = await nerveGlobal.voteTask(Id, false);
-			enqueueSnackbar('Transaction signed succesfully!', {
-				variant: 'success',
-			});
 			enqueueSnackbar('Transaction signed succesfully!', {
 				variant: 'success',
 			});

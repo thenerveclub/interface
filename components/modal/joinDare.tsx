@@ -101,9 +101,6 @@ export default function JoinDare() {
 			enqueueSnackbar('Transaction signed succesfully!', {
 				variant: 'success',
 			});
-			enqueueSnackbar('Transaction signed succesfully!', {
-				variant: 'success',
-			});
 			await tx.wait();
 			if (tx.hash) {
 				enqueueSnackbar('Transaction mined succesfully!', {

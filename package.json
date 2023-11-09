@@ -1,4 +1,5 @@
 {
+	"homepage": "./",
 	"name": "nerveglobal",
 	"description": "Nerve Global DApp Interface",
 	"version": "1.1.1",
@@ -8,7 +9,6 @@
 		"node": ">=18.x",
 		"yarn": ">=1.22.17"
 	},
-	"homepage": "https://github.com/nerveglobal/interface#readme",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/nerveglobal/interface.git"
@@ -24,6 +24,7 @@
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
+		"export": "next build && next export",
 		"start": "next start",
 		"analyze": "ANALYZE=true next dev"
 	},

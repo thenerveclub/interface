@@ -49,9 +49,6 @@ export default function RedeemUser() {
 			enqueueSnackbar('Transaction signed succesfully!', {
 				variant: 'success',
 			});
-			enqueueSnackbar('Transaction signed succesfully!', {
-				variant: 'success',
-			});
 			await tx.wait();
 			if (tx.hash) {
 				enqueueSnackbar('Transaction mined succesfully!', {
@@ -71,7 +68,7 @@ export default function RedeemUser() {
 	return (
 		<div>
 			{pendingTx ? (
-				<BuyButton startIcon={<CircularProgress thickness={2.5} size={20} />} disabled={true}>
+				<BuyButton startIcon={<CircularProgress color="info" thickness={2.5} size={20} />} disabled={true}>
 					Pending
 				</BuyButton>
 			) : (

@@ -1,13 +1,20 @@
 import styled from '@emotion/styled';
 import { ReportGmailerrorred, WarningAmber } from '@mui/icons-material';
 import { Box, Button, Checkbox, CircularProgress, Grid, IconButton, Modal, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
-import { CHAINS } from '../../utils/chains';
+import { CHAINS, getAddChainParameters } from '../../utils/chains';
+import { metaMask } from '../../utils/connectors/metaMask';
+
+const StyledModal = styled(Modal)`
+	.MuiModal-backdrop {
+		backdrop-filter: blur(5px);
+	}
+`;
 
 const StatisticBox = styled(Box)`
 	width: 100%;
@@ -15,22 +22,23 @@ const StatisticBox = styled(Box)`
 	text-align: center;
 `;
 
-const StyledGridFirst = styled(Grid)`
+const StyledGridFirst = styled(Grid)<{ theme: any }>`
 	display: flex;
 	flex-direction: column;
-	width: 85%;
 	margin: 0 auto 0 auto;
 	font-size: 16px;
-	color: #fff;
-	justify-content: center;
+	color: ${({ theme }) => theme.palette.text.primary};
 
 	a {
-		color: #fff;
-		font-size: 16px;
-		margin: 0.5rem auto 0 auto;
+		color: ${({ theme }) => theme.palette.text.primary};
+		font-size: 0.9375rem;
+		padding: 2rem 1rem;
+		text-decoration: none;
+		text-transform: none;
 
 		&:hover {
 			cursor: default;
+		}
 	}
 `;
 
@@ -70,18 +78,25 @@ const StyledGridThird = styled(Grid)`
 	}
 `;
 
-const StyledIconButon = styled(IconButton)({
-	display: 'flex',
-	color: 'red',
-	fontSize: 16,
-	animation: 'blink 3s infinite',
+const StyledIconButton = styled(IconButton)<{ theme: any }>`
+	display: flex;
+	color: ${({ theme }) => theme.palette.error.main};
+	background-color: transparent;
+	font-size: 1rem;
+	animation: blink 3s infinite;
 
-	'@keyframes blink': {
-		'0%': { opacity: 1 },
-		'50%': { opacity: 0 },
-		'100%': { opacity: 1 },
-	},
-});
+	@keyframes blink {
+		0% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0;
+		}
+		100% {
+			opacity: 1;
+		}
+	}
+`;
 
 const StyledIconButtonDisabled = styled(IconButton)({
 	'&:disabled': {
@@ -97,59 +112,53 @@ const StyledIconButtonDisabled = styled(IconButton)({
 	},
 });
 
-const ConnectBox = styled(Box)({
-	position: 'absolute' as 'absolute',
-	top: '50%',
-	left: '50%',
-	transform: 'translate(-50%, -50%)',
-	margin: '0 auto 0 auto',
-	justifyContent: 'center',
-	alignItems: 'center',
-	padding: '1rem',
-	height: 450,
-	width: 350,
-	backgroundColor: 'rgba(6, 16, 25, 1)',
-	border: '0.25px solid rgba(76, 76, 90, 1)',
-	borderRadius: '10px',
-	boxShadow: '0 0 25px rgba(76,130,251,0.25)',
-	pt: 4,
-	px: 2,
-	pb: 2,
+const ConnectBox = styled(Box)<{ theme: any }>`
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	margin: 0 auto 0 auto;
+	justify-content: center;
+	align-items: center;
+	padding: 3rem 1rem;
+	height: auto;
+	width: 350px;
+	background-color: ${({ theme }) => theme.palette.background.default};
+	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
+	border-radius: ${({ theme }) => theme.customShape.borderRadius};
+`;
 
-	animation: 'slide-up 0.25s ease-out forwards',
-	'@keyframes slide-up': {
-		'0%': {
-			transform: 'translateX(-50%) translateY(100%)',
-		},
-		'150%': {
-			transform: 'translateX(-50%) translateY(0)',
-		},
-	},
-});
+const BlacklistButton = styled(Button)<{ theme: any }>`
+	display: flex;
+	color: ${({ theme }) => theme.palette.text.primary};
+	text-transform: none;
+	width: 150px;
+	font-size: 1rem;
+	font-weight: 400;
+	line-height: 1.5;
+	height: 100%;
+	background-color: ${({ theme }) => theme.palette.error.main};
+	border-radius: ${({ theme }) => theme.customShape.borderRadius};
 
-const BuyButton = styled(Button)({
-	display: 'flex',
-	color: '#fff',
-	textTransform: 'none',
-	width: '100px',
-	fontSize: 16,
-	fontWeight: 400,
-	lineHeight: 1.5,
-	height: '100%',
-	backgroundColor: 'red',
-	borderRadius: 5,
+	&:hover {
+		background-color: ${({ theme }) => theme.palette.error.main};
+	}
 
-	'&:hover': {
-		backgroundColor: 'red',
-	},
+	&:disabled {
+		color: ${({ theme }) => theme.palette.secondary.main};
+		background-color: ${({ theme }) => theme.palette.error.dark};
+	}
+`;
 
-	'&:disabled': {
-		color: 'rgba(152, 161, 192, 1)',
-		backgroundColor: 'rgba(255,0,0,0.5)',
-	},
-});
+interface BlacklistPlayerProps {
+	checksumAddress: string;
+	chainId: number;
+	chainIdUrl: number;
+}
 
-export default function BlacklistPlayer(checksumAddress, chainId) {
+const BlacklistPlayer: React.FC<BlacklistPlayerProps> = ({ checksumAddress, chainId, chainIdUrl }) => {
+	const theme = useTheme();
+
 	const [open, setOpen] = useState(false);
 	const { provider } = useWeb3React();
 	const { enqueueSnackbar } = useSnackbar();
@@ -172,13 +181,10 @@ export default function BlacklistPlayer(checksumAddress, chainId) {
 	// Blacklist Player
 	async function userToBlacklist() {
 		const signer = provider.getSigner();
-		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
+		const nerveGlobal = new ethers.Contract(CHAINS[chainIdUrl]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
 			const tx = await nerveGlobal.setBlacklistUser(checksumAddress);
-			enqueueSnackbar('Transaction signed succesfully!', {
-				variant: 'success',
-			});
 			enqueueSnackbar('Transaction signed succesfully!', {
 				variant: 'success',
 			});
@@ -198,52 +204,84 @@ export default function BlacklistPlayer(checksumAddress, chainId) {
 		}
 	}
 
+	// Change Network
+	const handleNetworkChange = async () => {
+		if (metaMask) {
+			try {
+				await metaMask.activate(chainIdUrl);
+			} catch (error) {
+				console.error(error);
+			}
+		} else {
+			try {
+				await metaMask.activate(getAddChainParameters(chainIdUrl));
+			} catch (error) {
+				console.error(error);
+			}
+		}
+	};
+
 	return (
 		<div>
-			<StyledIconButon onClick={handleClickOpen}>
+			<StyledIconButton theme={theme} onClick={handleClickOpen}>
 				<ReportGmailerrorred />
-			</StyledIconButon>
-			<Modal open={open} onClose={handleClose}>
-				<ConnectBox>
+			</StyledIconButton>
+			<StyledModal open={open} onClose={handleClose}>
+				<ConnectBox theme={theme}>
 					<Typography
-						style={{ fontSize: '25px', color: '#fff', fontWeight: 'bold', margin: '1.5rem auto 2rem auto', cursor: 'default' }}
+						style={{ fontWeight: 'bold', margin: '0.0 auto 1.75rem auto', cursor: 'default' }}
 						align="center"
+						color={theme.palette.text.primary}
 						id="modal-modal-title"
+						variant="h6"
+						component="h2"
 					>
 						Blacklist Player
 					</Typography>
 					<StatisticBox>
-						<StyledGridFirst>
+						<StyledGridFirst theme={theme}>
 							<StyledIconButtonDisabled disabled={true}>
-								<WarningAmber style={{ fontSize: '50px', margin: '0 auto 0 auto' }} />
+								<WarningAmber style={{ fontSize: '50px', margin: '0 auto 0 auto', color: theme.palette.error.main }} />
 							</StyledIconButtonDisabled>
-							<a>Blacklisting of users cannot be undone. You can never receive a dare from the blacklisted user again.</a>
+							<a>
+								Please be advised that blacklisting a user is a final action. After implementation, it will no longer be possible to receive dares
+								from the blacklisted individual.
+							</a>
 						</StyledGridFirst>
 						<StyledGridSecond>
 							<Checkbox
 								checked={checked}
 								onChange={handleChange}
 								inputProps={{ 'aria-label': 'controlled' }}
-								style={{ display: 'flex', color: '#fff' }}
+								style={{ display: 'flex', color: '#fff', backgroundColor: 'transparent' }}
 							/>
 							<a>Understood</a>
 						</StyledGridSecond>
 						<StyledGridThird>
-							{checked ? (
-								pendingTx ? (
-									<BuyButton startIcon={<CircularProgress thickness={2.5} size={20} />} disabled={true}>
-										Pending
-									</BuyButton>
-								) : (
-									<BuyButton onClick={userToBlacklist}>Blacklist</BuyButton>
-								)
+							{chainId === chainIdUrl ? (
+								<BlacklistButton
+									theme={theme}
+									onClick={!pendingTx && checked ? userToBlacklist : null}
+									disabled={!checked || pendingTx}
+									startIcon={pendingTx && <CircularProgress color="secondary" thickness={2.5} size={20} />}
+								>
+									{pendingTx ? 'Pending' : 'Blacklist'}
+								</BlacklistButton>
 							) : (
-								<BuyButton disabled={true}>Blacklist</BuyButton>
+								<BlacklistButton
+									theme={theme}
+									onClick={handleNetworkChange}
+									startIcon={pendingTx && <CircularProgress color="secondary" thickness={2.5} size={20} />}
+								>
+									Change Network
+								</BlacklistButton>
 							)}
 						</StyledGridThird>
 					</StatisticBox>
 				</ConnectBox>
-			</Modal>
+			</StyledModal>
 		</div>
 	);
-}
+};
+
+export default BlacklistPlayer;

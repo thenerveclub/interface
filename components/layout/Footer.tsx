@@ -50,8 +50,8 @@ const StyledTwitter = styled(Twitter)<{ theme: any }>`
 	}
 
 	cursor: pointer;
-	width: 18px;
-	height: 18px;
+	width: 1.125rem;
+	height: 1.125rem;
 	transition: all 0.5s ease-in-out;
 
 	&:hover {
@@ -69,8 +69,8 @@ const StyledInstagram = styled(Instagram)<{ theme: any }>`
 	}
 
 	cursor: pointer;
-	width: 18px;
-	height: 18px;
+	width: 1.125rem;
+	height: 1.125rem;
 	transition: all 0.5s ease-in-out;
 
 	&:hover {
@@ -88,8 +88,8 @@ const StyledTikTok = styled(TikTok)<{ theme: any }>`
 	}
 
 	cursor: pointer;
-	width: 18px;
-	height: 18px;
+	width: 1.125rem;
+	height: 1.125rem;
 	transition: all 0.5s ease-in-out;
 
 	&:hover {
@@ -107,8 +107,8 @@ const StyledDiscord = styled(Discord)<{ theme: any }>`
 	}
 
 	cursor: pointer;
-	width: 18px;
-	height: 18px;
+	width: 1.125rem;
+	height: 1.125rem;
 	transition: all 0.5s ease-in-out;
 
 	&:hover {

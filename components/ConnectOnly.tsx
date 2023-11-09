@@ -75,7 +75,7 @@ export function ConnectOnly({
 				<ConnectButton
 					theme={theme}
 					style={{ justifyContent: 'center' }}
-					startIcon={<CircularProgress color="warning" thickness={2.5} size={25} />}
+					startIcon={<CircularProgress color="info" thickness={2.5} size={25} />}
 					disabled={true}
 				>
 					Connecting

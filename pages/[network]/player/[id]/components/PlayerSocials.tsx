@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { Badge, Box } from '@mui/material';
-import RegisterSocial from '../../../../../components/modal/registerSocial';
+import { useTheme } from '@mui/material/styles';
+import RegisterSocials from '../../../../../components/modal/registerSocials';
 import useTwitchStatus from '../../../../../hooks/useTwitchStatus';
 import Instagram from '/public/svg/socials/instagram.svg';
 import TikTok from '/public/svg/socials/tiktok.svg';
@@ -58,13 +59,112 @@ const StyledBadge = styled(Badge)`
 	}
 `;
 
+const StyledTwitter = styled(Twitter)<{ theme: any }>`
+	display: flex;
+	path {
+		fill: ${({ theme }) => theme.palette.secondary.main};
+		transition: fill 0.5s ease-in-out; // Add transition for fill color
+	}
+
+	cursor: pointer;
+	width: 1.25rem;
+	width: 1.25rem;
+	transition: all 0.5s ease-in-out;
+
+	&:hover {
+		path {
+			fill: ${({ theme }) => theme.palette.secondary.contrastText};
+		}
+	}
+`;
+
+const StyledInstagram = styled(Instagram)<{ theme: any }>`
+	display: flex;
+	path {
+		fill: ${({ theme }) => theme.palette.secondary.main};
+		transition: fill 0.5s ease-in-out; // Add transition for fill color
+	}
+
+	cursor: pointer;
+	width: 1.25rem;
+	width: 1.25rem;
+	transition: all 0.5s ease-in-out;
+
+	&:hover {
+		path {
+			fill: ${({ theme }) => theme.palette.secondary.contrastText};
+		}
+	}
+`;
+
+const StyledTikTok = styled(TikTok)<{ theme: any }>`
+	display: flex;
+	path {
+		fill: ${({ theme }) => theme.palette.secondary.main};
+		transition: fill 0.5s ease-in-out; // Add transition for fill color
+	}
+
+	cursor: pointer;
+	width: 1.25rem;
+	width: 1.25rem;
+	transition: all 0.5s ease-in-out;
+
+	&:hover {
+		path {
+			fill: ${({ theme }) => theme.palette.secondary.contrastText};
+		}
+	}
+`;
+
+const StyledTwitch = styled(Twitch)<{ theme: any }>`
+	display: flex;
+	path {
+		fill: ${({ theme }) => theme.palette.secondary.main};
+		transition: fill 0.5s ease-in-out; // Add transition for fill color
+	}
+
+	cursor: pointer;
+	width: 1.25rem;
+	width: 1.25rem;
+	transition: all 0.5s ease-in-out;
+
+	&:hover {
+		path {
+			fill: ${({ theme }) => theme.palette.secondary.contrastText};
+		}
+	}
+`;
+
+const StyledYouTube = styled(Youtube)<{ theme: any }>`
+	display: flex;
+	path {
+		fill: ${({ theme }) => theme.palette.secondary.main};
+		transition: fill 0.5s ease-in-out; // Add transition for fill color
+	}
+
+	cursor: pointer;
+	width: 1.25rem;
+	width: 1.25rem;
+	transition: all 0.5s ease-in-out;
+
+	&:hover {
+		path {
+			fill: ${({ theme }) => theme.palette.secondary.contrastText};
+		}
+	}
+`;
+
 interface PlayerSocialsProps {
 	checksumAddress: string;
 	checksumAccount: string;
 	playerData: any;
+	chainId: number;
+	chainIdUrl: number;
 }
 
-const PlayerSocials: React.FC<PlayerSocialsProps> = ({ checksumAddress, checksumAccount, playerData }) => {
+const PlayerSocials: React.FC<PlayerSocialsProps> = ({ checksumAddress, checksumAccount, playerData, chainId, chainIdUrl }) => {
+	const theme = useTheme();
+
 	// Twitch Live Status
 	const twitchLink = playerData?.[0]?.userSocialStat?.twitch.includes('twitch') ? playerData?.[0]?.userSocialStat?.twitch : '';
 	const twitchSplit = twitchLink?.split('/');
@@ -75,27 +175,27 @@ const PlayerSocials: React.FC<PlayerSocialsProps> = ({ checksumAddress, checksum
 		<SocialBox>
 			{playerData?.[0]?.userSocialStat?.twitter.includes('twitter') ? (
 				<a target="_blank" rel="noreferrer" href={playerData?.[0]?.userSocialStat?.twitter}>
-					<Twitter style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+					<StyledTwitter />
 				</a>
 			) : null}
 			{playerData?.[0]?.userSocialStat?.instagram.includes('instagram') ? (
 				<a target="_blank" rel="noreferrer" href={playerData?.[0]?.userSocialStat?.instagram}>
-					<Instagram style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+					<StyledInstagram />
 				</a>
 			) : null}
 			{playerData?.[0]?.userSocialStat?.tiktok.includes('tiktok') ? (
 				<a target="_blank" rel="noreferrer" href={playerData?.[0]?.userSocialStat?.tiktok}>
-					<TikTok style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+					<StyledTikTok />
 				</a>
 			) : null}
 			{playerData?.[0]?.userSocialStat?.youtube.includes('youtube') ? (
 				<a target="_blank" rel="noreferrer" href={playerData?.[0]?.userSocialStat?.youtube}>
 					{/* {isYouTubeLive ? (
 							<StyledBadge variant="dot">
-								<Youtube style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+								<StyledYouTube />
 							</StyledBadge>
 						) : ( */}
-					<Youtube style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+					<StyledYouTube />
 					{/* )} */}
 				</a>
 			) : null}
@@ -103,14 +203,14 @@ const PlayerSocials: React.FC<PlayerSocialsProps> = ({ checksumAddress, checksum
 				<a target="_blank" rel="noreferrer" href={playerData?.[0]?.userSocialStat?.twitch}>
 					{isTwitchLive ? (
 						<StyledBadge variant="dot">
-							<Twitch style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+							<StyledTwitch />
 						</StyledBadge>
 					) : (
-						<Twitch style={{ fontSize: '18px', fill: 'rgba(152, 161, 192, 1)' }} />
+						<StyledTwitch />
 					)}
 				</a>
 			) : null}
-			<a>{checksumAccount === checksumAddress ? <RegisterSocial /> : null}</a>
+			<a>{checksumAccount === checksumAddress ? <RegisterSocials playerData={playerData} chainId={chainId} chainIdUrl={chainIdUrl} /> : null}</a>
 		</SocialBox>
 	);
 };

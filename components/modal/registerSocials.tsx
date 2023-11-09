@@ -1,11 +1,12 @@
 import styled from '@emotion/styled';
-import { Settings } from '@mui/icons-material';
+import { Share } from '@mui/icons-material';
 import { Box, Button, CircularProgress, IconButton, InputAdornment, Modal, OutlinedInput, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
 import { CHAINS, getAddChainParameters } from '../../utils/chains';
 import { metaMask } from '../../utils/connectors/metaMask';
@@ -16,6 +17,10 @@ const StyledModal = styled(Modal)`
 	}
 `;
 
+const StyledOutlinedInput = styled(OutlinedInput)`
+	height: 40px;
+`;
+
 const StatisticBox = styled(Box)`
 	width: 90%;
 	margin: 0 auto 0 auto;
@@ -23,6 +28,11 @@ const StatisticBox = styled(Box)`
 	a {
 		font-size: 16px;
 		cursor: default;
+	}
+
+	// every next item gap top
+	& > * + * {
+		margin: 0.5rem auto 1rem auto;
 	}
 `;
 
@@ -47,19 +57,22 @@ const StyledIconButton = styled(IconButton)<{ theme: any }>`
 	color: ${({ theme }) => theme.palette.warning.main};
 	background-color: transparent;
 	font-size: 1rem;
-	animation: spin 5s infinite;
+	animation: blink 3s infinite;
 
-	@keyframes spin {
+	@keyframes blink {
 		0% {
-			transform: rotate(0deg);
+			opacity: 1;
+		}
+		50% {
+			opacity: 0;
 		}
 		100% {
-			transform: rotate(360deg);
+			opacity: 1;
 		}
 	}
 `;
 
-const RegisterNameButton = styled(Button)<{ theme: any }>`
+const RegisterButton = styled(Button)<{ theme: any }>`
 	display: flex;
 	color: ${({ theme }) => theme.palette.text.primary};
 	text-transform: none;
@@ -77,7 +90,7 @@ const RegisterNameButton = styled(Button)<{ theme: any }>`
 
 	&:disabled {
 		color: ${({ theme }) => theme.palette.secondary.main};
-		background-color: ${({ theme }) => theme.palette.warning.main};
+		background-color: ${({ theme }) => theme.palette.warning.dark};
 	}
 `;
 
@@ -97,51 +110,94 @@ const ConnectBox = styled(Box)<{ theme: any }>`
 	border-radius: ${({ theme }) => theme.customShape.borderRadius};
 `;
 
-interface RegisterNameProps {
+interface RegisterSocialsProps {
 	playerData: any;
 	chainId: number;
 	chainIdUrl: number;
 }
 
-const RegisterName: React.FC<RegisterNameProps> = ({ playerData, chainId, chainIdUrl }) => {
+const RegisterSocials: React.FC<RegisterSocialsProps> = ({ playerData, chainId, chainIdUrl }) => {
 	const theme = useTheme();
 	const { provider } = useWeb3React();
 	const { enqueueSnackbar } = useSnackbar();
 	const [open, setOpen] = useState(false);
-	const [name, setName] = useState('');
-	const initialNameRef = useRef(''); // Ref to keep track of the initial name
 	const [pendingTx, setPendingTx] = useState(false);
-	const initialDataLoaded = useRef(false); // Ref to track if the initial data has been loaded
 
 	// Modal toggles
 	const handleClickOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
 
-	// Sync state with playerData
+	// Extract the userSocialStat once for use in useState and useEffect
+	const userSocialStat = playerData?.[0]?.userSocialStat;
+
+	// Use a ref to track if the initial data has been loaded
+	const initialDataLoaded = useRef(false);
+
+	// State declarations
+	const [socials, setSocials] = useState({
+		instagram: userSocialStat?.instagram || '',
+		twitter: userSocialStat?.twitter || '',
+		tiktok: userSocialStat?.tiktok || '',
+		twitch: userSocialStat?.twitch || '',
+		youtube: userSocialStat?.youtube || '',
+	});
+
+	// Ref to keep track of the initial socials state for comparison
+	const initialSocialsRef = useRef({});
+
+	// Effect to update state when playerData prop changes
 	useEffect(() => {
-		if (playerData?.[0]?.userName && !initialDataLoaded.current) {
-			const userName = playerData[0].userName;
-			setName(userName); // Set the name from playerData
-			initialNameRef.current = userName; // Set the initial name ref
+		// Use initialDataLoaded to ensure we only set the initial state once
+		if (playerData?.[0]?.userSocialStat && !initialDataLoaded.current) {
+			const userSocialStat = playerData[0].userSocialStat;
+			const newSocials = {
+				instagram: userSocialStat.instagram.split('/').pop() || '',
+				twitter: userSocialStat.twitter.split('/').pop() || '',
+				tiktok: userSocialStat.tiktok.split('/').pop() || '',
+				twitch: userSocialStat.twitch.split('/').pop() || '',
+				youtube: userSocialStat.youtube.split('/').pop() || '',
+			};
+
+			setSocials(newSocials);
+			initialSocialsRef.current = newSocials; // Update the ref after setting the new state
 			initialDataLoaded.current = true; // Indicate that the initial data has been loaded
 		}
 	}, [playerData]);
 
-	// Function to determine if there have been changes to the name
+	// Function to compare current socials state with the initial state
 	const hasChanges = useMemo(() => {
-		return name !== initialNameRef.current;
-	}, [name]);
+		return Object.keys(socials).some((platform) => socials[platform] !== initialSocialsRef.current[platform]);
+	}, [socials]);
 
-	// name to hex conversion
-	const nameToHex = ethers.utils.formatBytes32String(name);
+	// Handles input change for social media links
+	const handleInputChange = (platform) => (event) => {
+		setSocials((prevSocials) => ({
+			...prevSocials,
+			[platform]: event.target.value,
+		}));
+	};
 
-	// Join Function
-	async function onRegisterName() {
+	// Extract the social media links and indices
+	const [links, indices] = Object.entries(socials).reduce(
+		([linkList, indexList], [platform, handle], index) => {
+			if (handle) {
+				const baseUrl = `https://${platform}.com/` + (platform === 'tiktok' ? '@' : '');
+				linkList.push(baseUrl + handle);
+				indexList.push(index.toString());
+			}
+			return [linkList, indexList];
+		},
+		[[], []]
+	);
+
+	// Register Socials Function
+	async function onRegisterSocial() {
 		const signer = provider.getSigner();
-		const nerveGlobal = new ethers.Contract(CHAINS[chainIdUrl]?.contract, NerveGlobalABI, signer);
+		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
+
 		try {
 			setPendingTx(true);
-			const tx = await nerveGlobal.registerName(nameToHex);
+			const tx = await nerveGlobal.registerSocial(links, indices);
 			enqueueSnackbar('Transaction signed succesfully!', {
 				variant: 'success',
 			});
@@ -181,7 +237,7 @@ const RegisterName: React.FC<RegisterNameProps> = ({ playerData, chainId, chainI
 	return (
 		<div>
 			<StyledIconButton theme={theme} onClick={handleClickOpen}>
-				<Settings />
+				<Share />
 			</StyledIconButton>
 			<StyledModal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
 				<ConnectBox theme={theme}>
@@ -193,47 +249,56 @@ const RegisterName: React.FC<RegisterNameProps> = ({ playerData, chainId, chainI
 						variant="h6"
 						component="h2"
 					>
-						Register Name
+						Register Socials
 					</Typography>
 					<StatisticBox>
-						<OutlinedInput
-							sx={{
-								color: '#fff',
-								height: '40px',
-								'& .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
-								'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
-							}}
-							fullWidth={true}
-							id="outlined-adornment-name"
-							type="name"
-							required={false}
-							value={name}
-							startAdornment={
-								<InputAdornment position="start" sx={{ color: 'gray' }}>
-									player/
-								</InputAdornment>
-							}
-							onChange={(event) => setName(event.target.value.replace(/^player\//, ''))} // Remove "player/" when updating the state
-						/>
-
+						{['instagram', 'twitter', 'tiktok', 'twitch', 'youtube'].map((platform) => {
+							const prefix = platform === 'tiktok' || platform === 'youtube' ? '@' : '';
+							return (
+								<div key={platform}>
+									<a>{platform.charAt(0).toUpperCase() + platform.slice(1)}</a>
+									<StyledOutlinedInput
+										sx={{
+											color: '#fff',
+											'& .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
+											'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
+										}}
+										fullWidth={true}
+										id={`outlined-adornment-${platform}`}
+										type="text"
+										required={false}
+										value={socials[platform]}
+										startAdornment={
+											<InputAdornment
+												sx={{ color: 'red', display: 'flex', cursor: 'default', '& .MuiTypography-root': { color: 'rgba(152, 161, 192, 1)' } }}
+												position="start"
+											>
+												{`${platform}.com/${prefix}`}
+											</InputAdornment>
+										}
+										onChange={handleInputChange(platform)}
+									/>
+								</div>
+							);
+						})}
 						<StyledSection style={{ margin: '2rem auto 1.5rem auto' }}>
 							{chainId === chainIdUrl ? (
-								<RegisterNameButton
+								<RegisterButton
 									theme={theme}
-									onClick={!pendingTx ? onRegisterName : null}
-									disabled={pendingTx || !hasChanges} // Disable if pending or no changes
+									onClick={!pendingTx ? onRegisterSocial : null}
+									disabled={pendingTx || !hasChanges} // Disable if there is a pending transaction or no changes
 									startIcon={pendingTx && <CircularProgress color="secondary" thickness={2.5} size={20} />}
 								>
-									{pendingTx ? 'Pending' : 'Register Name'}
-								</RegisterNameButton>
+									{pendingTx ? 'Pending' : 'Register'}
+								</RegisterButton>
 							) : (
-								<RegisterNameButton
+								<RegisterButton
 									theme={theme}
 									onClick={handleNetworkChange}
 									startIcon={pendingTx && <CircularProgress color="secondary" thickness={2.5} size={20} />}
 								>
 									Change Network
-								</RegisterNameButton>
+								</RegisterButton>
 							)}
 						</StyledSection>
 					</StatisticBox>
@@ -243,4 +308,4 @@ const RegisterName: React.FC<RegisterNameProps> = ({ playerData, chainId, chainI
 	);
 };
 
-export default RegisterName;
+export default RegisterSocials;
