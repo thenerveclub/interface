@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { CHAINS } from '../../utils/chains';
 
-const useTrendingDareDataSearchList = (chainId: number, keyWord: string) => {
+const useTrendingDareDataSearchList = (chainIdUrl: number, keyWord: string) => {
 	const [dareSearchList, setDareSearchList] = useState<any[]>([]);
 
 	useEffect(() => {
-		if (!chainId) {
+		if (!chainIdUrl) {
 			// Handle the case where the chainIdUrl is not ready or not valid
 			setDareSearchList([]);
 			return;
@@ -28,7 +28,7 @@ const useTrendingDareDataSearchList = (chainId: number, keyWord: string) => {
       `;
 
 			try {
-				const fetchDareData = await fetch(CHAINS[chainId]?.graphApi, {
+				const fetchDareData = await fetch(CHAINS[chainIdUrl]?.graphApi, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ query: QueryForDareSearchList }),
@@ -42,7 +42,7 @@ const useTrendingDareDataSearchList = (chainId: number, keyWord: string) => {
 		};
 
 		getDareData();
-	}, [chainId, keyWord]);
+	}, [chainIdUrl, keyWord]);
 
 	return dareSearchList;
 };

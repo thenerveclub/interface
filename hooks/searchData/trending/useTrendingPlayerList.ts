@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { CHAINS } from '../../../utils/chains';
 
-const useTrendingPlayerList = (chainId: number) => {
+const useTrendingPlayerList = (chainIdUrl: number) => {
 	const [trendingPlayerList, setTrendingPlayerList] = useState<any[]>([]);
 
 	useEffect(() => {
-		if (!chainId) {
+		if (!chainIdUrl) {
 			// Handle the case where the chainIdUrl is not ready or not valid
 			setTrendingPlayerList([]);
 			return;
@@ -23,7 +23,7 @@ const useTrendingPlayerList = (chainId: number) => {
       `;
 
 			try {
-				const fetchPlayerData = await fetch(CHAINS[chainId]?.graphApi, {
+				const fetchPlayerData = await fetch(CHAINS[chainIdUrl]?.graphApi, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ query: QueryForTrendingPlayers }),
@@ -37,7 +37,7 @@ const useTrendingPlayerList = (chainId: number) => {
 		};
 
 		getTrendingPlayerList();
-	}, [chainId]);
+	}, [chainIdUrl]);
 
 	return trendingPlayerList;
 };

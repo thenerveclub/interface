@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { CHAINS } from '../../../utils/chains';
 
-const useTrendingDareList = (chainId: number) => {
+const useTrendingDareList = (chainIdUrl: number) => {
 	const [trendingDareList, setTrendingDareList] = useState<any[]>([]);
 
 	useEffect(() => {
-		if (!chainId) {
+		if (!chainIdUrl) {
 			// Handle the case where the chainIdUrl is not ready or not valid
 			setTrendingDareList([]);
 			return;
@@ -30,7 +30,7 @@ const useTrendingDareList = (chainId: number) => {
       `;
 
 			try {
-				const response = await fetch(CHAINS[chainId]?.graphApi, {
+				const response = await fetch(CHAINS[chainIdUrl]?.graphApi, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ query: QueryForTrendingDareList }),
@@ -44,7 +44,7 @@ const useTrendingDareList = (chainId: number) => {
 		};
 
 		getTrendingDareData();
-	}, [chainId]);
+	}, [chainIdUrl]);
 
 	return trendingDareList;
 };

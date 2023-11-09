@@ -144,17 +144,18 @@ const SearchResultTitle = styled.div<{ theme: any }>`
 	}
 `;
 
-export default function SearchBar() {
+interface SearchBarProps {
+	network: string;
+}
+
+const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 	const theme = useTheme();
 	const router = useRouter();
-	const network = router.query.network as string;
 
 	// Name to Chain ID
 	const chainIdUrl = nameToChainId[network];
 
-	// Redux
-	const chainId = useSelector((state: { chainId: number }) => state.chainId);
-
+	// State declarations
 	const [searchValue, setSearchValue] = useState('');
 	const playerSearchList = usePlayerDataSearchList(chainIdUrl, searchValue);
 	const trendingPlayersList = useTrendingPlayerList(chainIdUrl);
@@ -162,21 +163,21 @@ export default function SearchBar() {
 	const dareSearchList = useDareDataSearchList(chainIdUrl, searchValue);
 	const [isListVisible, setListVisible] = useState(false);
 
-	// Initialize the searchHistory state with the value from localStorage if it exists
-	const [searchHistory, setSearchHistory] = useState(() => {
-		// Check if 'window' is defined which indicates we're running in the browser/client-side.
-		if (typeof window !== 'undefined') {
+	// Initialize the searchHistory state as an empty array
+	const [searchHistory, setSearchHistory] = useState([]);
+
+	// Update searchHistory when the network prop changes
+	useEffect(() => {
+		if (typeof window !== 'undefined' && network) {
 			try {
-				const savedHistory = window.localStorage.getItem('searchHistory');
-				return savedHistory ? JSON.parse(savedHistory) : [];
+				const savedHistory = window.localStorage.getItem(`searchHistory_${network}`);
+				setSearchHistory(savedHistory ? JSON.parse(savedHistory) : []);
 			} catch (error) {
 				console.error('Failed to parse search history from localStorage', error);
-				return [];
+				setSearchHistory([]);
 			}
 		}
-		// Return a default state if we're on the server.
-		return [];
-	});
+	}, [network]);
 
 	// Call this function when a search item is clicked to add to history
 	const addToSearchHistory = (searchItem) => {
@@ -188,14 +189,16 @@ export default function SearchBar() {
 
 	// Update search history in localStorage whenever it changes
 	useEffect(() => {
-		localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
-	}, [searchHistory]);
+		if (network) {
+			localStorage.setItem(`searchHistory_${network}`, JSON.stringify(searchHistory));
+		}
+	}, [searchHistory, network]);
 
 	const clearSearchHistory = () => {
 		// Clear the search history from the state
 		setSearchHistory([]);
 		// Remove the search history from localStorage
-		localStorage.removeItem('searchHistory');
+		localStorage.removeItem(`searchHistory_${network}`);
 	};
 
 	const handleSearchChange = (e) => {
@@ -236,8 +239,8 @@ export default function SearchBar() {
 				</IconButton>
 				<InputBase
 					fullWidth={true}
-					style={{ fontSize: '1rem' }}
-					placeholder="Search players and dares…"
+					style={{ fontSize: '0.875rem' }}
+					placeholder={`Search players and dares on ${network}…`}
 					inputProps={{ 'aria-label': 'search' }}
 					value={searchValue}
 					onChange={handleSearchChange}
@@ -457,4 +460,6 @@ export default function SearchBar() {
 			</SearchBarContainer>
 		</ClickAwayListener>
 	);
-}
+};
+
+export default SearchBar;

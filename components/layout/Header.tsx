@@ -236,7 +236,7 @@ export default function Header() {
 					<SelectLeaderboard />
 				</StyledSectionLeft>
 				<StyledSectionMiddle>
-					<SearchBar />
+					<SearchBar network={network} />
 					<MobileSettings>
 						<Setting />
 					</MobileSettings>

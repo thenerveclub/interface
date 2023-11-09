@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { CHAINS } from '../../utils/chains';
 
-const usePlayerDataSearchList = (chainId: number, keyWord: string) => {
+const usePlayerDataSearchList = (chainIdUrl: number, keyWord: string) => {
 	const [playerSearchList, setPlayerSearchList] = useState<any[]>([]);
 
 	useEffect(() => {
-		if (!chainId) {
+		if (!chainIdUrl) {
 			// Handle the case where the chainIdUrl is not ready or not valid
 			setPlayerSearchList([]);
 			return;
@@ -29,7 +29,7 @@ const usePlayerDataSearchList = (chainId: number, keyWord: string) => {
 			// users(first: 10, where: { or: [{userName_starts_with_nocase: "${keyWord}"}, {userAddress_starts_with_nocase: "${keyWord}"}] }) {
 
 			try {
-				const fetchPlayerData = await fetch(CHAINS[chainId]?.graphApi, {
+				const fetchPlayerData = await fetch(CHAINS[chainIdUrl]?.graphApi, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ query: QueryForPlayerSearchList }),
@@ -43,7 +43,7 @@ const usePlayerDataSearchList = (chainId: number, keyWord: string) => {
 		};
 
 		getPlayerDataSearchList();
-	}, [chainId, keyWord]);
+	}, [chainIdUrl, keyWord]);
 
 	return playerSearchList;
 };

@@ -4,6 +4,9 @@ import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import JoinDare from '../../../../components/modal/joinDare';
+import useDareData from '../../../../hooks/dareData/useDareData';
+import { nameToChainId } from '../../../../utils/chains';
+import ActivityTable from './components/ActivityTable';
 
 const StyledBox = styled(Box)`
 	margin: 7.5rem 5rem auto 5rem;
@@ -130,7 +133,11 @@ const StyledDivider = styled(Divider)<{ theme: any }>`
 export default function TaskPage() {
 	const theme = useTheme();
 	const router = useRouter();
-	const { id } = router.query;
+	const network = router.query.network as string;
+	const id = router.query.id as string;
+
+	// Name to Chain ID
+	const chainIdUrl = nameToChainId[network];
 
 	// Redux
 	const dispatch = useDispatch();
@@ -140,8 +147,12 @@ export default function TaskPage() {
 	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
 	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
 
-	const prove = false;
+	// State declarations
 
+	// Hooks
+	const dareData = useDareData(chainIdUrl, id);
+
+	const prove = false;
 
 	// Twitch Live Status
 	// const twitchLink = playerData[0]?.userSocialStat?.twitch.includes('twitch') ? playerData[0]?.userSocialStat?.twitch : '';
@@ -156,6 +167,19 @@ export default function TaskPage() {
 	// const youTubeChannelName = 'inscope21';
 	// const isYouTubeLive = useYouTubeStatus(youTubeChannelName);
 
+	const handleClickUser = (user) => {
+		return () => {
+			router.push(`/${network}/player/${user}`);
+		};
+	};
+
+	function formatNumber(value) {
+		return (Number(value) / 1e18).toLocaleString('en-US', {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2,
+		});
+	}
+
 	return (
 		<StyledBox>
 			<Grid container spacing={2}>
@@ -164,6 +188,12 @@ export default function TaskPage() {
 						<TaskCardLeftSide theme={theme}>
 							<a>Description</a>
 							<StyledDivider theme={theme} />
+							<a>
+								By ({dareData?.[0]?.task.initiatorAddress.substring(0, 6)}...
+								{dareData?.[0]?.task.initiatorAddress.substring(dareData?.[0]?.task.initiatorAddress.length - 4).toUpperCase()})
+								{/* <a onClick={handleClickUser(dareData?.[0]?.task.initiatorName)}>{dareData?.[0]?.task.initiatorName}</a> */}
+							</a>
+							{dareData?.[0]?.task.description}
 						</TaskCardLeftSide>
 						<TaskCardLeftSide theme={theme}>
 							<a>Details</a>
@@ -171,7 +201,9 @@ export default function TaskPage() {
 							<StyledBoxInternal>
 								<div>
 									<Typography variant="body1">Player</Typography>
-									<Typography variant="body2">{id}</Typography>
+									<Typography variant="body2" onClick={handleClickUser(dareData?.[0]?.task.recipientName)}>
+										{dareData?.[0]?.task.recipientName}
+									</Typography>
 								</div>
 								<div>
 									<Typography variant="body1">Task ID</Typography>
@@ -179,29 +211,26 @@ export default function TaskPage() {
 								</div>
 								<div>
 									<Typography variant="body1">Participants</Typography>
-									<Typography variant="body2">{id}</Typography>
+									<Typography variant="body2">{dareData?.[0]?.task.participants}</Typography>
 								</div>
 								<div>
 									<Typography variant="body1">Chain</Typography>
-									<Typography variant="body2">{id}</Typography>
+									<Typography variant="body2">{network}</Typography>
 								</div>
 							</StyledBoxInternal>
 							<StyledBoxInternal>
 								<div>
 									<Typography variant="body1">Entry Amount</Typography>
-									<Typography variant="body2">{id}</Typography>
+									<Typography variant="body2">{formatNumber(dareData?.[0]?.task.entranceAmount)}</Typography>
 								</div>
 								<div>
 									<Typography variant="body1">Total Amount</Typography>
-									<Typography variant="body2">{id}</Typography>
+									<Typography variant="body2">{formatNumber(dareData?.[0]?.task.amount)}</Typography>
 								</div>
 							</StyledBoxInternal>
 						</TaskCardLeftSide>
 
-						<TaskCardLeftSide theme={theme}>
-							<a>Activity</a>
-							<StyledDivider theme={theme} />
-						</TaskCardLeftSide>
+						<ActivityTable id={id} dareData={dareData} chainIdUrl={chainIdUrl} />
 					</StyledSection>
 				</Grid>
 
