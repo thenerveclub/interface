@@ -97,7 +97,7 @@ const TaskCardLeftSide = styled(Box)<{ theme: any }>`
 `;
 
 const TaskCardRightSide = styled(Box)<{ theme: any }>`
-	width: 350px;
+	width: 90%;
 	max-width: 350px;
 	height: 300px;
 	max-height: 300px;
@@ -147,10 +147,13 @@ export default function TaskPage() {
 	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
 	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
 
+	// Network Check
+	const isNetworkAvailable = availableChains.includes(chainIdUrl);
+
 	// State declarations
 
 	// Hooks
-	const dareData = useDareData(chainIdUrl, id);
+	const dareData = useDareData(isNetworkAvailable ? chainIdUrl : 137, id);
 
 	const prove = false;
 
@@ -191,7 +194,7 @@ export default function TaskPage() {
 							<a>
 								By ({dareData?.[0]?.task.initiatorAddress.substring(0, 6)}...
 								{dareData?.[0]?.task.initiatorAddress.substring(dareData?.[0]?.task.initiatorAddress.length - 4).toUpperCase()})
-								{/* <a onClick={handleClickUser(dareData?.[0]?.task.initiatorName)}>{dareData?.[0]?.task.initiatorName}</a> */}
+								{dareData?.[0]?.task.initiatorName}
 							</a>
 							{dareData?.[0]?.task.description}
 						</TaskCardLeftSide>
@@ -230,7 +233,7 @@ export default function TaskPage() {
 							</StyledBoxInternal>
 						</TaskCardLeftSide>
 
-						<ActivityTable id={id} dareData={dareData} chainIdUrl={chainIdUrl} />
+						<ActivityTable id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} />
 					</StyledSection>
 				</Grid>
 

@@ -34,7 +34,8 @@ const ModalButton = styled(Button)<{ theme: any }>`
 	background-color: ${({ theme }) => theme.palette.warning.main};
 	border-radius: ${({ theme }) => theme.shape.borderRadius};
 	height: 40px;
-	width: 350px;
+	width: 90%;
+	max-width: 350px;
 	margin: 0 auto 0 auto;
 
 	&:hover {

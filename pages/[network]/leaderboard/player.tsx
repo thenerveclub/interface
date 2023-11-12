@@ -123,6 +123,7 @@ const StyledBox = styled(Box)`
 	align-items: center;
 	text-align: center;
 	width: 90%;
+	min-width: 1400px;
 	max-width: 1400px;
 	// height: 85vh;
 	margin: 5rem auto 0 auto;
@@ -156,6 +157,8 @@ const Title = styled(Typography)<{ theme: any }>`
 
 const StyledTable = styled(Table)<{ theme: any }>`
 	width: 100%;
+	min-width: 1400px;
+	max-width: 1400px;
 	height: 100%;
 
 	@media (max-width: 600px) {
@@ -197,9 +200,9 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{ theme: any }>`
 	display: flex;
 	align-self: flex-end;
 	background-color: transparent;
-	height: 40px;
+	height: 35px;
 	width: 150px;
-	margin-left: 1rem;
+	margin: 0 0 1rem 4rem;
 	cursor: not-allowed;
 
 	& .MuiToggleButton-root {
@@ -245,6 +248,11 @@ const StyledArrowCircleUpOutlinedIcon = styled(ArrowCircleUpOutlinedIcon)<{ them
 		transform: scale(1.1);
 		color: ${({ theme }) => theme.palette.text.primary};
 	}
+`;
+
+const StyledTableContainer = styled(Box)<{ theme: any }>`
+	height: 100vh;
+	overflow-y: auto;
 `;
 
 export default function RankingPage() {
@@ -341,121 +349,130 @@ export default function RankingPage() {
 						<a>USD</a>
 					</StyledToggleButton>
 				</StyledToggleButtonGroup>
-				<StyledTable theme={theme}>
-					<TableHead>
-						<TableRow>
-							<TableCell>#</TableCell>
-							<TableCell>Name</TableCell>
-							<TableCell>Address</TableCell>
-							<TableCell style={{ textAlign: 'center' }}>Socials</TableCell>
-							<TableCell>
-								<StyledButton theme={theme} onClick={createSortHandler('earned')}>
-									Earned
-									{orderBy === 'earned' ? (
-										order === 'asc' ? (
-											<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
+				<StyledTableContainer theme={theme}>
+					<StyledTable stickyHeader theme={theme}>
+						<TableHead>
+							<TableRow>
+								<TableCell>#</TableCell>
+								<TableCell>Name</TableCell>
+								<TableCell>Address</TableCell>
+								<TableCell style={{ textAlign: 'center' }}>Socials</TableCell>
+								<TableCell>
+									<StyledButton theme={theme} onClick={createSortHandler('earned')}>
+										Earned
+										{orderBy === 'earned' ? (
+											order === 'asc' ? (
+												<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
+											) : (
+												<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
+											)
+										) : order === 'asc' ? (
+											<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
 										) : (
-											<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
-										)
-									) : order === 'asc' ? (
-										<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
-									) : (
-										<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-									)}
-								</StyledButton>
-							</TableCell>
-							<TableCell>
-								<StyledButton theme={theme} onClick={createSortHandler('spent')}>
-									Spent
-									{orderBy === 'spent' ? (
-										order === 'asc' ? (
-											<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
+											<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
+										)}
+									</StyledButton>
+								</TableCell>
+								<TableCell>
+									<StyledButton theme={theme} onClick={createSortHandler('spent')}>
+										Spent
+										{orderBy === 'spent' ? (
+											order === 'asc' ? (
+												<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
+											) : (
+												<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
+											)
+										) : order === 'asc' ? (
+											<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
 										) : (
-											<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
-										)
-									) : order === 'asc' ? (
-										<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
-									) : (
-										<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-									)}
-								</StyledButton>
-							</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{data.length > 0 ? (
-							sortedData.map((row, index) => (
-								<StyledTableRow theme={theme} key={index}>
-									<TableCell>{index + 1}</TableCell>
-									<TableCell>
-										<a style={{ cursor: 'pointer' }} onClick={handlePlayer(row.userName)}>
-											{row.userName ? row.userName : 'N/A'}
-										</a>
-									</TableCell>
-									<TableCell>
-										<a
+											<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
+										)}
+									</StyledButton>
+								</TableCell>
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{data.length > 0 ? (
+								sortedData.map((row, index) => (
+									<StyledTableRow theme={theme} key={index}>
+										<TableCell>{index + 1}</TableCell>
+										{row.userName ? (
+											<TableCell>
+												<a style={{ cursor: 'pointer', color: theme.palette.warning.main }} onClick={handlePlayer(row.userName)}>
+													{row.userName}
+												</a>
+											</TableCell>
+										) : (
+											<TableCell>
+												<a style={{ cursor: 'default' }}>N/A</a>
+											</TableCell>
+										)}
+										<TableCell>
+											<a
+												style={{
+													cursor: 'pointer',
+													textDecoration: 'none',
+													color: theme.palette.text.primary,
+													display: 'inline-flex',
+													gap: '5px',
+													alignItems: 'center',
+												}}
+												href={CHAINS[isNetworkAvailable ? chainIdUrl : 137]?.blockExplorerUrls[0] + 'address/' + row.id}
+												target="_blank"
+											>
+												{`${row.id.slice(0, 6)}...${row.id.slice(-4)}`}
+												<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
+											</a>
+										</TableCell>
+										<TableCell
 											style={{
-												cursor: 'pointer',
-												textDecoration: 'none',
-												color: theme.palette.text.primary,
-												display: 'inline-flex',
-												gap: '5px',
+												display: 'flex',
+												justifyContent: 'center',
 												alignItems: 'center',
+												minHeight: '100%',
+												textAlign: 'center',
+												margin: '0 auto 0 auto',
 											}}
-											href={CHAINS[isNetworkAvailable ? chainIdUrl : 137]?.blockExplorerUrls[0] + 'address/' + row.id}
-											target="_blank"
 										>
-											{`${row.id.slice(0, 6)}...${row.id.slice(-4)}`}
-											<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
-										</a>
-									</TableCell>
-									<TableCell
-										style={{
-											// display: 'flex',
-											justifyContent: 'center',
-											alignItems: 'center',
-											gap: '15px',
-											minHeight: '100%',
-											textAlign: 'center',
-											margin: '0 auto 0 auto',
-										}}
-									>
-										{row.userSocialStat?.instagram && <StyledInstagram />}
-										{row.userSocialStat?.twitter && <StyledTwitter />}
-										{row.userSocialStat?.tiktok && <StyledTikTok />}
-										{row.userSocialStat?.twitch && <StyledTwitch />}
-										{row.userSocialStat?.youtube && <StyledYouTube />}
-									</TableCell>
-									<TableCell style={{ textAlign: 'right' }}>
-										{currencyValue === false ? (
-											<a>
-												{formatNumber(row.earned)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
-											</a>
-										) : (
-											<a>${formatNumber(row.earned * currencyPrice[network]?.usd)}</a>
-										)}
-									</TableCell>
-									<TableCell style={{ textAlign: 'right' }}>
-										{currencyValue === false ? (
-											<a>
-												{formatNumber(row.spent)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
-											</a>
-										) : (
-											<a>${formatNumber(row.spent * currencyPrice[network]?.usd)}</a>
-										)}
+											<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem' }}>
+												{row.userSocialStat?.instagram && <StyledInstagram />}
+												{row.userSocialStat?.twitter && <StyledTwitter />}
+												{row.userSocialStat?.tiktok && <StyledTikTok />}
+												{row.userSocialStat?.twitch && <StyledTwitch />}
+												{row.userSocialStat?.youtube && <StyledYouTube />}
+											</div>
+										</TableCell>
+										<TableCell style={{ textAlign: 'right' }}>
+											{currencyValue === false ? (
+												<a>
+													{formatNumber(row.earned)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
+												</a>
+											) : (
+												<a>${formatNumber(row.earned * currencyPrice[network]?.usd)}</a>
+											)}
+										</TableCell>
+										<TableCell style={{ textAlign: 'right' }}>
+											{currencyValue === false ? (
+												<a>
+													{formatNumber(row.spent)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
+												</a>
+											) : (
+												<a>${formatNumber(row.spent * currencyPrice[network]?.usd)}</a>
+											)}
+										</TableCell>
+									</StyledTableRow>
+								))
+							) : (
+								<StyledTableRow theme={theme}>
+									<TableCell colSpan={7} style={{ textAlign: 'center' }}>
+										No data available on this chain
 									</TableCell>
 								</StyledTableRow>
-							))
-						) : (
-							<StyledTableRow theme={theme}>
-								<TableCell colSpan={7} style={{ textAlign: 'center' }}>
-									No data available on this chain
-								</TableCell>
-							</StyledTableRow>
-						)}
-					</TableBody>
-				</StyledTable>
-				<StyledArrowCircleUpOutlinedIcon theme={theme} onClick={handleScrollToTop} />
+							)}
+						</TableBody>
+					</StyledTable>
+				</StyledTableContainer>
+				{/* <StyledArrowCircleUpOutlinedIcon theme={theme} onClick={handleScrollToTop} /> */}
 			</StyledBox>
 		</>
 	);

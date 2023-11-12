@@ -17,6 +17,7 @@ const useDareData = (chainIdUrl: number, id: string) => {
             userTasks(where: {task_: {id: "${id}"}}) {
                id
                userAddress
+               userName
                userStake
                blockNumber
                endTask

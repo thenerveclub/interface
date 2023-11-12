@@ -35,7 +35,7 @@ const ModalButton = styled(Button)<{ theme: any }>`
 	line-height: 1.5;
 	background-color: ${({ theme }) => theme.palette.warning.main};
 	border-radius: ${({ theme }) => theme.shape.borderRadius};
-	height: 40px;
+	height: 35px;
 	width: 125px;
 	margin-left: 1rem;
 
@@ -99,7 +99,7 @@ const ConnectBox = styled(Box)<{ theme: any }>`
 
 interface CreateTaskProps {
 	registerStatus: any;
-};
+}
 
 const CreateTask: React.FC<CreateTaskProps> = ({ registerStatus }) => {
 	const theme = useTheme();

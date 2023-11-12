@@ -75,7 +75,7 @@ const ActiveTabLeftSection = styled(Box)`
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{ theme: any }>`
 	background-color: transparent;
-	height: 40px;
+	height: 35px;
 	width: 150px;
 	margin-left: 1rem;
 	cursor: not-allowed;

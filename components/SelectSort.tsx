@@ -16,8 +16,8 @@ const StyledSelect = styled(Select, {
 	border: 1px solid ${({ theme, open, focus }) => (open || focus ? theme.palette.warning.main : theme.palette.secondary.main)};
 	border-radius: ${({ theme, open }) =>
 		open ? `${theme.customShape.borderRadius} ${theme.customShape.borderRadius} 0px 0px` : theme.shape.borderRadius};
-	min-height: 40px;
-	height: 40px;
+	min-height: 35px;
+	height: 35px;
 	min-width: 225px;
 	max-width: 375px;
 	transition: all 0.5s ease-in-out;
@@ -36,7 +36,7 @@ const StyledSelect = styled(Select, {
 		justify-content: center;
 		align-content: center;
 		vertical-align: middle;
-		height: 40px;
+		height: 35px;
 		text-align: center;
 	}
 

@@ -22,6 +22,7 @@ const StyledBox = styled(Box)`
 	align-items: center;
 	text-align: center;
 	width: 90%;
+	min-width: 1400px;
 	max-width: 1400px;
 	// height: 85vh;
 	margin: 5rem auto 0 auto;
@@ -56,6 +57,8 @@ const Title = styled(Typography)<{ theme: any }>`
 
 const StyledTable = styled(Table)<{ theme: any }>`
 	width: 100%;
+	min-width: 1400px;
+	max-width: 1400px;
 	height: 100%;
 
 	@media (max-width: 600px) {
@@ -79,16 +82,15 @@ const StyledButton = styled(Button)<{ theme: any }>`
 `;
 
 const StyledTableRow = styled(TableRow)<{ theme: any }>`
-	transition: transform 0.3s, box-shadow 0.3s;
+	transition: transform 0.3s;
+	box-shadow 0.3s;
 	cursor: pointer;
 
 	&:nth-of-type(odd) {
 		background-color: ${({ theme }) => theme.palette.background.default};
-		// filter: blur(2px);
 	}
 
 	&:hover {
-		// background-color: ${({ theme }) => theme.palette.primary.dark};
 		transform: scale(1.02);
 		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	}
@@ -98,9 +100,9 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{ theme: any }>`
 	display: flex;
 	align-self: flex-end;
 	background-color: transparent;
-	height: 40px;
+	height: 35px;
 	width: 150px;
-	margin-left: 1rem;
+	margin: 0 0 1rem 4rem;
 	cursor: not-allowed;
 
 	& .MuiToggleButton-root {
@@ -146,6 +148,11 @@ const StyledArrowCircleUpOutlinedIcon = styled(ArrowCircleUpOutlinedIcon)<{ them
 		transform: scale(1.1);
 		color: ${({ theme }) => theme.palette.text.primary};
 	}
+`;
+
+const StyledTableContainer = styled(Box)<{ theme: any }>`
+	height: 100vh;
+	overflow-y: auto;
 `;
 
 export default function RankingDaresPage() {
@@ -280,138 +287,140 @@ export default function RankingDaresPage() {
 						<a>USD</a>
 					</StyledToggleButton>
 				</StyledToggleButtonGroup>
-				<StyledTable theme={theme}>
-					<TableHead>
-						<TableRow>
-							<TableCell>#</TableCell>
-							<TableCell>Description</TableCell>
-							<TableCell>
-								<StyledButton theme={theme} onClick={createSortHandler('entranceAmount')}>
-									Entry Amount
-									{orderBy === 'entranceAmount' ? (
-										order === 'asc' ? (
-											<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
+				<StyledTableContainer theme={theme}>
+					<StyledTable stickyHeader theme={theme}>
+						<TableHead>
+							<TableRow>
+								<TableCell>#</TableCell>
+								<TableCell>Description</TableCell>
+								<TableCell>
+									<StyledButton theme={theme} onClick={createSortHandler('entranceAmount')}>
+										Entry Amount
+										{orderBy === 'entranceAmount' ? (
+											order === 'asc' ? (
+												<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
+											) : (
+												<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
+											)
+										) : order === 'asc' ? (
+											<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
 										) : (
-											<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
-										)
-									) : order === 'asc' ? (
-										<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
-									) : (
-										<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-									)}
-								</StyledButton>
-							</TableCell>
-
-							<TableCell>
-								<StyledButton theme={theme} onClick={createSortHandler('amount')}>
-									Total Amount
-									{orderBy === 'amount' ? (
-										order === 'asc' ? (
-											<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
-										) : (
-											<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
-										)
-									) : order === 'asc' ? (
-										<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
-									) : (
-										<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-									)}
-								</StyledButton>
-							</TableCell>
-
-							<TableCell>
-								<StyledButton theme={theme} onClick={createSortHandler('participants')}>
-									Participants
-									{orderBy === 'participants' ? (
-										order === 'asc' ? (
-											<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
-										) : (
-											<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
-										)
-									) : order === 'asc' ? (
-										<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
-									) : (
-										<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-									)}
-								</StyledButton>
-							</TableCell>
-
-							<TableCell>
-								<StyledButton theme={theme} onClick={createSortHandler('voters')}>
-									Voters
-									{orderBy === 'voters' ? (
-										order === 'asc' ? (
-											<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
-										) : (
-											<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
-										)
-									) : order === 'asc' ? (
-										<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
-									) : (
-										<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-									)}
-								</StyledButton>
-							</TableCell>
-
-							<TableCell>
-								<StyledButton theme={theme} onClick={createSortHandler('voting')}>
-									Voting
-									{orderBy === 'voting' ? (
-										order === 'asc' ? (
-											<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
-										) : (
-											<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
-										)
-									) : order === 'asc' ? (
-										<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
-									) : (
-										<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-									)}
-								</StyledButton>
-							</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{data.length > 0 ? (
-							sortedData.map((row, index) => (
-								<StyledTableRow theme={theme} key={index} onClick={handleDare(row.id)}>
-									<TableCell>{index + 1}</TableCell>
-									<TableCell>
-										<a style={{ cursor: 'pointer' }}>{row.description.length > 75 ? row.description.substring(0, 75) + '...' : row.description}</a>
-									</TableCell>
-									<TableCell style={{ textAlign: 'right' }}>
-										{currencyValue === false ? (
-											<a style={{ cursor: 'pointer' }}>
-												{formatNumber(row.entranceAmount)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
-											</a>
-										) : (
-											<a style={{ cursor: 'pointer' }}>${formatNumber(row.entranceAmount * currencyPrice[network]?.usd)}</a>
+											<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
 										)}
-									</TableCell>
-									<TableCell style={{ textAlign: 'right' }}>
-										{currencyValue === false ? (
-											<a style={{ cursor: 'pointer' }}>
-												{formatNumber(row.amount)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
-											</a>
-										) : (
-											<a style={{ cursor: 'pointer' }}>${formatNumber(row.amount * currencyPrice[network]?.usd)}</a>
-										)}
-									</TableCell>
-									<TableCell style={{ textAlign: 'right' }}>{row.participants}</TableCell>
-									<TableCell style={{ textAlign: 'right' }}>{Number(row.positiveVotes) + Number(row.negativeVotes)}</TableCell>
-									<TableCell style={{ textAlign: 'right' }}>{calculatePositivePercentage(row.positiveVotes, row.negativeVotes)}</TableCell>
-								</StyledTableRow>
-							))
-						) : (
-							<StyledTableRow theme={theme}>
-								<TableCell colSpan={7} style={{ textAlign: 'center' }}>
-									No data available on this chain
+									</StyledButton>
 								</TableCell>
-							</StyledTableRow>
-						)}
-					</TableBody>
-				</StyledTable>
-				<StyledArrowCircleUpOutlinedIcon theme={theme} onClick={handleScrollToTop} />
+
+								<TableCell>
+									<StyledButton theme={theme} onClick={createSortHandler('amount')}>
+										Total Amount
+										{orderBy === 'amount' ? (
+											order === 'asc' ? (
+												<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
+											) : (
+												<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
+											)
+										) : order === 'asc' ? (
+											<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
+										) : (
+											<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
+										)}
+									</StyledButton>
+								</TableCell>
+
+								<TableCell>
+									<StyledButton theme={theme} onClick={createSortHandler('participants')}>
+										Participants
+										{orderBy === 'participants' ? (
+											order === 'asc' ? (
+												<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
+											) : (
+												<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
+											)
+										) : order === 'asc' ? (
+											<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
+										) : (
+											<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
+										)}
+									</StyledButton>
+								</TableCell>
+
+								<TableCell>
+									<StyledButton theme={theme} onClick={createSortHandler('voters')}>
+										Voters
+										{orderBy === 'voters' ? (
+											order === 'asc' ? (
+												<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
+											) : (
+												<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
+											)
+										) : order === 'asc' ? (
+											<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
+										) : (
+											<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
+										)}
+									</StyledButton>
+								</TableCell>
+
+								<TableCell>
+									<StyledButton theme={theme} onClick={createSortHandler('voting')}>
+										Voting
+										{orderBy === 'voting' ? (
+											order === 'asc' ? (
+												<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
+											) : (
+												<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
+											)
+										) : order === 'asc' ? (
+											<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
+										) : (
+											<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
+										)}
+									</StyledButton>
+								</TableCell>
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{data.length > 0 ? (
+								sortedData.map((row, index) => (
+									<StyledTableRow theme={theme} key={index} onClick={handleDare(row.id)}>
+										<TableCell>{index + 1}</TableCell>
+										<TableCell>
+											<a style={{ cursor: 'pointer' }}>{row.description.length > 75 ? row.description.substring(0, 75) + '...' : row.description}</a>
+										</TableCell>
+										<TableCell style={{ textAlign: 'right' }}>
+											{currencyValue === false ? (
+												<a style={{ cursor: 'pointer' }}>
+													{formatNumber(row.entranceAmount)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
+												</a>
+											) : (
+												<a style={{ cursor: 'pointer' }}>${formatNumber(row.entranceAmount * currencyPrice[network]?.usd)}</a>
+											)}
+										</TableCell>
+										<TableCell style={{ textAlign: 'right' }}>
+											{currencyValue === false ? (
+												<a style={{ cursor: 'pointer' }}>
+													{formatNumber(row.amount)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
+												</a>
+											) : (
+												<a style={{ cursor: 'pointer' }}>${formatNumber(row.amount * currencyPrice[network]?.usd)}</a>
+											)}
+										</TableCell>
+										<TableCell style={{ textAlign: 'right' }}>{row.participants}</TableCell>
+										<TableCell style={{ textAlign: 'right' }}>{Number(row.positiveVotes) + Number(row.negativeVotes)}</TableCell>
+										<TableCell style={{ textAlign: 'right' }}>{calculatePositivePercentage(row.positiveVotes, row.negativeVotes)}</TableCell>
+									</StyledTableRow>
+								))
+							) : (
+								<StyledTableRow theme={theme}>
+									<TableCell colSpan={7} style={{ textAlign: 'center' }}>
+										No data available on this chain
+									</TableCell>
+								</StyledTableRow>
+							)}
+						</TableBody>
+					</StyledTable>
+				</StyledTableContainer>
+				{/* <StyledArrowCircleUpOutlinedIcon theme={theme} onClick={handleScrollToTop} /> */}
 			</StyledBox>
 		</>
 	);
