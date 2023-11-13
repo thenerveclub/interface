@@ -40,6 +40,7 @@
 		"@mui/icons-material": "^5.10.9",
 		"@mui/material": "^5.10.12",
 		"@mui/styles": "^5.13.7",
+		"@mui/x-charts": "^6.18.1",
 		"@next/bundle-analyzer": "^13.2.3",
 		"@reduxjs/toolkit": "^1.9.2",
 		"@svgr/webpack": "^6.5.1",

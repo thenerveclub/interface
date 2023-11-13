@@ -187,19 +187,6 @@ const ActivityTable: React.FC<ActivityTableProps> = ({ id, dareData, chainIdUrl,
 		setOrderBy(property);
 	};
 
-	// const sortedData = [...dareData].sort((a, b) => {
-	// 	let aValue, bValue;
-
-	// 	aValue = Number(a[orderBy]);
-	// 	bValue = Number(b[orderBy]);
-
-	// 	if (order === 'asc') {
-	// 		return aValue - bValue;
-	// 	} else {
-	// 		return bValue - aValue;
-	// 	}
-	// });
-
 	let sortedData = [];
 
 	// Check if dareData is defined and is an array
@@ -217,6 +204,10 @@ const ActivityTable: React.FC<ActivityTableProps> = ({ id, dareData, chainIdUrl,
 			return false;
 		}
 		return true;
+	});
+
+	const participantData = filteredData.filter((row) => {
+		return isParticipantsSelected || row.task.initiatorAddress === row.userAddress;
 	});
 
 	// Toogle Button For Token Price
@@ -326,68 +317,62 @@ const ActivityTable: React.FC<ActivityTableProps> = ({ id, dareData, chainIdUrl,
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{sortedData.length > 0 ? (
-							filteredData.map((row, index) => {
-								const isParticipant = row.task.initiatorAddress === row.userAddress;
-								if (isParticipantsSelected || isParticipant) {
-									return (
-										<StyledTableRow theme={theme} key={index}>
-											<TableCell style={{ display: 'flex', alignItems: 'center' }}>
-												{row.task.initiatorAddress === row.userAddress ? (
-													<>
-														<TipsAndUpdatesOutlinedIcon
-															style={{
-																color: theme.palette.success.main,
-																fontSize: '1rem',
-																marginRight: '0.5rem',
-															}}
-														/>
-														<span style={{ color: theme.palette.success.main }}>Creator</span>
-													</>
-												) : (
-													<>
-														<GroupAddOutlinedIcon
-															style={{
-																color: theme.palette.warning.main,
-																fontSize: '1rem',
-																marginRight: '0.5rem',
-															}}
-														/>
-														<span style={{ color: theme.palette.warning.main }}>Joined</span>
-													</>
-												)}
-											</TableCell>
+						{participantData.length > 0 ? (
+							participantData.map((row, index) => (
+								<StyledTableRow theme={theme} key={index}>
+									<TableCell style={{ display: 'flex', alignItems: 'center' }}>
+										{row.task.initiatorAddress === row.userAddress ? (
+											<>
+												<TipsAndUpdatesOutlinedIcon
+													style={{
+														color: theme.palette.success.main,
+														fontSize: '1rem',
+														marginRight: '0.5rem',
+													}}
+												/>
+												<span style={{ color: theme.palette.success.main }}>Creator</span>
+											</>
+										) : (
+											<>
+												<GroupAddOutlinedIcon
+													style={{
+														color: theme.palette.warning.main,
+														fontSize: '1rem',
+														marginRight: '0.5rem',
+													}}
+												/>
+												<span style={{ color: theme.palette.warning.main }}>Joined</span>
+											</>
+										)}
+									</TableCell>
 
-											<TableCell style={{ textAlign: 'left' }}>
-												{currencyValue === false ? (
-													<a>
-														{formatNumber(row.userStake)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
-													</a>
-												) : (
-													<a>${formatNumber(row.userStake * currencyPrice[network]?.usd)}</a>
-												)}
-											</TableCell>
-											<TableCell style={{ textAlign: 'left' }}>{`${row.userAddress.slice(0, 6)}...${row.userAddress.slice(-4)}`}</TableCell>
-											<TableCell style={{ textAlign: 'left' }}>
-												<a>{row.userName}</a>
-											</TableCell>
-											<TableCell style={{ textAlign: 'right', color: row.voted ? theme.palette.success.main : theme.palette.error.main }}>
-												{row.voted ? 'True' : 'False'}
-											</TableCell>
-											<TableCell style={{ textAlign: 'right', color: row.vote ? theme.palette.success.main : theme.palette.error.main }}>
-												{row.vote ? 'True' : 'False'}
-											</TableCell>
+									<TableCell style={{ textAlign: 'left' }}>
+										{currencyValue === false ? (
+											<a>
+												{formatNumber(row.userStake)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
+											</a>
+										) : (
+											<a>${formatNumber(row.userStake * currencyPrice[network]?.usd)}</a>
+										)}
+									</TableCell>
+									<TableCell style={{ textAlign: 'left' }}>{`${row.userAddress.slice(0, 6)}...${row.userAddress.slice(-4)}`}</TableCell>
+									<TableCell style={{ textAlign: 'left' }}>
+										<a>{row.userName}</a>
+									</TableCell>
+									<TableCell style={{ textAlign: 'right', color: row.voted ? theme.palette.success.contrastText : theme.palette.error.contrastText }}>
+										{row.voted ? 'Yes' : 'No'}
+									</TableCell>
+									<TableCell style={{ textAlign: 'right', color: row.vote ? theme.palette.success.main : theme.palette.error.main }}>
+										{row.voted ? (row.vote ? 'True' : 'False') : ''}
+									</TableCell>
 
-											<TableCell style={{ textAlign: 'right' }}>{row.blockNumber}</TableCell>
-										</StyledTableRow>
-									);
-								}
-								return null;
-							})
+									<TableCell style={{ textAlign: 'right' }}>{row.blockNumber}</TableCell>
+								</StyledTableRow>
+							))
 						) : (
 							<StyledTableRow theme={theme}>
 								<TableCell colSpan={7} style={{ textAlign: 'center' }}>
-									No data available on this chain
+									No activities yet
 								</TableCell>
 							</StyledTableRow>
 						)}

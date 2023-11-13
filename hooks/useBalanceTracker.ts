@@ -12,7 +12,7 @@ function useBalanceTracker() {
 
 	const customRpcUrl = customRPCValue === '' ? CHAINS[chainId]?.[rpcValue] : customRPCValue;
 	const provider = new ethers.providers.StaticJsonRpcProvider(customRpcUrl);
-	const [maticBalance, setMaticBalance] = useState<string>('');
+	const [cryptoBalance, setCryptoBalance] = useState<string>('0.00');
 
 	useEffect(() => {
 		if (!provider || !account) return;
@@ -23,7 +23,7 @@ function useBalanceTracker() {
 		const fetchMaticBalance = async () => {
 			const balance = await provider.getBalance(account);
 			if (mounted) {
-				setMaticBalance(ethers.utils.formatEther(balance));
+				setCryptoBalance(ethers.utils.formatEther(balance));
 			}
 		};
 
@@ -47,9 +47,9 @@ function useBalanceTracker() {
 			mounted = false;
 			provider.removeAllListeners('block');
 		};
-	}, [provider, account]);
+	}, [provider, account, chainId]);
 
-	return maticBalance;
+	return cryptoBalance;
 }
 
 export default useBalanceTracker;

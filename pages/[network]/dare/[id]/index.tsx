@@ -7,6 +7,7 @@ import JoinDare from '../../../../components/modal/joinDare';
 import useDareData from '../../../../hooks/dareData/useDareData';
 import { nameToChainId } from '../../../../utils/chains';
 import ActivityTable from './components/ActivityTable';
+import Chart from './components/Chart';
 
 const StyledBox = styled(Box)`
 	margin: 7.5rem 5rem auto 5rem;
@@ -33,16 +34,6 @@ const StyledBoxInternal = styled(Box)`
 	@media (max-width: 600px) {
 		margin: 5rem 1rem auto 1rem;
 	}
-`;
-
-const SideWall = styled(Box)`
-	display: flex;
-	width: 350px;
-	max-width: 350px;
-	height: 300px;
-	max-height: 300px;
-	margin: 0 auto 0 auto;
-	background-color: #e0e0e0; // Some background color for visualization
 `;
 
 const StyledSection = styled.section`
@@ -234,10 +225,10 @@ export default function TaskPage() {
 						</TaskCardLeftSide>
 
 						<ActivityTable id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} />
+						<Chart dareData={dareData} />
 					</StyledSection>
 				</Grid>
 
-				{/* Side Wall (30% width) */}
 				<Grid item xs={3}>
 					<StyledSection>
 						{prove === false ? (
@@ -252,7 +243,7 @@ export default function TaskPage() {
 							<a>Task ends</a>
 							<StyledDivider theme={theme} />
 						</TaskCardRightSide>
-						<JoinDare />
+						<JoinDare id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
 					</StyledSection>
 				</Grid>
 			</Grid>

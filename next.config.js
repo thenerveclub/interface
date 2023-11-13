@@ -12,6 +12,7 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 const nextConfig = {
 	reactStrictMode: true,
+	transpilePackages: ['@mui/x-charts'],
 
 	modularizeImports: {
 		'@mui/material': {

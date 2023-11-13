@@ -1,9 +1,11 @@
 import styled from '@emotion/styled';
+import { TheaterComedySharp } from '@mui/icons-material';
 import { AppBar } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import { alpha, useTheme } from '@mui/material/styles';
 import localFont from 'next/font/local';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import SearchBar from '../SearchBar';
 import SelectChain from '../SelectChain';
@@ -201,34 +203,37 @@ export default function Header() {
 	const theme = useTheme();
 	const router = useRouter();
 	const network = router.query.network as string;
+	const headerRef = useRef(null);
 
 	// Redux
 	const account = useSelector((state: { account: string }) => state.account);
 
-	// useEffect(() => {
-	// 	const handleScroll = () => {
-	// 		const scrollPosition = window.scrollY;
-	// 		const header = document.getElementById('header');
-	// 		const headerHeight = header ? header.clientHeight : 0;
-	// 		const scrollThreshold = headerHeight / 2; // Speed of scroll
-	// 		const opacity = Math.min(scrollPosition / scrollThreshold, 1);
-	// 		const color = alpha('transparent', opacity);
-	// 		const shadow = alpha('rgba(41, 50, 73, 1)', opacity);
+	useEffect(() => {
+		const handleScroll = () => {
+			const scrollPosition = window.scrollY;
+			const header = headerRef.current;
+			if (header) {
+				const headerHeight = header.clientHeight;
+				const scrollThreshold = headerHeight / 2;
+				const opacity = Math.min(scrollPosition / scrollThreshold, 1);
+				const color = alpha(theme.palette.background.default, opacity);
+				const shadow = alpha(theme.palette.secondary.main, opacity);
 
-	// 		header.style.backgroundColor = color;
-	// 		header.style.boxShadow = `0px 1px 1px ${shadow}`;
-	// 	};
+				header.style.backgroundColor = color;
+				header.style.boxShadow = `0px 0.25px 0.25px ${shadow}`;
+			}
+		};
 
-	// 	window.addEventListener('scroll', handleScroll);
+		window.addEventListener('scroll', handleScroll);
 
-	// 	return () => {
-	// 		window.removeEventListener('scroll', handleScroll);
-	// 	};
-	// }, []);
+		return () => {
+			window.removeEventListener('scroll', handleScroll);
+		};
+	}, [theme]);
 
 	return (
 		<>
-			<StyledAppBar theme={theme}>
+			<StyledAppBar theme={theme} ref={headerRef}>
 				<StyledSectionLeft theme={theme}>
 					<Link href={`/${network}`} passHref style={{ textDecoration: 'none' }}>
 						<h1>NERVE GLOBAL</h1>
@@ -242,7 +247,7 @@ export default function Header() {
 					</MobileSettings>
 				</StyledSectionMiddle>
 				<StyledSectionRight>
-					<SelectChain />
+					{account && <SelectChain />}
 					{account ? <AccountModal /> : <Connect />}
 					<DesktopSettings>
 						<Setting />

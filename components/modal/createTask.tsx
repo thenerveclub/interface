@@ -121,6 +121,22 @@ const CreateTask: React.FC<CreateTaskProps> = ({ registerStatus }) => {
 		setOpen(false);
 	};
 
+	// Format Balance
+	function formatBalance(value) {
+		return Number(value).toLocaleString('en-US', {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2,
+		});
+	}
+
+	// Format Number
+	function formatNumber(value) {
+		return Number(value / 1e18).toLocaleString('en-US', {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2,
+		});
+	}
+
 	const value = ethers.utils.parseEther(minimumValue);
 
 	// Create Dare Function
