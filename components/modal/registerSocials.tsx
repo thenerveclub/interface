@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { keyframes } from '@emotion/react';
 import { Share } from '@mui/icons-material';
 import { Box, Button, CircularProgress, IconButton, InputAdornment, Modal, OutlinedInput, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -15,6 +16,26 @@ const StyledModal = styled(Modal)`
 	.MuiModal-backdrop {
 		backdrop-filter: blur(5px);
 	}
+`;
+
+// Define the keyframes for the slide-down animation
+const slideDown = keyframes`
+  0% {
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    transform: translate(-50%, 125%);
+  }
+`;
+
+// Define the keyframes for the slide-up animation
+const slideUp = keyframes`
+  0% {
+    transform: translate(-50%, 125%);
+  }
+  100% {
+    transform: translate(-50%, -50%);
+  }
 `;
 
 const StyledOutlinedInput = styled(OutlinedInput)`
@@ -108,6 +129,12 @@ const ConnectBox = styled(Box)<{ theme: any }>`
 	background-color: ${({ theme }) => theme.palette.background.default};
 	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
 	border-radius: ${({ theme }) => theme.customShape.borderRadius};
+
+	animation: ${slideUp} 0.5s ease-in-out forwards;
+
+	&.closing {
+		animation: ${slideDown} 0.5s ease-in-out forwards;
+	}
 `;
 
 interface RegisterSocialsProps {

@@ -45,6 +45,24 @@ const StyledSelect = styled(Select, {
 	& .MuiSelect-icon {
 		color: ${({ theme }) => theme.palette.text.primary};
 	}
+
+	@media (max-width: 480px) {
+		min-height: 40px;
+		height: 40px;
+		min-width: 75px;
+		max-width: 125px;
+
+		a {
+			display: none;
+			visibility: hidden;
+		}
+
+		// Menu Paper Props
+		& .MuiPaper-root {
+			min-width: 75px;
+			max-width: 125px;
+		}
+	}
 `;
 
 const WarningAmberIcon = styled(WarningAmber)<{ theme: any }>`
@@ -82,6 +100,25 @@ const MenuItemStyled = styled(MenuItem)<{ theme: any }>`
 	&:focus {
 		background-color: ${({ theme }) => theme.palette.warning.main};
 	}
+
+	a {
+		visibility: visible;
+	}
+
+	@media (max-width: 480px) {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		& a:last-of-type {
+			margin-left: 0;
+		}
+
+		a {
+			display: none;
+			visibility: hidden;
+		}
+	}
 `;
 
 const SearchResultTitle = styled.div<{ theme: any }>`
@@ -104,29 +141,29 @@ export default function SelectChain() {
 
 	// Network Check
 	const isNetworkAvailable = availableChains.includes(chainId);
-	const [age, setAge] = useState(chainId);
-	// Update age state variable whenever chainId changes
+	const [chain, setChain] = useState(chainId);
+	// Update chain state variable whenever chainId changes
 	useEffect(() => {
-		setAge(chainId);
+		setChain(chainId);
 	}, [chainId]);
 
 	const handleChange = async (event: SelectChangeEvent) => {
 		const newChainId = event.target.value as unknown as number;
-		setAge(newChainId);
+		setChain(newChainId);
 
 		if (metaMask) {
 			try {
 				await metaMask.activate(newChainId);
 			} catch (error) {
 				console.error(error);
-				setAge(chainId);
+				setChain(chainId);
 			}
 		} else {
 			try {
 				await metaMask.activate(getAddChainParameters(newChainId));
 			} catch (error) {
 				console.error(error);
-				setAge(chainId);
+				setChain(chainId);
 			}
 		}
 	};
@@ -153,7 +190,7 @@ export default function SelectChain() {
 					onClose={handleClose}
 					theme={theme}
 					variant="outlined"
-					value={age}
+					value={chain}
 					onChange={handleChange}
 					focus={isFocused}
 					MenuProps={{
@@ -195,7 +232,7 @@ export default function SelectChain() {
 					onOpen={handleOpen}
 					onClose={handleClose}
 					theme={theme}
-					value={age}
+					value={chain}
 					onChange={handleChange}
 					focus={isFocused}
 					MenuProps={{

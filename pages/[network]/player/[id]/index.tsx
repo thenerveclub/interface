@@ -180,7 +180,7 @@ export default function PlayerPage() {
 					/>
 				</StyledLeftSectionBox>
 			</StyledSection>
-			<PlayerDares registerStatus={registerStatus} checksumAddress={checksumAddress} checksumAccount={checksumAccount} network={network} />
+			<PlayerDares registerStatus={registerStatus} checksumAddress={checksumAddress} checksumAccount={checksumAccount} network={network} chainIdUrl={chainIdUrl} />
 		</StyledBox>
 	);
 }

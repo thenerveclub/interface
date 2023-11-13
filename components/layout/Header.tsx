@@ -166,15 +166,18 @@ const StyledSectionRight = styled.section`
 	}
 
 	@media (max-width: 480px) {
-		width: 100%;
-		justify-content: space-between;
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-end;
+		// width: 100%;
+		// justify-content: space-between;
 
 		& > *:not(:last-child) {
-			margin-left: 0;
+			margin-left: 1rem;
 		}
 
 		& > *:last-child {
-			margin-left: 0;
+			margin-left: 1rem;
 		}
 	}
 `;
@@ -242,16 +245,16 @@ export default function Header() {
 				</StyledSectionLeft>
 				<StyledSectionMiddle>
 					<SearchBar network={network} />
-					<MobileSettings>
-						<Setting />
-					</MobileSettings>
+					{/* <MobileSettings>
+					<Setting />
+					</MobileSettings> */}
 				</StyledSectionMiddle>
 				<StyledSectionRight>
 					{account && <SelectChain />}
 					{account ? <AccountModal /> : <Connect />}
-					<DesktopSettings>
-						<Setting />
-					</DesktopSettings>
+					{/* <DesktopSettings> */}
+					<Setting />
+					{/* </DesktopSettings> */}
 				</StyledSectionRight>
 			</StyledAppBar>
 		</>

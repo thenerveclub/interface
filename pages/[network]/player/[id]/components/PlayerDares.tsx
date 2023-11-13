@@ -323,9 +323,10 @@ interface PlayerDaresProps {
 	checksumAddress: string;
 	checksumAccount: string;
 	network: string;
+	chainIdUrl: number;
 }
 
-const PlayerDares: React.FC<PlayerDaresProps> = ({ registerStatus, checksumAddress, checksumAccount, network }) => {
+const PlayerDares: React.FC<PlayerDaresProps> = ({ registerStatus, checksumAddress, checksumAccount, network, chainIdUrl }) => {
 	const theme = useTheme();
 	// Redux
 	const dispatch = useDispatch();
@@ -422,7 +423,11 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ registerStatus, checksumAddre
 								<a>USD</a>
 							</StyledToggleButton>
 						</StyledToggleButtonGroup>
-						{account ? checksumAccount !== checksumAddress ? <CreateTask registerStatus={registerStatus} /> : null : null}
+						{account ? (
+							checksumAccount !== checksumAddress ? (
+								<CreateTask registerStatus={registerStatus} chainIdUrl={chainIdUrl} isNetworkAvailable={isNetworkAvailable} />
+							) : null
+						) : null}
 					</ActiveTabRightSection>
 				</ActiveFilterBox>
 				<ActiveTabSection>

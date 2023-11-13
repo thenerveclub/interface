@@ -1,6 +1,7 @@
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Box, Button, CircularProgress, InputAdornment, Modal, OutlinedInput, Slide, Typography } from '@mui/material';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { Box, Button, CircularProgress, InputAdornment, Modal, OutlinedInput, Slide, Tooltip, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
@@ -55,6 +56,7 @@ const ConnectBox = styled(Box)<{ theme: any }>`
 	border-radius: ${({ theme }) => theme.customShape.borderRadius};
 
 	animation: ${slideUp} 0.5s ease-in-out forwards;
+
 	&.closing {
 		animation: ${slideDown} 0.5s ease-in-out forwards;
 	}
@@ -93,6 +95,13 @@ const BuyButton = styled(Button)<{ theme: any }>`
 	&:hover {
 		background-color: ${({ theme }) => theme.palette.warning.main};
 	}
+`;
+
+const StyledTitle = styled(Box)<{ theme: any }>`
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	width: 100%;
 `;
 
 const MaxButton = styled(Button)<{ theme: any }>`
@@ -135,7 +144,7 @@ const StyledSection = styled.section`
 	}
 `;
 
-const RegisterButton = styled(Button)<{ theme: any }>`
+const ChangeNetworkButton = styled(Button)<{ theme: any }>`
 	display: flex;
 	color: ${({ theme }) => theme.palette.text.primary};
 	text-transform: none;
@@ -318,26 +327,34 @@ const JoinDare: React.FC<JoinDareProps> = ({ id, dareData, chainIdUrl, network, 
 						Join Dare
 					</Typography>
 
-					<a>Balance: {formatBalance(balance)}</a>
+					<StyledTitle theme={theme}>
+						<div>
+							<a style={{ color: theme.palette.text.primary, marginRight: '0.25rem' }}>Amount</a>
+							<Tooltip title={`${dareData?.[0]?.task.entranceAmount} mandatory contribution for participation.`} placement="top">
+								<InfoOutlinedIcon style={{ fontSize: '1rem', color: theme.palette.secondary.main, cursor: 'default' }} />
+							</Tooltip>
+						</div>
+
+						<a>Balance: {formatBalance(balance)}</a>
+					</StyledTitle>
 					<OutlinedInput
 						id="outlined-adornment-amount"
 						onChange={handleInputChange}
 						endAdornment={
 							<InputAdornment position="end">
+								<a style={{ color: theme.palette.text.primary }}>{isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}</a>
 								<MaxButton theme={theme} onClick={setMaxValue}>
 									Max
 								</MaxButton>
 								<MinButton theme={theme} onClick={setMinValue}>
 									Min
 								</MinButton>
-								{isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
 							</InputAdornment>
 						}
-						label="Amount"
 						placeholder={formatNumber(dareData?.[0]?.task.entranceAmount)}
 						value={value}
-						type="number"
-						style={{ margin: '1rem auto 1rem auto', width: '90%' }}
+						type="string"
+						style={{ display: 'flex', margin: '0.5rem 0 1rem 0' }}
 						inputProps={{
 							style: {
 								textAlign: 'right',
@@ -369,13 +386,13 @@ const JoinDare: React.FC<JoinDareProps> = ({ id, dareData, chainIdUrl, network, 
 								</BuyButton>
 							)
 						) : (
-							<RegisterButton
+							<ChangeNetworkButton
 								theme={theme}
 								onClick={handleNetworkChange}
 								startIcon={pendingTx && <CircularProgress color="secondary" thickness={2.5} size={20} />}
 							>
 								Change Network
-							</RegisterButton>
+							</ChangeNetworkButton>
 						)}
 					</StyledSection>
 				</ConnectBox>
