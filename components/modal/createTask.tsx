@@ -55,7 +55,6 @@ const ConnectBox = styled(Box)<{ theme: any }>`
 	border-radius: ${({ theme }) => theme.customShape.borderRadius};
 
 	animation: ${slideUp} 0.5s ease-in-out forwards;
-
 	&.closing {
 		animation: ${slideDown} 0.5s ease-in-out forwards;
 	}
@@ -184,6 +183,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ registerStatus, chainIdUrl, isN
 	const [description, setDescription] = useState(null);
 	const [duration, setDuration] = useState(null);
 	const [isMax, setIsMax] = useState(false);
+	const [isClosing, setIsClosing] = useState(false); // <-- New state to track closing status
 
 	// Function to set max value
 	const setMaxValue = () => {
@@ -201,12 +201,15 @@ const CreateTask: React.FC<CreateTaskProps> = ({ registerStatus, chainIdUrl, isN
 	const txValue = ethers.utils.parseEther(value || '0');
 
 	// Handle open and close modal
-	const handleClickOpen = () => {
-		setOpen(true);
-	};
+	const handleOpen = () => setOpen(true);
 
 	const handleClose = () => {
-		setOpen(false);
+		setIsClosing(true); // <-- Set closing status to true
+		// Wait for the animation to complete before closing the modal
+		setTimeout(() => {
+			setOpen(false);
+			setIsClosing(false); // <-- Reset closing status for the next cycle
+		}, 500); // <-- Length of the slide-down animation
 	};
 
 	// Format Balance
@@ -272,11 +275,11 @@ const CreateTask: React.FC<CreateTaskProps> = ({ registerStatus, chainIdUrl, isN
 
 	return (
 		<>
-			<ModalButton theme={theme} onClick={handleClickOpen}>
+			<ModalButton theme={theme} onClick={handleOpen}>
 				Create Dare
 			</ModalButton>
 			<StyledModal open={open} onClose={handleClose}>
-				<ConnectBox theme={theme}>
+				<ConnectBox theme={theme} className={isClosing ? 'closing' : ''}>
 					<Typography
 						style={{ fontWeight: 'bold', margin: '0.0 auto 1.75rem auto', cursor: 'default' }}
 						align="center"

@@ -197,9 +197,7 @@ const JoinDare: React.FC<JoinDareProps> = ({ id, dareData, chainIdUrl, network, 
 		}, 500); // <-- Length of the slide-down animation
 	};
 
-	const handleClickOpen = () => {
-		setOpen(true);
-	};
+	const handleOpen = () => setOpen(true);
 
 	// State
 	const [value, setValue] = useState(null);
@@ -308,7 +306,7 @@ const JoinDare: React.FC<JoinDareProps> = ({ id, dareData, chainIdUrl, network, 
 	return (
 		<>
 			{/* {account ? ( */}
-			<ModalButton theme={theme} onClick={handleClickOpen}>
+			<ModalButton theme={theme} onClick={handleOpen}>
 				Join Task
 			</ModalButton>
 			{/* ) : (

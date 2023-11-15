@@ -1,5 +1,5 @@
-import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
+import styled from '@emotion/styled';
 import { Share } from '@mui/icons-material';
 import { Box, Button, CircularProgress, IconButton, InputAdornment, Modal, OutlinedInput, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -149,10 +149,19 @@ const RegisterSocials: React.FC<RegisterSocialsProps> = ({ playerData, chainId, 
 	const { enqueueSnackbar } = useSnackbar();
 	const [open, setOpen] = useState(false);
 	const [pendingTx, setPendingTx] = useState(false);
+	const [isClosing, setIsClosing] = useState(false); // <-- Add closing state
 
 	// Modal toggles
-	const handleClickOpen = () => setOpen(true);
-	const handleClose = () => setOpen(false);
+	const handleOpen = () => setOpen(true);
+
+	const handleClose = () => {
+		setIsClosing(true); // <-- Set closing status to true
+		// Wait for the animation to complete before closing the modal
+		setTimeout(() => {
+			setOpen(false);
+			setIsClosing(false); // <-- Reset closing status for the next cycle
+		}, 500); // <-- Length of the slide-down animation
+	};
 
 	// Extract the userSocialStat once for use in useState and useEffect
 	const userSocialStat = playerData?.[0]?.userSocialStat;
@@ -263,11 +272,11 @@ const RegisterSocials: React.FC<RegisterSocialsProps> = ({ playerData, chainId, 
 
 	return (
 		<div>
-			<StyledIconButton theme={theme} onClick={handleClickOpen}>
+			<StyledIconButton theme={theme} onClick={handleOpen}>
 				<Share />
 			</StyledIconButton>
 			<StyledModal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
-				<ConnectBox theme={theme}>
+				<ConnectBox theme={theme} className={isClosing ? 'closing' : ''}>
 					<Typography
 						style={{ fontWeight: 'bold', margin: '0.0 auto 1.75rem auto', cursor: 'default' }}
 						align="center"

@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { Button, CircularProgress } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
@@ -8,35 +9,40 @@ import { useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
 import { CHAINS } from '../../utils/chains';
 
-const BuyButton = styled(Button)({
-	color: '#000',
-	textTransform: 'none',
-	width: '100px',
-	fontSize: 16,
-	fontWeight: 400,
-	lineHeight: 1.5,
-	height: '100%',
-	backgroundColor: 'rgba(3, 161, 31, 0.75)',
-	borderRadius: 5,
-	'&:hover': {
-		backgroundColor: 'rgba(3, 161, 31, 0.75)',
-		transition: 'all 0.75s ease',
-	},
-	'&:active': {
-		boxShadow: 'none',
-		backgroundColor: '#0062cc',
-	},
-});
+const BuyButton = styled(Button)<{ theme: any }>`
+	color: #fff;
+	text-transform: none;
+	font-size: 16px;
+	border: none;
+	line-height: 1.5;
+	background-color: ${({ theme }) => theme.palette.warning.main};
+	border-radius: ${({ theme }) => theme.shape.borderRadius};
+	height: 40px;
+	width: 90%;
+	margin: 0 auto 0 auto;
 
-export default function RedeemUser() {
+	&:hover {
+		background-color: ${({ theme }) => theme.palette.warning.main};
+	}
+`;
+
+interface RedeemUserProps {
+	id: string;
+	dareData: any;
+	chainIdUrl: number;
+	network: string;
+	isNetworkAvailable: boolean;
+}
+
+const RedeemUser: React.FC<RedeemUserProps> = ({ id, dareData, chainIdUrl, network, isNetworkAvailable }) => {
+	const theme = useTheme();
 	const { provider } = useWeb3React();
 	const { enqueueSnackbar } = useSnackbar();
+
+	// Redux
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 
-	// Get Task ID
-	const path = (global.window && window.location.pathname)?.toString() || '';
-	const taskNumber = path.split('/').pop();
-
+	// State
 	const [pendingTx, setPendingTx] = useState(false);
 
 	// Join Function
@@ -45,7 +51,7 @@ export default function RedeemUser() {
 		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			const tx = await nerveGlobal.redeemUser(taskNumber);
+			const tx = await nerveGlobal.redeemUser(id);
 			enqueueSnackbar('Transaction signed succesfully!', {
 				variant: 'success',
 			});
@@ -66,14 +72,18 @@ export default function RedeemUser() {
 	}
 
 	return (
-		<div>
+		<>
 			{pendingTx ? (
-				<BuyButton startIcon={<CircularProgress color="info" thickness={2.5} size={20} />} disabled={true}>
+				<BuyButton theme={theme} startIcon={<CircularProgress color="info" thickness={2.5} size={20} />} disabled={true}>
 					Pending
 				</BuyButton>
 			) : (
-				<BuyButton onClick={onRegisterName}>Claim</BuyButton>
+				<BuyButton theme={theme} onClick={onRegisterName}>
+					Redeem User
+				</BuyButton>
 			)}
-		</div>
+		</>
 	);
-}
+};
+
+export default RedeemUser;

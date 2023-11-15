@@ -1,13 +1,18 @@
 import styled from '@emotion/styled';
+import { Redeem } from '@mui/icons-material';
 import { Box, Divider, Grid, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import JoinDare from '../../../../components/modal/joinDare';
+import RedeemRecipient from '../../../../components/modal/redeemRecipient';
+import RedeemUser from '../../../../components/modal/redeemUser';
 import useDareData from '../../../../hooks/dareData/useDareData';
 import { nameToChainId } from '../../../../utils/chains';
 import ActivityTable from './components/ActivityTable';
 import Chart from './components/Chart';
+import ProofCard from './components/ProofCard';
+import TimerCard from './components/TimerCard';
 
 const StyledBox = styled(Box)`
 	margin: 7.5rem 5rem auto 5rem;
@@ -146,7 +151,7 @@ export default function TaskPage() {
 	// Hooks
 	const dareData = useDareData(isNetworkAvailable ? chainIdUrl : 137, id);
 
-	const prove = false;
+	const proof = dareData?.[0]?.task.proofLink === '' ? false : true;
 
 	// Twitch Live Status
 	// const twitchLink = playerData[0]?.userSocialStat?.twitch.includes('twitch') ? playerData[0]?.userSocialStat?.twitch : '';
@@ -173,6 +178,12 @@ export default function TaskPage() {
 			maximumFractionDigits: 2,
 		});
 	}
+
+	// Get current unix timestamp
+	const currentUnixTimestamp = Math.floor(Date.now() / 1000);
+
+	// Task end time to unix timestamp in number
+	const taskEndTime = Number(dareData?.[0]?.task.endTask);
 
 	return (
 		<StyledBox>
@@ -231,19 +242,14 @@ export default function TaskPage() {
 
 				<Grid item xs={3}>
 					<StyledSection>
-						{prove === false ? (
-							<TaskCardRightSide theme={theme}>
-								<a>Prove</a>
-								<StyledDivider theme={theme} />
-							</TaskCardRightSide>
-						) : (
-							''
+						<TimerCard currentUnixTimestamp={currentUnixTimestamp} taskEndTime={taskEndTime} />
+						{proof && <ProofCard dareData={dareData} />}
+						{taskEndTime > currentUnixTimestamp ? (
+							<JoinDare id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
+						) :  (
+							<RedeemUser id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
 						)}
-						<TaskCardRightSide theme={theme}>
-							<a>Task ends</a>
-							<StyledDivider theme={theme} />
-						</TaskCardRightSide>
-						<JoinDare id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
+						<RedeemRecipient id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
 					</StyledSection>
 				</Grid>
 			</Grid>

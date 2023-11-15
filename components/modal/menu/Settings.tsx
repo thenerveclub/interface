@@ -349,7 +349,7 @@ function SettingsModal() {
 	const theme = useTheme();
 
 	// Redux
-	const dispatch = useDispatch(); // Hook to dispatch actions
+	const dispatch = useDispatch();
 	const userTheme = useSelector((state: { theme: any }) => state.theme);
 	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
 	const testnetsValue = useSelector((state: { testnets: boolean }) => state.testnets);

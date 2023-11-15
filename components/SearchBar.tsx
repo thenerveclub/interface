@@ -3,11 +3,10 @@ import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import { ClickAwayListener, IconButton, InputBase, List, Paper } from '@mui/material';
+import { Button, ClickAwayListener, IconButton, InputBase, List, Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import useTrendingDareList from '../hooks/searchData/trending/useTrendingDareList';
 import useTrendingPlayerList from '../hooks/searchData/trending/useTrendingPlayerList';
 import useDareDataSearchList from '../hooks/searchData/useDareDataSearchList';
@@ -144,6 +143,18 @@ const SearchResultTitle = styled.div<{ theme: any }>`
 	}
 `;
 
+const StyledChainButton = styled(Button)<{ theme: any }>`
+	display: flex;
+	justify-content: flex-start;
+	background-color: transparent;
+	text-transform: none;
+	color: ${({ theme }) => theme.palette.text.primary};
+
+	&:hover {
+		background-color: transparent;
+	}
+`;
+
 interface SearchBarProps {
 	network: string;
 }
@@ -162,6 +173,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 	const trendingDareList = useTrendingDareList(chainIdUrl);
 	const dareSearchList = useDareDataSearchList(chainIdUrl, searchValue);
 	const [isListVisible, setListVisible] = useState(false);
+	const [isChainListVisible, setChainListVisible] = useState(false);
 
 	// Initialize the searchHistory state as an empty array
 	const [searchHistory, setSearchHistory] = useState([]);
@@ -206,8 +218,16 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 		setListVisible(true); // Show search results when typing
 	};
 
+	const handleChainChange = () => {
+		setChainListVisible(true); // Show available chains when clicking on the chain button
+	};
+
 	const handleFocus = () => {
 		setListVisible(true); // Show search results when input is focused
+	};
+
+	const handleChainFocus = () => {
+		setChainListVisible(true); // Show available chains when clicking on the chain button
 	};
 
 	const handleListPlayerItemClick = (playerId, playerAddress) => {
@@ -232,7 +252,12 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 	}
 
 	return (
-		<ClickAwayListener onClickAway={() => setListVisible(false)}>
+		<ClickAwayListener
+			onClickAway={() => {
+				setListVisible(false);
+				setChainListVisible(false);
+			}}
+		>
 			<SearchBarContainer theme={theme} onSubmit={(e) => e.preventDefault()} elevation={0}>
 				<IconButton type="submit" aria-label="search" style={{ cursor: 'default', backgroundColor: 'transparent' }} disableRipple>
 					<SearchIcon style={{ color: theme.palette.secondary.main }} />
@@ -245,6 +270,11 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 					value={searchValue}
 					onChange={handleSearchChange}
 					onFocus={handleFocus}
+					endAdornment={
+						<StyledChainButton theme={theme} onChange={handleChainChange} onFocus={handleChainFocus} style={{ justifyContent: 'center' }}>
+							{network === 'polygon' ? <PolygonLogo /> : <EthereumLogo />}
+						</StyledChainButton>
+					}
 				/>
 				{isListVisible && (
 					<SearchResultList theme={theme}>
@@ -455,6 +485,36 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 								No players or dares were found.
 							</SearchResultTitle>
 						)}
+					</SearchResultList>
+				)}
+				{isChainListVisible && (
+					<SearchResultList theme={theme}>
+						<SearchResultTitle theme={theme}>Search mainnet</SearchResultTitle>
+						<SearchResultItemStyled theme={theme}>
+							<StyledChainButton
+								theme={theme}
+								onClick={() => {
+									router.push('/polygon');
+									setChainListVisible(false);
+								}}
+							>
+								<PolygonLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+								Polygon
+							</StyledChainButton>
+						</SearchResultItemStyled>
+						<SearchResultTitle theme={theme}>Search testnet</SearchResultTitle>
+						<SearchResultItemStyled theme={theme}>
+							<StyledChainButton
+								theme={theme}
+								onClick={() => {
+									router.push('/goerli');
+									setChainListVisible(false);
+								}}
+							>
+								<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+								Goerli
+							</StyledChainButton>
+						</SearchResultItemStyled>
 					</SearchResultList>
 				)}
 			</SearchBarContainer>

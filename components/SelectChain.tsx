@@ -134,6 +134,7 @@ const SearchResultTitle = styled.div<{ theme: any }>`
 
 export default function SelectChain() {
 	const theme = useTheme();
+	
 	// Redux
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);

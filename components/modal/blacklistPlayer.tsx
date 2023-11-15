@@ -1,3 +1,4 @@
+import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import { ReportGmailerrorred, WarningAmber } from '@mui/icons-material';
 import { Box, Button, Checkbox, CircularProgress, Grid, IconButton, Modal, Typography } from '@mui/material';
@@ -13,6 +14,47 @@ import { metaMask } from '../../utils/connectors/metaMask';
 const StyledModal = styled(Modal)`
 	.MuiModal-backdrop {
 		backdrop-filter: blur(5px);
+	}
+`;
+
+// Define the keyframes for the slide-down animation
+const slideDown = keyframes`
+  0% {
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    transform: translate(-50%, 125%);
+  }
+`;
+
+// Define the keyframes for the slide-up animation
+const slideUp = keyframes`
+  0% {
+    transform: translate(-50%, 125%);
+  }
+  100% {
+    transform: translate(-50%, -50%);
+  }
+`;
+
+const ConnectBox = styled(Box)<{ theme: any }>`
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	margin: 0 auto 0 auto;
+	justify-content: center;
+	align-items: center;
+	padding: 3rem 1rem;
+	height: auto;
+	width: 350px;
+	background-color: ${({ theme }) => theme.palette.background.default};
+	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
+	border-radius: ${({ theme }) => theme.customShape.borderRadius};
+
+	animation: ${slideUp} 0.5s ease-in-out forwards;
+	&.closing {
+		animation: ${slideDown} 0.5s ease-in-out forwards;
 	}
 `;
 
@@ -112,22 +154,6 @@ const StyledIconButtonDisabled = styled(IconButton)({
 	},
 });
 
-const ConnectBox = styled(Box)<{ theme: any }>`
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	margin: 0 auto 0 auto;
-	justify-content: center;
-	align-items: center;
-	padding: 3rem 1rem;
-	height: auto;
-	width: 350px;
-	background-color: ${({ theme }) => theme.palette.background.default};
-	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
-	border-radius: ${({ theme }) => theme.customShape.borderRadius};
-`;
-
 const BlacklistButton = styled(Button)<{ theme: any }>`
 	display: flex;
 	color: ${({ theme }) => theme.palette.text.primary};
@@ -159,17 +185,23 @@ interface BlacklistPlayerProps {
 const BlacklistPlayer: React.FC<BlacklistPlayerProps> = ({ checksumAddress, chainId, chainIdUrl }) => {
 	const theme = useTheme();
 
+	// State
 	const [open, setOpen] = useState(false);
 	const { provider } = useWeb3React();
 	const { enqueueSnackbar } = useSnackbar();
+	const [isClosing, setIsClosing] = useState(false);
 
-	const handleClickOpen = () => {
-		setOpen(true);
-	};
+	const handleOpen = () => setOpen(true);
 
 	const handleClose = () => {
-		setOpen(false);
+		setIsClosing(true); // <-- Set closing status to true
+		// Wait for the animation to complete before closing the modal
+		setTimeout(() => {
+			setOpen(false);
+			setIsClosing(false); // <-- Reset closing status for the next cycle
+		}, 500); // <-- Length of the slide-down animation
 	};
+
 	const [pendingTx, setPendingTx] = useState(false);
 
 	const [checked, setChecked] = useState(false);
@@ -223,11 +255,11 @@ const BlacklistPlayer: React.FC<BlacklistPlayerProps> = ({ checksumAddress, chai
 
 	return (
 		<div>
-			<StyledIconButton theme={theme} onClick={handleClickOpen}>
+			<StyledIconButton theme={theme} onClick={handleOpen}>
 				<ReportGmailerrorred />
 			</StyledIconButton>
 			<StyledModal open={open} onClose={handleClose}>
-				<ConnectBox theme={theme}>
+				<ConnectBox theme={theme} className={isClosing ? 'closing' : ''}>
 					<Typography
 						style={{ fontWeight: 'bold', margin: '0.0 auto 1.75rem auto', cursor: 'default' }}
 						align="center"
