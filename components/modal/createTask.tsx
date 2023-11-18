@@ -1,7 +1,21 @@
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
+import { VolumeUp } from '@mui/icons-material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { Box, Button, CircularProgress, InputAdornment, Modal, OutlinedInput, Tooltip, Typography } from '@mui/material';
+import {
+	Box,
+	Button,
+	CircularProgress,
+	Grid,
+	Input,
+	InputAdornment,
+	Modal,
+	OutlinedInput,
+	Slider,
+	TextField,
+	Tooltip,
+	Typography,
+} from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
@@ -161,6 +175,37 @@ const ChangeNetworkButton = styled(Button)<{ theme: any }>`
 	}
 `;
 
+const StyledTime = styled(Box)<{ theme: any }>`
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	margin: 0.5rem auto 1rem auto;
+
+	& > * + * {
+		margin-left: 0.5rem;
+	}
+`;
+
+const StyledTextField = styled(TextField)<{ theme: any }>`
+	display: flex;
+	color: warning;
+	text-transform: none;
+	font-size: 1rem;
+	font-weight: 400;
+	line-height: 1.5;
+	height: 100%;
+	background-color: transparent;
+	border-radius: ${({ theme }) => theme.customShape.borderRadius};
+
+	& .MuiOutlinedInput-notchedOutline {
+		border: 1px solid ${({ theme }) => theme.palette.secondary.main};
+
+		&:hover {
+			border: 1px solid ${({ theme }) => theme.palette.warning.main};
+		}
+	}
+`;
+
 interface CreateTaskProps {
 	registerStatus: any;
 	chainIdUrl: number;
@@ -181,9 +226,27 @@ const CreateTask: React.FC<CreateTaskProps> = ({ registerStatus, chainIdUrl, isN
 	const [pendingTx, setPendingTx] = useState(false);
 	const [value, setValue] = useState('0.00');
 	const [description, setDescription] = useState(null);
-	const [duration, setDuration] = useState(null);
 	const [isMax, setIsMax] = useState(false);
 	const [isClosing, setIsClosing] = useState(false); // <-- New state to track closing status
+	const [days, setDays] = useState('0');
+	const [hours, setHours] = useState('0');
+	const [minutes, setMinutes] = useState('0');
+
+	// Validation function
+	const validateInput = (value, max) => {
+		const num = parseInt(value, 10);
+		if (isNaN(num) || num < 0) return '0';
+		if (num > max) return max.toString();
+		return num.toString();
+	};
+
+	function convertToSeconds(days, hours, minutes) {
+		const daysInSeconds = parseInt(days) * 86400; // 86400 seconds in a day
+		const hoursInSeconds = parseInt(hours) * 3600; // 3600 seconds in an hour
+		const minutesInSeconds = parseInt(minutes) * 60; // 60 seconds in a minute
+
+		return daysInSeconds + hoursInSeconds + minutesInSeconds;
+	}
 
 	// Function to set max value
 	const setMaxValue = () => {
@@ -234,7 +297,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ registerStatus, chainIdUrl, isN
 		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			const tx = await nerveGlobal.createTask(registerStatus, description, duration, 'en', '0', '0', {
+			const tx = await nerveGlobal.createTask(registerStatus, description, convertToSeconds(days, hours, minutes), 'en', '0', '0', {
 				value: txValue,
 			});
 			enqueueSnackbar('Transaction signed succesfully!', {
@@ -330,32 +393,52 @@ const CreateTask: React.FC<CreateTaskProps> = ({ registerStatus, chainIdUrl, isN
 							}}
 						/>
 
-						<a>Time in minutes</a>
+						<StyledTitle theme={theme}>
+							<div>
+								<a style={{ color: theme.palette.text.primary, marginRight: '0.25rem' }}>Time</a>
+								<Tooltip
+									title="Set the time allowed to complete the task in days, hours, and minutes. Maximum allowed is 30 days, 23 hours, and 59 minutes."
+									placement="top"
+								>
+									<InfoOutlinedIcon style={{ fontSize: '1rem', color: theme.palette.secondary.main, cursor: 'default' }} />
+								</Tooltip>
+							</div>
+						</StyledTitle>
+						<StyledTime theme={theme}>
+							<StyledTextField
+								theme={theme}
+								color="warning"
+								label="Days"
+								value={days}
+								onChange={(event) => setDays(validateInput(event.target.value, 30))}
+							/>
+							<StyledTextField
+								theme={theme}
+								color="warning"
+								label="Hours"
+								value={hours}
+								onChange={(event) => setHours(validateInput(event.target.value, 23))}
+							/>
+							<StyledTextField
+								theme={theme}
+								color="warning"
+								label="Minutes"
+								value={minutes}
+								onChange={(event) => setMinutes(validateInput(event.target.value, 59))}
+							/>
+						</StyledTime>
+						<StyledTitle theme={theme}>Task description</StyledTitle>
 						<OutlinedInput
 							sx={{
 								color: '#fff',
 								'& .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
 								'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
 							}}
-							fullWidth={true}
 							id="outlined-adornment-name"
-							type="name"
-							required={false}
-							onChange={(event) => setDuration(event.target.value)}
-						/>
-						<a>Task description</a>
-						<OutlinedInput
-							sx={{
-								color: '#fff',
-								'& .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
-								'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
-							}}
-							fullWidth={true}
-							id="outlined-adornment-name"
-							type="name"
-							required={false}
 							multiline={true}
 							rows={3}
+							type="string"
+							style={{ display: 'flex', margin: '0.5rem 0 1rem 0' }}
 							onChange={(event) => setDescription(event.target.value)}
 						/>
 						<StyledSection style={{ margin: '2rem auto 1.5rem auto' }}>

@@ -23,7 +23,7 @@ const ConnectButton = styled(Button)<{ theme: any }>`
 	transition: all 0.75s ease;
 
 	&:hover {
-		background-color: ${({ theme }) => theme.palette.warning.main};
+		// background-color: ${({ theme }) => theme.palette.warning.main};
 		border: 1px solid ${({ theme }) => theme.palette.warning.main};
 	}
 `;

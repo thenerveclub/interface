@@ -423,11 +423,9 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ registerStatus, checksumAddre
 								<a>USD</a>
 							</StyledToggleButton>
 						</StyledToggleButtonGroup>
-						{account ? (
-							checksumAccount !== checksumAddress ? (
-								<CreateTask registerStatus={registerStatus} chainIdUrl={chainIdUrl} isNetworkAvailable={isNetworkAvailable} />
-							) : null
-						) : null}
+						{account && checksumAccount !== checksumAddress && (
+							<CreateTask registerStatus={registerStatus} chainIdUrl={chainIdUrl} isNetworkAvailable={isNetworkAvailable} />
+						)}
 					</ActiveTabRightSection>
 				</ActiveFilterBox>
 				<ActiveTabSection>
@@ -509,6 +507,9 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ registerStatus, checksumAddre
 								<a>USD</a>
 							</StyledToggleButton>
 						</StyledToggleButtonGroup>
+						{account && checksumAccount !== checksumAddress && (
+							<CreateTask registerStatus={registerStatus} chainIdUrl={chainIdUrl} isNetworkAvailable={isNetworkAvailable} />
+						)}
 					</ActiveTabRightSection>
 				</ActiveFilterBox>
 				<ActiveTabSection>

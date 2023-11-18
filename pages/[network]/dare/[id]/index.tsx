@@ -11,6 +11,8 @@ import useDareData from '../../../../hooks/dareData/useDareData';
 import { nameToChainId } from '../../../../utils/chains';
 import ActivityTable from './components/ActivityTable';
 import Chart from './components/Chart';
+import DescriptionCard from './components/DescriptionCard';
+import DetailsCard from './components/DetailsCard';
 import ProofCard from './components/ProofCard';
 import TimerCard from './components/TimerCard';
 
@@ -151,6 +153,8 @@ export default function TaskPage() {
 	// Hooks
 	const dareData = useDareData(isNetworkAvailable ? chainIdUrl : 137, id);
 
+	const finished = dareData?.[0]?.task.finished;
+	const voteIsTrue = dareData?.[0]?.task.positiveVotes > dareData?.[0]?.task.negativeVotes ? true : false;
 	const proof = dareData?.[0]?.task.proofLink === '' ? false : true;
 
 	// Twitch Live Status
@@ -166,19 +170,6 @@ export default function TaskPage() {
 	// const youTubeChannelName = 'inscope21';
 	// const isYouTubeLive = useYouTubeStatus(youTubeChannelName);
 
-	const handleClickUser = (user) => {
-		return () => {
-			router.push(`/${network}/player/${user}`);
-		};
-	};
-
-	function formatNumber(value) {
-		return (Number(value) / 1e18).toLocaleString('en-US', {
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 2,
-		});
-	}
-
 	// Get current unix timestamp
 	const currentUnixTimestamp = Math.floor(Date.now() / 1000);
 
@@ -190,66 +181,26 @@ export default function TaskPage() {
 			<Grid container spacing={2}>
 				<Grid item xs={8}>
 					<StyledSection>
-						<TaskCardLeftSide theme={theme}>
-							<a>Description</a>
-							<StyledDivider theme={theme} />
-							<a>
-								By ({dareData?.[0]?.task.initiatorAddress.substring(0, 6)}...
-								{dareData?.[0]?.task.initiatorAddress.substring(dareData?.[0]?.task.initiatorAddress.length - 4).toUpperCase()})
-								{dareData?.[0]?.task.initiatorName}
-							</a>
-							{dareData?.[0]?.task.description}
-						</TaskCardLeftSide>
-						<TaskCardLeftSide theme={theme}>
-							<a>Details</a>
-							<StyledDivider theme={theme} />
-							<StyledBoxInternal>
-								<div>
-									<Typography variant="body1">Player</Typography>
-									<Typography variant="body2" onClick={handleClickUser(dareData?.[0]?.task.recipientName)}>
-										{dareData?.[0]?.task.recipientName}
-									</Typography>
-								</div>
-								<div>
-									<Typography variant="body1">Task ID</Typography>
-									<Typography variant="body2">{id}</Typography>
-								</div>
-								<div>
-									<Typography variant="body1">Participants</Typography>
-									<Typography variant="body2">{dareData?.[0]?.task.participants}</Typography>
-								</div>
-								<div>
-									<Typography variant="body1">Chain</Typography>
-									<Typography variant="body2">{network}</Typography>
-								</div>
-							</StyledBoxInternal>
-							<StyledBoxInternal>
-								<div>
-									<Typography variant="body1">Entry Amount</Typography>
-									<Typography variant="body2">{formatNumber(dareData?.[0]?.task.entranceAmount)}</Typography>
-								</div>
-								<div>
-									<Typography variant="body1">Total Amount</Typography>
-									<Typography variant="body2">{formatNumber(dareData?.[0]?.task.amount)}</Typography>
-								</div>
-							</StyledBoxInternal>
-						</TaskCardLeftSide>
-
+						<DescriptionCard dareData={dareData} />
+						<DetailsCard id={id} network={network} dareData={dareData} />
 						<ActivityTable id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} />
 						<Chart dareData={dareData} />
 					</StyledSection>
 				</Grid>
-
 				<Grid item xs={3}>
 					<StyledSection>
 						<TimerCard currentUnixTimestamp={currentUnixTimestamp} taskEndTime={taskEndTime} />
+						{account &&
+							(finished ? (
+								voteIsTrue ? (
+									<RedeemRecipient id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
+								) : (
+									<RedeemUser id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
+								)
+							) : (
+								<JoinDare id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
+							))}
 						{proof && <ProofCard dareData={dareData} />}
-						{taskEndTime > currentUnixTimestamp ? (
-							<JoinDare id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
-						) :  (
-							<RedeemUser id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
-						)}
-						<RedeemRecipient id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
 					</StyledSection>
 				</Grid>
 			</Grid>
