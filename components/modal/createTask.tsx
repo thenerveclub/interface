@@ -389,7 +389,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ registerStatus, chainIdUrl, isN
 							sx={{
 								color: theme.palette.text.primary,
 								'& .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: theme.palette.secondary.main },
-								'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: theme.palette.secondary.main },
+								'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: theme.palette.warning.main },
 							}}
 						/>
 
@@ -430,10 +430,11 @@ const CreateTask: React.FC<CreateTaskProps> = ({ registerStatus, chainIdUrl, isN
 						<StyledTitle theme={theme}>Task description</StyledTitle>
 						<OutlinedInput
 							sx={{
-								color: '#fff',
-								'& .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
-								'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
+								color: theme.palette.text.primary,
+								'& .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: theme.palette.secondary.main },
+								'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: theme.palette.warning.main },
 							}}
+							placeholder="Do you dare..."
 							id="outlined-adornment-name"
 							multiline={true}
 							rows={3}
