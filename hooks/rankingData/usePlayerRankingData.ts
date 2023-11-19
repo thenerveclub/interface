@@ -3,12 +3,16 @@ import { CHAINS } from '../../utils/chains';
 
 const usePlayerRankingData = (chainId: number, orderBy: string) => {
 	const [rankingList, setRankingList] = useState<any[]>([]);
+	const [isLoading, setIsLoading] = useState<boolean>(true);
 
 	useEffect(() => {
+		setIsLoading(true);
+
 		const getTrendingPlayerList = async () => {
 			const graphApiEndpoint = CHAINS[chainId]?.graphApi;
 			if (!graphApiEndpoint) {
 				setRankingList([]);
+				setIsLoading(false);
 				return;
 			}
 
@@ -43,13 +47,15 @@ const usePlayerRankingData = (chainId: number, orderBy: string) => {
 			} catch (error) {
 				console.error(`Error fetching data for chainId: ${chainId}`, error);
 				setRankingList([]);
+			} finally {
+				setIsLoading(false);
 			}
 		};
 
 		getTrendingPlayerList();
 	}, [chainId, orderBy]);
 
-	return rankingList;
+	return { rankingList, isLoading };
 };
 
 export default usePlayerRankingData;

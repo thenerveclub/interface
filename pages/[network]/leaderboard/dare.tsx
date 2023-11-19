@@ -9,6 +9,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import LoadingScreen from '../../../components/LoadingScreen';
 import useDareRankingData from '../../../hooks/rankingData/useDareRankingData';
 import { currencySlice } from '../../../state/currency/currencySlice';
 import { CHAINS, nameToChainId } from '../../../utils/chains';
@@ -180,7 +181,7 @@ export default function RankingDaresPage() {
 
 	const [order, setOrder] = useState('desc');
 	const [orderBy, setOrderBy] = useState('amount');
-	const data = useDareRankingData(isNetworkAvailable ? chainIdUrl : 137, orderBy);
+	const { rankingList, isLoading } = useDareRankingData(isNetworkAvailable ? chainIdUrl : 137, orderBy);
 
 	const createSortHandler = (property) => (event) => {
 		const isAsc = orderBy === property && order === 'desc';
@@ -188,7 +189,7 @@ export default function RankingDaresPage() {
 		setOrderBy(property);
 	};
 
-	const sortedData = [...data].sort((a, b) => {
+	const sortedData = [...rankingList].sort((a, b) => {
 		let aValue, bValue;
 
 		if (orderBy === 'voters') {
@@ -259,169 +260,177 @@ export default function RankingDaresPage() {
 
 	return (
 		<>
-			<Head>
-				<meta name="viewport" content="width=device-width, initial-scale=1" />
-				<meta name="robots" content="noindex" />
-				<title>Ranking | Nerve Gloabl</title>
-				<meta property="og:title" content="Ranking | Nerve Gloabl" key="title" />
-				<meta property="og:site_name" content="Ranking | Nerve Gloabl" />
-				<meta property="og:description" content="Ranking | Nerve Gloabl" />
-				<meta property="og:image" content="https://app.nerveglobal.com/favicon.ico" />
-				<meta property="og:url" content="https://app.nerveglobal.com/" />
-				<meta property="og:type" content="website" />
-				<meta name="twitter:card" content="summary_large_image" />
-				<meta name="twitter:site" content="@nerveglobal_" />
-				<meta name="twitter:title" content="Ranking | Nerve Gloabl" />
-				<meta name="twitter:description" content="Ranking | Nerve Gloabl" />
-				<meta name="twitter:image" content="https://app.nerveglobal.com/favicon.ico" />
-			</Head>
-			<StyledBox>
-				<Title theme={theme}>
-					<a>Dare Leaderboard</a>
-				</Title>
-				<StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
-					<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
-						{isNetworkAvailable ? <a>{CHAINS[chainIdUrl]?.nameToken}</a> : <a>MATIC</a>}
-					</StyledToggleButton>
-					<StyledToggleButton theme={theme} disabled={currencyValue === true} value={true}>
-						<a>USD</a>
-					</StyledToggleButton>
-				</StyledToggleButtonGroup>
-				<StyledTableContainer theme={theme}>
-					<StyledTable stickyHeader theme={theme}>
-						<TableHead>
-							<TableRow>
-								<TableCell>#</TableCell>
-								<TableCell>Description</TableCell>
-								<TableCell>
-									<StyledButton theme={theme} onClick={createSortHandler('entranceAmount')}>
-										Entry Amount
-										{orderBy === 'entranceAmount' ? (
-											order === 'asc' ? (
-												<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
-											) : (
-												<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
-											)
-										) : order === 'asc' ? (
-											<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
-										) : (
-											<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-										)}
-									</StyledButton>
-								</TableCell>
-
-								<TableCell>
-									<StyledButton theme={theme} onClick={createSortHandler('amount')}>
-										Total Amount
-										{orderBy === 'amount' ? (
-											order === 'asc' ? (
-												<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
-											) : (
-												<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
-											)
-										) : order === 'asc' ? (
-											<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
-										) : (
-											<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-										)}
-									</StyledButton>
-								</TableCell>
-
-								<TableCell>
-									<StyledButton theme={theme} onClick={createSortHandler('participants')}>
-										Participants
-										{orderBy === 'participants' ? (
-											order === 'asc' ? (
-												<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
-											) : (
-												<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
-											)
-										) : order === 'asc' ? (
-											<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
-										) : (
-											<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-										)}
-									</StyledButton>
-								</TableCell>
-
-								<TableCell>
-									<StyledButton theme={theme} onClick={createSortHandler('voters')}>
-										Voters
-										{orderBy === 'voters' ? (
-											order === 'asc' ? (
-												<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
-											) : (
-												<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
-											)
-										) : order === 'asc' ? (
-											<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
-										) : (
-											<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-										)}
-									</StyledButton>
-								</TableCell>
-
-								<TableCell>
-									<StyledButton theme={theme} onClick={createSortHandler('voting')}>
-										Voting
-										{orderBy === 'voting' ? (
-											order === 'asc' ? (
-												<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
-											) : (
-												<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
-											)
-										) : order === 'asc' ? (
-											<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
-										) : (
-											<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-										)}
-									</StyledButton>
-								</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{data.length > 0 ? (
-								sortedData.map((row, index) => (
-									<StyledTableRow theme={theme} key={index} onClick={handleDare(row.id)}>
-										<TableCell>{index + 1}</TableCell>
+			{isLoading ? (
+				<LoadingScreen />
+			) : (
+				<>
+					<Head>
+						<meta name="viewport" content="width=device-width, initial-scale=1" />
+						<meta name="robots" content="noindex" />
+						<title>Ranking | Nerve Gloabl</title>
+						<meta property="og:title" content="Ranking | Nerve Gloabl" key="title" />
+						<meta property="og:site_name" content="Ranking | Nerve Gloabl" />
+						<meta property="og:description" content="Ranking | Nerve Gloabl" />
+						<meta property="og:image" content="https://app.nerveglobal.com/favicon.ico" />
+						<meta property="og:url" content="https://app.nerveglobal.com/" />
+						<meta property="og:type" content="website" />
+						<meta name="twitter:card" content="summary_large_image" />
+						<meta name="twitter:site" content="@nerveglobal_" />
+						<meta name="twitter:title" content="Ranking | Nerve Gloabl" />
+						<meta name="twitter:description" content="Ranking | Nerve Gloabl" />
+						<meta name="twitter:image" content="https://app.nerveglobal.com/favicon.ico" />
+					</Head>
+					<StyledBox>
+						<Title theme={theme}>
+							<a>Dare Leaderboard</a>
+						</Title>
+						<StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
+							<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
+								{isNetworkAvailable ? <a>{CHAINS[chainIdUrl]?.nameToken}</a> : <a>MATIC</a>}
+							</StyledToggleButton>
+							<StyledToggleButton theme={theme} disabled={currencyValue === true} value={true}>
+								<a>USD</a>
+							</StyledToggleButton>
+						</StyledToggleButtonGroup>
+						<StyledTableContainer theme={theme}>
+							<StyledTable stickyHeader theme={theme}>
+								<TableHead>
+									<TableRow>
+										<TableCell>#</TableCell>
+										<TableCell>Description</TableCell>
 										<TableCell>
-											<a style={{ cursor: 'pointer' }}>{row.description.length > 75 ? row.description.substring(0, 75) + '...' : row.description}</a>
+											<StyledButton theme={theme} onClick={createSortHandler('entranceAmount')}>
+												Entry Amount
+												{orderBy === 'entranceAmount' ? (
+													order === 'asc' ? (
+														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
+													) : (
+														<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
+													)
+												) : order === 'asc' ? (
+													<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
+												) : (
+													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
+												)}
+											</StyledButton>
 										</TableCell>
-										<TableCell style={{ textAlign: 'right' }}>
-											{currencyValue === false ? (
-												<a style={{ cursor: 'pointer' }}>
-													{formatNumber(row.entranceAmount)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
-												</a>
-											) : (
-												<a style={{ cursor: 'pointer' }}>${formatNumber(row.entranceAmount * currencyPrice[network]?.usd)}</a>
-											)}
+
+										<TableCell>
+											<StyledButton theme={theme} onClick={createSortHandler('amount')}>
+												Total Amount
+												{orderBy === 'amount' ? (
+													order === 'asc' ? (
+														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
+													) : (
+														<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
+													)
+												) : order === 'asc' ? (
+													<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
+												) : (
+													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
+												)}
+											</StyledButton>
 										</TableCell>
-										<TableCell style={{ textAlign: 'right' }}>
-											{currencyValue === false ? (
-												<a style={{ cursor: 'pointer' }}>
-													{formatNumber(row.amount)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
-												</a>
-											) : (
-												<a style={{ cursor: 'pointer' }}>${formatNumber(row.amount * currencyPrice[network]?.usd)}</a>
-											)}
+
+										<TableCell>
+											<StyledButton theme={theme} onClick={createSortHandler('participants')}>
+												Participants
+												{orderBy === 'participants' ? (
+													order === 'asc' ? (
+														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
+													) : (
+														<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
+													)
+												) : order === 'asc' ? (
+													<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
+												) : (
+													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
+												)}
+											</StyledButton>
 										</TableCell>
-										<TableCell style={{ textAlign: 'right' }}>{row.participants}</TableCell>
-										<TableCell style={{ textAlign: 'right' }}>{Number(row.positiveVotes) + Number(row.negativeVotes)}</TableCell>
-										<TableCell style={{ textAlign: 'right' }}>{calculatePositivePercentage(row.positiveVotes, row.negativeVotes)}</TableCell>
-									</StyledTableRow>
-								))
-							) : (
-								<StyledTableRow theme={theme}>
-									<TableCell colSpan={7} style={{ textAlign: 'center' }}>
-										No data available on this chain
-									</TableCell>
-								</StyledTableRow>
-							)}
-						</TableBody>
-					</StyledTable>
-				</StyledTableContainer>
-				{/* <StyledArrowCircleUpOutlinedIcon theme={theme} onClick={handleScrollToTop} /> */}
-			</StyledBox>
+
+										<TableCell>
+											<StyledButton theme={theme} onClick={createSortHandler('voters')}>
+												Voters
+												{orderBy === 'voters' ? (
+													order === 'asc' ? (
+														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
+													) : (
+														<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
+													)
+												) : order === 'asc' ? (
+													<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
+												) : (
+													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
+												)}
+											</StyledButton>
+										</TableCell>
+
+										<TableCell>
+											<StyledButton theme={theme} onClick={createSortHandler('voting')}>
+												Voting
+												{orderBy === 'voting' ? (
+													order === 'asc' ? (
+														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
+													) : (
+														<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
+													)
+												) : order === 'asc' ? (
+													<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
+												) : (
+													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
+												)}
+											</StyledButton>
+										</TableCell>
+									</TableRow>
+								</TableHead>
+								<TableBody>
+									{rankingList.length > 0 ? (
+										sortedData.map((row, index) => (
+											<StyledTableRow theme={theme} key={index} onClick={handleDare(row.id)}>
+												<TableCell>{index + 1}</TableCell>
+												<TableCell>
+													<a style={{ cursor: 'pointer' }}>
+														{row.description.length > 75 ? row.description.substring(0, 75) + '...' : row.description}
+													</a>
+												</TableCell>
+												<TableCell style={{ textAlign: 'right' }}>
+													{currencyValue === false ? (
+														<a style={{ cursor: 'pointer' }}>
+															{formatNumber(row.entranceAmount)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
+														</a>
+													) : (
+														<a style={{ cursor: 'pointer' }}>${formatNumber(row.entranceAmount * currencyPrice[network]?.usd)}</a>
+													)}
+												</TableCell>
+												<TableCell style={{ textAlign: 'right' }}>
+													{currencyValue === false ? (
+														<a style={{ cursor: 'pointer' }}>
+															{formatNumber(row.amount)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
+														</a>
+													) : (
+														<a style={{ cursor: 'pointer' }}>${formatNumber(row.amount * currencyPrice[network]?.usd)}</a>
+													)}
+												</TableCell>
+												<TableCell style={{ textAlign: 'right' }}>{row.participants}</TableCell>
+												<TableCell style={{ textAlign: 'right' }}>{Number(row.positiveVotes) + Number(row.negativeVotes)}</TableCell>
+												<TableCell style={{ textAlign: 'right' }}>{calculatePositivePercentage(row.positiveVotes, row.negativeVotes)}</TableCell>
+											</StyledTableRow>
+										))
+									) : (
+										<StyledTableRow theme={theme}>
+											<TableCell colSpan={7} style={{ textAlign: 'center' }}>
+												No data available on this chain
+											</TableCell>
+										</StyledTableRow>
+									)}
+								</TableBody>
+							</StyledTable>
+						</StyledTableContainer>
+						{/* <StyledArrowCircleUpOutlinedIcon theme={theme} onClick={handleScrollToTop} /> */}
+					</StyledBox>
+				</>
+			)}
 		</>
 	);
 }

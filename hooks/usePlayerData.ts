@@ -3,12 +3,16 @@ import { CHAINS } from '../utils/chains';
 
 const usePlayerData = (chainId: number, checksumAddress: string) => {
 	const [playerData, setPlayerData] = useState<any[]>([]);
+	const [isLoading, setIsLoading] = useState<boolean>(true);
 
 	useEffect(() => {
+		setIsLoading(true);
+
 		const getPlayerData = async () => {
 			const graphApiEndpoint = CHAINS[chainId]?.graphApi;
 			if (!graphApiEndpoint) {
 				setPlayerData([]);
+				setIsLoading(false);
 				return;
 			}
 
@@ -41,13 +45,16 @@ const usePlayerData = (chainId: number, checksumAddress: string) => {
 				setPlayerData(data.data.userDashStats);
 			} catch (error) {
 				console.error(error);
+				setPlayerData([]);
+			} finally {
+				setIsLoading(false);
 			}
 		};
 
 		getPlayerData();
 	}, [chainId, checksumAddress]);
 
-	return playerData;
+	return { playerData, isLoading };
 };
 
 export default usePlayerData;

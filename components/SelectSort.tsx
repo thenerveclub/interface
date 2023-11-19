@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sortSlice } from '../state/sort/sortSlice';
 
@@ -10,7 +10,6 @@ const StyledSelect = styled(Select, {
 	shouldForwardProp: (prop) => prop !== 'focus' && prop !== 'open', // add this line
 })<{ theme: any; open: any; focus: any }>`
 	color: ${({ theme }) => theme.palette.text.primary};
-	// font-size: 1rem;
 	font-weight: 500;
 	background-color: ${({ theme, focus }) => (focus ? theme.palette.background.default : 'transparent')};
 	border: 1px solid ${({ theme, open, focus }) => (open || focus ? theme.palette.warning.main : theme.palette.secondary.main)};
@@ -36,12 +35,26 @@ const StyledSelect = styled(Select, {
 		justify-content: center;
 		align-content: center;
 		vertical-align: middle;
-		height: 35px;
 		text-align: center;
 	}
 
 	& .MuiSelect-icon {
 		color: ${({ theme }) => theme.palette.text.primary};
+	}
+
+	& .MuiPaper-root {
+		min-width: 225px;
+		max-width: 375px;
+	}
+
+	@media (max-width: 960px) {
+		min-width: 175px;
+		max-width: 275px;
+
+		& .MuiPaper-root {
+			min-width: 175px;
+			max-width: 275px;
+		}
 	}
 `;
 
@@ -85,6 +98,7 @@ export default function SelectSort() {
 		dispatch(sortSlice.actions.updateSort(event.target.value));
 	};
 
+	// State
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [isFocused, setIsFocused] = useState(false);
 
@@ -115,8 +129,8 @@ export default function SelectSort() {
 							backgroundColor: theme.palette.background.default,
 							outline: `1px solid ${theme.palette.warning.main}`,
 							borderRadius: 0,
-							minWidth: '225px',
-							maxWidth: '375px',
+							// minWidth: '225px',
+							// maxWidth: '375px',
 							padding: '0px',
 							margin: '0 auto 0 auto',
 							'& .MuiMenuItem-root': {
@@ -135,7 +149,7 @@ export default function SelectSort() {
 					<a>{sort === 1 ? 'Stake: Low to High' : 'Low to High'}</a>
 				</MenuItemStyled>
 				<MenuItemStyled theme={theme} value={2} disabled={sort === 2 ? true : false}>
-					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.text.primary }} />
+					{/* <SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.text.primary }} /> */}
 					<a>{sort === 2 ? 'Stake: High to Low' : 'High to Low'}</a>
 				</MenuItemStyled>
 				<SearchResultTitle theme={theme}>Participants</SearchResultTitle>

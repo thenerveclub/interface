@@ -5,6 +5,7 @@ import localFont from 'next/font/local';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import LoadingScreen from '../../components/LoadingScreen';
 import { CHAINS } from '../../utils/chains';
 
 const TrueLies = localFont({ src: '../../public/fonts/TrueLies.woff2', display: 'swap' });
@@ -80,6 +81,7 @@ export default function IndexPage() {
 	const theme = useTheme();
 	const router = useRouter();
 	const { network } = router.query;
+	const isLoading = false;
 
 	// Define your valid networks
 	// const validNetworks = ['polygon', 'goerli'];
@@ -100,38 +102,44 @@ export default function IndexPage() {
 
 	return (
 		<>
-			<Head>
-				<meta name="viewport" content="width=device-width, initial-scale=1" />
-				<title>Nerve Global Dapp</title>
-				<meta property="og:title" content="Nerve Global Dapp" key="title" />
-				<meta property="og:site_name" content="Nerve Global Dapp" />
-				<meta property="og:description" content="Nerve Global Dapp." />
-				<meta property="og:image" content="https://dapp.nerveglobal.com/favicon.ico" />
-				<meta property="og:url" content="https://dapp.nerveglobal.com/" />
-				<meta property="og:type" content="website" />
-				<meta name="twitter:card" content="summary_large_image" />
-				<meta name="twitter:site" content="@nerveglobal_" />
-				<meta name="twitter:title" content="Nerve Global Dapp" />
-				<meta name="twitter:description" content="Nerve Global Dapp." />
-				<meta name="twitter:image" content="https://dapp.nerveglobal.com/favicon.ico" />
-			</Head>
-			<StyledLayout>
-				<StyledBox theme={theme}>
-					<h1>Shape the Stream</h1>
-					<h4>
-						The ultimate playground where spectators fuel content with financial rewards, empowering players to push boundaries and foster vibrant
-						communities.
-					</h4>
-				</StyledBox>
-				<StyledTrending>
-					<h2>Trending Dares</h2>
-				</StyledTrending>
-				<StyledTrendingGrid></StyledTrendingGrid>
-				<StyledTrending>
-					<h2>Trending Players</h2>
-				</StyledTrending>
-				<StyledTrendingGrid></StyledTrendingGrid>
-			</StyledLayout>
+			{isLoading ? (
+				<LoadingScreen />
+			) : (
+				<>
+					<Head>
+						<meta name="viewport" content="width=device-width, initial-scale=1" />
+						<title>Nerve Global Dapp</title>
+						<meta property="og:title" content="Nerve Global Dapp" key="title" />
+						<meta property="og:site_name" content="Nerve Global Dapp" />
+						<meta property="og:description" content="Nerve Global Dapp." />
+						<meta property="og:image" content="https://dapp.nerveglobal.com/favicon.ico" />
+						<meta property="og:url" content="https://dapp.nerveglobal.com/" />
+						<meta property="og:type" content="website" />
+						<meta name="twitter:card" content="summary_large_image" />
+						<meta name="twitter:site" content="@nerveglobal_" />
+						<meta name="twitter:title" content="Nerve Global Dapp" />
+						<meta name="twitter:description" content="Nerve Global Dapp." />
+						<meta name="twitter:image" content="https://dapp.nerveglobal.com/favicon.ico" />
+					</Head>
+					<StyledLayout>
+						<StyledBox theme={theme}>
+							<h1>Shape the Stream</h1>
+							<h4>
+								The ultimate playground where spectators fuel content with financial rewards, empowering players to push boundaries and foster vibrant
+								communities.
+							</h4>
+						</StyledBox>
+						<StyledTrending>
+							<h2>Trending Dares</h2>
+						</StyledTrending>
+						<StyledTrendingGrid></StyledTrendingGrid>
+						<StyledTrending>
+							<h2>Trending Players</h2>
+						</StyledTrending>
+						<StyledTrendingGrid></StyledTrendingGrid>
+					</StyledLayout>
+				</>
+			)}
 		</>
 	);
 }

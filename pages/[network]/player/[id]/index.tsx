@@ -5,6 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import LoadingScreen from '../../../../components/LoadingScreen';
 import BlacklistPlayer from '../../../../components/modal/blacklistPlayer';
 import RegisterName from '../../../../components/modal/registerName';
 import { useCheckNameRegister } from '../../../../hooks/useCheckNameRegister';
@@ -32,6 +33,7 @@ const StyledLeftSectionBox = styled(Box)`
 
 const StyledBox = styled(Box)`
 	margin: 7.5rem 5rem auto 5rem;
+	width: 90%;
 
 	@media (max-width: 600px) {
 		margin: 5rem 1rem auto 1rem;
@@ -108,7 +110,7 @@ export default function PlayerPage() {
 	const checksumAddress = registerStatus?.toLowerCase();
 	const checksumAccount = account?.toLowerCase();
 
-	const playerData = usePlayerData(isNetworkAvailable ? chainIdUrl : 137, checksumAddress);
+	const { playerData, isLoading } = usePlayerData(isNetworkAvailable ? chainIdUrl : 137, checksumAddress);
 
 	// Copy Address To Clipboard && Tooltip
 	const [copied, setCopied] = useState(false);
@@ -122,65 +124,77 @@ export default function PlayerPage() {
 	}
 
 	return (
-		<StyledBox>
-			<StyledSection>
-				<StyledLeftSectionBox>
-					<PlayerBox>
-						{playerData?.[0]?.userName ? <a>{playerData?.[0]?.userName}</a> : <a>{checksumAddress?.toUpperCase()}</a>}
-						<a>
-							{account ? (
-								checksumAccount === checksumAddress ? (
-									<RegisterName playerData={playerData} chainId={chainId} chainIdUrl={chainIdUrl} />
+		<>
+			{isLoading ? (
+				<LoadingScreen />
+			) : (
+				<StyledBox>
+					<StyledSection>
+						<StyledLeftSectionBox>
+							<PlayerBox>
+								{playerData?.[0]?.userName ? <a>{playerData?.[0]?.userName}</a> : <a>{checksumAddress?.toUpperCase()}</a>}
+								<a>
+									{account ? (
+										checksumAccount === checksumAddress ? (
+											<RegisterName playerData={playerData} chainId={chainId} chainIdUrl={chainIdUrl} />
+										) : (
+											<BlacklistPlayer checksumAddress={checksumAddress} chainId={chainId} chainIdUrl={chainIdUrl} />
+										)
+									) : null}
+								</a>
+							</PlayerBox>
+							<AddressBox>
+								{playerData?.[0]?.id ? (
+									<a>
+										({playerData?.[0]?.id.substring(0, 6)}...{playerData?.[0]?.id.substring(playerData?.[0]?.id.length - 4).toUpperCase()})
+									</a>
 								) : (
-									<BlacklistPlayer checksumAddress={checksumAddress} chainId={chainId} chainIdUrl={chainIdUrl} />
-								)
-							) : null}
-						</a>
-					</PlayerBox>
-					<AddressBox>
-						{playerData?.[0]?.id ? (
-							<a>
-								({playerData?.[0]?.id.substring(0, 6)}...{playerData?.[0]?.id.substring(playerData?.[0]?.id.length - 4).toUpperCase()})
-							</a>
-						) : (
-							<a>
-								({checksumAddress?.substring(0, 6)}...{checksumAddress?.substring(checksumAddress?.length - 4).toUpperCase()})
-							</a>
-						)}
-						<Tooltip
-							title={copied ? 'Copied!' : 'Copy Address'}
-							placement="bottom"
-							disableInteractive
-							TransitionComponent={Fade}
-							TransitionProps={{ timeout: 600 }}
-						>
-							<a onClick={handleCopyAddress} style={{ cursor: 'pointer' }}>
-								<ContentCopy style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
-							</a>
-						</Tooltip>
-						<Tooltip title="View On Explorer" placement="bottom" disableInteractive TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}>
-							<a href={CHAINS[chainId]?.blockExplorerUrls[0] + 'address/' + playerData?.[0]?.id} target="_blank" style={{ cursor: 'pointer' }}>
-								<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
-							</a>
-						</Tooltip>
-					</AddressBox>
-					<PlayerSocials
+									<a>
+										({checksumAddress?.substring(0, 6)}...{checksumAddress?.substring(checksumAddress?.length - 4).toUpperCase()})
+									</a>
+								)}
+								<Tooltip
+									title={copied ? 'Copied!' : 'Copy Address'}
+									placement="bottom"
+									disableInteractive
+									TransitionComponent={Fade}
+									TransitionProps={{ timeout: 600 }}
+								>
+									<a onClick={handleCopyAddress} style={{ cursor: 'pointer' }}>
+										<ContentCopy style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
+									</a>
+								</Tooltip>
+								<Tooltip title="View On Explorer" placement="bottom" disableInteractive TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}>
+									<a href={CHAINS[chainId]?.blockExplorerUrls[0] + 'address/' + playerData?.[0]?.id} target="_blank" style={{ cursor: 'pointer' }}>
+										<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
+									</a>
+								</Tooltip>
+							</AddressBox>
+							<PlayerSocials
+								checksumAddress={checksumAddress}
+								checksumAccount={checksumAccount}
+								playerData={playerData}
+								chainId={chainId}
+								chainIdUrl={chainIdUrl}
+							/>
+							<PlayerStatistics
+								checksumAddress={checksumAddress}
+								chainId={chainId}
+								playerData={playerData}
+								isNetworkAvailable={isNetworkAvailable}
+								network={network}
+							/>
+						</StyledLeftSectionBox>
+					</StyledSection>
+					<PlayerDares
+						registerStatus={registerStatus}
 						checksumAddress={checksumAddress}
 						checksumAccount={checksumAccount}
-						playerData={playerData}
-						chainId={chainId}
+						network={network}
 						chainIdUrl={chainIdUrl}
 					/>
-					<PlayerStatistics
-						checksumAddress={checksumAddress}
-						chainId={chainId}
-						playerData={playerData}
-						isNetworkAvailable={isNetworkAvailable}
-						network={network}
-					/>
-				</StyledLeftSectionBox>
-			</StyledSection>
-			<PlayerDares registerStatus={registerStatus} checksumAddress={checksumAddress} checksumAccount={checksumAccount} network={network} chainIdUrl={chainIdUrl} />
-		</StyledBox>
+				</StyledBox>
+			)}
+		</>
 	);
 }

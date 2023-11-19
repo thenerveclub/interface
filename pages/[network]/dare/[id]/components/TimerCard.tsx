@@ -3,23 +3,17 @@ import { Box, Divider } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 const TaskCard = styled(Box)<{ theme: any }>`
-	width: 90%;
-	max-width: 350px;
-	// height: 150px;
-	// max-height: 150px;
+	display: flex;
+	flex-direction: column;
+	width: 70%;
 	margin: 0 auto 0 auto;
 	background-color: ${({ theme }) => theme.palette.background.default};
 	backdrop-filter: blur(15px) brightness(70%);
 	border: 0.5px solid ${({ theme }) => theme.palette.secondary.main};
 	border-radius: ${({ theme }) => theme.customShape.borderRadius};
-	align-items: center;
-	justify-content: center;
-	position: relative;
-	width: 90%;
 
 	@media (max-width: 960px) {
-		width: 100%;
-		margin: 0 auto 0 auto;
+		width: 95%;
 	}
 `;
 

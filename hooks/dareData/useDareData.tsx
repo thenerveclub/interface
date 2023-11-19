@@ -3,11 +3,15 @@ import { CHAINS } from '../../utils/chains';
 
 const useDareData = (chainIdUrl: number, id: string) => {
 	const [dareData, setDareData] = useState<any[]>([]);
+	const [isLoading, setIsLoading] = useState<boolean>(true);
 
 	useEffect(() => {
+		setIsLoading(true);
+
 		if (!chainIdUrl) {
 			// Handle the case where the chainIdUrl is not ready or not valid
 			setDareData([]);
+			setIsLoading(false);
 			return;
 		}
 
@@ -58,13 +62,16 @@ const useDareData = (chainIdUrl: number, id: string) => {
 				setDareData(data.data.userTasks);
 			} catch (error) {
 				console.error(error);
+				setDareData([]);
+			} finally {
+				setIsLoading(false);
 			}
 		};
 
 		getDareData();
 	}, [chainIdUrl, id]);
 
-	return dareData;
+	return { dareData, isLoading };
 };
 
 export default useDareData;

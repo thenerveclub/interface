@@ -14,10 +14,8 @@ import { CHAINS } from '../../../../../utils/chains';
 const TaskCard = styled(Box)<{ theme: any }>`
 	display: flex;
 	flex-direction: column;
-	width: 738px;
-	max-width: 738px;
-	height: 378px;
-	max-height: 378px;
+	width: 90%;
+	max-height: 500px;
 	margin: 0 auto 0 auto;
 	background-color: ${({ theme }) => theme.palette.background.default};
 	backdrop-filter: blur(15px) brightness(70%);
@@ -26,7 +24,10 @@ const TaskCard = styled(Box)<{ theme: any }>`
 	overflow: auto;
 
 	@media (max-width: 960px) {
-		width: 100%;
+		width: 95%;
+		max-width: auto;
+		height: 100%;
+		max-height: auto;
 		margin: 0 auto 0 auto;
 	}
 `;
@@ -75,6 +76,10 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{ theme: any }>`
 			border-left: 1px solid ${({ theme }) => theme.palette.warning.main};
 		}
 	}
+
+	@media (max-width: 960px) {
+		margin-left: 0.5rem;
+	}
 `;
 
 const StyledFilterGroup = styled(Box)<{ theme: any }>`
@@ -108,6 +113,7 @@ const StyledSortButton = styled(Button)<{ theme: any }>`
 	cursor: pointer;
 	font-weight: 500;
 	width: auto;
+	height: 35px;
 	text-transform: none;
 	margin-right: 1rem;
 
@@ -115,13 +121,15 @@ const StyledSortButton = styled(Button)<{ theme: any }>`
 		background-color: transparent;
 		border: 1px solid ${({ theme }) => theme.palette.warning.main};
 	}
+
+	@media (max-width: 960px) {
+		margin-right: 0.5rem;
+	}
 `;
 
 const StyledTable = styled(Table)<{ theme: any }>`
-	width: 738px;
-	max-width: 738px;
-	// height: 378px;
 	max-height: 378px;
+	padding: 0 1rem 0 1rem;
 
 	@media (max-width: 600px) {
 		font-size: 3rem;
@@ -139,7 +147,7 @@ const StyledButton = styled(Button)<{ theme: any }>`
 	width: 100%;
 
 	@media (max-width: 600px) {
-		font-size: 3rem;
+		font-size: auto;
 	}
 `;
 

@@ -180,22 +180,14 @@ const StyledTime = styled(Box)<{ theme: any }>`
 	flex-direction: row;
 	justify-content: space-between;
 	margin: 0.5rem auto 1rem auto;
-
-	& > * + * {
-		margin-left: 0.5rem;
-	}
 `;
 
 const StyledTextField = styled(TextField)<{ theme: any }>`
-	display: flex;
-	color: warning;
-	text-transform: none;
-	font-size: 1rem;
-	font-weight: 400;
-	line-height: 1.5;
-	height: 100%;
-	background-color: transparent;
 	border-radius: ${({ theme }) => theme.customShape.borderRadius};
+
+	&:nth-of-type(2) {
+		margin: 0 0.5rem 0 0.5rem;
+	}
 
 	& .MuiOutlinedInput-notchedOutline {
 		border: 1px solid ${({ theme }) => theme.palette.secondary.main};

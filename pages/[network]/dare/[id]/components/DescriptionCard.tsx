@@ -5,20 +5,15 @@ import { useTheme } from '@mui/material/styles';
 const TaskCard = styled(Box)<{ theme: any }>`
 	display: flex;
 	flex-direction: column;
-	width: 738px;
-	max-width: 738px;
-	height: 200px;
-	max-height: 200px;
+	width: 90%;
 	margin: 0 auto 0 auto;
 	background-color: ${({ theme }) => theme.palette.background.default};
 	backdrop-filter: blur(15px) brightness(70%);
 	border: 0.5px solid ${({ theme }) => theme.palette.secondary.main};
 	border-radius: ${({ theme }) => theme.customShape.borderRadius};
-	overflow: auto;
 
 	@media (max-width: 960px) {
-		width: 100%;
-		margin: 0 auto 0 auto;
+		width: 95%;
 	}
 `;
 

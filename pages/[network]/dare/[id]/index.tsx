@@ -4,6 +4,7 @@ import { Box, Divider, Grid, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
+import LoadingScreen from '../../../../components/LoadingScreen';
 import JoinDare from '../../../../components/modal/joinDare';
 import RedeemRecipient from '../../../../components/modal/redeemRecipient';
 import RedeemUser from '../../../../components/modal/redeemUser';
@@ -17,115 +18,65 @@ import ProofCard from './components/ProofCard';
 import TimerCard from './components/TimerCard';
 
 const StyledBox = styled(Box)`
-	margin: 7.5rem 5rem auto 5rem;
+	margin: 10rem auto 0 auto;
+	width: 90%;
 
 	@media (max-width: 600px) {
-		margin: 5rem 1rem auto 1rem;
+		margin: 5rem auto 0 auto;
 	}
 `;
 
-const StyledBoxInternal = styled(Box)`
+const StyledGridBox = styled(Box)`
 	display: flex;
 	flex-direction: row;
-	margin: 0 auto 0 auto;
-	padding: 1.125rem;
-	gap: 5rem;
 
-	div {
-		display: flex;
-		flex-direction: column;
-		align-items: left;
-		width: 25%;
+	@media (min-width: 961px) {
+		& > *:first-child {
+			flex: 0 0 60%; // The first child takes 70% of the space
+		}
+
+		& > *:not(:first-child) {
+			flex: 1; // Other children share the remaining space
+		}
 	}
 
-	@media (max-width: 600px) {
-		margin: 5rem 1rem auto 1rem;
+	@media (max-width: 960px) {
+		flex-direction: column;
+		margin: 0 auto 0 auto;
+
+		& > *:first-child {
+			margin-top: 2rem;
+			order: 2;
+		}
 	}
 `;
 
-const StyledSection = styled.section`
+const StyledLeftSection = styled.section`
 	display: flex;
 	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	align-content: center;
-	margin: 5rem auto 0 auto;
 
 	& > *:not(:last-child) {
 		margin-bottom: 2rem;
 	}
 
 	@media (max-width: 960px) {
-		display: grid;
-		align-items: center;
-		margin: 0 auto 0 auto;
-		grid-template-columns: 1fr;
-		grid-gap: 2em;
+		display: flex;
+		flex-direction: column;
 	}
 `;
 
-const TaskCardLeftSide = styled(Box)<{ theme: any }>`
-	width: 738px;
-	max-width: 738px;
-	height: 189px;
-	max-height: 189px;
-	margin: 0 auto 0 auto;
-	background-color: ${({ theme }) => theme.palette.background.default};
-	backdrop-filter: blur(15px) brightness(70%);
-	border: 0.5px solid ${({ theme }) => theme.palette.secondary.main};
-	border-radius: ${({ theme }) => theme.customShape.borderRadius};
-	align-items: center;
-	justify-content: center;
-	position: relative;
-	width: 90%;
+const StyledRightSection = styled.section`
+	display: flex;
+	flex-direction: column;
 
-	a {
-		display: flex;
-		margin: 0 auto 0 auto;
-		font-size: 16px;
-		cursor: default;
-		justify-content: left;
-		padding: 1rem;
+	& > *:not(:last-child) {
+		margin-bottom: 2rem;
 	}
 
 	@media (max-width: 960px) {
-		width: 100%;
-		margin: 0 auto 0 auto;
-	}
-`;
-
-const TaskCardRightSide = styled(Box)<{ theme: any }>`
-	width: 90%;
-	max-width: 350px;
-	height: 300px;
-	max-height: 300px;
-	margin: 0 auto 0 auto;
-	background-color: ${({ theme }) => theme.palette.background.default};
-	backdrop-filter: blur(15px) brightness(70%);
-	border: 0.5px solid ${({ theme }) => theme.palette.secondary.main};
-	border-radius: ${({ theme }) => theme.customShape.borderRadius};
-	align-items: center;
-	justify-content: center;
-	position: relative;
-	width: 90%;
-
-	a {
 		display: flex;
-		margin: 0 auto 0 auto;
-		font-size: 16px;
-		cursor: default;
-		justify-content: left;
-		padding: 1rem;
+		flex-direction: column;
 	}
-
-	@media (max-width: 960px) {
-		width: 100%;
-		margin: 0 auto 0 auto;
-	}
-`;
-
-const StyledDivider = styled(Divider)<{ theme: any }>`
-	border-bottom: 0.5px solid ${({ theme }) => theme.palette.secondary.main};
 `;
 
 export default function TaskPage() {
@@ -151,7 +102,7 @@ export default function TaskPage() {
 	// State declarations
 
 	// Hooks
-	const dareData = useDareData(isNetworkAvailable ? chainIdUrl : 137, id);
+	const { dareData, isLoading } = useDareData(isNetworkAvailable ? chainIdUrl : 137, id);
 
 	const finished = dareData?.[0]?.task.finished;
 	const voteIsTrue = dareData?.[0]?.task.positiveVotes > dareData?.[0]?.task.negativeVotes ? true : false;
@@ -177,33 +128,35 @@ export default function TaskPage() {
 	const taskEndTime = Number(dareData?.[0]?.task.endTask);
 
 	return (
-		<StyledBox>
-			<Grid container spacing={2}>
-				<Grid item xs={8}>
-					<StyledSection>
-						<DescriptionCard dareData={dareData} />
-						<DetailsCard id={id} network={network} dareData={dareData} />
-						<ActivityTable id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} />
-						<Chart dareData={dareData} />
-					</StyledSection>
-				</Grid>
-				<Grid item xs={3}>
-					<StyledSection>
-						<TimerCard currentUnixTimestamp={currentUnixTimestamp} taskEndTime={taskEndTime} />
-						{account &&
-							(finished ? (
-								voteIsTrue ? (
-									<RedeemRecipient id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
+		<>
+			{isLoading ? (
+				<LoadingScreen />
+			) : (
+				<StyledBox>
+					<StyledGridBox>
+						<StyledLeftSection>
+							<DescriptionCard dareData={dareData} />
+							<DetailsCard id={id} network={network} dareData={dareData} />
+							<ActivityTable id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} />
+							{/* <Chart dareData={dareData} /> */}
+						</StyledLeftSection>
+						<StyledRightSection>
+							<TimerCard currentUnixTimestamp={currentUnixTimestamp} taskEndTime={taskEndTime} />
+							{account &&
+								(finished ? (
+									voteIsTrue ? (
+										<RedeemRecipient id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
+									) : (
+										<RedeemUser id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
+									)
 								) : (
-									<RedeemUser id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
-								)
-							) : (
-								<JoinDare id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
-							))}
-						{proof && <ProofCard dareData={dareData} />}
-					</StyledSection>
-				</Grid>
-			</Grid>
-		</StyledBox>
+									<JoinDare id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
+								))}
+							{proof && <ProofCard dareData={dareData} />}
+						</StyledRightSection>
+					</StyledGridBox>
+				</StyledBox>
+			)}
+		</>
 	);
 }

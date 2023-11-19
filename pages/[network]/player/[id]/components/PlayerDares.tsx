@@ -120,90 +120,66 @@ const ActiveTabRightSection = styled(Box)`
 const ActiveTabSection = styled(Box)`
 	display: grid;
 	align-items: center;
+	justify-content: center;
 	margin: 2rem auto 0 auto;
 	grid-template-columns: repeat(6, 1fr);
-	grid-gap: 1rem;
+	grid-gap: 2rem;
 
 	li {
 		grid-column: span 2;
 	}
 
-	li:last-child:nth-of-type(3n - 1) {
-		grid-column-end: -2;
-	}
+	@media (min-width: 961px) {
+		/* Apply complex grid rules for screens wider than 960px */
+		li:last-child:nth-of-type(3n - 1) {
+			grid-column-end: -2;
+		}
 
-	li:nth-last-of-type(2):nth-of-type(3n + 1) {
-		grid-column-end: 4;
-	}
+		li:nth-last-of-type(2):nth-of-type(3n + 1) {
+			grid-column-end: 4;
+		}
 
-	/* Dealing with single orphan */
-	li:last-child:nth-of-type(3n - 2) {
-		grid-column-end: 5;
+		/* Dealing with single orphan */
+		li:last-child:nth-of-type(3n - 2) {
+			grid-column-end: 5;
+		}
 	}
 
 	@media (max-width: 960px) {
 		display: grid;
-		align-items: center;
-		margin: 1rem auto 0 auto;
 		grid-template-columns: 1fr;
-		grid-gap: 2em;
+		margin: 2rem auto 0 auto;
+		/* Simplified grid for mobile devices */
 	}
 `;
 
 const TaskCard = styled(Box)<{ theme: any }>`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin: 0 auto 0 auto;
 	width: 350px;
 	max-width: 350px;
 	height: 300px;
 	max-height: 300px;
-	margin: 0 auto 0 auto;
 	background-color: ${({ theme }) => theme.palette.background.default};
 	border: 0.5px solid ${({ theme }) => theme.palette.secondary.main};
 	border-radius: ${({ theme }) => theme.customShape.borderRadius};
-	align-items: center;
-	justify-content: center;
-	position: relative;
-	width: 90%;
-
-	a {
-		display: flex;
-		margin: 0 auto 0 auto;
-		font-size: 16px;
-		cursor: default;
-		justify-content: center;
-		align-items: center;
-	}
 
 	@media (max-width: 960px) {
-		width: 100%;
-		margin: 0 auto 0 auto;
+		width: 90%; // Make the width responsive
+		max-width: 100%; // Ensure it doesn't overflow the container
 	}
 `;
 
 const TaskBoxSection = styled(Box)`
 	display: flex;
-	flex-direction: row;
-	height: 25px;
-	width: 100%;
-	flex: 1;
+	justify-content: center;
+	align-items: center;
 	margin: 0 auto 0 auto;
-	position: absolute;
-	top: 10px;
-
-	a {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		height: 175px;
-		width: 90%;
-		overflow: auto;
-		font-size: 16px;
-		cursor: default;
-		text-align: center;
-	}
 
 	@media (max-width: 600px) {
-		justify-content: center;
 	}
 `;
 
@@ -277,34 +253,9 @@ const TaskBoxSectionTwo = styled(Box)`
 	}
 `;
 
-const TaskBoxButton = styled(Box)`
-	display: flex;
-	width: 90%;
-	margin: 0 auto 0 auto;
-	height: 40px;
-
-	a {
-		cursor: pointer;
-		height: 40px;
-		text-decoration: none;
-		color: #fff;
-	}
-
-	@media (max-width: 600px) {
-		justify-content: center;
-	}
-`;
-
 const TaskButton = styled(Button)`
 	color: #fff;
-	height: 40px;
 	width: 90%;
-	border: none;
-	background-color: rgba(255, 127.5, 0, 1);
-	border-radius: 10px;
-	position: absolute;
-	bottom: 10px;
-	text-transform: none;
 	font-size: 16px;
 
 	&:hover {
@@ -435,59 +386,7 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ registerStatus, checksumAddre
 								<TaskBoxSection>
 									<a>{tad.description}</a>
 								</TaskBoxSection>
-								<TaskBoxSectionOne>
-									<a>#{tad.id}</a>
-									{tad?.participants && tad?.participants <= 0 ? <a>{tad.participants} Participants</a> : <a>{tad.participants} Participant</a>}
-								</TaskBoxSectionOne>
-								<TaskBoxSectionTwo>
-									{tad?.amount ? (
-										currencyValue === false ? (
-											<a>
-												{((tad?.amount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
-											</a>
-										) : (
-											<a>${((tad?.amount / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</a>
-										)
-									) : (
-										<span>
-											<Skeleton
-												sx={{
-													backgroundColor: 'rgba(152, 161, 192, 0.4)',
-													borderRadius: '10px',
-												}}
-												variant="text"
-												width={75}
-												height={30}
-											/>
-										</span>
-									)}
-									{tad?.entranceAmount ? (
-										currencyValue === false ? (
-											<a>
-												{((tad?.entranceAmount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
-											</a>
-										) : (
-											<a>${((tad?.entranceAmount / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</a>
-										)
-									) : (
-										<span>
-											<Skeleton
-												sx={{
-													backgroundColor: 'rgba(152, 161, 192, 0.4)',
-													borderRadius: '10px',
-												}}
-												variant="text"
-												width={75}
-												height={30}
-											/>
-										</span>
-									)}
-								</TaskBoxSectionTwo>
-								<TaskBoxButton>
-									<a onClick={() => router.push(`/${network}/dare/` + tad.id)}>
-										<TaskButton>View Task</TaskButton>
-									</a>
-								</TaskBoxButton>
+								<TaskButton onClick={() => router.push(`/${network}/dare/` + tad.id)}>View Task</TaskButton>
 							</TaskCard>
 						</li>
 					))}
@@ -519,7 +418,7 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ registerStatus, checksumAddre
 								<TaskBoxSection>
 									<a>{tad.description}</a>
 								</TaskBoxSection>
-								<TaskBoxSectionOne>
+								{/* <TaskBoxSectionOne>
 									<a>#{tad.id}</a>
 									{tad?.participants && tad?.participants <= 0 ? <a>{tad.participants} Participants</a> : <a>{tad.participants} Participant</a>}
 								</TaskBoxSectionOne>
@@ -566,12 +465,8 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ registerStatus, checksumAddre
 											/>
 										</span>
 									)}
-								</TaskBoxSectionTwo>
-								<TaskBoxButton>
-									<a onClick={() => router.push(`/${network}/dare/` + tad.id)}>
-										<TaskButton>View Task</TaskButton>
-									</a>
-								</TaskBoxButton>
+								</TaskBoxSectionTwo> */}
+								<TaskButton onClick={() => router.push(`/${network}/dare/` + tad.id)}>View Task</TaskButton>
 							</TaskCard>
 						</li>
 					))}

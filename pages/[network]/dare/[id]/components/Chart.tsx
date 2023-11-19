@@ -11,14 +11,14 @@ const StyledVotingBox = styled(Box)<{ theme: any }>`
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: center;
-	width: 100%;
-	margin: 0 auto;
-	max-width: 738px;
+	width: 90%;
+	margin: 0 auto 0 auto;
 
 	@media (max-width: 960px) {
 		flex-direction: column;
 		margin 0 auto 0 auto;
 		justify-content: center;
+		width: 95%;
 
 		& > *:last-child {
 			margin: 2rem auto 0 auto;
@@ -29,8 +29,8 @@ const StyledVotingBox = styled(Box)<{ theme: any }>`
 const TaskCard = styled(Box)<{ theme: any }>`
 	display: flex;
 	flex-direction: column;
-	width: 350px;
-	max-width: 350px;
+	width: 45%;
+	// max-width: 350px;
 	height: 378px;
 	max-height: 378px;
 	margin: 0 0 0 0;
@@ -41,6 +41,8 @@ const TaskCard = styled(Box)<{ theme: any }>`
 	overflow: auto;
 
 	@media (max-width: 960px) {
+		width: 100%;
+		margin: 0 auto 0 auto;
 	}
 `;
 

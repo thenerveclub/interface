@@ -6,20 +6,15 @@ import { useRouter } from 'next/router';
 const TaskCard = styled(Box)<{ theme: any }>`
 	display: flex;
 	flex-direction: column;
-	width: 738px;
-	max-width: 738px;
-	height: 200px;
-	max-height: 200px;
+	width: 90%;
 	margin: 0 auto 0 auto;
 	background-color: ${({ theme }) => theme.palette.background.default};
 	backdrop-filter: blur(15px) brightness(70%);
 	border: 0.5px solid ${({ theme }) => theme.palette.secondary.main};
 	border-radius: ${({ theme }) => theme.customShape.borderRadius};
-	overflow: auto;
 
 	@media (max-width: 960px) {
-		width: 100%;
-		margin: 0 auto 0 auto;
+		width: 95%;
 	}
 `;
 
@@ -42,39 +37,64 @@ const StyledDivider = styled(Divider)<{ theme: any }>`
 const StyledContainer = styled(Box)<{ theme: any }>`
 	display: flex;
 	flex-direction: column;
+	width: 100%;
 	padding: 1rem;
 	cursor: default;
-
-	div:first-of-type {
-		margin-bottom: 1rem;
-	}
 `;
 
 const StyledFirstRow = styled(Box)<{ theme: any }>`
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
+	display: grid;
+	grid-template-rows: 1fr;
+	grid-template-columns: 1fr 1fr 1fr 1fr;
 	cursor: default;
+	margin-bottom: 1rem;
 
 	div {
 		display: flex;
 		flex-direction: column;
-		justify-content: left;
+		justify-content: center;
 		align-items: left;
+	}
+
+	a {
+		font-size: 1rem;
+		cursor: default;
+	}
+
+	@media (max-width: 960px) {
+		a {
+			font-size: 0.925rem;
+			cursor: default;
+		}
 	}
 `;
 
 const StyledSecondRow = styled(Box)<{ theme: any }>`
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
+	display: grid;
+	grid-template-rows: 1fr;
+	grid-template-columns: 1fr 1fr 1fr 1fr;
+	grid-gap: 0;
 	cursor: default;
 
 	div {
 		display: flex;
 		flex-direction: column;
-		justify-content: left;
+		justify-content: center;
 		align-items: left;
+	}
+
+	a {
+		font-size: 1rem;
+		cursor: default;
+	}
+
+	@media (max-width: 960px) {
+		grid-template-columns: 1fr 1fr;
+
+		a {
+			font-size: 0.925rem;
+			cursor: default;
+		}
 	}
 `;
 
@@ -111,7 +131,9 @@ const DetailsCard: React.FC<DetailsCardProps> = ({ id, network, dareData }) => {
 				<StyledFirstRow theme={theme}>
 					<div>
 						<a>Player</a>
-						<a onClick={handleClickUser(dareData?.[0]?.task.recipientName)}>{dareData?.[0]?.task.recipientName}</a>
+						<a style={{ display: 'flex', color: theme.palette.warning.main }} onClick={handleClickUser(dareData?.[0]?.task.recipientName)}>
+							<span style={{ cursor: 'pointer' }}>{dareData?.[0]?.task.recipientName}</span>
+						</a>
 					</div>
 					<div>
 						<a>Task ID</a>
@@ -123,7 +145,7 @@ const DetailsCard: React.FC<DetailsCardProps> = ({ id, network, dareData }) => {
 					</div>
 					<div>
 						<a>Chain</a>
-						<a>{network}</a>
+						<a style={{ textTransform: 'capitalize' }}>{network}</a>
 					</div>
 				</StyledFirstRow>
 				<StyledSecondRow theme={theme}>
