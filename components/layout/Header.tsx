@@ -68,6 +68,16 @@ const StyledSectionLeft = styled.section<{ theme: any }>`
 		cursor: pointer;
 	}
 
+	h3 {
+		display: flex;
+		width: 150px;
+		font-size: 1rem;
+		font-weight: 500;
+		color: ${(props) => props.theme.palette.text.primary};
+		text-decoration: none;
+		cursor: pointer;
+	}
+
 	& > *:first-of-type {
 		margin-left: 1rem;
 		margin-right: 1rem;
@@ -242,6 +252,9 @@ export default function Header() {
 						<h1>NERVE GLOBAL</h1>
 					</Link>
 					<SelectLeaderboard />
+					<Link href={`/${network}/map`} passHref style={{ textDecoration: 'none' }}>
+						<h3>Map</h3>
+					</Link>
 				</StyledSectionLeft>
 				<StyledSectionMiddle>
 					<SearchBar network={network} />

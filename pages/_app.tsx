@@ -1,4 +1,5 @@
 import { Web3ReactProvider } from '@web3-react/core';
+import { useRouter } from 'next/router';
 import { SnackbarProvider } from 'notistack';
 import { useEffect } from 'react';
 import { Provider, useDispatch } from 'react-redux';
@@ -11,6 +12,7 @@ import { store } from '../state/index';
 import { rpcSlice } from '../state/rpc/rpcSlice';
 import { testnetsSlice } from '../state/testnets/testnetsSlice';
 import { themeSlice } from '../state/theme/themeSlice';
+import { CHAINS } from '../utils/chains';
 import connectors from '../utils/connectors';
 import { coinbaseWallet } from '../utils/connectors/coinbaseWallet';
 import { metaMask } from '../utils/connectors/metaMask';
@@ -73,6 +75,28 @@ function Updaters() {
 }
 
 export default function MyApp({ Component, pageProps }) {
+	const router = useRouter();
+
+	useEffect(() => {
+		// Use all urlNames from CHAINS to create a list of valid networks
+		const validNetworks = Object.values(CHAINS).map((chain) => chain.urlName);
+
+		// Extract network from the URL
+		const network = router.query.network;
+
+		// Redirect if network is invalid
+		if (network && !validNetworks.includes(network)) {
+			router.push('/polygon'); // Redirect to a default network
+		}
+
+		// Handle client-side redirect for the root path
+		if (router.pathname === '/') {
+			router.push('/polygon');
+		}
+
+		// ... existing useEffect code for connectors
+	}, [router.query.network, router.pathname]);
+
 	useEffect(() => {
 		const connectorsToConnect = [metaMask, walletConnectV2, coinbaseWallet];
 		connectorsToConnect.forEach(async (connector) => {

@@ -42,6 +42,7 @@ const Layout = ({ children = 'This is the default title' }: Props) => {
 
 	const router = useRouter();
 	const is404 = router.pathname === '/404';
+	const isMap = router.pathname.includes('/map');
 
 	return (
 		<>
@@ -49,7 +50,7 @@ const Layout = ({ children = 'This is the default title' }: Props) => {
 				<CssBaseline />
 				<Header />
 				<Main is404={is404}>{children}</Main>
-				<Footer />
+				{!isMap && <Footer />}
 			</ThemeProvider>
 		</>
 	);
