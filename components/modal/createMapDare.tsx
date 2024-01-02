@@ -1,17 +1,17 @@
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
-import { VolumeUp } from '@mui/icons-material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import {
 	Box,
 	Button,
 	CircularProgress,
-	Grid,
-	Input,
+	ClickAwayListener,
 	InputAdornment,
+	InputBase,
+	List,
 	Modal,
 	OutlinedInput,
-	Slider,
+	Paper,
 	TextField,
 	Tooltip,
 	Typography,
@@ -19,10 +19,12 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
+import router from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
+import usePlayerDataSearchList from '../../hooks/searchData/usePlayerDataSearchList';
 import useBalanceTracker from '../../hooks/useBalanceTracker';
 import { CHAINS, getAddChainParameters } from '../../utils/chains';
 import { metaMask } from '../../utils/connectors/metaMask';
@@ -67,8 +69,10 @@ const ConnectBox = styled(Box)<{ theme: any }>`
 	background-color: ${({ theme }) => theme.palette.background.default};
 	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
 	border-radius: ${({ theme }) => theme.customShape.borderRadius};
+	outline: none;
 
 	animation: ${slideUp} 0.5s ease-in-out forwards;
+
 	&.closing {
 		animation: ${slideDown} 0.5s ease-in-out forwards;
 	}
@@ -82,28 +86,11 @@ const StyledSection = styled.section`
 	margin: 0 auto 0 auto;
 
 	@media (max-width: 960px) {
-		display: grid;
+		display: flex;
 		align-items: center;
 		margin: 0 auto 0 auto;
 		grid-template-columns: 1fr;
 		grid-gap: 2em;
-	}
-`;
-
-const ModalButton = styled(Button)<{ theme: any }>`
-	color: #fff;
-	text-transform: none;
-	font-size: 16px;
-	border: none;
-	line-height: 1.5;
-	background-color: ${({ theme }) => theme.palette.warning.main};
-	border-radius: ${({ theme }) => theme.shape.borderRadius};
-	height: 35px;
-	width: 125px;
-	margin-left: 1rem;
-
-	&:hover {
-		background-color: ${({ theme }) => theme.palette.warning.main};
 	}
 `;
 
@@ -134,6 +121,10 @@ const MaxButton = styled(Button)<{ theme: any }>`
 	background-color: ${({ theme }) => theme.palette.success.contrastText};
 	border-radius: ${({ theme }) => theme.shape.borderRadius};
 	height: 40px;
+
+	&:hover {
+		background-color: ${({ theme }) => theme.palette.warning.main};
+	}
 `;
 
 const StatisticBox = styled(Box)`
@@ -198,15 +189,121 @@ const StyledTextField = styled(TextField)<{ theme: any }>`
 	}
 `;
 
+const SearchBarContainer = styled(Paper)<{ theme: any }>`
+	display: flex;
+	width: 100%;
+	max-width: 25rem;
+	align-items: center;
+	background-color: transparent;
+	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
+	border-radius: ${({ theme }) => theme.shape.borderRadius};
+	min-height: 40px;
+	height: 40px;
+	transition: all 0.5s ease-in-out;
+
+	&:hover {
+		border: 1px solid ${({ theme }) => theme.palette.warning.main};
+	}
+	&:focus-within {
+		border-bottom-left-radius: 0px;
+		border-bottom-right-radius: 0px;
+		border: 1px solid ${({ theme }) => theme.palette.warning.main};
+		background-color: ${({ theme }) => theme.palette.background.default};
+	}
+	& input {
+		color: ${({ theme }) => theme.palette.text.primary};
+	}
+	& input::placeholder {
+		color: ${({ theme }) => theme.palette.secondary.main};
+	}
+	& .MuiSvgIcon-root {
+		color: ${({ theme }) => theme.palette.text.primary};
+	}
+	position: relative;
+
+	@media (max-width: 768px) {
+		width: 75%;
+	}
+`;
+
+const SearchResultList = styled(List)<{ theme: any }>`
+	color: #000;
+	background-color: ${({ theme }) => theme.palette.background.default};
+	border-radius: ${({ theme }) => theme.shape.borderRadius};
+	outline: 1px solid ${({ theme }) => theme.palette.warning.main};
+	outline-offset: 0px;
+	position: absolute;
+	width: 100%;
+	max-height: 500px;
+	overflow-y: auto;
+	top: 100%;
+	left: 0;
+	right: 0;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+	z-index: 9999;
+
+	&::-webkit-scrollbar {
+		width: 4px;
+	}
+	&::-webkit-scrollbar-track {
+		background: transparent;
+	}
+	&::-webkit-scrollbar-thumb {
+		background: ${({ theme }) => theme.palette.warning.main};
+		border-radius: 12px;
+	}
+	&::-webkit-scrollbar-thumb:hover {
+		background: ${({ theme }) => theme.palette.secondary.main};
+	}
+`;
+
+const SearchResultItemStyled = styled.div<{ theme: any }>`
+	color: ${({ theme }) => theme.palette.text.primary};
+	background-color: ${({ theme }) => theme.palette.background.default};
+	vertical-align: middle;
+	width: 100%;
+	height: 100%;
+	margin: 0 auto;
+	padding: 1rem;
+	cursor: pointer;
+	display: flex;
+	flex-direction: column;
+
+	& a {
+		font-size: 0.75rem;
+		color: ${({ theme }) => theme.palette.text.secondary};
+		text-decoration: none;
+	}
+
+	&:focus,
+	&:hover {
+		background-color: ${({ theme }) => theme.palette.warning.main};
+	}
+
+	& .item-top,
+	& .item-bottom {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	& .item-bottom {
+		font-size: 0.8rem;
+		margin-top: 0.25rem;
+	}
+`;
+
 interface CreateMapDareProps {
 	// registerStatus: any;
 	chainIdUrl: number;
 	isNetworkAvailable: boolean;
 	modalCoords: any;
 	onClose: any;
+	network: any;
 }
 
-const CreateMapDare: React.FC<CreateMapDareProps> = ({ chainIdUrl, isNetworkAvailable, modalCoords, onClose }) => {
+const CreateMapDare: React.FC<CreateMapDareProps> = ({ chainIdUrl, isNetworkAvailable, modalCoords, onClose, network }) => {
 	const theme = useTheme();
 	const { provider } = useWeb3React();
 	const { enqueueSnackbar } = useSnackbar();
@@ -215,18 +312,30 @@ const CreateMapDare: React.FC<CreateMapDareProps> = ({ chainIdUrl, isNetworkAvai
 	// Redux
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 
-	// State
+	// State declaration
+	const [searchValue, setSearchValue] = useState('');
+	const playerSearchList = usePlayerDataSearchList(chainIdUrl, searchValue);
 	const [open, setOpen] = useState(true);
 	const [pendingTx, setPendingTx] = useState(false);
 	const [value, setValue] = useState('0.00');
-	const [description, setDescription] = useState(null);
+	const [description, setDescription] = useState('');
 	const [isMax, setIsMax] = useState(false);
 	const [isClosing, setIsClosing] = useState(false); // <-- New state to track closing status
 	const [days, setDays] = useState('0');
 	const [hours, setHours] = useState('0');
 	const [minutes, setMinutes] = useState('0');
+	const [isListVisible, setListVisible] = useState(false);
 
 	const registerStatus = 'XXX';
+
+	const handleSearchChange = (e) => {
+		setSearchValue(e.target.value);
+		setListVisible(true); // Show search results when typing
+	};
+
+	const handleFocus = () => {
+		setListVisible(true); // Show search results when input is focused
+	};
 
 	// Validation function
 	const validateInput = (value, max) => {
@@ -271,6 +380,11 @@ const CreateMapDare: React.FC<CreateMapDareProps> = ({ chainIdUrl, isNetworkAvai
 			setIsClosing(false); // <-- Reset closing status for the next cycle
 			onClose();
 		}, 500); // <-- Length of the slide-down animation
+	};
+
+	const handleListPlayerItemClick = (playerId, playerAddress) => {
+		setSearchValue('');
+		setListVisible(false);
 	};
 
 	// Format Balance
@@ -343,10 +457,12 @@ const CreateMapDare: React.FC<CreateMapDareProps> = ({ chainIdUrl, isNetworkAvai
 	};
 
 	return (
-		<>
-			{/* <ModalButton theme={theme} onClick={handleOpen}>
-				Create Dare
-			</ModalButton> */}
+		<ClickAwayListener
+			onClickAway={() => {
+				setListVisible(false);
+				// setChainListVisible(false);
+			}}
+		>
 			<StyledModal open={open} onClose={handleClose}>
 				<ConnectBox theme={theme} className={isClosing ? 'closing' : ''}>
 					<Typography
@@ -362,12 +478,46 @@ const CreateMapDare: React.FC<CreateMapDareProps> = ({ chainIdUrl, isNetworkAvai
 					<StatisticBox>
 						<StyledTitle theme={theme}>
 							<div>
+								<a style={{ color: theme.palette.text.primary, marginRight: '0.25rem' }}>Player</a>
+								<Tooltip title="The 'Player' is the one who will be dared to complete your challenge." placement="top">
+									<InfoOutlinedIcon style={{ fontSize: '1rem', color: theme.palette.secondary.main, cursor: 'default' }} />
+								</Tooltip>
+							</div>
+						</StyledTitle>
+						<SearchBarContainer theme={theme} onSubmit={(e) => e.preventDefault()} elevation={0}>
+							<InputBase
+								fullWidth={true}
+								style={{ fontSize: '0.875rem' }}
+								placeholder={`Search player`}
+								inputProps={{ 'aria-label': 'search' }}
+								value={searchValue}
+								onChange={handleSearchChange}
+								onFocus={handleFocus}
+							/>
+							{isListVisible && (
+								<SearchResultList theme={theme}>
+									{playerSearchList.map((player) => (
+										<SearchResultItemStyled
+											theme={theme}
+											key={player.id}
+											onClick={() => handleListPlayerItemClick(player.userName, player.userAddress)}
+										>
+											<div className="item-top">
+												<span className="player-name">{player.userName}</span>
+											</div>
+										</SearchResultItemStyled>
+									))}
+								</SearchResultList>
+							)}
+						</SearchBarContainer>
+
+						<StyledTitle theme={theme}>
+							<div>
 								<a style={{ color: theme.palette.text.primary, marginRight: '0.25rem' }}>Entry amount</a>
 								<Tooltip title="Mandatory contribution for participation." placement="top">
 									<InfoOutlinedIcon style={{ fontSize: '1rem', color: theme.palette.secondary.main, cursor: 'default' }} />
 								</Tooltip>
 							</div>
-
 							<a>Balance: {formatBalance(balance)}</a>
 						</StyledTitle>
 						<OutlinedInput
@@ -434,20 +584,29 @@ const CreateMapDare: React.FC<CreateMapDareProps> = ({ chainIdUrl, isNetworkAvai
 							/>
 						</StyledTime>
 						<StyledTitle theme={theme}>Task description</StyledTitle>
-						<OutlinedInput
-							sx={{
-								color: theme.palette.text.primary,
-								'& .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: theme.palette.secondary.main },
-								'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: theme.palette.warning.main },
-							}}
-							placeholder="Do you dare..."
-							id="outlined-adornment-name"
-							multiline={true}
-							rows={3}
-							type="string"
-							style={{ display: 'flex', margin: '0.5rem 0 1rem 0' }}
-							onChange={(event) => setDescription(event.target.value)}
-						/>
+						<div>
+							<OutlinedInput
+								sx={{
+									color: theme.palette.text.primary,
+									'& .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: theme.palette.secondary.main },
+									'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: theme.palette.warning.main },
+								}}
+								placeholder="Do you dare..."
+								id="outlined-adornment-name"
+								multiline={true}
+								rows={3}
+								type="string"
+								style={{ display: 'flex', margin: '0.5rem 0 0 0' }}
+								onChange={(event) => setDescription(event.target.value)}
+								inputProps={{
+									maxLength: 100,
+								}}
+								value={description}
+							/>
+							<div style={{ textAlign: 'right', margin: '0 0.5rem 1rem 0', color: theme.palette.text.secondary }}>{`${
+								description?.length === 0 ? 0 : description?.length
+							}/100`}</div>
+						</div>
 
 						<StyledTitle theme={theme}>
 							<div>
@@ -493,7 +652,7 @@ const CreateMapDare: React.FC<CreateMapDareProps> = ({ chainIdUrl, isNetworkAvai
 					</StatisticBox>
 				</ConnectBox>
 			</StyledModal>
-		</>
+		</ClickAwayListener>
 	);
 };
 

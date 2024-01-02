@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
+import { useMediaQuery } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import useMapData from '../hooks/mapData/useMapData';
 import CreateMapDare from './modal/createMapDare';
 
@@ -13,22 +15,36 @@ const StyledDiv = styled.div`
 	background-color: transparent;
 
 	@media (max-width: 600px) {
+		// max-height: 100vh;
 	}
 `;
 
 interface GoogleMapProps {
 	apiKey: string;
 	chainIdUrl: number;
-	registerStatus: any;
+	// registerStatus: any;
 	isNetworkAvailable: boolean;
+	network: any;
 }
 
-const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, chainIdUrl, registerStatus, isNetworkAvailable }) => {
+const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, chainIdUrl, isNetworkAvailable, network }) => {
 	const mapRef = useRef(null);
-	const googleMapsScriptId = 'google-maps-script';
-	const [map, setMap] = useState(null); // Using useState for map
+
+	// Redux
+	const { currentTheme, prefersSystemSetting } = useSelector((state: any) => state.theme);
+
+	// State
+	const [map, setMap] = useState(null);
 	const [isModalVisible, setModalVisible] = useState(false);
 	const [modalCoords, setModalCoords] = useState({ lat: null, lng: null });
+	const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+	const [appliedTheme, setAppliedTheme] = useState(prefersDarkMode ? 'dark' : 'light');
+
+	useEffect(() => {
+		setAppliedTheme(prefersSystemSetting ? (prefersDarkMode ? 'dark' : 'light') : currentTheme);
+	}, [prefersSystemSetting, prefersDarkMode, currentTheme]);
+
+	console.log('appliedTheme: ', currentTheme, prefersSystemSetting, prefersDarkMode);
 
 	const handleMapClick = (event) => {
 		const clickedLat = event.latLng.lat();
@@ -61,11 +77,42 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, chainIdUrl, registerStatu
 				mapTypeControl: false,
 				fullscreenControl: false,
 				streetViewControl: false,
-				// scrollwheel: false,
 				disableDoubleClickZoom: true,
+				styles:
+					appliedTheme === 'dark'
+						? [
+								{
+									featureType: 'administrative',
+									elementType: 'geometry.stroke',
+									stylers: [
+										{ color: '#FFFFFF' }, // Weiße Linien für administrative Grenzen
+										{ saturation: -100 }, // Keine Sättigung
+										{ lightness: -20 }, // Geringere Helligkeit
+									],
+								},
+								{
+									featureType: 'water',
+									elementType: 'geometry.fill',
+									stylers: [
+										{ color: '#000080' }, // Dunkelblaues Wasser
+										{ saturation: -80 }, // Geringere Sättigung
+										{ lightness: -50 }, // Geringere Helligkeit
+									],
+								},
+								{
+									featureType: 'landscape',
+									elementType: 'geometry.fill',
+									stylers: [
+										// { color: '#0D0D0D' }, // Dunklere Füllung für Landschaft
+										{ saturation: -70 }, // Geringere Sättigung
+										{ lightness: -40 }, // Geringere Helligkeit
+									],
+								},
+						  ]
+						: [],
 			});
 			initializedMap.addListener('dblclick', handleMapClick);
-			setMap(initializedMap); // Update the state
+			setMap(initializedMap);
 		}
 	};
 
@@ -102,22 +149,21 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, chainIdUrl, registerStatu
 	};
 
 	useEffect(() => {
-		if (window.google && window.google.maps) {
-			// If the Google Maps script is already loaded
-			initializeMap();
-		} else if (!document.getElementById('google-maps-script')) {
+		const loadGoogleMapsScript = () => {
 			const script = document.createElement('script');
-			script.id = 'google-maps-script';
 			script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}`;
 			script.async = true;
-			document.head.appendChild(script);
-
 			script.onload = initializeMap;
-			script.onerror = () => {
-				console.error('Google Maps script failed to load.');
-			};
+			script.onerror = () => console.error('Google Maps script failed to load.');
+			document.head.appendChild(script);
+		};
+
+		if (window.google && window.google.maps) {
+			initializeMap();
+		} else if (!document.getElementById('google-maps-script')) {
+			loadGoogleMapsScript();
 		}
-	}, [apiKey]);
+	}, [apiKey, appliedTheme]);
 
 	useEffect(() => {
 		if (map && !isLoading && Array.isArray(mapData)) {
@@ -129,11 +175,11 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, chainIdUrl, registerStatu
 		<StyledDiv ref={mapRef}>
 			{isModalVisible && (
 				<CreateMapDare
-					// registerStatus={registerStatus}
 					chainIdUrl={chainIdUrl}
 					isNetworkAvailable={isNetworkAvailable}
 					modalCoords={modalCoords}
 					onClose={() => setModalVisible(false)}
+					network={network}
 				/>
 			)}
 		</StyledDiv>

@@ -4,11 +4,11 @@ import { useTheme } from '@mui/material/styles';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import Map from '../../../components/GoogleMap';
 import LoadingScreen from '../../../components/LoadingScreen';
-import { CHAINS, nameToChainId } from '../../../utils/chains';
-import { useSelector } from 'react-redux';
 import { useCheckNameRegister } from '../../../hooks/useCheckNameRegister';
+import { CHAINS, nameToChainId } from '../../../utils/chains';
 
 const StyledLayout = styled(Box)`
 	display: flex;
@@ -21,9 +21,9 @@ const StyledLayout = styled(Box)`
 	margin: 4rem auto 0 auto;
 	background-color: transparent;
 
-	// @media (max-width: 600px) {
-	// 	width: 100%;
-	// }
+	@media (max-width: 600px) {
+		max-height: calc(100vh - 10rem);
+	}
 `;
 
 export default function IndexPage() {
@@ -67,7 +67,12 @@ export default function IndexPage() {
 						<meta name="twitter:image" content="https://dapp.nerveglobal.com/favicon.ico" />
 					</Head>
 					<StyledLayout>
-						<Map apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} chainIdUrl={chainIdUrl} isNetworkAvailable={isNetworkAvailable}/>
+						<Map
+							apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+							chainIdUrl={chainIdUrl}
+							isNetworkAvailable={isNetworkAvailable}
+							network={network}
+						/>
 					</StyledLayout>
 				</>
 			)}
