@@ -13,7 +13,7 @@ type Props = {
 	title?: string;
 };
 
-const Main = styled.div<{ is404: boolean; isMap: boolean }>`
+const Main = styled.div<{ is404: boolean }>`
 	line-height: 1.381002381;
 	font-weight: 600;
 	letter-spacing: 0.011em;
@@ -22,7 +22,7 @@ const Main = styled.div<{ is404: boolean; isMap: boolean }>`
 
 	@media (max-width: 768px) {
 		// margin: 4 auto 0 auto;
-		min-height: calc(100vh - ${({ isMap }) => (isMap ? '4rem' : '248px')});
+		
 	}
 `;
 
@@ -50,9 +50,7 @@ const Layout = ({ children = 'This is the default title' }: Props) => {
 			<ThemeProvider theme={appliedTheme}>
 				<CssBaseline />
 				<Header />
-				<Main is404={is404} isMap={isMap}>
-					{children}
-				</Main>
+				<Main is404={is404}>{children}</Main>
 				{!isMap && <Footer />}
 			</ThemeProvider>
 		</>
