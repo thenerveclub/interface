@@ -16,7 +16,7 @@ const StyledDiv = styled.div`
 	background-color: transparent;
 
 	@media (max-width: 600px) {
-		// max-height: 100vh;
+		max-height: calc(100vh - 4rem);
 	}
 `;
 
