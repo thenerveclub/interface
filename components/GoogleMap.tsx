@@ -15,14 +15,14 @@ const StyledDiv = styled.div`
 	border: none;
 	background-color: transparent;
 	outline: none;
-	margin: 4rem auto 0 auto;
+	margin: 0 auto 0 auto;
 
 	.gm-style iframe + div {
 		border: none !important;
 	}
 
 	@media (max-width: 600px) {
-		height: calc(100vh - 4rem);
+		// height: calc(100vh - 4rem);
 	}
 `;
 

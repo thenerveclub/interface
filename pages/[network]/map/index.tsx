@@ -18,9 +18,10 @@ const StyledLayout = styled(Box)`
 	text-align: center;
 	width: 100vw;
 	background-color: transparent;
-	// margin: 4rem auto 0 auto;
-	height: auto;
-	max-height: 100vh;
+	margin: 4rem auto 0 auto;
+	min-height: calc(100vh - 4rem);
+	max-height: calc(100vh - 4rem);
+	overflow: hidden;
 
 	@media (max-width: 600px) {
 		// max-height: 10vh;
@@ -68,19 +69,44 @@ export default function IndexPage() {
 						<meta name="twitter:image" content="https://dapp.nerveglobal.com/favicon.ico" />
 					</Head>
 					<StyledLayout>
-						<Map
+						{/* <Map
 							apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
 							chainIdUrl={chainIdUrl}
 							isNetworkAvailable={isNetworkAvailable}
 							network={network}
-						/>
-
-						<Map
-							apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
-							chainIdUrl={chainIdUrl}
-							isNetworkAvailable={isNetworkAvailable}
-							network={network}
-						/>
+						/> */}
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
 					</StyledLayout>
 				</>
 			)}
