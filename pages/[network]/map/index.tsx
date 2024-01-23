@@ -22,7 +22,10 @@ const StyledLayout = styled(Box)`
 	background-color: transparent;
 
 	@media (max-width: 600px) {
-		max-height: calc(100vh - 10rem);
+		margin: 4rem auto 0 auto;
+		padding: 0;
+		justify-content: flex-start;
+		max-height: calc(100vh - 4rem);
 	}
 `;
 

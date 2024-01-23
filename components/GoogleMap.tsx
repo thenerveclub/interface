@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useMediaQuery } from '@mui/material';
+import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import useMapData from '../hooks/mapData/useMapData';
@@ -29,6 +30,7 @@ interface GoogleMapProps {
 
 const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, chainIdUrl, isNetworkAvailable, network }) => {
 	const mapRef = useRef(null);
+	const router = useRouter();
 
 	// Redux
 	const { currentTheme, prefersSystemSetting } = useSelector((state: any) => state.theme);
@@ -44,7 +46,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, chainIdUrl, isNetworkAvai
 		setAppliedTheme(prefersSystemSetting ? (prefersDarkMode ? 'dark' : 'light') : currentTheme);
 	}, [prefersSystemSetting, prefersDarkMode, currentTheme]);
 
-	console.log('appliedTheme: ', currentTheme, prefersSystemSetting, prefersDarkMode);
+	console.log('appliedTheme: ', currentTheme, prefersSystemSetting, prefersDarkMode, appliedTheme);
 
 	const handleMapClick = (event) => {
 		const clickedLat = event.latLng.lat();
@@ -57,6 +59,49 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, chainIdUrl, isNetworkAvai
 
 	// Use the useMapData hook to get map data
 	const { mapData, isLoading } = useMapData(chainIdUrl);
+
+	const applyMapStyle = () => {
+		if (map) {
+			const styles =
+				appliedTheme === 'dark'
+					? [
+							{
+								featureType: 'administrative',
+								elementType: 'geometry.stroke',
+								stylers: [
+									{ color: '#FFFFFF' }, // Weiße Linien für administrative Grenzen
+									{ saturation: -100 }, // Keine Sättigung
+									{ lightness: -20 }, // Geringere Helligkeit
+								],
+							},
+							{
+								featureType: 'water',
+								elementType: 'geometry.fill',
+								stylers: [
+									{ color: '#000080' }, // Dunkelblaues Wasser
+									{ saturation: -80 }, // Geringere Sättigung
+									{ lightness: -50 }, // Geringere Helligkeit
+								],
+							},
+							{
+								featureType: 'landscape',
+								elementType: 'geometry.fill',
+								stylers: [
+									// { color: '#0D0D0D' }, // Dunklere Füllung für Landschaft
+									{ saturation: -70 }, // Geringere Sättigung
+									{ lightness: -40 }, // Geringere Helligkeit
+								],
+							},
+					  ]
+					: []; // Empty array for light theme
+
+			map.setOptions({ styles });
+		}
+	};
+
+	useEffect(() => {
+		applyMapStyle();
+	}, [appliedTheme, map]);
 
 	const initializeMap = () => {
 		if (mapRef.current) {
@@ -78,38 +123,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, chainIdUrl, isNetworkAvai
 				fullscreenControl: false,
 				streetViewControl: false,
 				disableDoubleClickZoom: true,
-				styles:
-					appliedTheme === 'dark'
-						? [
-								{
-									featureType: 'administrative',
-									elementType: 'geometry.stroke',
-									stylers: [
-										{ color: '#FFFFFF' }, // Weiße Linien für administrative Grenzen
-										{ saturation: -100 }, // Keine Sättigung
-										{ lightness: -20 }, // Geringere Helligkeit
-									],
-								},
-								{
-									featureType: 'water',
-									elementType: 'geometry.fill',
-									stylers: [
-										{ color: '#000080' }, // Dunkelblaues Wasser
-										{ saturation: -80 }, // Geringere Sättigung
-										{ lightness: -50 }, // Geringere Helligkeit
-									],
-								},
-								{
-									featureType: 'landscape',
-									elementType: 'geometry.fill',
-									stylers: [
-										// { color: '#0D0D0D' }, // Dunklere Füllung für Landschaft
-										{ saturation: -70 }, // Geringere Sättigung
-										{ lightness: -40 }, // Geringere Helligkeit
-									],
-								},
-						  ]
-						: [],
+				styles: [],
 			});
 			initializedMap.addListener('dblclick', handleMapClick);
 			setMap(initializedMap);
@@ -118,6 +132,9 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, chainIdUrl, isNetworkAvai
 
 	const updateMarkers = () => {
 		if (!map || isLoading || !Array.isArray(mapData)) return;
+
+		// State or variable to keep track of the last clicked marker
+		let lastClickedMarker = null;
 
 		mapData.forEach((dataItem) => {
 			const marker = new google.maps.Marker({
@@ -144,6 +161,20 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, chainIdUrl, isNetworkAvai
 			// Close the info window on mouseout
 			marker.addListener('mouseout', () => {
 				infoWindow.close();
+			});
+
+			// Add an onClick event listener
+			marker.addListener('click', () => {
+				if (window.innerWidth < 1200) {
+					if (lastClickedMarker === marker) {
+						router.push(`/${network}/dare/${dataItem.id}`);
+						lastClickedMarker = null; // Reset the last clicked marker
+					} else {
+						lastClickedMarker = marker;
+					}
+				} else {
+					router.push(`/${network}/dare/${dataItem.id}`);
+				}
 			});
 		});
 	};

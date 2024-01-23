@@ -17,9 +17,14 @@ import Setting from '../modal/menu/Settings';
 const TrueLies = localFont({ src: '../../public/fonts/TrueLies.woff2', display: 'swap' });
 
 const StyledAppBar = styled(AppBar)<{ theme: any }>`
+	display: flex;
 	flex-direction: row;
-	height: 40px;
-	padding: 2rem;
+	justify-content: center;
+	align-items: center;
+	margin: 0 auto 0 auto;
+
+	height: 4rem;
+	// padding: 2rem;
 	position: fixed;
 	background-color: 'transparent';
 	box-shadow: none;
@@ -28,15 +33,8 @@ const StyledAppBar = styled(AppBar)<{ theme: any }>`
 	right: 0;
 
 	@media (max-width: 1280px) {
-		flex-direction: column;
-		height: auto;
-		padding: 0.75rem;
-
-		//switch order of middle and last section
-		& > *:nth-of-type(2) {
-			order: 2;
-			margin-top: 1rem;
-		}
+		// height: 40px;
+		// max-height: 40px;
 	}
 `;
 
@@ -258,16 +256,11 @@ export default function Header() {
 				</StyledSectionLeft>
 				<StyledSectionMiddle>
 					<SearchBar network={network} />
-					{/* <MobileSettings>
-					<Setting />
-					</MobileSettings> */}
 				</StyledSectionMiddle>
 				<StyledSectionRight>
 					{account && <SelectChain />}
 					{account ? <AccountModal /> : <Connect />}
-					{/* <DesktopSettings> */}
 					<Setting />
-					{/* </DesktopSettings> */}
 				</StyledSectionRight>
 			</StyledAppBar>
 		</>
