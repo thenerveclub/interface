@@ -21,7 +21,8 @@ const StyledDiv = styled.div`
 	}
 
 	@media (max-width: 600px) {
-		// max-height: 100vh;
+		width: 100vw;
+		height: calc(100vh - 4rem);
 	}
 `;
 
