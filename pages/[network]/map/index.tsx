@@ -20,6 +20,14 @@ const StyledLayout = styled(Box)`
 	background-color: transparent;
 	margin: 4rem auto 0 auto;
 	max-height: calc(100vh - 4rem);
+
+	//  height: 100vh; /* Viewport height */
+	overflow: hidden;
+
+	@media (max-width: 600px) {
+		height: calc(100vh - 4rem);
+		max-height: calc(100vh - 4rem);
+	}
 `;
 
 export default function IndexPage() {
