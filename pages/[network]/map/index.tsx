@@ -21,7 +21,7 @@ const StyledLayout = styled(Box)`
 	margin: 4rem auto 0 auto;
 	max-height: calc(100vh - 4rem);
 
-	//  height: 100vh; /* Viewport height */
+	height: 100vh !important;
 	overflow: hidden !important;
 
 	@media (max-width: 600px) {
