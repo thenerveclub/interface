@@ -22,8 +22,8 @@ const StyledLayout = styled(Box)`
 	background-color: transparent;
 
 	@media (max-width: 600px) {
-		margin: 4rem auto 0 auto;
-		max-height: calc(100vh - 4rem);
+		// margin: 4rem auto 0 auto;
+		// max-height: calc(100vh - 4rem);
 	}
 `;
 
