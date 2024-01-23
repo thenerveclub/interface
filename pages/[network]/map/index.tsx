@@ -100,13 +100,13 @@ export default function IndexPage() {
 						<meta name="twitter:image" content="https://dapp.nerveglobal.com/favicon.ico" />
 					</Head>
 					<StyledLayout>
-						{/* <Map
+						<Map
 							apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
 							chainIdUrl={chainIdUrl}
 							isNetworkAvailable={isNetworkAvailable}
 							network={network}
-						/> */}
-						<p>hi</p>
+						/>
+						{/* <p>hi</p>
 						hiiii hiiii
 						<p>hi</p>
 						hiiii hiiii
@@ -137,7 +137,7 @@ export default function IndexPage() {
 						<p>hi</p>
 						hiiii hiiii
 						<p>hi</p>
-						hiiii hiiii
+						hiiii hiiii */}
 					</StyledLayout>
 				</>
 			)}
