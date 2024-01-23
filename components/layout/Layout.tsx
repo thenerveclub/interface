@@ -21,7 +21,7 @@ const Main = styled.div<{ is404: boolean }>`
 	min-height: calc(100vh - ${({ is404 }) => (is404 ? '248px' : '248px')});
 
 	@media (max-width: 768px) {
-		margin: 4 auto 0 auto;
+		// margin: 4 auto 0 auto;
 	}
 `;
 
