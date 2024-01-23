@@ -24,7 +24,7 @@ const StyledLayout = styled(Box)`
 	@media (max-width: 600px) {
 		width: 100vw;
 		max-height: 100vh;
-		margin: 0 auto 0 auto;
+		margin: 4rem auto 0 auto;
 	}
 `;
 
