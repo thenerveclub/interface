@@ -72,44 +72,48 @@ export default function IndexPage() {
 						<meta name="twitter:image" content="https://dapp.nerveglobal.com/favicon.ico" />
 					</Head>
 					<StyledLayout>
-						{/* <Map
+						<span style={{ position: 'absolute', top: 0, left: 0, zIndex: 9999 }}>
+							<div style={{ maxHeight: '100vh', width: '100vw' }}>
+								{/* <Map
 							apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
 							chainIdUrl={chainIdUrl}
 							isNetworkAvailable={isNetworkAvailable}
 							network={network}
 						/> */}
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
+								<p>hi</p>
+								hiiii hiiii
+								<p>hi</p>
+								hiiii hiiii
+								<p>hi</p>
+								hiiii hiiii
+								<p>hi</p>
+								hiiii hiiii
+								<p>hi</p>
+								hiiii hiiii
+								<p>hi</p>
+								hiiii hiiii
+								<p>hi</p>
+								hiiii hiiii
+								<p>hi</p>
+								hiiii hiiii
+								<p>hi</p>
+								hiiii hiiii
+								<p>hi</p>
+								hiiii hiiii
+								<p>hi</p>
+								hiiii hiiii
+								<p>hi</p>
+								hiiii hiiii
+								<p>hi</p>
+								hiiii hiiii
+								<p>hi</p>
+								hiiii hiiii
+								<p>hi</p>
+								hiiii hiiii
+								<p>hi</p>
+								hiiii hiiii
+							</div>
+						</span>
 					</StyledLayout>
 				</>
 			)}
