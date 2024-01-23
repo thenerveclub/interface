@@ -23,8 +23,8 @@ const StyledLayout = styled(Box)`
 
 	@media (max-width: 600px) {
 		width: 100vw;
-		height: calc(100vh - 4rem);
-		max-height: calc(100vh - 4rem);
+		height: calc(100vh - 8rem);
+		max-height: calc(100vh - 8rem);
 		margin: 4rem auto 0 auto;
 	}
 `;
