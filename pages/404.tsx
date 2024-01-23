@@ -16,7 +16,7 @@ const StyledBox = styled(Box)<{ theme: any }>`
 	text-align: center;
 	width: 90%;
 	max-width: 800px;
-	height: auto;
+	height: 85vh;
 	margin: 0 auto;
 	background-color: transparent;
 

@@ -18,8 +18,8 @@ const Main = styled.div<{ is404: boolean; dynamicHeight: number | string }>`
 	font-weight: 600;
 	letter-spacing: 0.011em;
 	// font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-	// min-height: calc(100vh - ${({ is404 }) => (is404 ? '248px' : '248px')});
-	min-height: ${(props) => props.dynamicHeight}px; // Use dynamic height
+	min-height: calc(100vh - ${({ is404 }) => (is404 ? '248px' : '248px')});
+	// min-height: ${(props) => props.dynamicHeight}px; // Use dynamic height
 
 	@media (max-width: 768px) {
 		// margin: 4 auto 0 auto;

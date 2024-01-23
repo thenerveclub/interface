@@ -20,6 +20,7 @@ const StyledLayout = styled(Box)`
 	background-color: transparent;
 	// margin: 4rem auto 0 auto;
 	height: auto;
+	max-height: 100vh;
 
 	@media (max-width: 600px) {
 		// max-height: 10vh;
