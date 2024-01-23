@@ -21,7 +21,6 @@ const StyledDiv = styled.div`
 	}
 
 	@media (max-width: 600px) {
-		width: 100vw;
 		height: calc(100vh - 4rem);
 		max-height: calc(100vh - 4rem);
 	}

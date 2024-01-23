@@ -17,16 +17,9 @@ const StyledLayout = styled(Box)`
 	align-items: center;
 	text-align: center;
 	width: 100vw;
-	max-height: calc(100vh - 4rem);
-	margin: 4rem auto 0 auto;
 	background-color: transparent;
-
-	@media (max-width: 600px) {
-		width: 100vw;
-		height: calc(100vh - 8rem);
-		max-height: calc(100vh - 8rem);
-		margin: 4rem auto 0 auto;
-	}
+	margin: 4rem auto 0 auto;
+	max-height: calc(100vh - 4rem);
 `;
 
 export default function IndexPage() {
