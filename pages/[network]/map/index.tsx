@@ -74,6 +74,13 @@ export default function IndexPage() {
 							isNetworkAvailable={isNetworkAvailable}
 							network={network}
 						/>
+
+						<Map
+							apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+							chainIdUrl={chainIdUrl}
+							isNetworkAvailable={isNetworkAvailable}
+							network={network}
+						/>
 					</StyledLayout>
 				</>
 			)}
