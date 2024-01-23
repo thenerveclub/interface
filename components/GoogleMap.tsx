@@ -20,10 +20,6 @@ const StyledDiv = styled.div`
 	.gm-style iframe + div {
 		border: none !important;
 	}
-
-	@media (max-width: 600px) {
-		// height: calc(100vh - 4rem);
-	}
 `;
 
 interface GoogleMapProps {

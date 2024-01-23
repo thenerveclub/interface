@@ -10,25 +10,6 @@ import LoadingScreen from '../../../components/LoadingScreen';
 import { useCheckNameRegister } from '../../../hooks/useCheckNameRegister';
 import { CHAINS, nameToChainId } from '../../../utils/chains';
 
-// const StyledLayout = styled(Box)`
-// 	display: flex;
-// 	flex-direction: column;
-// 	justify-content: center;
-// 	align-items: center;
-// 	text-align: center;
-// 	width: 100vw;
-// 	background-color: transparent;
-// 	margin: 4rem auto 0 auto;
-// 	min-height: calc(100vh - 4rem);
-// 	max-height: calc(100vh - 4rem);
-// 	overflow: hidden;
-
-// 	@media (max-width: 600px) {
-// 		max-height: calc(100vh - 4rem);
-// 		overflow: hidden;
-// 	}
-// `;
-
 const StyledLayout = styled(Box)`
 	display: flex;
 	flex-direction: column;
@@ -106,38 +87,6 @@ export default function IndexPage() {
 							isNetworkAvailable={isNetworkAvailable}
 							network={network}
 						/>
-						{/* <p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii
-						<p>hi</p>
-						hiiii hiiii */}
 					</StyledLayout>
 				</>
 			)}
