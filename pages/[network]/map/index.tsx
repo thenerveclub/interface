@@ -22,6 +22,10 @@ const StyledLayout = styled(Box)`
 	background-color: transparent;
 
 	@media (max-width: 600px) {
+		width: 100vw;
+		height: 100%;
+		max-height: 100%;
+		margin: 4rem auto 0 auto;
 	}
 `;
 
