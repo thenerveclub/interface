@@ -24,7 +24,10 @@ const StyledLayout = styled(Box)`
 	overflow: hidden;
 
 	@media (max-width: 600px) {
-		// max-height: 10vh;
+		min-height: calc(100vh - 4rem);
+		max-height: calc(100vh - 4rem);
+		overflow: hidden !important;
+		position: relative;
 	}
 `;
 
