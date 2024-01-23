@@ -608,7 +608,7 @@ const CreateMapDare: React.FC<CreateMapDareProps> = ({ chainIdUrl, isNetworkAvai
 							}/100`}</div>
 						</div>
 
-						{/* <StyledTitle theme={theme}>
+						<StyledTitle theme={theme}>
 							<div>
 								<a style={{ color: theme.palette.text.primary, marginRight: '0.25rem' }}>Latitude</a>
 								<Tooltip title="Mandatory contribution for participation." placement="top">
@@ -628,7 +628,7 @@ const CreateMapDare: React.FC<CreateMapDareProps> = ({ chainIdUrl, isNetworkAvai
 							</div>
 
 							<a>{modalCoords.lng}</a>
-						</StyledTitle> */}
+						</StyledTitle>
 
 						<StyledSection style={{ margin: '2rem auto 1.5rem auto' }}>
 							{chainId === chainIdUrl ? (

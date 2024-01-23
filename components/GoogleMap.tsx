@@ -6,19 +6,17 @@ import { useSelector } from 'react-redux';
 import useMapData from '../hooks/mapData/useMapData';
 import CreateMapDare from './modal/createMapDare';
 
-const StyledDiv = styled(Box)`
+const StyledDiv = styled.div`
 	display: flex;
 	width: 100vw;
 	height: 100vh;
 	max-width: 100%;
-	// max-height: 100%;
-	max-height: calc(100vh - 4rem);
+	max-height: 100%;
 	border: none;
 	background-color: transparent;
-	outline: none;
 
 	@media (max-width: 600px) {
-		max-height: calc(100vh - 4rem);
+		// max-height: 100vh;
 	}
 `;
 
