@@ -1,22 +1,24 @@
 import styled from '@emotion/styled';
-import { useMediaQuery } from '@mui/material';
+import { Box, useMediaQuery } from '@mui/material';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import useMapData from '../hooks/mapData/useMapData';
 import CreateMapDare from './modal/createMapDare';
 
-const StyledDiv = styled.div`
+const StyledDiv = styled(Box)`
 	display: flex;
 	width: 100vw;
 	height: 100vh;
 	max-width: 100%;
-	max-height: 100%;
+	// max-height: 100%;
+	max-height: calc(100vh - 4rem);
 	border: none;
 	background-color: transparent;
+	outline: none;
 
 	@media (max-width: 600px) {
-		// max-height: calc(100vh - 4rem);
+		max-height: calc(100vh - 4rem);
 	}
 `;
 

@@ -17,9 +17,12 @@ const StyledLayout = styled(Box)`
 	align-items: center;
 	text-align: center;
 	width: 100vw;
-	max-height: calc(100vh - 4rem);
+	height: 100%;
+	// max-height: calc(100vh - 4rem);
 	margin: 4rem auto 0 auto;
 	background-color: transparent;
+	border: none;
+	outline: none;
 
 	@media (max-width: 600px) {
 		// margin: 4rem auto 0 auto;
