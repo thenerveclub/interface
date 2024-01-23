@@ -10,6 +10,25 @@ import LoadingScreen from '../../../components/LoadingScreen';
 import { useCheckNameRegister } from '../../../hooks/useCheckNameRegister';
 import { CHAINS, nameToChainId } from '../../../utils/chains';
 
+// const StyledLayout = styled(Box)`
+// 	display: flex;
+// 	flex-direction: column;
+// 	justify-content: center;
+// 	align-items: center;
+// 	text-align: center;
+// 	width: 100vw;
+// 	background-color: transparent;
+// 	margin: 4rem auto 0 auto;
+// 	min-height: calc(100vh - 4rem);
+// 	max-height: calc(100vh - 4rem);
+// 	overflow: hidden;
+
+// 	@media (max-width: 600px) {
+// 		max-height: calc(100vh - 4rem);
+// 		overflow: hidden;
+// 	}
+// `;
+
 const StyledLayout = styled(Box)`
 	display: flex;
 	flex-direction: column;
@@ -19,19 +38,28 @@ const StyledLayout = styled(Box)`
 	width: 100vw;
 	background-color: transparent;
 	margin: 4rem auto 0 auto;
-	min-height: calc(100vh - 4rem);
-	max-height: calc(100vh - 4rem);
+	height: calc(var(--vh, 1vh) * 100 - 4rem);
 	overflow: hidden;
 
 	@media (max-width: 600px) {
-		min-height: calc(100vh - 4rem);
-		max-height: calc(100vh - 4rem);
-		overflow: hidden !important;
-		position: relative;
+		height: calc(var(--vh, 1vh) * 100 - 4rem);
 	}
 `;
 
 export default function IndexPage() {
+	// Adjust the viewport height on mobile devices
+	useEffect(() => {
+		const adjustHeight = () => {
+			const vh = window.innerHeight * 0.01;
+			document.documentElement.style.setProperty('--vh', `${vh}px`);
+		};
+
+		window.addEventListener('resize', adjustHeight);
+		adjustHeight(); // Trigger it on mount
+
+		return () => window.removeEventListener('resize', adjustHeight);
+	}, []);
+
 	const theme = useTheme();
 	const isLoading = false;
 	const router = useRouter();
@@ -72,48 +100,44 @@ export default function IndexPage() {
 						<meta name="twitter:image" content="https://dapp.nerveglobal.com/favicon.ico" />
 					</Head>
 					<StyledLayout>
-						<span style={{ position: 'absolute', top: 0, left: 0, zIndex: 9999 }}>
-							<div style={{ maxHeight: '100vh', width: '100vw' }}>
-								{/* <Map
+						{/* <Map
 							apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
 							chainIdUrl={chainIdUrl}
 							isNetworkAvailable={isNetworkAvailable}
 							network={network}
 						/> */}
-								<p>hi</p>
-								hiiii hiiii
-								<p>hi</p>
-								hiiii hiiii
-								<p>hi</p>
-								hiiii hiiii
-								<p>hi</p>
-								hiiii hiiii
-								<p>hi</p>
-								hiiii hiiii
-								<p>hi</p>
-								hiiii hiiii
-								<p>hi</p>
-								hiiii hiiii
-								<p>hi</p>
-								hiiii hiiii
-								<p>hi</p>
-								hiiii hiiii
-								<p>hi</p>
-								hiiii hiiii
-								<p>hi</p>
-								hiiii hiiii
-								<p>hi</p>
-								hiiii hiiii
-								<p>hi</p>
-								hiiii hiiii
-								<p>hi</p>
-								hiiii hiiii
-								<p>hi</p>
-								hiiii hiiii
-								<p>hi</p>
-								hiiii hiiii
-							</div>
-						</span>
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
+						<p>hi</p>
+						hiiii hiiii
 					</StyledLayout>
 				</>
 			)}
