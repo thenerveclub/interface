@@ -18,12 +18,11 @@ const StyledLayout = styled(Box)`
 	text-align: center;
 	width: 100vw;
 	background-color: transparent;
-	margin: 4rem auto 0 auto;
-	max-height: calc(100vh - 4rem);
+	// margin: 4rem auto 0 auto;
+	height: auto;
 
 	@media (max-width: 600px) {
-		height: calc(50vh - 4rem);
-		max-height: calc(50vh - 4rem);
+		// max-height: 10vh;
 	}
 `;
 
