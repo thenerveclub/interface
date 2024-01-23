@@ -14,6 +14,11 @@ const StyledDiv = styled.div`
 	max-height: 100%;
 	border: none;
 	background-color: transparent;
+	outline: none;
+
+	.gm-style iframe + div {
+		border: none !important;
+	}
 
 	@media (max-width: 600px) {
 		// max-height: 100vh;
@@ -125,7 +130,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, chainIdUrl, isNetworkAvai
 				disableDoubleClickZoom: true,
 				styles: [],
 			});
-			initializedMap.addListener('dblclick', handleMapClick);
+			initializedMap.addListener('click', handleMapClick);
 			setMap(initializedMap);
 		}
 	};
