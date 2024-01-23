@@ -135,6 +135,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, chainIdUrl, isNetworkAvai
 
 		// State or variable to keep track of the last clicked marker
 		let lastClickedMarker = null;
+		let lastOpenedInfoWindow = null;
 
 		mapData.forEach((dataItem) => {
 			const marker = new google.maps.Marker({
@@ -170,7 +171,12 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, chainIdUrl, isNetworkAvai
 						router.push(`/${network}/dare/${dataItem.id}`);
 						lastClickedMarker = null; // Reset the last clicked marker
 					} else {
+						if (lastOpenedInfoWindow) {
+							lastOpenedInfoWindow.close();
+						}
 						lastClickedMarker = marker;
+						infoWindow.open(map, marker);
+						lastOpenedInfoWindow = infoWindow;
 					}
 				} else {
 					router.push(`/${network}/dare/${dataItem.id}`);

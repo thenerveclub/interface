@@ -23,8 +23,6 @@ const StyledLayout = styled(Box)`
 
 	@media (max-width: 600px) {
 		margin: 4rem auto 0 auto;
-		padding: 0;
-		justify-content: flex-start;
 		max-height: calc(100vh - 4rem);
 	}
 `;
