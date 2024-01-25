@@ -1,3 +1,4 @@
+import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
@@ -14,6 +15,26 @@ import usePlayerDataSearchList from '../hooks/searchData/usePlayerDataSearchList
 import { nameToChainId } from '../utils/chains';
 import EthereumLogo from '/public/svg/chains/ethereum.svg';
 import PolygonLogo from '/public/svg/chains/polygon.svg';
+
+// Define the keyframes for the slide-down animation
+const slideDown = keyframes`
+  from {
+    transform: translateY(0); // Start from the top
+  }
+  to {
+    transform: translateY(100%); // End below the screen
+  }
+`;
+
+// Define the keyframes for the slide-up animation
+const slideUp = keyframes`
+  from {
+    transform: translateY(100%); // Start from below the screen
+  }
+  to {
+    transform: translateY(0); // End at the top
+  }
+`;
 
 const SearchBarContainer = styled(Paper)<{ theme: any }>`
 	display: flex;
@@ -64,8 +85,9 @@ const SearchBarMobile = styled(Paper)<{ theme: any }>`
 		align-items: center;
 		color: ${({ theme }) => theme.palette.text.primary};
 		background-color: transparent;
-		border: 1px solid ${({ theme }) => theme.palette.secondary.main};
-		border-radius: ${({ theme }) => theme.shape.borderRadius};
+		// border: 1px solid ${({ theme }) => theme.palette.secondary.main};
+		// border-radius: ${({ theme }) => theme.shape.borderRadius};
+		width: 3rem
 		min-height: 40px;
 		height: 40px;
 		position: relative;
@@ -270,6 +292,35 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 			maximumFractionDigits: 2,
 		});
 	}
+
+	// Mobile Search Menu
+	// State declarations
+	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const [isClosing, setIsClosing] = useState(false);
+
+	const disableScrolling = () => {
+		const body = document.body;
+		body.style.overflow = 'hidden';
+	};
+
+	const enableScrolling = () => {
+		const body = document.body;
+		body.style.overflow = 'auto';
+	};
+
+	const toggleMenu = () => {
+		if (isMenuOpen) {
+			setIsClosing(true);
+			setTimeout(() => {
+				setIsMenuOpen(false);
+				setIsClosing(false);
+				enableScrolling();
+			}, 500); // 500ms for the slide down duration
+		} else {
+			setIsMenuOpen(true);
+			disableScrolling();
+		}
+	};
 
 	return (
 		<ClickAwayListener
@@ -540,9 +591,18 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 					)}
 				</SearchBarContainer>
 				<SearchBarMobile theme={theme}>
-					<IconButton type="submit" aria-label="search" style={{ cursor: 'default', backgroundColor: 'transparent' }} disableRipple>
-						<SearchIcon style={{ color: theme.palette.text.primary }} />
-					</IconButton>
+					<MobileMenuButton onClick={toggleMenu}>
+						<SearchIcon />
+					</MobileMenuButton>
+					{isMenuOpen && (
+						<MobileSettings isClosing={isClosing}>
+							<MenuContainer>
+								<CloseButton onClick={toggleMenu}>
+									<CloseOutlinedIcon onClick={toggleMenu} />
+								</CloseButton>
+							</MenuContainer>
+						</MobileSettings>
+					)}
 				</SearchBarMobile>
 			</>
 		</ClickAwayListener>
@@ -551,3 +611,89 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 };
 
 export default SearchBar;
+
+const StyledButtonMobile = styled(Button)<{ theme: any }>`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	// border: 1px solid rgba(0, 0, 40, 1);
+	border: 1px solid #fff;
+	border-radius: 0;
+	padding: 0.5rem 1rem;
+	background-color: transparent;
+	transition: all 0.5s ease-in-out;
+	color: #fff;
+	font-size: 0.8rem;
+	font-weight: bold;
+	box-shadow: none;
+
+	&:hover {
+		color: #000;
+		background-color: rgba(255, 255, 255, 1);
+		box-shadow: none;
+	}
+`;
+
+const MobileMenuButton = styled.div`
+	display: none;
+	visibility: hidden;
+
+	@media (max-width: 1000px) {
+		display: flex;
+		visibility: visible;
+		justify-content: center;
+		width: 3rem;
+	}
+`;
+
+const MobileSettings = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	min-width: 100vw;
+	min-height: 100vh;
+	background-color: #000;
+	z-index: 9999;
+	position: fixed;
+	top: 0;
+	left: 0;
+	padding: 5rem;
+	padding-bottom: 10rem;
+	animation: ${(props) => (props.isClosing ? slideDown : slideUp)} 0.5s ease-out;
+`;
+
+const MenuContainer = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	height: 80%;
+
+	& > * + * {
+		margin-top: 1rem;
+	}
+`;
+
+const DesktopSettings = styled.div`
+	display: block;
+	visibility: visible;
+
+	@media (max-width: 480px) {
+		display: none;
+		visibility: hidden;
+	}
+`;
+
+const CloseButton = styled.button`
+	display: flex;
+	justify-content: center;
+	border: none;
+	color: #fff;
+	// position: absolute;
+	// bottom: 10rem;
+	// left: 50%;
+	// transform: translateX(-50%); // Adjust for centering
+	background-color: transparent;
+`;

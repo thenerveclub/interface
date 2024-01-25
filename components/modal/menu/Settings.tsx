@@ -78,6 +78,16 @@ const SettingsButton = styled(Button)<{ theme: any }>`
 	&:hover {
 		border: 1px solid ${({ theme }) => theme.palette.warning.main};
 	}
+
+	@media (max-width: 680px) {
+		border: none;
+		border-radius: 0px;
+		width: 3rem;
+
+		&:hover {
+			border: none;
+		}
+	}
 `;
 
 const StyledButton = styled(({ active, ...otherProps }) => <Button {...otherProps} />)<{
@@ -453,7 +463,7 @@ function SettingsModal() {
 	};
 
 	return (
-		<div>
+		<>
 			<SettingsButton theme={theme} fullWidth={true} onClick={handleOpen}>
 				<TuneIcon />
 			</SettingsButton>
@@ -593,7 +603,7 @@ function SettingsModal() {
 					)}
 				</ConnectBox>
 			</StyledModal>
-		</div>
+		</>
 	);
 }
 

@@ -1,6 +1,10 @@
+import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import HomeIcon from '@mui/icons-material/Home';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import MenuIcon from '@mui/icons-material/Menu';
+import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import { AppBar, Button } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import localFont from 'next/font/local';
@@ -17,12 +21,33 @@ import Setting from '../modal/menu/Settings';
 
 const TrueLies = localFont({ src: '../../public/fonts/TrueLies.woff2', display: 'swap' });
 
+// Define the keyframes for the slide-down animation
+const slideDown = keyframes`
+  from {
+    transform: translateY(0); // Start from the top
+  }
+  to {
+    transform: translateY(100%); // End below the screen
+  }
+`;
+
+// Define the keyframes for the slide-up animation
+const slideUp = keyframes`
+  from {
+    transform: translateY(100%); // Start from below the screen
+  }
+  to {
+    transform: translateY(0); // End at the top
+  }
+`;
+
 const StyledAppBar = styled(AppBar)<{ theme: any }>`
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
 	align-items: center;
 	margin: 0 auto 0 auto;
+	padding: 0;
 	height: 4rem;
 	position: fixed;
 	background-color: transparent;
@@ -198,14 +223,110 @@ const StyledLink = styled(Button)<{ theme: any }>`
 	min-height: 40px;
 	height: 40px;
 	background-color: transparent;
-	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
-	border-radius: ${({ theme }) => theme.shape.borderRadius};
-	width: object-fit;
+	// border: 1px solid ${({ theme }) => theme.palette.secondary.main};
+	// border-radius: ${({ theme }) => theme.shape.borderRadius};
+	width: 3rem;
 	transition: all 0.5s ease-in-out;
 
 	&:hover {
-		border: 1px solid ${({ theme }) => theme.palette.warning.main};
+		border: none;
 	}
+`;
+
+const StyledButtonMobile = styled(Button)<{ theme: any }>`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	// border: 1px solid rgba(0, 0, 40, 1);
+	border: 1px solid #fff;
+	border-radius: 0;
+	padding: 0.5rem 1rem;
+	background-color: transparent;
+	transition: all 0.5s ease-in-out;
+	color: #fff;
+	font-size: 0.8rem;
+	font-weight: bold;
+	box-shadow: none;
+
+	&:hover {
+		color: #000;
+		background-color: rgba(255, 255, 255, 1);
+		box-shadow: none;
+	}
+`;
+
+const MobileMenuButton = styled.div<{ theme: any }>`
+	display: none;
+	visibility: hidden;
+
+	@media (max-width: 680px) {
+		display: flex;
+		visibility: visible;
+		justify-content: center;
+		align-items: center;
+		width: 3rem;
+
+		color: ${({ theme }) => theme.palette.text.primary};
+		text-transform: none;
+		font-weight: 400;
+		min-height: 40px;
+		height: 40px;
+		background-color: transparent;
+		// border: 1px solid ${({ theme }) => theme.palette.secondary.main};
+		// border-radius: ${({ theme }) => theme.shape.borderRadius};
+	}
+`;
+
+const MobileSettings = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	min-width: 100vw;
+	min-height: 100vh;
+	background-color: #000;
+	z-index: 9999;
+	position: fixed;
+	top: 0;
+	left: 0;
+	padding: 5rem;
+	padding-bottom: 10rem;
+	animation: ${(props) => (props.isClosing ? slideDown : slideUp)} 0.5s ease-out;
+`;
+
+const MenuContainer = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	height: 80%;
+
+	& > * + * {
+		margin-top: 1rem;
+	}
+`;
+
+const DesktopSettings = styled.div`
+	display: block;
+	visibility: visible;
+
+	@media (max-width: 480px) {
+		display: none;
+		visibility: hidden;
+	}
+`;
+
+const CloseButton = styled.button`
+	display: flex;
+	justify-content: center;
+	border: none;
+	color: #fff;
+	// position: absolute;
+	// bottom: 10rem;
+	// left: 50%;
+	// transform: translateX(-50%); // Adjust for centering
+	background-color: transparent;
 `;
 
 export default function Header() {
@@ -219,6 +340,32 @@ export default function Header() {
 
 	// State
 	const [windowWidth, setWindowWidth] = useState(undefined);
+	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const [isClosing, setIsClosing] = useState(false);
+
+	const disableScrolling = () => {
+		const body = document.body;
+		body.style.overflow = 'hidden';
+	};
+
+	const enableScrolling = () => {
+		const body = document.body;
+		body.style.overflow = 'auto';
+	};
+
+	const toggleMenu = () => {
+		if (isMenuOpen) {
+			setIsClosing(true);
+			setTimeout(() => {
+				setIsMenuOpen(false);
+				setIsClosing(false);
+				enableScrolling();
+			}, 500); // 500ms for the slide down duration
+		} else {
+			setIsMenuOpen(true);
+			disableScrolling();
+		}
+	};
 
 	useEffect(() => {
 		function handleResize() {
@@ -278,19 +425,37 @@ export default function Header() {
 						</>
 					) : (
 						<>
+							<Link href={`/${network}`} passHref style={{ textDecoration: 'none' }}>
+								<StyledLink theme={theme}>
+									<HomeIcon sx={{ fontSize: 30, color: theme.palette.text.primary }} />
+								</StyledLink>
+							</Link>
 							<Link href={`/${network}/map`} passHref style={{ textDecoration: 'none' }}>
-							<StyledLink theme={theme}>
-								<LocationOnIcon sx={{ fontSize: 30, color: theme.palette.text.primary }} />
-							</StyledLink>
+								<StyledLink theme={theme}>
+									<LocationOnIcon sx={{ fontSize: 30, color: theme.palette.text.primary }} />
+								</StyledLink>
 							</Link>
 
 							<SearchBar network={network} />
-
 							<Setting />
-							<div>
-								{/* {account && <SelectChain />} */}
-								{account ? <AccountModal /> : <Connect />}
-							</div>
+							<MobileMenuButton theme={theme} onClick={toggleMenu}>
+								<MenuOutlinedIcon />
+							</MobileMenuButton>
+							{isMenuOpen && (
+								<MobileSettings isClosing={isClosing}>
+									<MenuContainer>
+										<Link onClick={toggleMenu} href={`/contact`} passHref style={{ textDecoration: 'none' }}>
+											<StyledButtonMobile theme={theme}>contact</StyledButtonMobile>
+										</Link>
+										{account ? <AccountModal /> : <Connect />}
+										<CloseButton onClick={toggleMenu}>
+											<CloseOutlinedIcon onClick={toggleMenu} />
+										</CloseButton>
+									</MenuContainer>
+								</MobileSettings>
+							)}
+
+							{/* {account ? <AccountModal /> : <Connect />} */}
 						</>
 					)}
 				</StyledDiv>
