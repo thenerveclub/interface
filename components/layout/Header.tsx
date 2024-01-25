@@ -1,11 +1,12 @@
 import styled from '@emotion/styled';
-import { TheaterComedySharp } from '@mui/icons-material';
-import { AppBar } from '@mui/material';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import MenuIcon from '@mui/icons-material/Menu';
+import { AppBar, Button } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import localFont from 'next/font/local';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useRef } from 'react';
+import { use, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import SearchBar from '../SearchBar';
 import SelectChain from '../SelectChain';
@@ -22,19 +23,40 @@ const StyledAppBar = styled(AppBar)<{ theme: any }>`
 	justify-content: center;
 	align-items: center;
 	margin: 0 auto 0 auto;
-
 	height: 4rem;
-	// padding: 2rem;
 	position: fixed;
-	background-color: 'transparent';
+	background-color: transparent;
 	box-shadow: none;
 	top: 0;
 	left: 0;
 	right: 0;
 
+	@media (max-width: 680px) {
+		position: fixed;
+		background-color: ${({ theme }) => theme.palette.background.default} !important;
+		border-top: 0.25px solid ${({ theme }) => theme.palette.secondary.main} !important;
+		box-shadow: 0px 0.25px 0.25px ${({ theme }) => theme.palette.secondary.main} !important;
+
+		top: auto;
+		left: 0;
+		right: 0;
+		bottom: 0;
+	}
+`;
+
+const StyledDiv = styled.div`
+	display: flex;
+	width: 100%;
+
 	@media (max-width: 1280px) {
-		// height: 40px;
-		// max-height: 40px;
+		width: 95%;
+	}
+
+	@media (max-width: 680px) {
+		width: 95%;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
 	}
 `;
 
@@ -160,53 +182,29 @@ const StyledSectionRight = styled.section`
 		}
 	}
 
-	@media (max-width: 768px) {
-		width: 100%;
-		justify-content: rigth;
-
-		& > *:not(:last-child) {
-			margin-left: 1rem;
-		}
-
-		& > *:last-child {
-			margin-left: 1rem;
-		}
-	}
-
-	@media (max-width: 480px) {
-		display: flex;
-		flex-direction: row;
-		justify-content: flex-end;
-		// width: 100%;
-		// justify-content: space-between;
-
-		& > *:not(:last-child) {
-			margin-left: 1rem;
-		}
-
-		& > *:last-child {
-			margin-left: 1rem;
-		}
-	}
-`;
-
-const MobileSettings = styled.div`
-	display: none;
-	visibility: hidden;
-
-	@media (max-width: 480px) {
-		display: block;
-		visibility: visible;
-	}
-`;
-
-const DesktopSettings = styled.div`
-	display: block;
-	visibility: visible;
-
-	@media (max-width: 480px) {
+	@media (max-width: 1000px) {
 		display: none;
 		visibility: hidden;
+	}
+`;
+
+const StyledLink = styled(Button)<{ theme: any }>`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: ${({ theme }) => theme.palette.text.primary};
+	text-transform: none;
+	font-weight: 400;
+	min-height: 40px;
+	height: 40px;
+	background-color: transparent;
+	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
+	border-radius: ${({ theme }) => theme.shape.borderRadius};
+	width: object-fit;
+	transition: all 0.5s ease-in-out;
+
+	&:hover {
+		border: 1px solid ${({ theme }) => theme.palette.warning.main};
 	}
 `;
 
@@ -218,6 +216,18 @@ export default function Header() {
 
 	// Redux
 	const account = useSelector((state: { account: string }) => state.account);
+
+	// State
+	const [windowWidth, setWindowWidth] = useState(undefined);
+
+	useEffect(() => {
+		function handleResize() {
+			setWindowWidth(window.innerWidth);
+		}
+		window.addEventListener('resize', handleResize);
+		handleResize();
+		return () => window.removeEventListener('resize', handleResize);
+	}, []);
 
 	useEffect(() => {
 		const handleScroll = () => {
@@ -245,23 +255,45 @@ export default function Header() {
 	return (
 		<>
 			<StyledAppBar theme={theme} ref={headerRef}>
-				<StyledSectionLeft theme={theme}>
-					<Link href={`/${network}`} passHref style={{ textDecoration: 'none' }}>
-						<h1>NERVE GLOBAL</h1>
-					</Link>
-					<SelectLeaderboard />
-					<Link href={`/${network}/map`} passHref style={{ textDecoration: 'none' }}>
-						<h3>Map</h3>
-					</Link>
-				</StyledSectionLeft>
-				<StyledSectionMiddle>
-					<SearchBar network={network} />
-				</StyledSectionMiddle>
-				<StyledSectionRight>
-					{account && <SelectChain />}
-					{account ? <AccountModal /> : <Connect />}
-					<Setting />
-				</StyledSectionRight>
+				<StyledDiv>
+					{windowWidth > 680 ? (
+						<>
+							<StyledSectionLeft theme={theme}>
+								<Link href={`/${network}`} passHref style={{ textDecoration: 'none' }}>
+									<h1>NERVE GLOBAL</h1>
+								</Link>
+								<SelectLeaderboard />
+								<Link href={`/${network}/map`} passHref style={{ textDecoration: 'none' }}>
+									<h3>Map</h3>
+								</Link>
+							</StyledSectionLeft>
+							<StyledSectionMiddle>
+								<SearchBar network={network} />
+							</StyledSectionMiddle>
+							<StyledSectionRight>
+								{/* {account && <SelectChain />} */}
+								{account ? <AccountModal /> : <Connect />}
+								<Setting />
+							</StyledSectionRight>
+						</>
+					) : (
+						<>
+							<Link href={`/${network}/map`} passHref style={{ textDecoration: 'none' }}>
+							<StyledLink theme={theme}>
+								<LocationOnIcon sx={{ fontSize: 30, color: theme.palette.text.primary }} />
+							</StyledLink>
+							</Link>
+
+							<SearchBar network={network} />
+
+							<Setting />
+							<div>
+								{/* {account && <SelectChain />} */}
+								{account ? <AccountModal /> : <Connect />}
+							</div>
+						</>
+					)}
+				</StyledDiv>
 			</StyledAppBar>
 		</>
 	);

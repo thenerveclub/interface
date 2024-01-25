@@ -32,6 +32,7 @@ import { customRPCSlice } from '../../../state/customRPC/customRPCSlice';
 import { rpcSlice } from '../../../state/rpc/rpcSlice';
 import { testnetsSlice } from '../../../state/testnets/testnetsSlice';
 import { setTheme, setUseSystemSetting } from '../../../state/theme/themeSlice';
+import SelectChain from '../../SelectChain';
 
 const StyledModal = styled(Modal)`
 	.MuiModal-backdrop {
@@ -158,6 +159,14 @@ const StyledButtonGroup = styled(ButtonGroup)<{ theme: any }>`
 	border-radius: ${({ theme }) => theme.shape.borderRadius};
 `;
 
+const StyledDiv = styled.div`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 0 auto 0 auto;
+	width: 100%;
+`;
+
 const StyledTitles = styled.div<{ theme: any }>`
 	display: flex;
 	justify-content: space-between;
@@ -257,7 +266,7 @@ const MenuItemStyled = styled(MenuItem)<{ theme: any }>`
 const SearchBarContainer = styled(Paper)<{ theme: any }>`
 	display: flex;
 	width: 90%;
-	max-width: 25rem;
+	max-width: 90%;
 	margin: 1rem auto 0 auto;
 	align-items: center;
 	background-color: transparent;
@@ -288,7 +297,7 @@ const SearchBarContainer = styled(Paper)<{ theme: any }>`
 	position: relative;
 
 	@media (max-width: 768px) {
-		width: 75%;
+		width: 90%;
 	}
 `;
 
@@ -474,7 +483,12 @@ function SettingsModal() {
 						</StyledButton>
 					</StyledButtonGroup>
 
-					<StyledTitle theme={theme}>Currency</StyledTitle>
+					<StyledTitle theme={theme}>Chain</StyledTitle>
+					<StyledDiv>
+						<SelectChain />
+					</StyledDiv>
+
+					{/* <StyledTitle theme={theme}>Currency</StyledTitle>
 					<StyledButtonGroup theme={theme} variant="contained" aria-label="outlined primary button group" fullWidth={true}>
 						<StyledButton theme={theme} active={currencyValue === true} onClick={() => handleUpdateCurrency(true)}>
 							<AttachMoneyOutlinedIcon />
@@ -482,7 +496,7 @@ function SettingsModal() {
 						<StyledButton theme={theme} active={currencyValue === false} onClick={() => handleUpdateCurrency(false)}>
 							<CurrencyBitcoinOutlinedIcon />
 						</StyledButton>
-					</StyledButtonGroup>
+					</StyledButtonGroup> */}
 
 					<StyledTitles theme={theme}>
 						<StyledDuoTitle theme={theme}>Show testnets</StyledDuoTitle>

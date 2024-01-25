@@ -22,8 +22,11 @@ const ConnectButton = styled(Button)<{ theme: any }>`
 	border-radius: ${({ theme }) => theme.shape.borderRadius};
 	cursor: default;
 
-	@media (max-width: 600px) {
+	@media (max-width: 680px) {
 		border: none;
+		width: object-fit;
+		margin: 0 auto 0 auto;
+		padding: 0;
 	}
 `;
 
@@ -37,7 +40,7 @@ const StyledDiv = styled.div`
 	background-color: transparent;
 	margin-left: 0.5rem;
 
-	@media (max-width: 600px) {
+	@media (max-width: 680px) {
 		display: none;
 		visibility: hidden;
 	}

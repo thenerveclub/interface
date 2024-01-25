@@ -53,6 +53,10 @@ const ConnectButton = styled(Button)<{ theme: any }>`
 		color: ${({ theme }) => theme.palette.text.primary};
 		border: 1px solid ${({ theme }) => theme.palette.warning.main};
 	}
+
+	@media (max-width: 1280px) {
+		width: 100px;
+	}
 `;
 
 const ConnectBox = styled(Box)<{ theme: any }>`
@@ -93,7 +97,7 @@ function ConnectModal() {
 
 	return (
 		<div>
-			{!open ? (
+			{/* {!open ? (
 				<ConnectButton theme={theme} fullWidth={true} onClick={handleOpen}>
 					Connect
 				</ConnectButton>
@@ -106,7 +110,11 @@ function ConnectModal() {
 				>
 					Connecting
 				</ConnectButton>
-			)}
+			)} */}
+
+			<ConnectButton theme={theme} fullWidth={true} onClick={handleOpen}>
+				Connect
+			</ConnectButton>
 
 			<StyledModal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
 				<ConnectBox theme={theme} className={isClosing ? 'closing' : ''}>

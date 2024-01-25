@@ -21,9 +21,12 @@ const StyledLayout = styled(Box)`
 	margin: 4rem auto 0 auto;
 	height: calc(var(--vh, 1vh) * 100 - 4rem);
 	overflow: hidden;
+	position: fixed;
 
 	@media (max-width: 600px) {
+		margin: 0 auto 0 auto;
 		height: calc(var(--vh, 1vh) * 100 - 4rem);
+		position: fixed;
 	}
 `;
 

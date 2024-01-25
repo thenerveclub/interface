@@ -47,8 +47,28 @@ const SearchBarContainer = styled(Paper)<{ theme: any }>`
 	}
 	position: relative;
 
-	@media (max-width: 768px) {
-		width: 75%;
+	@media (max-width: 680px) {
+		display: none;
+		visibility: hidden;
+	}
+`;
+
+const SearchBarMobile = styled(Paper)<{ theme: any }>`
+	display: flex;
+	visibility: hidden;
+
+	@media (max-width: 680px) {
+		display: flex;
+		visibility: visible;
+		justify-content: center;
+		align-items: center;
+		color: ${({ theme }) => theme.palette.text.primary};
+		background-color: transparent;
+		border: 1px solid ${({ theme }) => theme.palette.secondary.main};
+		border-radius: ${({ theme }) => theme.shape.borderRadius};
+		min-height: 40px;
+		height: 40px;
+		position: relative;
 	}
 `;
 
@@ -258,140 +278,206 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 				setChainListVisible(false);
 			}}
 		>
-			<SearchBarContainer theme={theme} onSubmit={(e) => e.preventDefault()} elevation={0}>
-				<IconButton type="submit" aria-label="search" style={{ cursor: 'default', backgroundColor: 'transparent' }} disableRipple>
-					<SearchIcon style={{ color: theme.palette.secondary.main }} />
-				</IconButton>
-				<InputBase
-					fullWidth={true}
-					style={{ fontSize: '0.875rem' }}
-					placeholder={`Search players and dares on ${network}…`}
-					inputProps={{ 'aria-label': 'search' }}
-					value={searchValue}
-					onChange={handleSearchChange}
-					onFocus={handleFocus}
-					endAdornment={
-						<StyledChainButton theme={theme} onChange={handleChainChange} onFocus={handleChainFocus} style={{ justifyContent: 'center' }}>
-							{network === 'polygon' ? <PolygonLogo /> : <EthereumLogo />}
-						</StyledChainButton>
-					}
-				/>
-				{isListVisible && (
-					<SearchResultList theme={theme}>
-						{searchValue.trim() === '' && (
-							<>
-								{searchHistory.length > 0 && (
-									<>
-										<SearchResultTitle theme={theme}>
-											<AccessTimeOutlinedIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main }} />
-											Recent searches
-											<span>
-												<CloseOutlinedIcon
-													fontSize={'small'}
-													onClick={clearSearchHistory}
-													style={{ cursor: 'pointer', color: theme.palette.error.main }}
-												/>
-											</span>
-										</SearchResultTitle>
-										{searchHistory.map((item) => (
+			<>
+				<SearchBarContainer theme={theme} onSubmit={(e) => e.preventDefault()} elevation={0}>
+					<IconButton type="submit" aria-label="search" style={{ cursor: 'default', backgroundColor: 'transparent' }} disableRipple>
+						<SearchIcon style={{ color: theme.palette.secondary.main }} />
+					</IconButton>
+					<InputBase
+						fullWidth={true}
+						style={{ fontSize: '0.875rem' }}
+						placeholder={`Search players and dares on ${network}…`}
+						inputProps={{ 'aria-label': 'search' }}
+						value={searchValue}
+						onChange={handleSearchChange}
+						onFocus={handleFocus}
+						endAdornment={
+							<StyledChainButton theme={theme} onChange={handleChainChange} onFocus={handleChainFocus} style={{ justifyContent: 'center' }}>
+								{network === 'polygon' ? <PolygonLogo /> : <EthereumLogo />}
+							</StyledChainButton>
+						}
+					/>
+					{isListVisible && (
+						<SearchResultList theme={theme}>
+							{searchValue.trim() === '' && (
+								<>
+									{searchHistory.length > 0 && (
+										<>
+											<SearchResultTitle theme={theme}>
+												<AccessTimeOutlinedIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main }} />
+												Recent searches
+												<span>
+													<CloseOutlinedIcon
+														fontSize={'small'}
+														onClick={clearSearchHistory}
+														style={{ cursor: 'pointer', color: theme.palette.error.main }}
+													/>
+												</span>
+											</SearchResultTitle>
+											{searchHistory.map((item) => (
+												<SearchResultItemStyled
+													theme={theme}
+													key={item.id}
+													onClick={() => {
+														if (item.type === 'player') {
+															handleListPlayerItemClick(item.id, item.address);
+														} else {
+															handleListDareItemClick(item.id, item.amount, item.participants);
+														}
+													}}
+												>
+													{item.type === 'player' ? (
+														<>
+															<div className="item-top">
+																<span className="player-name">{item.id}</span>
+																{/* <span className="player-number">{player.someNumber}</span> */}
+															</div>
+															<div className="item-bottom">
+																<a>{item.address}</a>
+																{/* <span className="player-additional-text">Earned</span> */}
+															</div>
+														</>
+													) : (
+														<>
+															<div className="item-top">
+																<span>{item.id.length > 25 ? `${item.id.substring(0, 25)}...` : item.id}</span>
+
+																<span>
+																	{formatNumber(item.amount)}{' '}
+																	{chainIdUrl === 137 ? (
+																		<PolygonLogo
+																			style={{
+																				display: 'inline-block',
+																				verticalAlign: 'middle',
+																			}}
+																			width="16"
+																			height="16"
+																			alt="Logo"
+																		/>
+																	) : (
+																		<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+																	)}
+																</span>
+															</div>
+															<div className="item-bottom">
+																<a>{item.participants} participants</a>
+																<a>Stake</a>
+															</div>
+														</>
+													)}
+												</SearchResultItemStyled>
+											))}
+										</>
+									)}
+									<SearchResultTitle theme={theme}>
+										<TrendingUpIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main }} />
+										Trending Players
+									</SearchResultTitle>
+									{trendingPlayersList.length > 0 ? (
+										trendingPlayersList.map((trendingPlayer) => (
 											<SearchResultItemStyled
 												theme={theme}
-												key={item.id}
-												onClick={() => {
-													if (item.type === 'player') {
-														handleListPlayerItemClick(item.id, item.address);
-													} else {
-														handleListDareItemClick(item.id, item.amount, item.participants);
-													}
-												}}
+												key={trendingPlayer.id}
+												onClick={() => handleListPlayerItemClick(trendingPlayer.userName, trendingPlayer.id)}
 											>
-												{item.type === 'player' ? (
-													<>
-														<div className="item-top">
-															<span className="player-name">{item.id}</span>
-															{/* <span className="player-number">{player.someNumber}</span> */}
-														</div>
-														<div className="item-bottom">
-															<a>{item.address}</a>
-															{/* <span className="player-additional-text">Earned</span> */}
-														</div>
-													</>
-												) : (
-													<>
-														<div className="item-top">
-															<span>{item.id.length > 25 ? `${item.id.substring(0, 25)}...` : item.id}</span>
-
-															<span>
-																{formatNumber(item.amount)}{' '}
-																{chainIdUrl === 137 ? (
-																	<PolygonLogo
-																		style={{
-																			display: 'inline-block',
-																			verticalAlign: 'middle',
-																		}}
-																		width="16"
-																		height="16"
-																		alt="Logo"
-																	/>
-																) : (
-																	<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
-																)}
-															</span>
-														</div>
-														<div className="item-bottom">
-															<a>{item.participants} participants</a>
-															<a>Stake</a>
-														</div>
-													</>
-												)}
+												<div className="item-top">
+													<span className="player-name">{trendingPlayer.userName}</span>
+													{/* <span className="player-number">{player.someNumber}</span> */}
+												</div>
+												<div className="item-bottom">
+													<a>{trendingPlayer.id}</a>
+													{/* <span className="player-additional-text">Earned</span> */}
+												</div>
 											</SearchResultItemStyled>
-										))}
-									</>
-								)}
-								<SearchResultTitle theme={theme}>
-									<TrendingUpIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main }} />
-									Trending Players
-								</SearchResultTitle>
-								{trendingPlayersList.length > 0 ? (
-									trendingPlayersList.map((trendingPlayer) => (
+										))
+									) : (
+										<SearchResultTitle theme={theme} style={{ display: 'flex', justifyContent: 'left' }}>
+											<div>No trending players were found.</div>
+										</SearchResultTitle>
+									)}
+									<SearchResultTitle theme={theme}>
+										<TrendingUpIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main }} />
+										Trending Dares
+									</SearchResultTitle>
+									{trendingDareList.length > 0 ? (
+										trendingDareList.map((trendingDare) => (
+											<SearchResultItemStyled
+												theme={theme}
+												key={trendingDare.id}
+												onClick={() => handleListDareItemClick(trendingDare.description, trendingDare.amount, trendingDare.participants)}
+											>
+												<div className="item-top">
+													<span>
+														{trendingDare.description.length > 25 ? `${trendingDare.description.substring(0, 25)}...` : trendingDare.description}
+													</span>
+
+													<span>
+														{formatNumber(trendingDare.amount)}{' '}
+														{chainIdUrl === 137 ? (
+															<PolygonLogo
+																style={{
+																	display: 'inline-block',
+																	verticalAlign: 'middle',
+																}}
+																width="16"
+																height="16"
+																alt="Logo"
+															/>
+														) : (
+															<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+														)}
+													</span>
+												</div>
+												<div className="item-bottom">
+													<a>{trendingDare.participants} participants</a>
+													<a>Stake</a>
+												</div>
+											</SearchResultItemStyled>
+										))
+									) : (
+										<SearchResultTitle theme={theme} style={{ display: 'flex', justifyContent: 'left' }}>
+											<div>No trending dares were found.</div>
+										</SearchResultTitle>
+									)}
+								</>
+							)}
+							{searchValue.trim() !== '' && playerSearchList.length > 0 && (
+								<>
+									<SearchResultTitle theme={theme}>Players</SearchResultTitle>
+									{playerSearchList.map((player) => (
 										<SearchResultItemStyled
 											theme={theme}
-											key={trendingPlayer.id}
-											onClick={() => handleListPlayerItemClick(trendingPlayer.userName, trendingPlayer.id)}
+											key={player.id}
+											onClick={() => handleListPlayerItemClick(player.userName, player.userAddress)}
 										>
 											<div className="item-top">
-												<span className="player-name">{trendingPlayer.userName}</span>
+												<span className="player-name">{player.userName}</span>
 												{/* <span className="player-number">{player.someNumber}</span> */}
 											</div>
 											<div className="item-bottom">
-												<a>{trendingPlayer.id}</a>
+												<a>{player.userAddress}</a>
 												{/* <span className="player-additional-text">Earned</span> */}
 											</div>
 										</SearchResultItemStyled>
-									))
-								) : (
-									<SearchResultTitle theme={theme} style={{ display: 'flex', justifyContent: 'left' }}>
-										<div>No trending players were found.</div>
+									))}
+								</>
+							)}
+							{searchValue.trim() !== '' && dareSearchList.length > 0 && (
+								<>
+									<SearchResultTitle theme={theme} style={{ marginTop: playerSearchList.length > 0 ? '1rem' : '0px' }}>
+										Dares
 									</SearchResultTitle>
-								)}
-								<SearchResultTitle theme={theme}>
-									<TrendingUpIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main }} />
-									Trending Dares
-								</SearchResultTitle>
-								{trendingDareList.length > 0 ? (
-									trendingDareList.map((trendingDare) => (
+									{dareSearchList.map((dare) => (
 										<SearchResultItemStyled
 											theme={theme}
-											key={trendingDare.id}
-											onClick={() => handleListDareItemClick(trendingDare.description, trendingDare.amount, trendingDare.participants)}
+											key={dare.id}
+											onClick={() => handleListDareItemClick(dare.description, dare.amount, dare.participants)}
 										>
 											<div className="item-top">
-												<span>
-													{trendingDare.description.length > 25 ? `${trendingDare.description.substring(0, 25)}...` : trendingDare.description}
-												</span>
+												<span>{dare.description.length > 25 ? `${dare.description.substring(0, 25)}...` : dare.description}</span>
 
 												<span>
-													{formatNumber(trendingDare.amount)}{' '}
+													{formatNumber(dare.amount)}{' '}
 													{chainIdUrl === 137 ? (
 														<PolygonLogo
 															style={{
@@ -408,117 +494,59 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 												</span>
 											</div>
 											<div className="item-bottom">
-												<a>{trendingDare.participants} participants</a>
+												<a>{dare.participants} participants</a>
 												<a>Stake</a>
 											</div>
 										</SearchResultItemStyled>
-									))
-								) : (
-									<SearchResultTitle theme={theme} style={{ display: 'flex', justifyContent: 'left' }}>
-										<div>No trending dares were found.</div>
-									</SearchResultTitle>
-								)}
-							</>
-						)}
-						{searchValue.trim() !== '' && playerSearchList.length > 0 && (
-							<>
-								<SearchResultTitle theme={theme}>Players</SearchResultTitle>
-								{playerSearchList.map((player) => (
-									<SearchResultItemStyled
-										theme={theme}
-										key={player.id}
-										onClick={() => handleListPlayerItemClick(player.userName, player.userAddress)}
-									>
-										<div className="item-top">
-											<span className="player-name">{player.userName}</span>
-											{/* <span className="player-number">{player.someNumber}</span> */}
-										</div>
-										<div className="item-bottom">
-											<a>{player.userAddress}</a>
-											{/* <span className="player-additional-text">Earned</span> */}
-										</div>
-									</SearchResultItemStyled>
-								))}
-							</>
-						)}
-						{searchValue.trim() !== '' && dareSearchList.length > 0 && (
-							<>
-								<SearchResultTitle theme={theme} style={{ marginTop: playerSearchList.length > 0 ? '1rem' : '0px' }}>
-									Dares
+									))}
+								</>
+							)}
+							{searchValue.trim() !== '' && playerSearchList.length === 0 && dareSearchList.length === 0 && searchValue.trim() !== '' && (
+								<SearchResultTitle theme={theme} style={{ display: 'flex', justifyContent: 'center' }}>
+									No players or dares were found.
 								</SearchResultTitle>
-								{dareSearchList.map((dare) => (
-									<SearchResultItemStyled
-										theme={theme}
-										key={dare.id}
-										onClick={() => handleListDareItemClick(dare.description, dare.amount, dare.participants)}
-									>
-										<div className="item-top">
-											<span>{dare.description.length > 25 ? `${dare.description.substring(0, 25)}...` : dare.description}</span>
-
-											<span>
-												{formatNumber(dare.amount)}{' '}
-												{chainIdUrl === 137 ? (
-													<PolygonLogo
-														style={{
-															display: 'inline-block',
-															verticalAlign: 'middle',
-														}}
-														width="16"
-														height="16"
-														alt="Logo"
-													/>
-												) : (
-													<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
-												)}
-											</span>
-										</div>
-										<div className="item-bottom">
-											<a>{dare.participants} participants</a>
-											<a>Stake</a>
-										</div>
-									</SearchResultItemStyled>
-								))}
-							</>
-						)}
-						{searchValue.trim() !== '' && playerSearchList.length === 0 && dareSearchList.length === 0 && searchValue.trim() !== '' && (
-							<SearchResultTitle theme={theme} style={{ display: 'flex', justifyContent: 'center' }}>
-								No players or dares were found.
-							</SearchResultTitle>
-						)}
-					</SearchResultList>
-				)}
-				{isChainListVisible && (
-					<SearchResultList theme={theme}>
-						<SearchResultTitle theme={theme}>Search mainnet</SearchResultTitle>
-						<SearchResultItemStyled theme={theme}>
-							<StyledChainButton
-								theme={theme}
-								onClick={() => {
-									router.push('/polygon');
-									setChainListVisible(false);
-								}}
-							>
-								<PolygonLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
-								Polygon
-							</StyledChainButton>
-						</SearchResultItemStyled>
-						<SearchResultTitle theme={theme}>Search testnet</SearchResultTitle>
-						<SearchResultItemStyled theme={theme}>
-							<StyledChainButton
-								theme={theme}
-								onClick={() => {
-									router.push('/goerli');
-									setChainListVisible(false);
-								}}
-							>
-								<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
-								Goerli
-							</StyledChainButton>
-						</SearchResultItemStyled>
-					</SearchResultList>
-				)}
-			</SearchBarContainer>
+							)}
+						</SearchResultList>
+					)}
+					{isChainListVisible && (
+						<SearchResultList theme={theme}>
+							<SearchResultTitle theme={theme}>Search mainnet</SearchResultTitle>
+							<SearchResultItemStyled theme={theme}>
+								<StyledChainButton
+									theme={theme}
+									onClick={() => {
+										router.push('/polygon');
+										setChainListVisible(false);
+									}}
+								>
+									<PolygonLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+									Polygon
+								</StyledChainButton>
+							</SearchResultItemStyled>
+							<SearchResultTitle theme={theme}>Search testnet</SearchResultTitle>
+							<SearchResultItemStyled theme={theme}>
+								<StyledChainButton
+									theme={theme}
+									onClick={() => {
+										router.push('/goerli');
+										setChainListVisible(false);
+									}}
+								>
+									<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+									Goerli
+								</StyledChainButton>
+							</SearchResultItemStyled>
+						</SearchResultList>
+					)}
+				</SearchBarContainer>
+				<SearchBarMobile theme={theme}>
+					<IconButton type="submit" aria-label="search" style={{ cursor: 'default', backgroundColor: 'transparent' }} disableRipple>
+						<SearchIcon style={{ color: theme.palette.text.primary }} />
+					</IconButton>
+				</SearchBarMobile>
+			</>
 		</ClickAwayListener>
+		// </>
 	);
 };
 

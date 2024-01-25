@@ -20,8 +20,8 @@ const StyledSelect = styled(Select, {
 		open ? `${theme.customShape.borderRadius} ${theme.customShape.borderRadius} 0px 0px` : theme.shape.borderRadius};
 	min-height: 40px;
 	height: 40px;
-	min-width: 175px;
-	max-width: 225px;
+	min-width: 90%;
+	max-width: 90%;
 	transition: all 0.5s ease-in-out;
 
 	&:hover {
@@ -46,23 +46,13 @@ const StyledSelect = styled(Select, {
 		color: ${({ theme }) => theme.palette.text.primary};
 	}
 
-	@media (max-width: 480px) {
-		min-height: 40px;
-		height: 40px;
-		min-width: 75px;
-		max-width: 125px;
-
-		a {
-			display: none;
-			visibility: hidden;
-		}
-
-		// Menu Paper Props
-		& .MuiPaper-root {
-			min-width: 75px;
-			max-width: 125px;
-		}
-	}
+	@media (max-width: 680px) {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin: 0 auto 0 auto;
+		min-width: 90%;
+		max-width: 90%;
 `;
 
 const WarningAmberIcon = styled(WarningAmber)<{ theme: any }>`
@@ -105,19 +95,12 @@ const MenuItemStyled = styled(MenuItem)<{ theme: any }>`
 		visibility: visible;
 	}
 
-	@media (max-width: 480px) {
+	@media (max-width: 680px) {
 		display: flex;
-		align-items: center;
 		justify-content: center;
-
-		& a:last-of-type {
-			margin-left: 0;
-		}
-
-		a {
-			display: none;
-			visibility: hidden;
-		}
+		align-items: center;
+		margin: 0 auto 0 auto;
+		width: 100%;
 	}
 `;
 
@@ -134,7 +117,7 @@ const SearchResultTitle = styled.div<{ theme: any }>`
 
 export default function SelectChain() {
 	const theme = useTheme();
-	
+
 	// Redux
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
@@ -200,8 +183,8 @@ export default function SelectChain() {
 								backgroundColor: theme.palette.background.default,
 								outline: `1px solid ${theme.palette.warning.main}`,
 								borderRadius: 0,
-								minWidth: '175px',
-								maxWidth: '225px',
+								// minWidth: '90%',
+								// maxWidth: '90%',
 								padding: '0px',
 								margin: '0 auto 0 auto',
 								'& .MuiMenuItem-root': {
