@@ -608,18 +608,18 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 						<MenuContainer>
 							<InputBase
 								fullWidth={true}
-								style={{ fontSize: '1rem' }}
+								style={{ fontSize: '1rem', padding: '0 1rem 0.5rem 1rem' }}
 								placeholder={`Search players and dares on ${network}…`}
 								inputProps={{ 'aria-label': 'search' }}
 								value={searchValue}
 								onChange={handleSearchChange}
 								onFocus={handleFocus}
 								// ref={inputRef}
-								endAdornment={
-									<StyledChainButton theme={theme} onChange={handleChainChange} onFocus={handleChainFocus} style={{ justifyContent: 'center' }}>
-										{network === 'polygon' ? <PolygonLogo /> : <EthereumLogo />}
-									</StyledChainButton>
-								}
+								// endAdornment={
+								// 	<StyledChainButton theme={theme} onChange={handleChainChange} onFocus={handleChainFocus} style={{ justifyContent: 'center' }}>
+								// 		{network === 'polygon' ? <PolygonLogo /> : <EthereumLogo />}
+								// 	</StyledChainButton>
+								// }
 							/>
 							{searchValue.trim() === '' && (
 								<>
