@@ -57,15 +57,26 @@ const StyledAppBar = styled(AppBar)<{ theme: any }>`
 	right: 0;
 
 	@media (max-width: 680px) {
+		height: 4rem;
 		position: fixed;
 		background-color: ${({ theme }) => theme.palette.background.default} !important;
 		border-top: 0.25px solid ${({ theme }) => theme.palette.secondary.main} !important;
-		box-shadow: 0px 0.25px 0.25px ${({ theme }) => theme.palette.secondary.main} !important;
+		// box-shadow: 0px 0.25px 0.25px ${({ theme }) => theme.palette.secondary.main} !important;
 
 		top: auto;
 		left: 0;
 		right: 0;
-		bottom: 0;
+		bottom: 1rem;
+
+		&::after {
+			content: '';
+			position: absolute;
+			left: 0;
+			right: 0;
+			bottom: -1rem;
+			height: 1rem;
+			background-color: ${({ theme }) => theme.palette.background.default} !important;
+		}
 	}
 `;
 

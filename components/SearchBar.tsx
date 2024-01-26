@@ -159,6 +159,12 @@ const SearchResultItemStyled = styled.div<{ theme: any }>`
 		font-size: 0.8rem;
 		margin-top: 0.25rem;
 	}
+
+	@media (max-width: 680px) {
+		&:hover {
+			background-color: transparent;
+		}
+	}
 `;
 
 const SearchResultTitle = styled.div<{ theme: any }>`
@@ -890,5 +896,5 @@ const CloseButton = styled.button<{ theme: any }>`
 	color: ${({ theme }) => theme.palette.text.primary};
 	background-color: transparent;
 	margin-top: auto;
-	margin-bottom: 1rem;
+	margin-bottom: 5rem;
 `;
