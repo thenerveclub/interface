@@ -369,6 +369,7 @@ function SettingsModal() {
 
 	// Redux
 	const dispatch = useDispatch();
+	const account = useSelector((state: { account: string }) => state.account);
 	const userTheme = useSelector((state: { theme: any }) => state.theme);
 	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
 	const testnetsValue = useSelector((state: { testnets: boolean }) => state.testnets);
@@ -378,12 +379,20 @@ function SettingsModal() {
 	// Local state
 	const [currentTheme, setCurrentTheme] = useState(userTheme.prefersSystemSetting === true ? 'system' : userTheme.currentTheme);
 	const [showTestnets, setShowTestnets] = useState(testnetsValue);
+	const [showCurrency, setShowCurrency] = useState(currencyValue);
 
 	// Handle switch toggle
 	const handleChangeTestnets = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const newTestnetsValue = event.target.checked;
 		setShowTestnets(newTestnetsValue); // Update local state
 		dispatch(testnetsSlice.actions.setShowTestnets(newTestnetsValue)); // Update redux state
+	};
+
+	// Handle switch toggle currency
+	const handleChangeCurrency = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const newCurrency = event.target.checked;
+		setShowCurrency(newCurrency); // Update local state
+		dispatch(currencySlice.actions.updateCurrency(newCurrency));
 	};
 
 	// Update local state when redux state changes
@@ -421,11 +430,6 @@ function SettingsModal() {
 			setOpen(false);
 			setIsClosing(false); // <-- Reset closing status for the next cycle
 		}, 500); // <-- Length of the slide-down animation
-	};
-
-	const handleUpdateCurrency = (newCurrency) => {
-		// update currency in redux
-		dispatch(currencySlice.actions.updateCurrency(newCurrency));
 	};
 
 	// Local state
@@ -493,20 +497,21 @@ function SettingsModal() {
 						</StyledButton>
 					</StyledButtonGroup>
 
-					<StyledTitle theme={theme}>Chain</StyledTitle>
-					<StyledDiv>
-						<SelectChain />
-					</StyledDiv>
+					{account && (
+						<>
+							<StyledTitle theme={theme}>Chain</StyledTitle>
+							<StyledDiv>
+								<SelectChain />
+							</StyledDiv>
+						</>
+					)}
 
-					{/* <StyledTitle theme={theme}>Currency</StyledTitle>
-					<StyledButtonGroup theme={theme} variant="contained" aria-label="outlined primary button group" fullWidth={true}>
-						<StyledButton theme={theme} active={currencyValue === true} onClick={() => handleUpdateCurrency(true)}>
-							<AttachMoneyOutlinedIcon />
-						</StyledButton>
-						<StyledButton theme={theme} active={currencyValue === false} onClick={() => handleUpdateCurrency(false)}>
-							<CurrencyBitcoinOutlinedIcon />
-						</StyledButton>
-					</StyledButtonGroup> */}
+					<StyledTitles theme={theme}>
+						<StyledDuoTitle theme={theme}>Show currency</StyledDuoTitle>
+						<StyledSwitchContainer>
+							<IOSSwitch theme={theme} checked={showCurrency} onChange={handleChangeCurrency} />
+						</StyledSwitchContainer>
+					</StyledTitles>
 
 					<StyledTitles theme={theme}>
 						<StyledDuoTitle theme={theme}>Show testnets</StyledDuoTitle>

@@ -323,13 +323,13 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 	};
 
 	return (
-		<ClickAwayListener
-			onClickAway={() => {
-				setListVisible(false);
-				setChainListVisible(false);
-			}}
-		>
-			<>
+		<>
+			<ClickAwayListener
+				onClickAway={() => {
+					setListVisible(false);
+					setChainListVisible(false);
+				}}
+			>
 				<SearchBarContainer theme={theme} onSubmit={(e) => e.preventDefault()} elevation={0}>
 					<IconButton type="submit" aria-label="search" style={{ cursor: 'default', backgroundColor: 'transparent' }} disableRipple>
 						<SearchIcon style={{ color: theme.palette.secondary.main }} />
@@ -590,50 +590,262 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 						</SearchResultList>
 					)}
 				</SearchBarContainer>
-				<SearchBarMobile theme={theme}>
-					<MobileMenuButton onClick={toggleMenu}>
-						<SearchIcon />
-					</MobileMenuButton>
-					{isMenuOpen && (
-						<MobileSettings isClosing={isClosing}>
-							<MenuContainer>
-								<CloseButton onClick={toggleMenu}>
-									<CloseOutlinedIcon onClick={toggleMenu} />
-								</CloseButton>
-							</MenuContainer>
-						</MobileSettings>
-					)}
-				</SearchBarMobile>
-			</>
-		</ClickAwayListener>
-		// </>
+			</ClickAwayListener>
+			<SearchBarMobile theme={theme}>
+				<MobileMenuButton onClick={toggleMenu}>
+					<SearchIcon />
+				</MobileMenuButton>
+				{isMenuOpen && (
+					<MobileSettings theme={theme} isClosing={isClosing}>
+						<MenuContainer>
+							<InputBase
+								fullWidth={true}
+								style={{ fontSize: '1rem' }}
+								placeholder={`Search players and dares on ${network}…`}
+								inputProps={{ 'aria-label': 'search' }}
+								value={searchValue}
+								onChange={handleSearchChange}
+								onFocus={handleFocus}
+								// ref={inputRef}
+								endAdornment={
+									<StyledChainButton theme={theme} onChange={handleChainChange} onFocus={handleChainFocus} style={{ justifyContent: 'center' }}>
+										{network === 'polygon' ? <PolygonLogo /> : <EthereumLogo />}
+									</StyledChainButton>
+								}
+							/>
+							{searchValue.trim() === '' && (
+								<>
+									{searchHistory.length > 0 && (
+										<>
+											<SearchResultTitle theme={theme}>
+												<AccessTimeOutlinedIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main }} />
+												Recent searches
+												<span>
+													<CloseOutlinedIcon
+														fontSize={'small'}
+														onClick={clearSearchHistory}
+														style={{ cursor: 'pointer', color: theme.palette.error.main }}
+													/>
+												</span>
+											</SearchResultTitle>
+											{searchHistory.map((item) => (
+												<SearchResultItemStyled
+													theme={theme}
+													key={item.id}
+													onClick={() => {
+														if (item.type === 'player') {
+															handleListPlayerItemClick(item.id, item.address);
+															toggleMenu();
+														} else {
+															handleListDareItemClick(item.id, item.amount, item.participants);
+															toggleMenu();
+														}
+													}}
+												>
+													{item.type === 'player' ? (
+														<>
+															<div className="item-top">
+																<span className="player-name">{item.id}</span>
+																{/* <span className="player-number">{player.someNumber}</span> */}
+															</div>
+															<div className="item-bottom">
+																<a>{item.address}</a>
+																{/* <span className="player-additional-text">Earned</span> */}
+															</div>
+														</>
+													) : (
+														<>
+															<div className="item-top">
+																<span>{item.id.length > 25 ? `${item.id.substring(0, 25)}...` : item.id}</span>
+
+																<span>
+																	{formatNumber(item.amount)}{' '}
+																	{chainIdUrl === 137 ? (
+																		<PolygonLogo
+																			style={{
+																				display: 'inline-block',
+																				verticalAlign: 'middle',
+																			}}
+																			width="16"
+																			height="16"
+																			alt="Logo"
+																		/>
+																	) : (
+																		<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+																	)}
+																</span>
+															</div>
+															<div className="item-bottom">
+																<a>{item.participants} participants</a>
+																<a>Stake</a>
+															</div>
+														</>
+													)}
+												</SearchResultItemStyled>
+											))}
+										</>
+									)}
+									<SearchResultTitle theme={theme}>
+										<TrendingUpIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main }} />
+										Trending Players
+									</SearchResultTitle>
+									{trendingPlayersList.length > 0 ? (
+										trendingPlayersList.map((trendingPlayer) => (
+											<SearchResultItemStyled
+												theme={theme}
+												key={trendingPlayer.id}
+												onClick={() => {
+													handleListPlayerItemClick(trendingPlayer.userName, trendingPlayer.id);
+													toggleMenu();
+												}}
+											>
+												<div className="item-top">
+													<span className="player-name">{trendingPlayer.userName}</span>
+													{/* <span className="player-number">{player.someNumber}</span> */}
+												</div>
+												<div className="item-bottom">
+													<a>{trendingPlayer.id}</a>
+													{/* <span className="player-additional-text">Earned</span> */}
+												</div>
+											</SearchResultItemStyled>
+										))
+									) : (
+										<SearchResultTitle theme={theme} style={{ display: 'flex', justifyContent: 'left' }}>
+											<div>No trending players were found.</div>
+										</SearchResultTitle>
+									)}
+									<SearchResultTitle theme={theme}>
+										<TrendingUpIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main }} />
+										Trending Dares
+									</SearchResultTitle>
+									{trendingDareList.length > 0 ? (
+										trendingDareList.map((trendingDare) => (
+											<SearchResultItemStyled
+												theme={theme}
+												key={trendingDare.id}
+												onClick={() => {
+													handleListDareItemClick(trendingDare.description, trendingDare.amount, trendingDare.participants);
+													toggleMenu();
+												}}
+											>
+												<div className="item-top">
+													<span>
+														{trendingDare.description.length > 25 ? `${trendingDare.description.substring(0, 25)}...` : trendingDare.description}
+													</span>
+
+													<span>
+														{formatNumber(trendingDare.amount)}{' '}
+														{chainIdUrl === 137 ? (
+															<PolygonLogo
+																style={{
+																	display: 'inline-block',
+																	verticalAlign: 'middle',
+																}}
+																width="16"
+																height="16"
+																alt="Logo"
+															/>
+														) : (
+															<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+														)}
+													</span>
+												</div>
+												<div className="item-bottom">
+													<a>{trendingDare.participants} participants</a>
+													<a>Stake</a>
+												</div>
+											</SearchResultItemStyled>
+										))
+									) : (
+										<SearchResultTitle theme={theme} style={{ display: 'flex', justifyContent: 'left' }}>
+											<div>No trending dares were found.</div>
+										</SearchResultTitle>
+									)}
+								</>
+							)}
+							{searchValue.trim() !== '' && playerSearchList.length > 0 && (
+								<>
+									<SearchResultTitle theme={theme}>Players</SearchResultTitle>
+									{playerSearchList.map((player) => (
+										<SearchResultItemStyled
+											theme={theme}
+											key={player.id}
+											onClick={() => {
+												handleListPlayerItemClick(player.userName, player.userAddress);
+												toggleMenu();
+											}}
+										>
+											<div className="item-top">
+												<span className="player-name">{player.userName}</span>
+												{/* <span className="player-number">{player.someNumber}</span> */}
+											</div>
+											<div className="item-bottom">
+												<a>{player.userAddress}</a>
+												{/* <span className="player-additional-text">Earned</span> */}
+											</div>
+										</SearchResultItemStyled>
+									))}
+								</>
+							)}
+							{searchValue.trim() !== '' && dareSearchList.length > 0 && (
+								<>
+									<SearchResultTitle theme={theme} style={{ marginTop: playerSearchList.length > 0 ? '1rem' : '0px' }}>
+										Dares
+									</SearchResultTitle>
+									{dareSearchList.map((dare) => (
+										<SearchResultItemStyled
+											theme={theme}
+											key={dare.id}
+											onClick={() => {
+												handleListDareItemClick(dare.description, dare.amount, dare.participants);
+												toggleMenu();
+											}}
+										>
+											<div className="item-top">
+												<span>{dare.description.length > 25 ? `${dare.description.substring(0, 25)}...` : dare.description}</span>
+
+												<span>
+													{formatNumber(dare.amount)}{' '}
+													{chainIdUrl === 137 ? (
+														<PolygonLogo
+															style={{
+																display: 'inline-block',
+																verticalAlign: 'middle',
+															}}
+															width="16"
+															height="16"
+															alt="Logo"
+														/>
+													) : (
+														<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+													)}
+												</span>
+											</div>
+											<div className="item-bottom">
+												<a>{dare.participants} participants</a>
+												<a>Stake</a>
+											</div>
+										</SearchResultItemStyled>
+									))}
+								</>
+							)}
+							{searchValue.trim() !== '' && playerSearchList.length === 0 && dareSearchList.length === 0 && searchValue.trim() !== '' && (
+								<SearchResultTitle theme={theme} style={{ display: 'flex', justifyContent: 'center' }}>
+									No players or dares were found.
+								</SearchResultTitle>
+							)}
+						</MenuContainer>
+						<CloseButton theme={theme} onClick={toggleMenu}>
+							<CloseOutlinedIcon />
+						</CloseButton>
+					</MobileSettings>
+				)}
+			</SearchBarMobile>
+		</>
 	);
 };
 
 export default SearchBar;
-
-const StyledButtonMobile = styled(Button)<{ theme: any }>`
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	text-align: center;
-	// border: 1px solid rgba(0, 0, 40, 1);
-	border: 1px solid #fff;
-	border-radius: 0;
-	padding: 0.5rem 1rem;
-	background-color: transparent;
-	transition: all 0.5s ease-in-out;
-	color: #fff;
-	font-size: 0.8rem;
-	font-weight: bold;
-	box-shadow: none;
-
-	&:hover {
-		color: #000;
-		background-color: rgba(255, 255, 255, 1);
-		box-shadow: none;
-	}
-`;
 
 const MobileMenuButton = styled.div`
 	display: none;
@@ -647,53 +859,36 @@ const MobileMenuButton = styled.div`
 	}
 `;
 
-const MobileSettings = styled.div`
+const MobileSettings = styled.div<{ theme: any }>`
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
+	justify-content: flex-start;
 	align-items: center;
 	min-width: 100vw;
 	min-height: 100vh;
-	background-color: #000;
+	max-height: 100vh; // Set a maximum height
+	overflow-y: scroll;
+	background-color: ${({ theme }) => theme.palette.background.default};
 	z-index: 9999;
 	position: fixed;
 	top: 0;
 	left: 0;
-	padding: 5rem;
-	padding-bottom: 10rem;
+	padding: 1rem;
 	animation: ${(props) => (props.isClosing ? slideDown : slideUp)} 0.5s ease-out;
 `;
 
 const MenuContainer = styled.div`
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
-	align-items: center;
-	height: 80%;
-
-	& > * + * {
-		margin-top: 1rem;
-	}
+	width: 100%;
 `;
 
-const DesktopSettings = styled.div`
-	display: block;
-	visibility: visible;
-
-	@media (max-width: 480px) {
-		display: none;
-		visibility: hidden;
-	}
-`;
-
-const CloseButton = styled.button`
+const CloseButton = styled.button<{ theme: any }>`
 	display: flex;
 	justify-content: center;
 	border: none;
-	color: #fff;
-	// position: absolute;
-	// bottom: 10rem;
-	// left: 50%;
-	// transform: translateX(-50%); // Adjust for centering
+	color: ${({ theme }) => theme.palette.text.primary};
 	background-color: transparent;
+	margin-top: auto;
+	margin-bottom: 1rem;
 `;

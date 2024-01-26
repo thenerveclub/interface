@@ -86,6 +86,7 @@ function ConnectModal() {
 	const [open, setOpen] = React.useState(false);
 	const [isClosing, setIsClosing] = React.useState(false); // <-- New state to track closing status
 	const handleOpen = () => setOpen(true);
+
 	const handleClose = () => {
 		setIsClosing(true); // <-- Set closing status to true
 		// Wait for the animation to complete before closing the modal
