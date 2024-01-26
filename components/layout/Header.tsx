@@ -61,7 +61,7 @@ const StyledAppBar = styled(AppBar)<{ theme: any }>`
 		position: fixed;
 		background-color: ${({ theme }) => theme.palette.background.default} !important;
 		border-top: 0.25px solid ${({ theme }) => theme.palette.secondary.main} !important;
-		// box-shadow: 0px 0.25px 0.25px ${({ theme }) => theme.palette.secondary.main} !important;
+		box-shadow: none !important;
 
 		top: auto;
 		left: 0;
