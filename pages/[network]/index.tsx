@@ -35,7 +35,6 @@ const StyledBox = styled(Box)<{ theme: any }>`
 		font-size: 5rem;
 		font-weight: 100;
 		font-family: ${TrueLies.style.fontFamily};
-		textdecoration: 'none';
 		color: ${(props) => props.theme.palette.text.primary};
 	}
 
@@ -45,12 +44,23 @@ const StyledBox = styled(Box)<{ theme: any }>`
 		width: 70%;
 	}
 
-	@media (max-width: 600px) {
-		margin: 5rem 1rem auto 1rem;
+	@media (max-width: 680px) {
+		margin: 10rem auto 0 auto;
+
+		h1 {
+			font-size: 4rem;
+			color: ${(props) => props.theme.palette.text.primary};
+		}
+
+		h4 {
+			font-size: 1.3125rem;
+			width: 90%;
+		}
 	}
 `;
 
 const StyledTrending = styled(Box)`
+	display: flex;
 	margin: 7.5rem auto 0 auto;
 	width: 100%;
 
@@ -59,8 +69,9 @@ const StyledTrending = styled(Box)`
 		font-size: 2.25rem;
 	}
 
-	@media (max-width: 600px) {
-		margin: 5rem 1rem auto 1rem;
+	@media (max-width: 680px) {
+		justify-content: center;
+		margin: 5rem auto 0 auto;
 	}
 `;
 

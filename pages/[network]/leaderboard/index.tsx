@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { OpenInNew } from '@mui/icons-material';
 import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
@@ -6,15 +7,115 @@ import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, ToggleBu
 import { useTheme } from '@mui/material/styles';
 import localFont from 'next/font/local';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
+import router, { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import LoadingScreen from '../../../components/LoadingScreen';
-import useDareRankingData from '../../../hooks/rankingData/useDareRankingData';
+import usePlayerRankingData from '../../../hooks/rankingData/usePlayerRankingData';
 import { currencySlice } from '../../../state/currency/currencySlice';
 import { CHAINS, nameToChainId } from '../../../utils/chains';
+import Instagram from '/public/svg/socials/instagram.svg';
+import TikTok from '/public/svg/socials/tiktok.svg';
+import Twitch from '/public/svg/socials/twitch.svg';
+import Twitter from '/public/svg/socials/twitter.svg';
+import Youtube from '/public/svg/socials/youtube.svg';
 
 const TrueLies = localFont({ src: '../../../public/fonts/TrueLies.woff2', display: 'swap' });
+
+const StyledTwitter = styled(Twitter)<{ theme: any }>`
+	path {
+		fill: ${({ theme }) => theme.palette.secondary.main};
+		transition: fill 0.5s ease-in-out; // Add transition for fill color
+	}
+
+	cursor: pointer;
+	width: 18px;
+	height: 18px;
+	transition: all 0.5s ease-in-out;
+
+	&:hover {
+		// transform: rotate(-10deg);
+		path {
+			fill: ${({ theme }) => theme.palette.secondary.contrastText};
+		}
+	}
+`;
+
+const StyledInstagram = styled(Instagram)<{ theme: any }>`
+	path {
+		fill: ${({ theme }) => theme.palette.secondary.main};
+		transition: fill 0.5s ease-in-out; // Add transition for fill color
+	}
+
+	cursor: pointer;
+	width: 18px;
+	height: 18px;
+	transition: all 0.5s ease-in-out;
+
+	&:hover {
+		// transform: rotate(-10deg);
+		path {
+			fill: ${({ theme }) => theme.palette.secondary.contrastText};
+		}
+	}
+`;
+
+const StyledTikTok = styled(TikTok)<{ theme: any }>`
+	path {
+		fill: ${({ theme }) => theme.palette.secondary.main};
+		transition: fill 0.5s ease-in-out; // Add transition for fill color
+	}
+
+	cursor: pointer;
+	width: 18px;
+	height: 18px;
+	transition: all 0.5s ease-in-out;
+
+	&:hover {
+		// transform: rotate(-10deg);
+		path {
+			fill: ${({ theme }) => theme.palette.secondary.contrastText};
+		}
+	}
+`;
+
+const StyledYouTube = styled(Youtube)<{ theme: any }>`
+	path {
+		fill: ${({ theme }) => theme.palette.secondary.main};
+		transition: fill 0.5s ease-in-out; // Add transition for fill color
+	}
+
+	cursor: pointer;
+	width: 18px;
+	height: 18px;
+	transition: all 0.5s ease-in-out;
+
+	&:hover {
+		// transform: rotate(-10deg);
+		path {
+			fill: ${({ theme }) => theme.palette.secondary.contrastText};
+		}
+	}
+`;
+
+const StyledTwitch = styled(Twitch)<{ theme: any }>`
+	path {
+		fill: ${({ theme }) => theme.palette.secondary.main};
+		transition: fill 0.5s ease-in-out; // Add transition for fill color
+	}
+
+	cursor: pointer;
+	width: 18px;
+	height: 18px;
+	transition: all 0.5s ease-in-out;
+
+	&:hover {
+		// transform: rotate(-10deg);
+		path {
+			fill: ${({ theme }) => theme.palette.secondary.contrastText};
+		}
+	}
+`;
 
 const StyledBox = styled(Box)`
 	display: flex;
@@ -42,7 +143,6 @@ const Title = styled(Typography)<{ theme: any }>`
 	justify-content: center;
 	align-items: center;
 	font-family: ${TrueLies.style.fontFamily};
-	color: #fff;
 	text-transform: none;
 	font-size: 5rem;
 	cursor: default;
@@ -53,8 +153,8 @@ const Title = styled(Typography)<{ theme: any }>`
 		text-decoration: none;
 	}
 
-	@media (max-width: 600px) {
-		font-size: 3rem;
+	@media (max-width: 680px) {
+		font-size: 2rem;
 	}
 `;
 
@@ -64,8 +164,10 @@ const StyledTable = styled(Table)<{ theme: any }>`
 	max-width: 1400px;
 	height: 100%;
 
-	@media (max-width: 600px) {
-		font-size: 3rem;
+	@media (max-width: 680px) {
+		width: 100vw;
+		min-width: 100vw;
+		max-width: 100vw;
 	}
 `;
 
@@ -79,21 +181,21 @@ const StyledButton = styled(Button)<{ theme: any }>`
 	text-transform: none;
 	width: 100%;
 
-	@media (max-width: 600px) {
-		font-size: 3rem;
+	@media (max-width: 680px) {
+		// font-size: 3rem;
 	}
 `;
 
 const StyledTableRow = styled(TableRow)<{ theme: any }>`
-	transition: transform 0.3s;
-	box-shadow 0.3s;
-	cursor: pointer;
+	transition: transform 0.3s, box-shadow 0.3s;
 
 	&:nth-of-type(odd) {
 		background-color: ${({ theme }) => theme.palette.background.default};
+		// filter: blur(2px);
 	}
 
 	&:hover {
+		// background-color: ${({ theme }) => theme.palette.primary.dark};
 		transform: scale(1.02);
 		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	}
@@ -114,6 +216,11 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{ theme: any }>`
 			border: 1px solid ${({ theme }) => theme.palette.warning.main};
 			border-left: 1px solid ${({ theme }) => theme.palette.warning.main};
 		}
+	}
+
+	@media (max-width: 680px) {
+		align-self: center;
+		margin: 0 auto 1rem auto;
 	}
 `;
 
@@ -154,11 +261,20 @@ const StyledArrowCircleUpOutlinedIcon = styled(ArrowCircleUpOutlinedIcon)<{ them
 `;
 
 const StyledTableContainer = styled(Box)<{ theme: any }>`
+	display: flex;
 	height: 100vh;
 	overflow-y: auto;
+
+	@media (max-width: 680px) {
+		width: 100vw;
+		min-width: 100vw;
+		max-width: 100vw;
+		overflow-y: scroll;
+		margin-bottom: 5rem;
+	}
 `;
 
-export default function RankingDaresPage() {
+export default function RankingPage() {
 	const theme = useTheme();
 	const router = useRouter();
 	const network = router.query.network as string;
@@ -169,7 +285,7 @@ export default function RankingDaresPage() {
 	// Redux
 	const dispatch = useDispatch();
 	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
-	const currencyPrice = useSelector((state: { currencyPrice: any }) => state.currencyPrice);
+	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
 	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
 
 	// Toogle Button For Token Price
@@ -182,8 +298,8 @@ export default function RankingDaresPage() {
 	const isNetworkAvailable = availableChains.includes(chainIdUrl);
 
 	const [order, setOrder] = useState('desc');
-	const [orderBy, setOrderBy] = useState('amount');
-	const { rankingList, isLoading } = useDareRankingData(isNetworkAvailable ? chainIdUrl : 137, orderBy);
+	const [orderBy, setOrderBy] = useState('earned');
+	const { rankingList, isLoading } = usePlayerRankingData(isNetworkAvailable ? chainIdUrl : 137, orderBy);
 
 	const createSortHandler = (property) => (event) => {
 		const isAsc = orderBy === property && order === 'desc';
@@ -192,23 +308,8 @@ export default function RankingDaresPage() {
 	};
 
 	const sortedData = [...rankingList].sort((a, b) => {
-		let aValue, bValue;
-
-		if (orderBy === 'voters') {
-			aValue = Number(a.positiveVotes) + Number(a.negativeVotes);
-			bValue = Number(b.positiveVotes) + Number(b.negativeVotes);
-		} else if (orderBy === 'voting') {
-			const totalVotesA = Number(a.positiveVotes) + Number(a.negativeVotes);
-			const totalVotesB = Number(b.positiveVotes) + Number(b.negativeVotes);
-			aValue = totalVotesA === 0 ? -1 : (Number(a.positiveVotes) / totalVotesA) * 100;
-			bValue = totalVotesB === 0 ? -1 : (Number(b.positiveVotes) / totalVotesB) * 100;
-		} else {
-			aValue = Number(a[orderBy]);
-			bValue = Number(b[orderBy]);
-		}
-
-		if (aValue === -1 && bValue !== -1) return 1; // Move a to the middle
-		if (bValue === -1 && aValue !== -1) return -1; // Move b to the middle
+		let aValue = Number(a[orderBy]);
+		let bValue = Number(b[orderBy]);
 
 		if (order === 'asc') {
 			return aValue - bValue;
@@ -217,9 +318,9 @@ export default function RankingDaresPage() {
 		}
 	});
 
-	const handleDare = (dareID) => {
+	const handlePlayer = (playerId) => {
 		return () => {
-			router.push(`/${network}/dare/${dareID}`);
+			router.push(`/${network}/player/${playerId}`);
 		};
 	};
 
@@ -228,29 +329,6 @@ export default function RankingDaresPage() {
 			minimumFractionDigits: 2,
 			maximumFractionDigits: 2,
 		});
-	}
-
-	function calculatePositivePercentage(positiveVotes, negativeVotes) {
-		const numPositiveVotes = Number(positiveVotes);
-		const numNegativeVotes = Number(negativeVotes);
-
-		const totalVotes = numPositiveVotes + numNegativeVotes;
-
-		// Handle cases with no votes
-		if (totalVotes === 0) return <span style={{ color: theme.palette.text.primary }}>0.00%</span>;
-
-		const percentage = (numPositiveVotes / totalVotes) * 100;
-		const formattedPercentage = percentage.toFixed(2) + '%';
-
-		// Determine color and value based on the percentage
-		if (percentage > 50) {
-			return <span style={{ color: 'green' }}>{formattedPercentage}</span>;
-		} else if (percentage === 50) {
-			return <span style={{ color: 'green' }}>{formattedPercentage}</span>;
-		} else {
-			const negativePercentage = (100 - percentage).toFixed(2) + '%';
-			return <span style={{ color: 'red' }}>{negativePercentage}</span>;
-		}
 	}
 
 	const handleScrollToTop = () => {
@@ -284,7 +362,7 @@ export default function RankingDaresPage() {
 					</Head>
 					<StyledBox>
 						<Title theme={theme}>
-							<a>Dare Leaderboard</a>
+							<a>Player Leaderboard</a>
 						</Title>
 						<StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
 							<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
@@ -299,11 +377,13 @@ export default function RankingDaresPage() {
 								<TableHead>
 									<TableRow>
 										<TableCell>#</TableCell>
-										<TableCell>Description</TableCell>
+										<TableCell>Name</TableCell>
+										<TableCell>Address</TableCell>
+										<TableCell style={{ textAlign: 'center' }}>Socials</TableCell>
 										<TableCell>
-											<StyledButton theme={theme} onClick={createSortHandler('entranceAmount')}>
-												Entry Amount
-												{orderBy === 'entranceAmount' ? (
+											<StyledButton theme={theme} onClick={createSortHandler('earned')}>
+												Earned
+												{orderBy === 'earned' ? (
 													order === 'asc' ? (
 														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
 													) : (
@@ -316,62 +396,10 @@ export default function RankingDaresPage() {
 												)}
 											</StyledButton>
 										</TableCell>
-
 										<TableCell>
-											<StyledButton theme={theme} onClick={createSortHandler('amount')}>
-												Total Amount
-												{orderBy === 'amount' ? (
-													order === 'asc' ? (
-														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
-													) : (
-														<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
-													)
-												) : order === 'asc' ? (
-													<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
-												) : (
-													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-												)}
-											</StyledButton>
-										</TableCell>
-
-										<TableCell>
-											<StyledButton theme={theme} onClick={createSortHandler('participants')}>
-												Participants
-												{orderBy === 'participants' ? (
-													order === 'asc' ? (
-														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
-													) : (
-														<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
-													)
-												) : order === 'asc' ? (
-													<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
-												) : (
-													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-												)}
-											</StyledButton>
-										</TableCell>
-
-										<TableCell>
-											<StyledButton theme={theme} onClick={createSortHandler('voters')}>
-												Voters
-												{orderBy === 'voters' ? (
-													order === 'asc' ? (
-														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
-													) : (
-														<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
-													)
-												) : order === 'asc' ? (
-													<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
-												) : (
-													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-												)}
-											</StyledButton>
-										</TableCell>
-
-										<TableCell>
-											<StyledButton theme={theme} onClick={createSortHandler('voting')}>
-												Voting
-												{orderBy === 'voting' ? (
+											<StyledButton theme={theme} onClick={createSortHandler('spent')}>
+												Spent
+												{orderBy === 'spent' ? (
 													order === 'asc' ? (
 														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
 													) : (
@@ -389,34 +417,72 @@ export default function RankingDaresPage() {
 								<TableBody>
 									{rankingList.length > 0 ? (
 										sortedData.map((row, index) => (
-											<StyledTableRow theme={theme} key={index} onClick={handleDare(row.id)}>
+											<StyledTableRow theme={theme} key={index}>
 												<TableCell>{index + 1}</TableCell>
+												{row.userName ? (
+													<TableCell>
+														<a style={{ cursor: 'pointer', color: theme.palette.warning.main }} onClick={handlePlayer(row.userName)}>
+															{row.userName}
+														</a>
+													</TableCell>
+												) : (
+													<TableCell>
+														<a style={{ cursor: 'default' }}>N/A</a>
+													</TableCell>
+												)}
 												<TableCell>
-													<a style={{ cursor: 'pointer' }}>
-														{row.description.length > 75 ? row.description.substring(0, 75) + '...' : row.description}
+													<a
+														style={{
+															cursor: 'pointer',
+															textDecoration: 'none',
+															color: theme.palette.text.primary,
+															display: 'inline-flex',
+															gap: '5px',
+															alignItems: 'center',
+														}}
+														href={CHAINS[isNetworkAvailable ? chainIdUrl : 137]?.blockExplorerUrls[0] + 'address/' + row.id}
+														target="_blank"
+													>
+														{`${row.id.slice(0, 6)}...${row.id.slice(-4)}`}
+														<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
 													</a>
 												</TableCell>
+												<TableCell
+													style={{
+														display: 'flex',
+														justifyContent: 'center',
+														alignItems: 'center',
+														minHeight: '100%',
+														textAlign: 'center',
+														margin: '0 auto 0 auto',
+													}}
+												>
+													<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem' }}>
+														{row.userSocialStat?.instagram && <StyledInstagram />}
+														{row.userSocialStat?.twitter && <StyledTwitter />}
+														{row.userSocialStat?.tiktok && <StyledTikTok />}
+														{row.userSocialStat?.twitch && <StyledTwitch />}
+														{row.userSocialStat?.youtube && <StyledYouTube />}
+													</div>
+												</TableCell>
 												<TableCell style={{ textAlign: 'right' }}>
 													{currencyValue === false ? (
-														<a style={{ cursor: 'pointer' }}>
-															{formatNumber(row.entranceAmount)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
+														<a>
+															{formatNumber(row.earned)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
 														</a>
 													) : (
-														<a style={{ cursor: 'pointer' }}>${formatNumber(row.entranceAmount * currencyPrice[network]?.usd)}</a>
+														<a>${formatNumber(row.earned * currencyPrice[network]?.usd)}</a>
 													)}
 												</TableCell>
 												<TableCell style={{ textAlign: 'right' }}>
 													{currencyValue === false ? (
-														<a style={{ cursor: 'pointer' }}>
-															{formatNumber(row.amount)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
+														<a>
+															{formatNumber(row.spent)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
 														</a>
 													) : (
-														<a style={{ cursor: 'pointer' }}>${formatNumber(row.amount * currencyPrice[network]?.usd)}</a>
+														<a>${formatNumber(row.spent * currencyPrice[network]?.usd)}</a>
 													)}
 												</TableCell>
-												<TableCell style={{ textAlign: 'right' }}>{row.participants}</TableCell>
-												<TableCell style={{ textAlign: 'right' }}>{Number(row.positiveVotes) + Number(row.negativeVotes)}</TableCell>
-												<TableCell style={{ textAlign: 'right' }}>{calculatePositivePercentage(row.positiveVotes, row.negativeVotes)}</TableCell>
 											</StyledTableRow>
 										))
 									) : (

@@ -1,7 +1,10 @@
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import HomeIcon from '@mui/icons-material/Home';
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import MenuIcon from '@mui/icons-material/Menu';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
@@ -80,9 +83,25 @@ const StyledAppBar = styled(AppBar)<{ theme: any }>`
 	}
 `;
 
+const StyledAppBarMobile = styled(AppBar)<{ theme: any }>`
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	margin: 0 auto 0 auto;
+	padding: 0;
+	height: 4rem;
+	position: fixed;
+	background-color: transparent;
+	box-shadow: none;
+	top: 0;
+	left: 0;
+	right: 0;
+`;
+
 const StyledDiv = styled.div`
 	display: flex;
-	width: 100%;
+	width: 95%;
 
 	@media (max-width: 1280px) {
 		width: 95%;
@@ -102,20 +121,9 @@ const StyledSectionLeft = styled.section<{ theme: any }>`
 	justify-content: flex-start;
 	align-items: center;
 
-	h2 {
-		display: flex;
-		// font-family: ${TrueLies.style.fontFamily};
-		font-size: 1rem;
-		font-weight: 500;
-		color: ${(props) => props.theme.palette.text.primary};
-		margin-left: 3rem;
-		text-decoration: none;
-		cursor: pointer;
-	}
-
 	h1 {
 		display: flex;
-		width: 150px;
+		width: object-fit;
 		font-family: ${TrueLies.style.fontFamily};
 		font-size: 1.25rem;
 		font-weight: 500;
@@ -126,7 +134,7 @@ const StyledSectionLeft = styled.section<{ theme: any }>`
 
 	h3 {
 		display: flex;
-		width: 150px;
+		width: object-fit;
 		font-size: 1rem;
 		font-weight: 500;
 		color: ${(props) => props.theme.palette.text.primary};
@@ -136,12 +144,18 @@ const StyledSectionLeft = styled.section<{ theme: any }>`
 
 	& > *:first-of-type {
 		margin-left: 1rem;
+		margin-right: 3rem;
+	}
+
+	& > *:last-child {
+		margin-left: 1rem;
 		margin-right: 1rem;
 	}
 
-	@media (max-width: 1280px) {
-		display: none;
-		visibility: hidden;
+	@media (max-width: 680px) {
+		h1 {
+			font-size: 1.75rem;
+		}
 	}
 `;
 
@@ -217,11 +231,6 @@ const StyledSectionRight = styled.section`
 			margin-left: 1rem;
 		}
 	}
-
-	@media (max-width: 1000px) {
-		display: none;
-		visibility: hidden;
-	}
 `;
 
 const StyledLink = styled(Button)<{ theme: any }>`
@@ -289,60 +298,44 @@ const MobileMenuButton = styled.div<{ theme: any }>`
 	}
 `;
 
-const MobileSettings = styled.div`
+const MobileSettings = styled.div<{ theme: any }>`
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
+	justify-content: flex-start;
 	align-items: center;
 	min-width: 100vw;
 	min-height: 100vh;
-	background-color: #000;
+	max-height: 100vh; // Set a maximum height
+	overflow-y: scroll;
+	background-color: ${({ theme }) => theme.palette.background.default};
 	z-index: 9999;
 	position: fixed;
 	top: 0;
 	left: 0;
-	padding: 5rem;
-	padding-bottom: 10rem;
+	padding: 1rem;
 	animation: ${(props) => (props.isClosing ? slideDown : slideUp)} 0.5s ease-out;
 `;
 
 const MenuContainer = styled.div`
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
-	align-items: center;
-	height: 80%;
-
-	& > * + * {
-		margin-top: 1rem;
-	}
+	width: 100%;
 `;
 
-const DesktopSettings = styled.div`
-	display: block;
-	visibility: visible;
-
-	@media (max-width: 480px) {
-		display: none;
-		visibility: hidden;
-	}
-`;
-
-const CloseButton = styled.button`
+const CloseButton = styled.button<{ theme: any }>`
 	display: flex;
 	justify-content: center;
 	border: none;
-	color: #fff;
-	// position: absolute;
-	// bottom: 10rem;
-	// left: 50%;
-	// transform: translateX(-50%); // Adjust for centering
+	color: ${({ theme }) => theme.palette.text.primary};
 	background-color: transparent;
+	margin-top: auto;
+	margin-bottom: 10rem;
 `;
 
 export default function Header() {
 	const theme = useTheme();
 	const router = useRouter();
+	const isMap = router.pathname.includes('/map');
 	const network = router.query.network as string;
 	const headerRef = useRef(null);
 
@@ -412,65 +405,91 @@ export default function Header() {
 
 	return (
 		<>
-			<StyledAppBar theme={theme} ref={headerRef}>
-				<StyledDiv>
-					{windowWidth > 680 ? (
-						<>
-							<StyledSectionLeft theme={theme}>
-								<Link href={`/${network}`} passHref style={{ textDecoration: 'none' }}>
-									<h1>NERVE GLOBAL</h1>
-								</Link>
-								<SelectLeaderboard />
-								<Link href={`/${network}/map`} passHref style={{ textDecoration: 'none' }}>
-									<h3>Map</h3>
-								</Link>
-							</StyledSectionLeft>
-							<StyledSectionMiddle>
-								<SearchBar network={network} />
-							</StyledSectionMiddle>
-							<StyledSectionRight>
-								{/* {account && <SelectChain />} */}
-								{account ? <AccountModal /> : <Connect />}
-								<Setting />
-							</StyledSectionRight>
-						</>
-					) : (
-						<>
+			{windowWidth > 680 ? (
+				<StyledAppBar theme={theme} ref={headerRef}>
+					<StyledDiv>
+						<StyledSectionLeft theme={theme}>
+							<Link href={`/${network}`} passHref style={{ textDecoration: 'none' }}>
+								<h1>Nerve</h1>
+							</Link>
+							{/* <SelectLeaderboard /> */}
+							<Link href={`/${network}/leaderboard`} passHref style={{ textDecoration: 'none' }}>
+								<h3>Leaderboard</h3>
+							</Link>
+							<Link href={`/${network}/map`} passHref style={{ textDecoration: 'none' }}>
+								<h3>Map</h3>
+							</Link>
+						</StyledSectionLeft>
+						<StyledSectionMiddle>
+							<SearchBar network={network} />
+						</StyledSectionMiddle>
+						<StyledSectionRight>
+							{/* {account && <SelectChain />} */}
+							{account ? <AccountModal /> : <Connect />}
+							<Setting />
+						</StyledSectionRight>
+					</StyledDiv>
+				</StyledAppBar>
+			) : (
+				<>
+					<StyledAppBarMobile theme={theme} ref={headerRef}>
+						<StyledDiv>
+							{!isMap && (
+								<>
+									<StyledSectionLeft theme={theme}>
+										<Link href={`/${network}`} passHref style={{ textDecoration: 'none' }}>
+											<h1>Nerve</h1>
+										</Link>
+									</StyledSectionLeft>
+									<StyledSectionMiddle></StyledSectionMiddle>
+									<StyledSectionRight>
+										{account && <SelectChain />}
+										{account ? <AccountModal /> : <Connect />}
+										<Setting />
+									</StyledSectionRight>
+								</>
+							)}
+						</StyledDiv>
+					</StyledAppBarMobile>
+					<StyledAppBar theme={theme}>
+						<StyledDiv>
 							<Link href={`/${network}`} passHref style={{ textDecoration: 'none' }}>
 								<StyledLink theme={theme}>
-									<HomeIcon sx={{ fontSize: 30, color: theme.palette.text.primary }} />
+									<HomeIcon sx={{ color: theme.palette.text.primary }} />
 								</StyledLink>
 							</Link>
 							<Link href={`/${network}/map`} passHref style={{ textDecoration: 'none' }}>
 								<StyledLink theme={theme}>
-									<LocationOnIcon sx={{ fontSize: 30, color: theme.palette.text.primary }} />
+									<LocationOnIcon sx={{ color: theme.palette.text.primary }} />
+								</StyledLink>
+							</Link>
+							<SearchBar network={network} />
+							{/* <Setting /> */}
+							<Link href={`/${network}/leaderboard`} passHref style={{ textDecoration: 'none' }}>
+								<StyledLink theme={theme}>
+									<LeaderboardIcon sx={{ color: theme.palette.text.primary }} />
 								</StyledLink>
 							</Link>
 
-							<SearchBar network={network} />
-							<Setting />
 							<MobileMenuButton theme={theme} onClick={toggleMenu}>
-								<MenuOutlinedIcon />
+								<MenuOutlinedIcon sx={{ color: theme.palette.text.primary }} />
 							</MobileMenuButton>
 							{isMenuOpen && (
-								<MobileSettings isClosing={isClosing}>
+								<MobileSettings theme={theme} isClosing={isClosing}>
 									<MenuContainer>
-										<Link onClick={toggleMenu} href={`/contact`} passHref style={{ textDecoration: 'none' }}>
-											<StyledButtonMobile theme={theme}>contact</StyledButtonMobile>
-										</Link>
-										{account ? <AccountModal /> : <Connect />}
-										<CloseButton onClick={toggleMenu}>
-											<CloseOutlinedIcon onClick={toggleMenu} />
-										</CloseButton>
+										{/* <Link onClick={toggleMenu} href={`/contact`} passHref style={{ textDecoration: 'none' }}>
+											<StyledButtonMobile theme={theme}>Leaderboards</StyledButtonMobile>
+										</Link> */}
 									</MenuContainer>
+									<CloseButton theme={theme} onClick={toggleMenu}>
+										<CloseOutlinedIcon />
+									</CloseButton>
 								</MobileSettings>
 							)}
-
-							{/* {account ? <AccountModal /> : <Connect />} */}
-						</>
-					)}
-				</StyledDiv>
-			</StyledAppBar>
+						</StyledDiv>
+					</StyledAppBar>
+				</>
+			)}
 		</>
 	);
 }

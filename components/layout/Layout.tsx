@@ -73,7 +73,7 @@ const Layout = ({ children = 'This is the default title' }: Props) => {
 				<Main is404={is404} dynamicHeight={dynamicHeight || '100vh'}>
 					{children}
 				</Main>
-				{!isMap && <Footer />}
+				{/* {!isMap && <Footer />} */}
 			</ThemeProvider>
 		</>
 	);

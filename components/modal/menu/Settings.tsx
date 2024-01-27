@@ -72,7 +72,7 @@ const SettingsButton = styled(Button)<{ theme: any }>`
 	background-color: transparent;
 	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
 	border-radius: ${({ theme }) => theme.shape.borderRadius};
-	width: 100%;
+	width: 3rem;
 	transition: all 0.5s ease-in-out;
 
 	&:hover {
@@ -80,8 +80,8 @@ const SettingsButton = styled(Button)<{ theme: any }>`
 	}
 
 	@media (max-width: 680px) {
-		border: none;
-		border-radius: 0px;
+		// border: none;
+		// border-radius: 0px;
 		width: 3rem;
 
 		&:hover {
@@ -399,10 +399,11 @@ function SettingsModal() {
 	useEffect(() => {
 		setCurrentTheme(userTheme.prefersSystemSetting ? 'system' : userTheme.currentTheme);
 		setShowTestnets(testnetsValue);
+		setShowCurrency(currencyValue);
 		setSelectedRpc(rpcValue);
 		setAppliedRpcUrl(customRPCValue);
 		setCustomRpcUrl(customRPCValue);
-	}, [userTheme, testnetsValue, rpcValue, customRPCValue]);
+	}, [userTheme, testnetsValue, currencyValue, rpcValue, customRPCValue]);
 
 	const handleSetLightTheme = () => {
 		dispatch(setTheme('light')); // Dispatch setTheme action with 'light' payload

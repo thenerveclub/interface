@@ -75,7 +75,7 @@ const SearchBarContainer = styled(Paper)<{ theme: any }>`
 `;
 
 const SearchBarMobile = styled(Paper)<{ theme: any }>`
-	display: flex;
+	display: none;
 	visibility: hidden;
 
 	@media (max-width: 680px) {
@@ -600,8 +600,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 				</SearchBarContainer>
 			</ClickAwayListener>
 			<SearchBarMobile theme={theme}>
-				<MobileMenuButton onClick={toggleMenu}>
-					<SearchIcon />
+				<MobileMenuButton theme={theme} onClick={toggleMenu}>
+					<SearchIcon sx={{ color: theme.palette.text.primary }} />
 				</MobileMenuButton>
 				{isMenuOpen && (
 					<MobileSettings theme={theme} isClosing={isClosing}>
@@ -855,15 +855,18 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 
 export default SearchBar;
 
-const MobileMenuButton = styled.div`
+const MobileMenuButton = styled.button<{ theme: any }>`
 	display: none;
 	visibility: hidden;
 
-	@media (max-width: 1000px) {
+	@media (max-width: 680px) {
 		display: flex;
 		visibility: visible;
 		justify-content: center;
 		width: 3rem;
+		background-color: transparent;
+		box-shadow: none;
+		border: none;
 	}
 `;
 

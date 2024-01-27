@@ -130,8 +130,10 @@ const StyledBox = styled(Box)`
 	margin: 5rem auto 0 auto;
 	background-color: transparent;
 
-	@media (max-width: 600px) {
+	@media (max-width: 680px) {
 		width: 95%;
+		min-width: 100vw;
+		max-width: 100vw;
 	}
 `;
 
