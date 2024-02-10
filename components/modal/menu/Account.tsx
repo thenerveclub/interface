@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { Button } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import Identicon from '../../Identicon';
@@ -20,10 +21,14 @@ const ConnectButton = styled(Button)<{ theme: any }>`
 	background-color: transparent;
 	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
 	border-radius: ${({ theme }) => theme.shape.borderRadius};
-	cursor: default;
+	cursor: pointer;
+
+	&:hover {
+		border: 1px solid ${({ theme }) => theme.palette.warning.main};
+	}
 
 	@media (max-width: 680px) {
-		border: none;
+		// border: none;
 		width: object-fit;
 		margin: 0 auto 0 auto;
 		padding: 0;
@@ -46,20 +51,23 @@ const StyledDiv = styled.div`
 	}
 `;
 
-function AccountModal() {
-	const theme = useTheme();
+interface AccountModalProps {
+	account: any;
+	network: any;
+}
 
-	// Redux
-	const account = useSelector((state: { account: string }) => state.account);
+const AccountModal: React.FC<AccountModalProps> = ({ account, network }) => {
+	const theme = useTheme();
+	const router = useRouter();
 
 	return (
 		<>
-			<ConnectButton theme={theme}>
+			<ConnectButton theme={theme} onClick={() => router.push(`/${network}/player/${account}`)}>
 				<Identicon />
 				<StyledDiv>{account === null ? '-' : account ? `${account.substring(0, 6)}...${account.substring(account.length - 4)}` : ''}</StyledDiv>
 			</ConnectButton>
 		</>
 	);
-}
+};
 
 export default AccountModal;

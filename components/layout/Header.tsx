@@ -8,6 +8,7 @@ import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import MenuIcon from '@mui/icons-material/Menu';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
+import PersonIcon from '@mui/icons-material/Person';
 import { AppBar, Button } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import localFont from 'next/font/local';
@@ -59,7 +60,7 @@ const StyledAppBar = styled(AppBar)<{ theme: any }>`
 	left: 0;
 	right: 0;
 
-	@media (max-width: 680px) {
+	@media (max-width: 1024px) {
 		height: 4rem;
 		position: fixed;
 		background-color: ${({ theme }) => theme.palette.background.default} !important;
@@ -107,11 +108,31 @@ const StyledDiv = styled.div`
 		width: 95%;
 	}
 
-	@media (max-width: 680px) {
+	@media (max-width: 1024px) {
 		width: 95%;
 		flex-direction: row;
 		justify-content: space-between;
 		align-items: center;
+	}
+`;
+
+const StyledDivMobile = styled.div`
+	display: flex;
+	width: 95%;
+
+	@media (max-width: 1280px) {
+		width: 95%;
+	}
+
+	@media (max-width: 1024px) {
+		width: 80%;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	@media (max-width: 680px) {
+		width: 95%;
 	}
 `;
 
@@ -125,7 +146,7 @@ const StyledSectionLeft = styled.section<{ theme: any }>`
 		display: flex;
 		width: object-fit;
 		font-family: ${TrueLies.style.fontFamily};
-		font-size: 1.25rem;
+		font-size: 1.75rem;
 		font-weight: 500;
 		color: ${(props) => props.theme.palette.text.primary};
 		text-decoration: none;
@@ -152,7 +173,7 @@ const StyledSectionLeft = styled.section<{ theme: any }>`
 		margin-right: 1rem;
 	}
 
-	@media (max-width: 680px) {
+	@media (max-width: 1024px) {
 		h1 {
 			font-size: 1.75rem;
 		}
@@ -178,7 +199,7 @@ const StyledSectionMiddle = styled.section`
 		}
 	}
 
-	@media (max-width: 768px) {
+	@media (max-width: 1024px) {
 		width: 100%;
 		justify-content: right;
 
@@ -191,7 +212,7 @@ const StyledSectionMiddle = styled.section`
 		}
 	}
 
-	@media (max-width: 480px) {
+	@media (max-width: 680px) {
 		width: 100%;
 		justify-content: space-between;
 
@@ -280,7 +301,7 @@ const MobileMenuButton = styled.div<{ theme: any }>`
 	display: none;
 	visibility: hidden;
 
-	@media (max-width: 680px) {
+	@media (max-width: 1024px) {
 		display: flex;
 		visibility: visible;
 		justify-content: center;
@@ -405,7 +426,7 @@ export default function Header() {
 
 	return (
 		<>
-			{windowWidth > 680 ? (
+			{windowWidth > 1024 ? (
 				<StyledAppBar theme={theme} ref={headerRef}>
 					<StyledDiv>
 						<StyledSectionLeft theme={theme}>
@@ -425,7 +446,7 @@ export default function Header() {
 						</StyledSectionMiddle>
 						<StyledSectionRight>
 							{/* {account && <SelectChain />} */}
-							{account ? <AccountModal /> : <Connect />}
+							{account ? <AccountModal account={account} network={network} /> : <Connect />}
 							<Setting />
 						</StyledSectionRight>
 					</StyledDiv>
@@ -443,8 +464,8 @@ export default function Header() {
 									</StyledSectionLeft>
 									<StyledSectionMiddle></StyledSectionMiddle>
 									<StyledSectionRight>
-										{account && <SelectChain />}
-										{account ? <AccountModal /> : <Connect />}
+										{/* {account && <SelectChain />} */}
+										{account ? <AccountModal account={account} network={network} /> : <Connect />}
 										<Setting />
 									</StyledSectionRight>
 								</>
@@ -452,7 +473,7 @@ export default function Header() {
 						</StyledDiv>
 					</StyledAppBarMobile>
 					<StyledAppBar theme={theme}>
-						<StyledDiv>
+						<StyledDivMobile>
 							<Link href={`/${network}`} passHref style={{ textDecoration: 'none' }}>
 								<StyledLink theme={theme}>
 									<HomeIcon sx={{ color: theme.palette.text.primary }} />
@@ -471,22 +492,18 @@ export default function Header() {
 								</StyledLink>
 							</Link>
 
-							<MobileMenuButton theme={theme} onClick={toggleMenu}>
-								<MenuOutlinedIcon sx={{ color: theme.palette.text.primary }} />
-							</MobileMenuButton>
-							{isMenuOpen && (
-								<MobileSettings theme={theme} isClosing={isClosing}>
-									<MenuContainer>
-										{/* <Link onClick={toggleMenu} href={`/contact`} passHref style={{ textDecoration: 'none' }}>
-											<StyledButtonMobile theme={theme}>Leaderboards</StyledButtonMobile>
-										</Link> */}
-									</MenuContainer>
-									<CloseButton theme={theme} onClick={toggleMenu}>
-										<CloseOutlinedIcon />
-									</CloseButton>
-								</MobileSettings>
+							{account ? (
+								<Link href={`/${network}/player/${account}`} passHref style={{ textDecoration: 'none' }}>
+									<StyledLink theme={theme}>
+										<PersonIcon sx={{ color: theme.palette.text.primary }} />
+									</StyledLink>
+								</Link>
+							) : (
+								<StyledLink theme={theme}>
+									<PersonIcon sx={{ color: theme.palette.secondary.main }} />
+								</StyledLink>
 							)}
-						</StyledDiv>
+						</StyledDivMobile>
 					</StyledAppBar>
 				</>
 			)}

@@ -13,29 +13,29 @@ const SocialBox = styled(Box)`
 	display: flex;
 	flex-direction: row;
 	min-height: 25px;
-	align-items: center;
+	justify-content: left;
+	margin: 1rem auto 0 auto;
+	width: 100%;
+	gap: 2.5rem;
 
 	a {
 		font-size: 30px;
-
-		&:not(:last-child) {
-			margin-right: 2.5rem;
-		}
+		width: fit-content;
 	}
 
-	@media (max-width: 600px) {
+	@media (max-width: 1024px) {
 		display: flex;
 		flex-direction: row;
 		justify-content: center;
+		align-items: center;
+		width: 100%;
+		margin: 1rem auto 0 auto;
+		gap: 2.5rem;
 
 		a {
 			font-size: 30px;
 			text-align: center;
-			width: 100%;
-
-			&:not(:last-child) {
-				margin-right: 0rem;
-			}
+			width: fit-content;
 		}
 	}
 `;
@@ -68,7 +68,6 @@ const StyledTwitter = styled(Twitter)<{ theme: any }>`
 
 	cursor: pointer;
 	width: 1.25rem;
-	width: 1.25rem;
 	transition: all 0.5s ease-in-out;
 
 	&:hover {
@@ -86,7 +85,6 @@ const StyledInstagram = styled(Instagram)<{ theme: any }>`
 	}
 
 	cursor: pointer;
-	width: 1.25rem;
 	width: 1.25rem;
 	transition: all 0.5s ease-in-out;
 
@@ -106,7 +104,6 @@ const StyledTikTok = styled(TikTok)<{ theme: any }>`
 
 	cursor: pointer;
 	width: 1.25rem;
-	width: 1.25rem;
 	transition: all 0.5s ease-in-out;
 
 	&:hover {
@@ -125,7 +122,6 @@ const StyledTwitch = styled(Twitch)<{ theme: any }>`
 
 	cursor: pointer;
 	width: 1.25rem;
-	width: 1.25rem;
 	transition: all 0.5s ease-in-out;
 
 	&:hover {
@@ -143,7 +139,6 @@ const StyledYouTube = styled(Youtube)<{ theme: any }>`
 	}
 
 	cursor: pointer;
-	width: 1.25rem;
 	width: 1.25rem;
 	transition: all 0.5s ease-in-out;
 
@@ -173,22 +168,22 @@ const PlayerSocials: React.FC<PlayerSocialsProps> = ({ checksumAddress, checksum
 
 	return (
 		<SocialBox>
-			{playerData?.[0]?.userSocialStat?.twitter.includes('twitter') ? (
+			{playerData?.[0]?.userSocialStat?.twitter.includes('twitter') && (
 				<a target="_blank" rel="noreferrer" href={playerData?.[0]?.userSocialStat?.twitter}>
 					<StyledTwitter />
 				</a>
-			) : null}
-			{playerData?.[0]?.userSocialStat?.instagram.includes('instagram') ? (
+			)}
+			{playerData?.[0]?.userSocialStat?.instagram.includes('instagram') && (
 				<a target="_blank" rel="noreferrer" href={playerData?.[0]?.userSocialStat?.instagram}>
 					<StyledInstagram />
 				</a>
-			) : null}
-			{playerData?.[0]?.userSocialStat?.tiktok.includes('tiktok') ? (
+			)}
+			{playerData?.[0]?.userSocialStat?.tiktok.includes('tiktok') && (
 				<a target="_blank" rel="noreferrer" href={playerData?.[0]?.userSocialStat?.tiktok}>
 					<StyledTikTok />
 				</a>
-			) : null}
-			{playerData?.[0]?.userSocialStat?.youtube.includes('youtube') ? (
+			)}
+			{playerData?.[0]?.userSocialStat?.youtube.includes('youtube') && (
 				<a target="_blank" rel="noreferrer" href={playerData?.[0]?.userSocialStat?.youtube}>
 					{/* {isYouTubeLive ? (
 							<StyledBadge variant="dot">
@@ -198,8 +193,8 @@ const PlayerSocials: React.FC<PlayerSocialsProps> = ({ checksumAddress, checksum
 					<StyledYouTube />
 					{/* )} */}
 				</a>
-			) : null}
-			{playerData?.[0]?.userSocialStat?.twitch.includes('twitch') ? (
+			)}
+			{playerData?.[0]?.userSocialStat?.twitch.includes('twitch') && (
 				<a target="_blank" rel="noreferrer" href={playerData?.[0]?.userSocialStat?.twitch}>
 					{isTwitchLive ? (
 						<StyledBadge variant="dot">
@@ -209,8 +204,8 @@ const PlayerSocials: React.FC<PlayerSocialsProps> = ({ checksumAddress, checksum
 						<StyledTwitch />
 					)}
 				</a>
-			) : null}
-			<a>{checksumAccount === checksumAddress ? <RegisterSocials playerData={playerData} chainId={chainId} chainIdUrl={chainIdUrl} /> : null}</a>
+			)}
+			{checksumAccount === checksumAddress ?? <RegisterSocials playerData={playerData} chainId={chainId} chainIdUrl={chainIdUrl} />}
 		</SocialBox>
 	);
 };

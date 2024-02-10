@@ -68,7 +68,7 @@ const SearchBarContainer = styled(Paper)<{ theme: any }>`
 	}
 	position: relative;
 
-	@media (max-width: 680px) {
+	@media (max-width: 1024px) {
 		display: none;
 		visibility: hidden;
 	}
@@ -78,7 +78,7 @@ const SearchBarMobile = styled(Paper)<{ theme: any }>`
 	display: none;
 	visibility: hidden;
 
-	@media (max-width: 680px) {
+	@media (max-width: 1024px) {
 		display: flex;
 		visibility: visible;
 		justify-content: center;
@@ -160,7 +160,7 @@ const SearchResultItemStyled = styled.div<{ theme: any }>`
 		margin-top: 0.25rem;
 	}
 
-	@media (max-width: 680px) {
+	@media (max-width: 1024px) {
 		padding: 0.5rem 1rem;
 
 		&:hover {
@@ -859,7 +859,7 @@ const MobileMenuButton = styled.button<{ theme: any }>`
 	display: none;
 	visibility: hidden;
 
-	@media (max-width: 680px) {
+	@media (max-width: 1024px) {
 		display: flex;
 		visibility: visible;
 		justify-content: center;

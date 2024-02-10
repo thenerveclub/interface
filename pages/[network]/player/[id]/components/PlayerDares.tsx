@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SelectSort from '../../../../../components/SelectSort';
 import CreateTask from '../../../../../components/modal/createTask';
+import Connect from '../../../../../components/modal/menu/Connect';
 import useActivePlayerTasks from '../../../../../hooks/useActivePlayerTasks';
 import useCompletedPlayerTasks from '../../../../../hooks/useCompletedPlayerTasks';
 import { currencySlice } from '../../../../../state/currency/currencySlice';
@@ -17,7 +18,7 @@ const StyledTabs = styled(Tabs)<{ theme: any }>`
 		background-color: ${({ theme }) => theme.palette.warning.main};
 	}
 
-	@media (max-width: 600px) {
+	@media (max-width: 1024px) {
 		width: 350px;
 		justify-content: center;
 		align-items: center;
@@ -43,7 +44,7 @@ const ActiveBox = styled(Box)`
 	margin: 3rem auto 0 auto;
 	border-bottom: 1px solid rgba(128, 128, 138, 1);
 
-	@media (max-width: 600px) {
+	@media (max-width: 1024px) {
 		width: 300px;
 		justify-content: center;
 		align-items: center;
@@ -60,7 +61,7 @@ const ActiveFilterBox = styled(Box)`
 	width: 100%;
 	height: 40px;
 
-	@media (max-width: 600px) {
+	@media (max-width: 1024px) {
 		flex-direction: column;
 		align-items: center;
 	}
@@ -112,8 +113,18 @@ const ActiveTabRightSection = styled(Box)`
 	flex-direction: row;
 	justify-content: flex-end;
 
-	@media (max-width: 600px) {
+	@media (max-width: 1024px) {
 		justify-content: center;
+	}
+`;
+
+const CreateTaskBox = styled(Box)`
+	display: flex;
+	// justify-content: flex-end;
+
+	@media (max-width: 1024px) {
+		display: none;
+		visibility: hidden;
 	}
 `;
 
@@ -129,7 +140,7 @@ const ActiveTabSection = styled(Box)`
 		grid-column: span 2;
 	}
 
-	@media (min-width: 961px) {
+	@media (min-width: 1001px) {
 		/* Apply complex grid rules for screens wider than 960px */
 		li:last-child:nth-of-type(3n - 1) {
 			grid-column-end: -2;
@@ -145,7 +156,7 @@ const ActiveTabSection = styled(Box)`
 		}
 	}
 
-	@media (max-width: 960px) {
+	@media (max-width: 1024px) {
 		display: grid;
 		grid-template-columns: 1fr;
 		margin: 2rem auto 0 auto;
@@ -167,7 +178,7 @@ const TaskCard = styled(Box)<{ theme: any }>`
 	border: 0.5px solid ${({ theme }) => theme.palette.secondary.main};
 	border-radius: ${({ theme }) => theme.customShape.borderRadius};
 
-	@media (max-width: 960px) {
+	@media (max-width: 1024px) {
 		width: 90%; // Make the width responsive
 		max-width: 100%; // Ensure it doesn't overflow the container
 	}
@@ -179,7 +190,7 @@ const TaskBoxSection = styled(Box)`
 	align-items: center;
 	margin: 0 auto 0 auto;
 
-	@media (max-width: 600px) {
+	@media (max-width: 1024px) {
 	}
 `;
 
@@ -213,7 +224,7 @@ const TaskBoxSectionOne = styled(Box)`
 		}
 	}
 
-	@media (max-width: 600px) {
+	@media (max-width: 1024px) {
 		justify-content: center;
 	}
 `;
@@ -248,7 +259,7 @@ const TaskBoxSectionTwo = styled(Box)`
 		}
 	}
 
-	@media (max-width: 600px) {
+	@media (max-width: 1024px) {
 		justify-content: center;
 	}
 `;
@@ -374,9 +385,11 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ registerStatus, checksumAddre
 								<a>USD</a>
 							</StyledToggleButton>
 						</StyledToggleButtonGroup>
-						{account && checksumAccount !== checksumAddress && (
-							<CreateTask registerStatus={registerStatus} chainIdUrl={chainIdUrl} isNetworkAvailable={isNetworkAvailable} />
-						)}
+						<CreateTaskBox>
+							{account && checksumAccount !== checksumAddress && (
+								<CreateTask registerStatus={registerStatus} chainIdUrl={chainIdUrl} isNetworkAvailable={isNetworkAvailable} />
+							)}
+						</CreateTaskBox>
 					</ActiveTabRightSection>
 				</ActiveFilterBox>
 				<ActiveTabSection>
@@ -406,9 +419,11 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ registerStatus, checksumAddre
 								<a>USD</a>
 							</StyledToggleButton>
 						</StyledToggleButtonGroup>
-						{account && checksumAccount !== checksumAddress && (
-							<CreateTask registerStatus={registerStatus} chainIdUrl={chainIdUrl} isNetworkAvailable={isNetworkAvailable} />
-						)}
+						<CreateTaskBox>
+							{account && checksumAccount !== checksumAddress && (
+								<CreateTask registerStatus={registerStatus} chainIdUrl={chainIdUrl} isNetworkAvailable={isNetworkAvailable} />
+							)}
+						</CreateTaskBox>
 					</ActiveTabRightSection>
 				</ActiveFilterBox>
 				<ActiveTabSection>

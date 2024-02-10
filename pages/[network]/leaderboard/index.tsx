@@ -1,121 +1,13 @@
 import styled from '@emotion/styled';
-import { OpenInNew } from '@mui/icons-material';
-import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import { Box, Switch, SwitchProps, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import localFont from 'next/font/local';
 import Head from 'next/head';
-import router, { useRouter } from 'next/router';
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import LoadingScreen from '../../../components/LoadingScreen';
-import usePlayerRankingData from '../../../hooks/rankingData/usePlayerRankingData';
-import { currencySlice } from '../../../state/currency/currencySlice';
-import { CHAINS, nameToChainId } from '../../../utils/chains';
-import Instagram from '/public/svg/socials/instagram.svg';
-import TikTok from '/public/svg/socials/tiktok.svg';
-import Twitch from '/public/svg/socials/twitch.svg';
-import Twitter from '/public/svg/socials/twitter.svg';
-import Youtube from '/public/svg/socials/youtube.svg';
+import DareLeaderboard from './boards/dare';
+import PlayerLeaderboard from './boards/player';
 
 const TrueLies = localFont({ src: '../../../public/fonts/TrueLies.woff2', display: 'swap' });
-
-const StyledTwitter = styled(Twitter)<{ theme: any }>`
-	path {
-		fill: ${({ theme }) => theme.palette.secondary.main};
-		transition: fill 0.5s ease-in-out; // Add transition for fill color
-	}
-
-	cursor: pointer;
-	width: 18px;
-	height: 18px;
-	transition: all 0.5s ease-in-out;
-
-	&:hover {
-		// transform: rotate(-10deg);
-		path {
-			fill: ${({ theme }) => theme.palette.secondary.contrastText};
-		}
-	}
-`;
-
-const StyledInstagram = styled(Instagram)<{ theme: any }>`
-	path {
-		fill: ${({ theme }) => theme.palette.secondary.main};
-		transition: fill 0.5s ease-in-out; // Add transition for fill color
-	}
-
-	cursor: pointer;
-	width: 18px;
-	height: 18px;
-	transition: all 0.5s ease-in-out;
-
-	&:hover {
-		// transform: rotate(-10deg);
-		path {
-			fill: ${({ theme }) => theme.palette.secondary.contrastText};
-		}
-	}
-`;
-
-const StyledTikTok = styled(TikTok)<{ theme: any }>`
-	path {
-		fill: ${({ theme }) => theme.palette.secondary.main};
-		transition: fill 0.5s ease-in-out; // Add transition for fill color
-	}
-
-	cursor: pointer;
-	width: 18px;
-	height: 18px;
-	transition: all 0.5s ease-in-out;
-
-	&:hover {
-		// transform: rotate(-10deg);
-		path {
-			fill: ${({ theme }) => theme.palette.secondary.contrastText};
-		}
-	}
-`;
-
-const StyledYouTube = styled(Youtube)<{ theme: any }>`
-	path {
-		fill: ${({ theme }) => theme.palette.secondary.main};
-		transition: fill 0.5s ease-in-out; // Add transition for fill color
-	}
-
-	cursor: pointer;
-	width: 18px;
-	height: 18px;
-	transition: all 0.5s ease-in-out;
-
-	&:hover {
-		// transform: rotate(-10deg);
-		path {
-			fill: ${({ theme }) => theme.palette.secondary.contrastText};
-		}
-	}
-`;
-
-const StyledTwitch = styled(Twitch)<{ theme: any }>`
-	path {
-		fill: ${({ theme }) => theme.palette.secondary.main};
-		transition: fill 0.5s ease-in-out; // Add transition for fill color
-	}
-
-	cursor: pointer;
-	width: 18px;
-	height: 18px;
-	transition: all 0.5s ease-in-out;
-
-	&:hover {
-		// transform: rotate(-10deg);
-		path {
-			fill: ${({ theme }) => theme.palette.secondary.contrastText};
-		}
-	}
-`;
 
 const StyledBox = styled(Box)`
 	display: flex;
@@ -158,46 +50,66 @@ const Title = styled(Typography)<{ theme: any }>`
 	}
 `;
 
-const StyledTable = styled(Table)<{ theme: any }>`
-	width: 100%;
-	min-width: 1400px;
-	max-width: 1400px;
-	height: 100%;
-
-	@media (max-width: 680px) {
-		width: 100vw;
-		min-width: 100vw;
-		max-width: 100vw;
-	}
-`;
-
-const StyledButton = styled(Button)<{ theme: any }>`
-	display: flex-end;
+const StyledDiv = styled.div`
+	display: flex;
 	flex-direction: row;
-	justify-content: right;
-	align-items: right;
-	color: ${({ theme }) => theme.palette.text.primary};
-	background-color: transparent;
+	justify-content: space-between;
+	align-items: center;
 	text-transform: none;
-	width: 100%;
+	font-size: 1rem;
+	cursor: default;
+	margin-bottom: 2.5rem;
+	gap: 1rem;
 
 	@media (max-width: 680px) {
-		// font-size: 3rem;
+		font-size: 1rem;
 	}
 `;
 
-const StyledTableRow = styled(TableRow)<{ theme: any }>`
-	transition: transform 0.3s, box-shadow 0.3s;
-
-	&:nth-of-type(odd) {
-		background-color: ${({ theme }) => theme.palette.background.default};
-		// filter: blur(2px);
+const IOSSwitch = styled((props: SwitchProps) => <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />)<{ theme: any }>`
+	width: 42px;
+	height: 26px;
+	padding: 0;
+	& .MuiSwitch-switchBase {
+		padding: 0;
+		margin: 2px;
+		transition-duration: 300ms;
+		&.Mui-checked {
+			transform: translateX(16px);
+			color: #fff;
+			& + .MuiSwitch-track {
+				background-color: ${({ theme }) => theme.palette.success.main};
+				opacity: 1;
+				border: 0;
+			}
+			&.Mui-disabled + .MuiSwitch-track {
+				opacity: 0.5;
+			}
+		}
+		&.Mui-focusVisible .MuiSwitch-thumb {
+			color: #33cf4d;
+			border: 6px solid #fff;
+		}
+		&.Mui-disabled .MuiSwitch-thumb {
+			color: ${({ theme }) => theme.palette.secondary.main};
+		}
+		&.Mui-disabled + .MuiSwitch-track {
+			opacity: ${(props) => (props.theme.palette.mode === 'light' ? 0.7 : 0.3)};
+		}
 	}
-
-	&:hover {
-		// background-color: ${({ theme }) => theme.palette.primary.dark};
-		transform: scale(1.02);
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	& .MuiSwitch-thumb {
+		box-sizing: border-box;
+		width: 22px;
+		height: 22px;
+	}
+	& .MuiSwitch-track {
+		border-radius: 13px;
+		background-color: ${({ theme }) => theme.palette.secondary.main};
+		opacity: 1;
+		transition: ${(props) =>
+			props.theme.transitions.create(['background-color'], {
+				duration: 500,
+			})};
 	}
 `;
 
@@ -219,8 +131,10 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{ theme: any }>`
 	}
 
 	@media (max-width: 680px) {
-		align-self: center;
+		display: flex;
+		justify-content: center;
 		margin: 0 auto 1rem auto;
+		// width: 100%;
 	}
 `;
 
@@ -241,264 +155,52 @@ const StyledToggleButton = styled(ToggleButton)<{ theme: any }>`
 	}
 `;
 
-const StyledArrowCircleUpOutlinedIcon = styled(ArrowCircleUpOutlinedIcon)<{ theme: any }>`
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin: 3rem auto 0 auto;
-	// position: fixed;
-	// bottom: 1rem;
-	// right: 1rem;
-	cursor: pointer;
-	font-size: 2rem;
-	color: ${({ theme }) => theme.palette.secondary.main};
-	transition: all 0.5s ease-in-out;
-
-	&:hover {
-		transform: scale(1.1);
-		color: ${({ theme }) => theme.palette.text.primary};
-	}
-`;
-
-const StyledTableContainer = styled(Box)<{ theme: any }>`
-	display: flex;
-	height: 100vh;
-	overflow-y: auto;
-
-	@media (max-width: 680px) {
-		width: 100vw;
-		min-width: 100vw;
-		max-width: 100vw;
-		overflow-y: scroll;
-		margin-bottom: 5rem;
-	}
-`;
-
-export default function RankingPage() {
+export default function LeaderboardPage() {
 	const theme = useTheme();
-	const router = useRouter();
-	const network = router.query.network as string;
 
-	// Name to Chain ID
-	const chainIdUrl = nameToChainId[network];
-
-	// Redux
-	const dispatch = useDispatch();
-	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
-	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
-	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
-
-	// Toogle Button For Token Price
-	const handleToggle = (event, newCurrency) => {
-		// update currencyValue in redux
-		dispatch(currencySlice.actions.updateCurrency(newCurrency));
-	};
-
-	// Network Check
-	const isNetworkAvailable = availableChains.includes(chainIdUrl);
-
-	const [order, setOrder] = useState('desc');
-	const [orderBy, setOrderBy] = useState('earned');
-	const { rankingList, isLoading } = usePlayerRankingData(isNetworkAvailable ? chainIdUrl : 137, orderBy);
-
-	const createSortHandler = (property) => (event) => {
-		const isAsc = orderBy === property && order === 'desc';
-		setOrder(isAsc ? 'asc' : 'desc');
-		setOrderBy(property);
-	};
-
-	const sortedData = [...rankingList].sort((a, b) => {
-		let aValue = Number(a[orderBy]);
-		let bValue = Number(b[orderBy]);
-
-		if (order === 'asc') {
-			return aValue - bValue;
-		} else {
-			return bValue - aValue;
-		}
-	});
-
-	const handlePlayer = (playerId) => {
-		return () => {
-			router.push(`/${network}/player/${playerId}`);
-		};
-	};
-
-	function formatNumber(value) {
-		return (Number(value) / 1e18).toLocaleString('en-US', {
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 2,
-		});
-	}
-
-	const handleScrollToTop = () => {
-		window.scrollTo({
-			top: 0,
-			behavior: 'smooth',
-		});
+	// chnage ios switch if true show dare else show player
+	const [checked, setChecked] = useState(false);
+	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setChecked(event.target.checked);
 	};
 
 	return (
 		<>
-			{isLoading ? (
-				<LoadingScreen />
-			) : (
-				<>
-					<Head>
-						<meta name="viewport" content="width=device-width, initial-scale=1" />
-						<meta name="robots" content="noindex" />
-						<title>Ranking | Nerve Gloabl</title>
-						<meta property="og:title" content="Ranking | Nerve Gloabl" key="title" />
-						<meta property="og:site_name" content="Ranking | Nerve Gloabl" />
-						<meta property="og:description" content="Ranking | Nerve Gloabl" />
-						<meta property="og:image" content="https://app.nerveglobal.com/favicon.ico" />
-						<meta property="og:url" content="https://app.nerveglobal.com/" />
-						<meta property="og:type" content="website" />
-						<meta name="twitter:card" content="summary_large_image" />
-						<meta name="twitter:site" content="@nerveglobal_" />
-						<meta name="twitter:title" content="Ranking | Nerve Gloabl" />
-						<meta name="twitter:description" content="Ranking | Nerve Gloabl" />
-						<meta name="twitter:image" content="https://app.nerveglobal.com/favicon.ico" />
-					</Head>
-					<StyledBox>
-						<Title theme={theme}>
-							<a>Player Leaderboard</a>
-						</Title>
-						<StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
-							<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
-								{isNetworkAvailable ? <a>{CHAINS[chainIdUrl]?.nameToken}</a> : <a>MATIC</a>}
-							</StyledToggleButton>
-							<StyledToggleButton theme={theme} disabled={currencyValue === true} value={true}>
-								<a>USD</a>
-							</StyledToggleButton>
-						</StyledToggleButtonGroup>
-						<StyledTableContainer theme={theme}>
-							<StyledTable stickyHeader theme={theme}>
-								<TableHead>
-									<TableRow>
-										<TableCell>#</TableCell>
-										<TableCell>Name</TableCell>
-										<TableCell>Address</TableCell>
-										<TableCell style={{ textAlign: 'center' }}>Socials</TableCell>
-										<TableCell>
-											<StyledButton theme={theme} onClick={createSortHandler('earned')}>
-												Earned
-												{orderBy === 'earned' ? (
-													order === 'asc' ? (
-														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
-													) : (
-														<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
-													)
-												) : order === 'asc' ? (
-													<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
-												) : (
-													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-												)}
-											</StyledButton>
-										</TableCell>
-										<TableCell>
-											<StyledButton theme={theme} onClick={createSortHandler('spent')}>
-												Spent
-												{orderBy === 'spent' ? (
-													order === 'asc' ? (
-														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
-													) : (
-														<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
-													)
-												) : order === 'asc' ? (
-													<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
-												) : (
-													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-												)}
-											</StyledButton>
-										</TableCell>
-									</TableRow>
-								</TableHead>
-								<TableBody>
-									{rankingList.length > 0 ? (
-										sortedData.map((row, index) => (
-											<StyledTableRow theme={theme} key={index}>
-												<TableCell>{index + 1}</TableCell>
-												{row.userName ? (
-													<TableCell>
-														<a style={{ cursor: 'pointer', color: theme.palette.warning.main }} onClick={handlePlayer(row.userName)}>
-															{row.userName}
-														</a>
-													</TableCell>
-												) : (
-													<TableCell>
-														<a style={{ cursor: 'default' }}>N/A</a>
-													</TableCell>
-												)}
-												<TableCell>
-													<a
-														style={{
-															cursor: 'pointer',
-															textDecoration: 'none',
-															color: theme.palette.text.primary,
-															display: 'inline-flex',
-															gap: '5px',
-															alignItems: 'center',
-														}}
-														href={CHAINS[isNetworkAvailable ? chainIdUrl : 137]?.blockExplorerUrls[0] + 'address/' + row.id}
-														target="_blank"
-													>
-														{`${row.id.slice(0, 6)}...${row.id.slice(-4)}`}
-														<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
-													</a>
-												</TableCell>
-												<TableCell
-													style={{
-														display: 'flex',
-														justifyContent: 'center',
-														alignItems: 'center',
-														minHeight: '100%',
-														textAlign: 'center',
-														margin: '0 auto 0 auto',
-													}}
-												>
-													<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem' }}>
-														{row.userSocialStat?.instagram && <StyledInstagram />}
-														{row.userSocialStat?.twitter && <StyledTwitter />}
-														{row.userSocialStat?.tiktok && <StyledTikTok />}
-														{row.userSocialStat?.twitch && <StyledTwitch />}
-														{row.userSocialStat?.youtube && <StyledYouTube />}
-													</div>
-												</TableCell>
-												<TableCell style={{ textAlign: 'right' }}>
-													{currencyValue === false ? (
-														<a>
-															{formatNumber(row.earned)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
-														</a>
-													) : (
-														<a>${formatNumber(row.earned * currencyPrice[network]?.usd)}</a>
-													)}
-												</TableCell>
-												<TableCell style={{ textAlign: 'right' }}>
-													{currencyValue === false ? (
-														<a>
-															{formatNumber(row.spent)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
-														</a>
-													) : (
-														<a>${formatNumber(row.spent * currencyPrice[network]?.usd)}</a>
-													)}
-												</TableCell>
-											</StyledTableRow>
-										))
-									) : (
-										<StyledTableRow theme={theme}>
-											<TableCell colSpan={7} style={{ textAlign: 'center' }}>
-												No data available on this chain
-											</TableCell>
-										</StyledTableRow>
-									)}
-								</TableBody>
-							</StyledTable>
-						</StyledTableContainer>
-						{/* <StyledArrowCircleUpOutlinedIcon theme={theme} onClick={handleScrollToTop} /> */}
-					</StyledBox>
-				</>
-			)}
+			<Head>
+				<meta name="viewport" content="width=device-width, initial-scale=1" />
+				<meta name="robots" content="noindex" />
+				<title>Ranking | Nerve Gloabl</title>
+				<meta property="og:title" content="Ranking | Nerve Gloabl" key="title" />
+				<meta property="og:site_name" content="Ranking | Nerve Gloabl" />
+				<meta property="og:description" content="Ranking | Nerve Gloabl" />
+				<meta property="og:image" content="https://app.nerveglobal.com/favicon.ico" />
+				<meta property="og:url" content="https://app.nerveglobal.com/" />
+				<meta property="og:type" content="website" />
+				<meta name="twitter:card" content="summary_large_image" />
+				<meta name="twitter:site" content="@nerveglobal_" />
+				<meta name="twitter:title" content="Ranking | Nerve Gloabl" />
+				<meta name="twitter:description" content="Ranking | Nerve Gloabl" />
+				<meta name="twitter:image" content="https://app.nerveglobal.com/favicon.ico" />
+			</Head>
+			<StyledBox>
+				<Title theme={theme}>
+					<a>Leaderboard</a>
+				</Title>
+				<StyledDiv>
+					Player
+					<IOSSwitch theme={theme} checked={checked} onChange={handleChange} name="checked" />
+					Dare
+				</StyledDiv>
+				<StyledToggleButtonGroup theme={theme}>
+					<StyledToggleButton theme={theme} value={false}>
+						Player
+					</StyledToggleButton>
+					<StyledToggleButton theme={theme} value={true}>
+						<a>Dare</a>
+					</StyledToggleButton>
+				</StyledToggleButtonGroup>
+				{checked ? <DareLeaderboard /> : <PlayerLeaderboard />}
+			</StyledBox>
 		</>
 	);
 }

@@ -76,14 +76,20 @@ const StyledTrending = styled(Box)`
 `;
 
 const StyledTrendingGrid = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	margin: 0 auto 0 auto;
 	width: 100%;
+	height: auto;
 
 	h2 {
 		text-align: left;
 		font-size: 2.25rem;
 	}
 
-	@media (max-width: 600px) {
+	@media (max-width: 680px) {
 		margin: 5rem 1rem auto 1rem;
 	}
 `;
@@ -94,22 +100,45 @@ export default function IndexPage() {
 	// const { network } = router.query;
 	const isLoading = false;
 
-	// Define your valid networks
-	// const validNetworks = ['polygon', 'goerli'];
+	// Function to send a notification
+	const sendNotification = () => {
+		// Check if the Notification API is supported
+		if (!('Notification' in window)) {
+			alert('This browser does not support desktop notification');
+		} else if (Notification.permission === 'granted') {
+			// If permission was already granted
+			new Notification('Nerve Global Dapp Notification', {
+				body: 'Check out the latest dares and players!',
+				icon: 'https://canary.nerveglobal.com/favicon.ico',
+			});
+		} else if (Notification.permission !== 'denied') {
+			// Request permission from the user
+			Notification.requestPermission().then(function (permission) {
+				if (permission === 'granted') {
+					new Notification('Nerve Global Dapp Notification', {
+						body: 'Check out the latest dares and players!',
+						icon: 'https://dapp.nerveglobal.com/favicon.ico',
+					});
+				}
+			});
+		}
+	};
 
-	// use all urlNames from CHAINS to create a list of valid networks
-	// const validNetworks = Object.values(CHAINS).map((chain) => chain.urlName);
+	// Use useEffect to handle visibility change
+	useEffect(() => {
+		const handleVisibilityChange = () => {
+			if (document.visibilityState === 'hidden') {
+				sendNotification();
+			}
+		};
 
-	// useEffect(() => {
-	// 	// If the network is not valid, redirect to a default network or show a 404 page
-	// 	if (network && !validNetworks.includes(network as string)) {
-	// 		// Redirect to the default network
-	// 		// router.push('/defaultNetwork');
+		document.addEventListener('visibilitychange', handleVisibilityChange);
 
-	// 		// Or, redirect to the custom 404 page
-	// 		router.push('/404');
-	// 	}
-	// }, [network, router]);
+		// Clean up the event listener when the component unmounts
+		return () => {
+			document.removeEventListener('visibilitychange', handleVisibilityChange);
+		};
+	}, []);
 
 	return (
 		<>
@@ -135,19 +164,19 @@ export default function IndexPage() {
 					<StyledLayout>
 						<StyledBox theme={theme}>
 							<h1>Shape the Stream</h1>
-							<h4>
+							{/* <h4>
 								The ultimate playground where spectators fuel content with financial rewards, empowering players to push boundaries and foster vibrant
 								communities.
-							</h4>
+							</h4> */}
 						</StyledBox>
 						<StyledTrending>
 							<h2>Trending Dares</h2>
 						</StyledTrending>
-						<StyledTrendingGrid></StyledTrendingGrid>
+						<StyledTrendingGrid>hii hiii</StyledTrendingGrid>
 						<StyledTrending>
 							<h2>Trending Players</h2>
 						</StyledTrending>
-						<StyledTrendingGrid></StyledTrendingGrid>
+						<StyledTrendingGrid>hii hiii</StyledTrendingGrid>
 					</StyledLayout>
 				</>
 			)}

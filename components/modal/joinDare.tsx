@@ -95,6 +95,10 @@ const BuyButton = styled(Button)<{ theme: any }>`
 	&:hover {
 		background-color: ${({ theme }) => theme.palette.warning.main};
 	}
+
+	&:disabled {
+		background-color: ${({ theme }) => theme.palette.warning.dark};
+	}
 `;
 
 const StyledTitle = styled(Box)<{ theme: any }>`
@@ -181,8 +185,6 @@ const JoinDare: React.FC<JoinDareProps> = ({ id, dareData, chainIdUrl, network, 
 	const { enqueueSnackbar } = useSnackbar();
 	const balance = useBalanceTracker();
 
-	console.log('balance', balance);
-
 	// Redux
 	const account = useSelector((state: { account: string }) => state.account);
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
@@ -200,7 +202,7 @@ const JoinDare: React.FC<JoinDareProps> = ({ id, dareData, chainIdUrl, network, 
 	const handleOpen = () => setOpen(true);
 
 	// State
-	const [value, setValue] = useState(null);
+	const [value, setValue] = useState('0.00');
 	const [isMax, setIsMax] = useState(false);
 	const [isMin, setIsMin] = useState(true);
 	const [pendingTx, setPendingTx] = useState(false);
@@ -260,27 +262,22 @@ const JoinDare: React.FC<JoinDareProps> = ({ id, dareData, chainIdUrl, network, 
 		});
 	}
 
+	// Value
+	const txValue = ethers.utils.parseEther(value || '0');
+
 	// Join Function
 	async function onJoin() {
 		const signer = provider.getSigner();
 		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			const tx = await nerveGlobal.joinTask(id, { value: value });
-			enqueueSnackbar('Transaction signed succesfully!', {
-				variant: 'success',
-			});
+			const tx = await nerveGlobal.joinTask(id, { value: txValue });
 			await tx.wait();
 			if (tx.hash) {
-				enqueueSnackbar('Transaction mined succesfully!', {
-					variant: 'success',
-				});
 				setPendingTx(false);
+				handleClose();
 			}
 		} catch (error) {
-			enqueueSnackbar('Transaction failed!', {
-				variant: 'error',
-			});
 			setPendingTx(false);
 			console.log(error);
 		}
@@ -377,7 +374,9 @@ const JoinDare: React.FC<JoinDareProps> = ({ id, dareData, chainIdUrl, network, 
 					<StyledSection style={{ margin: '2rem auto 1.5rem auto' }}>
 						{chainId === chainIdUrl ? (
 							pendingTx ? (
-								<BuyButton theme={theme}>Pending</BuyButton>
+								<BuyButton theme={theme} disabled>
+									Pending
+								</BuyButton>
 							) : (
 								<BuyButton theme={theme} onClick={onJoin} disabled={!isInputValid()}>
 									Join

@@ -108,9 +108,11 @@ const DetailsCard: React.FC<DetailsCardProps> = ({ id, network, dareData }) => {
 	const theme = useTheme();
 	const router = useRouter();
 
-	const handleClickUser = (user) => {
+	const handleClickUser = (user, address) => {
 		return () => {
-			router.push(`/${network}/player/${user}`);
+			if (user === '') {
+				router.push(`/${network}/player/${address}`);
+			} else router.push(`/${network}/player/${user}`);
 		};
 	};
 
@@ -131,8 +133,17 @@ const DetailsCard: React.FC<DetailsCardProps> = ({ id, network, dareData }) => {
 				<StyledFirstRow theme={theme}>
 					<div>
 						<a>Player</a>
-						<a style={{ display: 'flex', color: theme.palette.warning.main }} onClick={handleClickUser(dareData?.[0]?.task.recipientName)}>
-							<span style={{ cursor: 'pointer' }}>{dareData?.[0]?.task.recipientName}</span>
+						<a
+							style={{ display: 'flex', color: theme.palette.warning.main }}
+							onClick={handleClickUser(dareData?.[0]?.task.recipientName, dareData?.[0]?.task.recipientAddress)}
+						>
+							<span style={{ cursor: 'pointer' }}>
+								{dareData?.[0]?.task.recipientName === ''
+									? `${dareData?.[0]?.task.recipientAddress.substring(0, 6)}...${dareData?.[0]?.task.recipientAddress.substring(
+											dareData?.[0]?.task.recipientAddress.length - 4
+									  )}`
+									: dareData?.[0]?.task.recipientName}
+							</span>
 						</a>
 					</div>
 					<div>

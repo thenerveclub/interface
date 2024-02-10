@@ -23,7 +23,7 @@ const StyledLayout = styled(Box)`
 	overflow: hidden;
 	position: fixed;
 
-	@media (max-width: 600px) {
+	@media (max-width: 1024px) {
 		margin: 0 auto 0 auto;
 		height: calc(var(--vh, 1vh) * 100 - 4rem);
 		position: fixed;

@@ -2,6 +2,7 @@ import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import { VolumeUp } from '@mui/icons-material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import {
 	Box,
 	Button,
@@ -12,6 +13,8 @@ import {
 	Modal,
 	OutlinedInput,
 	Slider,
+	SpeedDial,
+	SpeedDialIcon,
 	TextField,
 	Tooltip,
 	Typography,
@@ -19,6 +22,7 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
+import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -105,6 +109,34 @@ const ModalButton = styled(Button)<{ theme: any }>`
 	&:hover {
 		background-color: ${({ theme }) => theme.palette.warning.main};
 	}
+
+	@media (max-width: 1024px) {
+		display: none;
+		visibility: hidden;
+	}
+`;
+
+const StyledSpeedDial = styled(SpeedDial)<{ theme: any }>`
+	display: none;
+	visibility: hidden;
+
+	@media (max-width: 1024px) {
+		display: flex;
+		visibility: visible;
+		position: fixed;
+		bottom: 8rem;
+		right: 2.5rem;
+		z-index: 1000;
+
+		.MuiSpeedDial-fab {
+			background-color: ${({ theme }) => theme.palette.warning.main};
+		}
+	}
+
+	@media (max-width: 680px) {
+		bottom: 7.5rem;
+		right: 1rem;
+	}
 `;
 
 const BuyButton = styled(Button)<{ theme: any }>`
@@ -121,6 +153,11 @@ const BuyButton = styled(Button)<{ theme: any }>`
 
 	&:hover {
 		background-color: ${({ theme }) => theme.palette.warning.main};
+	}
+
+	&:disabled {
+		// color: ${({ theme }) => theme.palette.secondary.main};
+		background-color: ${({ theme }) => theme.palette.warning.dark};
 	}
 `;
 
@@ -206,6 +243,7 @@ interface CreateTaskProps {
 
 const CreateTask: React.FC<CreateTaskProps> = ({ registerStatus, chainIdUrl, isNetworkAvailable }) => {
 	const theme = useTheme();
+	const router = useRouter();
 	const { provider } = useWeb3React();
 	const { enqueueSnackbar } = useSnackbar();
 	const balance = useBalanceTracker();
@@ -292,20 +330,12 @@ const CreateTask: React.FC<CreateTaskProps> = ({ registerStatus, chainIdUrl, isN
 			const tx = await nerveGlobal.createTask(registerStatus, description, convertToSeconds(days, hours, minutes), 'en', '0', '0', {
 				value: txValue,
 			});
-			enqueueSnackbar('Transaction signed succesfully!', {
-				variant: 'success',
-			});
 			await tx.wait();
 			if (tx.hash) {
-				enqueueSnackbar('Transaction mined succesfully!', {
-					variant: 'success',
-				});
 				setPendingTx(false);
+				handleClose();
 			}
 		} catch (error) {
-			enqueueSnackbar('Transaction failed!', {
-				variant: 'error',
-			});
 			setPendingTx(false);
 			console.log(error);
 		}
@@ -333,6 +363,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ registerStatus, chainIdUrl, isN
 			<ModalButton theme={theme} onClick={handleOpen}>
 				Create Dare
 			</ModalButton>
+			<StyledSpeedDial theme={theme} ariaLabel="New Dare" icon={<PlaylistAddIcon />} onClick={handleOpen} />
 			<StyledModal open={open} onClose={handleClose}>
 				<ConnectBox theme={theme} className={isClosing ? 'closing' : ''}>
 					<Typography
@@ -437,7 +468,9 @@ const CreateTask: React.FC<CreateTaskProps> = ({ registerStatus, chainIdUrl, isN
 						<StyledSection style={{ margin: '2rem auto 1.5rem auto' }}>
 							{chainId === chainIdUrl ? (
 								pendingTx ? (
-									<BuyButton theme={theme}>Pending</BuyButton>
+									<BuyButton theme={theme} disabled>
+										Pending
+									</BuyButton>
 								) : (
 									<BuyButton theme={theme} onClick={onCreateTask} disabled={value === '0' || value === '0.0' || value === '0.00' || value === '0.'}>
 										Create Task

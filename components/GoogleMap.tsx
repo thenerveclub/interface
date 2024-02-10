@@ -48,13 +48,10 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, chainIdUrl, isNetworkAvai
 		setAppliedTheme(prefersSystemSetting ? (prefersDarkMode ? 'dark' : 'light') : currentTheme);
 	}, [prefersSystemSetting, prefersDarkMode, currentTheme]);
 
-	console.log('appliedTheme: ', currentTheme, prefersSystemSetting, prefersDarkMode, appliedTheme);
-
 	const handleMapClick = (event) => {
 		const clickedLat = event.latLng.lat();
 		const clickedLng = event.latLng.lng();
 
-		console.log('Clicked location: ', clickedLat, clickedLng);
 		setModalCoords({ lat: clickedLat, lng: clickedLng });
 		setModalVisible(true);
 	};
@@ -168,7 +165,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, chainIdUrl, isNetworkAvai
 
 			// Add an onClick event listener
 			marker.addListener('click', () => {
-				if (window.innerWidth < 1200) {
+				if (window.innerWidth < 1024) {
 					if (lastClickedMarker === marker) {
 						router.push(`/${network}/dare/${dataItem.id}`);
 						lastClickedMarker = null; // Reset the last clicked marker

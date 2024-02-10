@@ -8,14 +8,22 @@ import useRankingSpent from '../../../../../hooks/useRankingSpent';
 import { CHAINS } from '../../../../../utils/chains';
 
 const StatisticBox = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 	width: 100%;
-	margin: 2rem 0 auto 0;
+	margin: 2rem auto 0 auto;
 	text-align: center;
+
+	@media (max-width: 1024px) {
+		width: 95%;
+	}
 `;
 
 const StyledGridFirst = styled(Grid)<{ theme: any }>`
 	display: flex;
-	flex-direction: row;
+	justify-content: center;
+	// gap: 1rem;
 	font-size: 16px;
 
 	a {
@@ -31,7 +39,7 @@ const StyledGridFirst = styled(Grid)<{ theme: any }>`
 
 const StyledGridSecond = styled(Grid)`
 	display: flex;
-	flex-direction: row;
+	justify-content: center;
 	color: #fff;
 	margin-top: 0.25rem;
 
@@ -146,9 +154,9 @@ const PlayerStatistics: React.FC<PlayerStatisticsProps> = ({ checksumAddress, ch
 				)}
 			</StyledGridFirst>
 			<StyledGridSecond>
-				<a>Total earned</a>
-				<a>Total spent</a>
-				<a>Global rank</a>
+				<a>Earnings</a>
+				<a>Contributions</a>
+				<a>Rank</a>
 			</StyledGridSecond>
 		</StatisticBox>
 	);

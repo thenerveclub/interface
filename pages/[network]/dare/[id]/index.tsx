@@ -6,8 +6,11 @@ import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import LoadingScreen from '../../../../components/LoadingScreen';
 import JoinDare from '../../../../components/modal/joinDare';
+import Connect from '../../../../components/modal/menu/Connect';
+import ProveDare from '../../../../components/modal/proveDare';
 import RedeemRecipient from '../../../../components/modal/redeemRecipient';
 import RedeemUser from '../../../../components/modal/redeemUser';
+import VoteTask from '../../../../components/modal/voteTask';
 import useDareData from '../../../../hooks/dareData/useDareData';
 import { nameToChainId } from '../../../../utils/chains';
 import ActivityTable from './components/ActivityTable';
@@ -105,8 +108,39 @@ export default function TaskPage() {
 	const { dareData, isLoading } = useDareData(isNetworkAvailable ? chainIdUrl : 137, id);
 
 	const finished = dareData?.[0]?.task.finished;
+	const timeover = dareData?.[0]?.task.endTask <= Math.floor(Date.now() / 1000);
 	const voteIsTrue = dareData?.[0]?.task.positiveVotes > dareData?.[0]?.task.negativeVotes ? true : false;
 	const proof = dareData?.[0]?.task.proofLink === '' ? false : true;
+	const isPlayer = dareData?.[0]?.task.recipientAddress.toLowerCase() === account.toLowerCase();
+	const player =
+		dareData?.[0]?.task.recipientName === ''
+			? `${dareData?.[0]?.task.recipientAddress.substring(0, 6)}...${dareData?.[0]?.task.recipientAddress.substring(
+					dareData?.[0]?.task.recipientAddress.length - 4
+			  )}`
+			: dareData?.[0]?.task.recipientName;
+	const proven = dareData?.[0]?.task.proofLink === '' ? false : true;
+	const playerClaimed = dareData?.[0]?.task.executed;
+
+	// Initialize variables to track if the user has joined and voted
+	let hasJoined = false;
+	let hasVoted = false;
+	let userVote = null;
+	let hasClaimed = false;
+
+	// Iterate over dareData to check for both conditions
+	dareData.forEach((data) => {
+		if (data.userAddress.toLowerCase() === account.toLowerCase()) {
+			hasJoined = true; // The user's address is in dareData, so they've joined
+
+			if (data.voted) {
+				hasVoted = true; // The user's address matched, and they have voted
+				userVote = data.vote;
+				hasClaimed = data.userStake === '0';
+			}
+		}
+	});
+
+	console.log('playerClaimed ', playerClaimed);
 
 	// Twitch Live Status
 	// const twitchLink = playerData[0]?.userSocialStat?.twitch.includes('twitch') ? playerData[0]?.userSocialStat?.twitch : '';
@@ -121,11 +155,8 @@ export default function TaskPage() {
 	// const youTubeChannelName = 'inscope21';
 	// const isYouTubeLive = useYouTubeStatus(youTubeChannelName);
 
-	// Get current unix timestamp
-	const currentUnixTimestamp = Math.floor(Date.now() / 1000);
-
 	// Task end time to unix timestamp in number
-	const taskEndTime = Number(dareData?.[0]?.task.endTask);
+	const unixTimestamp = Number(dareData?.[0]?.task.endTask);
 
 	return (
 		<>
@@ -135,23 +166,65 @@ export default function TaskPage() {
 				<StyledBox>
 					<StyledGridBox>
 						<StyledLeftSection>
-							<DescriptionCard dareData={dareData} />
+							<DescriptionCard dareData={dareData} player={player} />
 							<DetailsCard id={id} network={network} dareData={dareData} />
 							<ActivityTable id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} />
 							{/* <Chart dareData={dareData} /> */}
 						</StyledLeftSection>
 						<StyledRightSection>
-							<TimerCard currentUnixTimestamp={currentUnixTimestamp} taskEndTime={taskEndTime} />
-							{account &&
-								(finished ? (
-									voteIsTrue ? (
-										<RedeemRecipient id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
-									) : (
+							<TimerCard unixTimestamp={unixTimestamp} />
+							{account ? (
+								finished || timeover ? (
+									isPlayer ? (
+										voteIsTrue && !playerClaimed ? (
+											<RedeemRecipient
+												id={id}
+												dareData={dareData}
+												chainIdUrl={chainIdUrl}
+												network={network}
+												isNetworkAvailable={isNetworkAvailable}
+											/>
+										) : (
+											<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+												<p>{playerClaimed ? 'You have claimed your win' : 'You has lost the dare'}</p>
+											</div>
+										)
+									) : !voteIsTrue && !hasClaimed ? (
 										<RedeemUser id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
+									) : (
+										<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+											<p>{hasClaimed ? 'You have claimed your stake' : 'Player has won the dare'}</p>
+										</div>
 									)
-								) : (
+								) : isPlayer ? (
+									!proven ? (
+										<ProveDare id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
+									) : (
+										voteIsTrue &&
+										playerClaimed && (
+											<RedeemRecipient
+												id={id}
+												dareData={dareData}
+												chainIdUrl={chainIdUrl}
+												network={network}
+												isNetworkAvailable={isNetworkAvailable}
+											/>
+										)
+									)
+								) : !hasJoined ? (
 									<JoinDare id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
-								))}
+								) : !hasVoted ? (
+									<VoteTask id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
+								) : (
+									<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+										<p>{userVote === true ? 'You voted true' : 'Yout voted false'}</p>
+									</div>
+								)
+							) : (
+								<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+									<Connect />
+								</div>
+							)}
 							{proof && <ProofCard dareData={dareData} />}
 						</StyledRightSection>
 					</StyledGridBox>

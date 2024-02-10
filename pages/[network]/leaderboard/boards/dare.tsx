@@ -9,12 +9,12 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import LoadingScreen from '../../../components/LoadingScreen';
-import useDareRankingData from '../../../hooks/rankingData/useDareRankingData';
-import { currencySlice } from '../../../state/currency/currencySlice';
-import { CHAINS, nameToChainId } from '../../../utils/chains';
+import LoadingScreen from '../../../../components/LoadingScreen';
+import useDareRankingData from '../../../../hooks/rankingData/useDareRankingData';
+import { currencySlice } from '../../../../state/currency/currencySlice';
+import { CHAINS, nameToChainId } from '../../../../utils/chains';
 
-const TrueLies = localFont({ src: '../../../public/fonts/TrueLies.woff2', display: 'swap' });
+const TrueLies = localFont({ src: '../../../../public/fonts/TrueLies.woff2', display: 'swap' });
 
 const StyledBox = styled(Box)`
 	display: flex;
@@ -283,9 +283,9 @@ export default function RankingDaresPage() {
 						<meta name="twitter:image" content="https://app.nerveglobal.com/favicon.ico" />
 					</Head>
 					<StyledBox>
-						<Title theme={theme}>
+						{/* <Title theme={theme}>
 							<a>Dare Leaderboard</a>
-						</Title>
+						</Title> */}
 						<StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
 							<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
 								{isNetworkAvailable ? <a>{CHAINS[chainIdUrl]?.nameToken}</a> : <a>MATIC</a>}

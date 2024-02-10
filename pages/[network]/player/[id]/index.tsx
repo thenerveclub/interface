@@ -1,12 +1,13 @@
 import styled from '@emotion/styled';
 import { ContentCopy, OpenInNew } from '@mui/icons-material';
-import { Box, Fade, Tooltip } from '@mui/material';
+import { Box, Fade, SpeedDial, SpeedDialIcon, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import LoadingScreen from '../../../../components/LoadingScreen';
 import BlacklistPlayer from '../../../../components/modal/blacklistPlayer';
+import CreateTask from '../../../../components/modal/createTask';
 import RegisterName from '../../../../components/modal/registerName';
 import { useCheckNameRegister } from '../../../../hooks/useCheckNameRegister';
 import usePlayerData from '../../../../hooks/usePlayerData';
@@ -26,8 +27,12 @@ const StyledLeftSectionBox = styled(Box)`
 	flex-direction: column;
 	width: 50%;
 
-	@media (max-width: 600px) {
+	@media (max-width: 1024px) {
+		display: flex;
+		justify-content: center;
+		align-items: center;
 		width: 100%;
+		margin: 0 auto 0 auto;
 	}
 `;
 
@@ -35,8 +40,11 @@ const StyledBox = styled(Box)`
 	margin: 7.5rem 5rem auto 5rem;
 	width: 90%;
 
-	@media (max-width: 600px) {
-		margin: 5rem 1rem auto 1rem;
+	@media (max-width: 1024px) {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		margin: 5rem auto 0 auto;
 	}
 `;
 
@@ -50,14 +58,12 @@ const PlayerBox = styled(Box)`
 	a {
 		font-size: 30px;
 		cursor: default;
-
-		&:not(:last-child) {
-			margin-right: 1rem;
-		}
 	}
 
-	@media (max-width: 600px) {
+	@media (max-width: 1024px) {
 		justify-content: center;
+		width: 100%;
+		margin: 0 auto 0 auto;
 	}
 `;
 
@@ -78,8 +84,18 @@ const AddressBox = styled(Box)`
 		}
 	}
 
-	@media (max-width: 600px) {
+	@media (max-width: 1024px) {
 		justify-content: center;
+	}
+`;
+
+const CreateTaskBox = styled(Box)`
+	display: none;
+	visibility: hidden;
+
+	@media (max-width: 1024px) {
+		display: flex;
+		visibility: visible;
 	}
 `;
 
@@ -132,7 +148,13 @@ export default function PlayerPage() {
 					<StyledSection>
 						<StyledLeftSectionBox>
 							<PlayerBox>
-								{playerData?.[0]?.userName ? <a>{playerData?.[0]?.userName}</a> : <a>{checksumAddress?.toUpperCase()}</a>}
+								{playerData?.[0]?.userName ? (
+									<a>{playerData?.[0]?.userName}</a>
+								) : (
+									<a>
+										{checksumAddress?.substring(0, 6)}...{checksumAddress?.substring(checksumAddress.length - 4)}
+									</a>
+								)}
 								<a>
 									{account ? (
 										checksumAccount === checksumAddress ? (
@@ -146,11 +168,11 @@ export default function PlayerPage() {
 							<AddressBox>
 								{playerData?.[0]?.id ? (
 									<a>
-										({playerData?.[0]?.id.substring(0, 6)}...{playerData?.[0]?.id.substring(playerData?.[0]?.id.length - 4).toUpperCase()})
+										({playerData?.[0]?.id.substring(0, 6)}...{playerData?.[0]?.id.substring(playerData?.[0]?.id.length - 4)})
 									</a>
 								) : (
 									<a>
-										({checksumAddress?.substring(0, 6)}...{checksumAddress?.substring(checksumAddress?.length - 4).toUpperCase()})
+										({checksumAddress?.substring(0, 6)}...{checksumAddress?.substring(checksumAddress?.length - 4)})
 									</a>
 								)}
 								<Tooltip
@@ -193,6 +215,11 @@ export default function PlayerPage() {
 						network={network}
 						chainIdUrl={chainIdUrl}
 					/>
+					<CreateTaskBox>
+						{account && checksumAccount !== checksumAddress && (
+							<CreateTask registerStatus={registerStatus} chainIdUrl={chainIdUrl} isNetworkAvailable={isNetworkAvailable} />
+						)}
+					</CreateTaskBox>
 				</StyledBox>
 			)}
 		</>

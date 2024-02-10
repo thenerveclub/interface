@@ -10,17 +10,17 @@ import Head from 'next/head';
 import router, { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import LoadingScreen from '../../../components/LoadingScreen';
-import usePlayerRankingData from '../../../hooks/rankingData/usePlayerRankingData';
-import { currencySlice } from '../../../state/currency/currencySlice';
-import { CHAINS, nameToChainId } from '../../../utils/chains';
+import LoadingScreen from '../../../../components/LoadingScreen';
+import usePlayerRankingData from '../../../../hooks/rankingData/usePlayerRankingData';
+import { currencySlice } from '../../../../state/currency/currencySlice';
+import { CHAINS, nameToChainId } from '../../../../utils/chains';
 import Instagram from '/public/svg/socials/instagram.svg';
 import TikTok from '/public/svg/socials/tiktok.svg';
 import Twitch from '/public/svg/socials/twitch.svg';
 import Twitter from '/public/svg/socials/twitter.svg';
 import Youtube from '/public/svg/socials/youtube.svg';
 
-const TrueLies = localFont({ src: '../../../public/fonts/TrueLies.woff2', display: 'swap' });
+const TrueLies = localFont({ src: '../../../../public/fonts/TrueLies.woff2', display: 'swap' });
 
 const StyledTwitter = styled(Twitter)<{ theme: any }>`
 	path {
@@ -131,8 +131,9 @@ const StyledBox = styled(Box)`
 	background-color: transparent;
 
 	@media (max-width: 680px) {
-		width: 95%;
-		min-width: 100vw;
+		width: 100vw;
+
+		min-width: 0;
 		max-width: 100vw;
 	}
 `;
@@ -163,10 +164,22 @@ const StyledTable = styled(Table)<{ theme: any }>`
 	min-width: 1400px;
 	max-width: 1400px;
 	height: 100%;
+	// table-layout: fixed;
 
-	@media (max-width: 600px) {
-		font-size: 3rem;
+	@media (max-width: 680px) {
+		// font-size: 1rem;
+		width: 100vw;
+		min-width: 0;
+		max-width: 100vw;
 	}
+`;
+
+// Style your TableCell specifically for the "#" column
+const NumberCell = styled(TableCell)<{ theme: any }>`
+	// width: 50px; // Set a fixed width appropriate for your numbers
+	// max-width: 50px;
+	// padding: 0 16px; // Adjust padding as needed
+	// text-align: center; // Center the text if desired
 `;
 
 const StyledButton = styled(Button)<{ theme: any }>`
@@ -179,8 +192,8 @@ const StyledButton = styled(Button)<{ theme: any }>`
 	text-transform: none;
 	width: 100%;
 
-	@media (max-width: 600px) {
-		font-size: 3rem;
+	@media (max-width: 680px) {
+		font-size: 1rem;
 	}
 `;
 
@@ -214,6 +227,13 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{ theme: any }>`
 			border: 1px solid ${({ theme }) => theme.palette.warning.main};
 			border-left: 1px solid ${({ theme }) => theme.palette.warning.main};
 		}
+	}
+
+	@media (max-width: 680px) {
+		display: flex;
+		justify-content: center;
+		margin: 0 auto 1rem auto;
+		// width: 100%;
 	}
 `;
 
@@ -256,6 +276,11 @@ const StyledArrowCircleUpOutlinedIcon = styled(ArrowCircleUpOutlinedIcon)<{ them
 const StyledTableContainer = styled(Box)<{ theme: any }>`
 	height: 100vh;
 	overflow-y: auto;
+
+	@media (max-width: 680px) {
+		width: 100vw;
+		overflow: scroll;
+	}
 `;
 
 export default function RankingPage() {
@@ -322,6 +347,23 @@ export default function RankingPage() {
 		});
 	};
 
+	// Define a function to convert numbers to their ordinal representation in JavaScript
+	function numberToOrdinal(n) {
+		if (10 <= n % 100 && n % 100 <= 20) {
+			return n + 'TH';
+		}
+		switch (n % 10) {
+			case 1:
+				return n + 'ST';
+			case 2:
+				return n + 'ND';
+			case 3:
+				return n + 'RD';
+			default:
+				return n + 'TH';
+		}
+	}
+
 	return (
 		<>
 			{isLoading ? (
@@ -345,9 +387,9 @@ export default function RankingPage() {
 						<meta name="twitter:image" content="https://app.nerveglobal.com/favicon.ico" />
 					</Head>
 					<StyledBox>
-						<Title theme={theme}>
+						{/* <Title theme={theme}>
 							<a>Player Leaderboard</a>
-						</Title>
+						</Title> */}
 						<StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
 							<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
 								{isNetworkAvailable ? <a>{CHAINS[chainIdUrl]?.nameToken}</a> : <a>MATIC</a>}
@@ -360,13 +402,13 @@ export default function RankingPage() {
 							<StyledTable stickyHeader theme={theme}>
 								<TableHead>
 									<TableRow>
-										<TableCell>#</TableCell>
-										<TableCell>Name</TableCell>
-										<TableCell>Address</TableCell>
-										<TableCell style={{ textAlign: 'center' }}>Socials</TableCell>
+										<NumberCell theme={theme}>RANK</NumberCell>
+										<TableCell>NAME</TableCell>
+										<TableCell>ADDRESS</TableCell>
+										{/* <TableCell style={{ textAlign: 'center' }}>Socials</TableCell> */}
 										<TableCell>
 											<StyledButton theme={theme} onClick={createSortHandler('earned')}>
-												Earned
+												EARNINGS
 												{orderBy === 'earned' ? (
 													order === 'asc' ? (
 														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
@@ -382,7 +424,7 @@ export default function RankingPage() {
 										</TableCell>
 										<TableCell>
 											<StyledButton theme={theme} onClick={createSortHandler('spent')}>
-												Spent
+												CONTRIBUTIONS
 												{orderBy === 'spent' ? (
 													order === 'asc' ? (
 														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
@@ -402,7 +444,7 @@ export default function RankingPage() {
 									{rankingList.length > 0 ? (
 										sortedData.map((row, index) => (
 											<StyledTableRow theme={theme} key={index}>
-												<TableCell>{index + 1}</TableCell>
+												<NumberCell theme={theme}>{numberToOrdinal(index + 1)}</NumberCell>
 												{row.userName ? (
 													<TableCell>
 														<a style={{ cursor: 'pointer', color: theme.palette.warning.main }} onClick={handlePlayer(row.userName)}>
@@ -431,7 +473,7 @@ export default function RankingPage() {
 														<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
 													</a>
 												</TableCell>
-												<TableCell
+												{/* <TableCell
 													style={{
 														display: 'flex',
 														justifyContent: 'center',
@@ -448,7 +490,7 @@ export default function RankingPage() {
 														{row.userSocialStat?.twitch && <StyledTwitch />}
 														{row.userSocialStat?.youtube && <StyledYouTube />}
 													</div>
-												</TableCell>
+												</TableCell> */}
 												<TableCell style={{ textAlign: 'right' }}>
 													{currencyValue === false ? (
 														<a>

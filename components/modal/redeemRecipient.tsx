@@ -3,7 +3,6 @@ import { Button, CircularProgress } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
-import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
@@ -37,36 +36,32 @@ interface RedeemUserProps {
 const RedeemRecipient: React.FC<RedeemUserProps> = ({ id, dareData, chainIdUrl, network, isNetworkAvailable }) => {
 	const theme = useTheme();
 	const { provider } = useWeb3React();
-	const { enqueueSnackbar } = useSnackbar();
 
 	// Redux
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 
 	// State
 	const [pendingTx, setPendingTx] = useState(false);
+	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
 	// Join Function
-	async function onRegisterName() {
+	async function redeemRecipient() {
 		const signer = provider.getSigner();
 		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
+			setIsButtonDisabled(true); // Disable button immediately on click
+
 			const tx = await nerveGlobal.redeemRecipient(id);
-			enqueueSnackbar('Transaction signed succesfully!', {
-				variant: 'success',
-			});
 			await tx.wait();
 			if (tx.hash) {
-				enqueueSnackbar('Transaction mined succesfully!', {
-					variant: 'success',
-				});
 				setPendingTx(false);
+				// Set a timeout to re-enable the button after 1 minute
+				setTimeout(() => setIsButtonDisabled(false), 60000); // 60000 ms = 1 minute
 			}
 		} catch (error) {
-			enqueueSnackbar('Transaction failed!', {
-				variant: 'error',
-			});
 			setPendingTx(false);
+			setIsButtonDisabled(false); // Re-enable button on error
 			console.log(error);
 		}
 	}
@@ -78,7 +73,7 @@ const RedeemRecipient: React.FC<RedeemUserProps> = ({ id, dareData, chainIdUrl, 
 					Pending
 				</BuyButton>
 			) : (
-				<BuyButton theme={theme} onClick={onRegisterName}>
+				<BuyButton theme={theme} onClick={redeemRecipient} disabled={isButtonDisabled}>
 					Redeem Recipient
 				</BuyButton>
 			)}
