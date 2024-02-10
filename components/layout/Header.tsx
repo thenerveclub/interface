@@ -465,7 +465,7 @@ export default function Header() {
 									<StyledSectionMiddle></StyledSectionMiddle>
 									<StyledSectionRight>
 										{/* {account && <SelectChain />} */}
-										{account ? <AccountModal account={account} network={network} /> : <Connect />}
+										{!account && <Connect />}
 										<Setting />
 									</StyledSectionRight>
 								</>
@@ -495,7 +495,8 @@ export default function Header() {
 							{account ? (
 								<Link href={`/${network}/player/${account}`} passHref style={{ textDecoration: 'none' }}>
 									<StyledLink theme={theme}>
-										<PersonIcon sx={{ color: theme.palette.text.primary }} />
+										{/* <PersonIcon sx={{ color: theme.palette.text.primary }} /> */}
+										<AccountModal account={account} network={network} />
 									</StyledLink>
 								</Link>
 							) : (

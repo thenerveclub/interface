@@ -205,7 +205,7 @@ const PlayerSocials: React.FC<PlayerSocialsProps> = ({ checksumAddress, checksum
 					)}
 				</a>
 			)}
-			{checksumAccount === checksumAddress ?? <RegisterSocials playerData={playerData} chainId={chainId} chainIdUrl={chainIdUrl} />}
+			{checksumAccount === checksumAddress && <RegisterSocials playerData={playerData} chainId={chainId} chainIdUrl={chainIdUrl} />}
 		</SocialBox>
 	);
 };

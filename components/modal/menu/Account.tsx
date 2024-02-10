@@ -27,11 +27,15 @@ const ConnectButton = styled(Button)<{ theme: any }>`
 		border: 1px solid ${({ theme }) => theme.palette.warning.main};
 	}
 
-	@media (max-width: 680px) {
-		// border: none;
+	@media (max-width: 1024px) {
+		border: none;
 		width: object-fit;
 		margin: 0 auto 0 auto;
 		padding: 0;
+
+		&:hover {
+			border: none;
+		}
 	}
 `;
 
@@ -45,7 +49,7 @@ const StyledDiv = styled.div`
 	background-color: transparent;
 	margin-left: 0.5rem;
 
-	@media (max-width: 680px) {
+	@media (max-width: 1024px) {
 		display: none;
 		visibility: hidden;
 	}
