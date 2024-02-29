@@ -167,7 +167,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, chainIdUrl, isNetworkAvai
 			marker.addListener('click', () => {
 				if (window.innerWidth < 1024) {
 					if (lastClickedMarker === marker) {
-						router.push(`/${network}/dare/${dataItem.id}`);
+						router.push(`/dare/${dataItem.id}`);
 						lastClickedMarker = null; // Reset the last clicked marker
 					} else {
 						if (lastOpenedInfoWindow) {
@@ -178,7 +178,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, chainIdUrl, isNetworkAvai
 						lastOpenedInfoWindow = infoWindow;
 					}
 				} else {
-					router.push(`/${network}/dare/${dataItem.id}`);
+					router.push(`/dare/${dataItem.id}`);
 				}
 			});
 		});

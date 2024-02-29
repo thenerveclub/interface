@@ -5,13 +5,14 @@ import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import LoadingScreen from '../../../../components/LoadingScreen';
-import BlacklistPlayer from '../../../../components/modal/blacklistPlayer';
-import CreateTask from '../../../../components/modal/createTask';
-import RegisterName from '../../../../components/modal/registerName';
-import { useCheckNameRegister } from '../../../../hooks/useCheckNameRegister';
-import usePlayerData from '../../../../hooks/usePlayerData';
-import { CHAINS, nameToChainId } from '../../../../utils/chains';
+import LoadingScreen from '../../../components/LoadingScreen';
+import BlacklistPlayer from '../../../components/modal/blacklistPlayer';
+import CreateTask from '../../../components/modal/createTask';
+import RegisterName from '../../../components/modal/registerName';
+import { useCheckNameRegister } from '../../../hooks/useCheckNameRegister';
+import useENSName from '../../../hooks/useENSName';
+import usePlayerData from '../../../hooks/usePlayerData';
+import { CHAINS, nameToChainId } from '../../../utils/chains';
 import PlayerDares from './components/PlayerDares';
 import PlayerSocials from './components/PlayerSocials';
 import PlayerStatistics from './components/PlayerStatistics';
@@ -113,6 +114,7 @@ export default function PlayerPage() {
 
 	// Redux
 	const account = useSelector((state: { account: string }) => state.account);
+	const ens = useSelector((state: { ens: string }) => state.ens);
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
 
@@ -125,6 +127,8 @@ export default function PlayerPage() {
 	// Address Checksumed And Lowercased
 	const checksumAddress = registerStatus?.toLowerCase();
 	const checksumAccount = account?.toLowerCase();
+
+	const { ensName, address } = useENSName(id);
 
 	const { playerData, isLoading } = usePlayerData(isNetworkAvailable ? chainIdUrl : 137, checksumAddress);
 
@@ -148,33 +152,20 @@ export default function PlayerPage() {
 					<StyledSection>
 						<StyledLeftSectionBox>
 							<PlayerBox>
-								{playerData?.[0]?.userName ? (
-									<a>{playerData?.[0]?.userName}</a>
-								) : (
-									<a>
-										{checksumAddress?.substring(0, 6)}...{checksumAddress?.substring(checksumAddress.length - 4)}
-									</a>
-								)}
 								<a>
-									{account ? (
-										checksumAccount === checksumAddress ? (
-											<RegisterName playerData={playerData} chainId={chainId} chainIdUrl={chainIdUrl} />
-										) : (
-											<BlacklistPlayer checksumAddress={checksumAddress} chainId={chainId} chainIdUrl={chainIdUrl} />
-										)
+									{/* {checksumAddress?.substring(0, 6)}...{checksumAddress?.substring(checksumAddress.length - 4)} */}
+									{ensName ? ensName : address ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}` : null}
+								</a>
+								<a>
+									{account && checksumAccount !== address ? (
+										<BlacklistPlayer checksumAddress={checksumAddress} chainId={chainId} chainIdUrl={chainIdUrl} />
 									) : null}
 								</a>
 							</PlayerBox>
 							<AddressBox>
-								{playerData?.[0]?.id ? (
-									<a>
-										({playerData?.[0]?.id.substring(0, 6)}...{playerData?.[0]?.id.substring(playerData?.[0]?.id.length - 4)})
-									</a>
-								) : (
-									<a>
-										({checksumAddress?.substring(0, 6)}...{checksumAddress?.substring(checksumAddress?.length - 4)})
-									</a>
-								)}
+								<a>
+									({address?.substring(0, 6)}...{address?.substring(address?.length - 4)})
+								</a>
 								<Tooltip
 									title={copied ? 'Copied!' : 'Copy Address'}
 									placement="bottom"
@@ -192,13 +183,13 @@ export default function PlayerPage() {
 									</a>
 								</Tooltip>
 							</AddressBox>
-							<PlayerSocials
+							{/* <PlayerSocials
 								checksumAddress={checksumAddress}
 								checksumAccount={checksumAccount}
 								playerData={playerData}
 								chainId={chainId}
 								chainIdUrl={chainIdUrl}
-							/>
+							/> */}
 							<PlayerStatistics
 								checksumAddress={checksumAddress}
 								chainId={chainId}

@@ -3,9 +3,9 @@ import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { Box, Fade, Grid, Skeleton, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
-import useRankingEarned from '../../../../../hooks/useRankingEarned';
-import useRankingSpent from '../../../../../hooks/useRankingSpent';
-import { CHAINS } from '../../../../../utils/chains';
+import useRankingEarned from '../../../../hooks/useRankingEarned';
+import useRankingSpent from '../../../../hooks/useRankingSpent';
+import { CHAINS } from '../../../../utils/chains';
 
 const StatisticBox = styled(Box)`
 	display: flex;

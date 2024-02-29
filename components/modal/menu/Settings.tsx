@@ -498,14 +498,14 @@ function SettingsModal() {
 						</StyledButton>
 					</StyledButtonGroup>
 
-					{account && (
-						<>
-							<StyledTitle theme={theme}>Chain</StyledTitle>
-							<StyledDiv>
-								<SelectChain />
-							</StyledDiv>
-						</>
-					)}
+					{/* {account && (
+						<> */}
+					{/* <StyledTitle theme={theme}>Chain</StyledTitle>
+					<StyledDiv>
+						<SelectChain />
+					</StyledDiv> */}
+					{/* </>
+					)} */}
 
 					<StyledTitles theme={theme}>
 						<StyledDuoTitle theme={theme}>Show currency</StyledDuoTitle>

@@ -362,6 +362,7 @@ export default function Header() {
 
 	// Redux
 	const account = useSelector((state: { account: string }) => state.account);
+	const ens = useSelector((state: { ens: string }) => state.ens);
 
 	// State
 	const [windowWidth, setWindowWidth] = useState(undefined);
@@ -430,14 +431,14 @@ export default function Header() {
 				<StyledAppBar theme={theme} ref={headerRef}>
 					<StyledDiv>
 						<StyledSectionLeft theme={theme}>
-							<Link href={`/${network}`} passHref style={{ textDecoration: 'none' }}>
+							<Link href={`/`} passHref style={{ textDecoration: 'none' }}>
 								<h1>Nerve</h1>
 							</Link>
 							{/* <SelectLeaderboard /> */}
-							<Link href={`/${network}/leaderboard`} passHref style={{ textDecoration: 'none' }}>
+							<Link href={`/leaderboard`} passHref style={{ textDecoration: 'none' }}>
 								<h3>Leaderboard</h3>
 							</Link>
-							<Link href={`/${network}/map`} passHref style={{ textDecoration: 'none' }}>
+							<Link href={`/map`} passHref style={{ textDecoration: 'none' }}>
 								<h3>Map</h3>
 							</Link>
 						</StyledSectionLeft>
@@ -446,7 +447,7 @@ export default function Header() {
 						</StyledSectionMiddle>
 						<StyledSectionRight>
 							{/* {account && <SelectChain />} */}
-							{account ? <AccountModal account={account} network={network} /> : <Connect />}
+							{account ? <AccountModal account={account} ens={ens} network={network} /> : <Connect />}
 							<Setting />
 						</StyledSectionRight>
 					</StyledDiv>
@@ -458,7 +459,7 @@ export default function Header() {
 							{!isMap && (
 								<>
 									<StyledSectionLeft theme={theme}>
-										<Link href={`/${network}`} passHref style={{ textDecoration: 'none' }}>
+										<Link href={`/`} passHref style={{ textDecoration: 'none' }}>
 											<h1>Nerve</h1>
 										</Link>
 									</StyledSectionLeft>
@@ -474,29 +475,29 @@ export default function Header() {
 					</StyledAppBarMobile>
 					<StyledAppBar theme={theme}>
 						<StyledDivMobile>
-							<Link href={`/${network}`} passHref style={{ textDecoration: 'none' }}>
+							<Link href={`/`} passHref style={{ textDecoration: 'none' }}>
 								<StyledLink theme={theme}>
 									<HomeIcon sx={{ color: theme.palette.text.primary }} />
 								</StyledLink>
 							</Link>
-							<Link href={`/${network}/map`} passHref style={{ textDecoration: 'none' }}>
+							<Link href={`/map`} passHref style={{ textDecoration: 'none' }}>
 								<StyledLink theme={theme}>
 									<LocationOnIcon sx={{ color: theme.palette.text.primary }} />
 								</StyledLink>
 							</Link>
 							<SearchBar network={network} />
 							{/* <Setting /> */}
-							<Link href={`/${network}/leaderboard`} passHref style={{ textDecoration: 'none' }}>
+							<Link href={`/leaderboard`} passHref style={{ textDecoration: 'none' }}>
 								<StyledLink theme={theme}>
 									<LeaderboardIcon sx={{ color: theme.palette.text.primary }} />
 								</StyledLink>
 							</Link>
 
 							{account ? (
-								<Link href={`/${network}/player/${account}`} passHref style={{ textDecoration: 'none' }}>
+								<Link href={`/player/${account}`} passHref style={{ textDecoration: 'none' }}>
 									<StyledLink theme={theme}>
 										{/* <PersonIcon sx={{ color: theme.palette.text.primary }} /> */}
-										<AccountModal account={account} network={network} />
+										<AccountModal account={account} ens={ens} network={network} />
 									</StyledLink>
 								</Link>
 							) : (

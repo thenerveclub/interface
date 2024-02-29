@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 import { Badge, Box } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import RegisterSocials from '../../../../../components/modal/registerSocials';
-import useTwitchStatus from '../../../../../hooks/useTwitchStatus';
+import RegisterSocials from '../../../../components/modal/registerSocials';
+import useTwitchStatus from '../../../../hooks/useTwitchStatus';
 import Instagram from '/public/svg/socials/instagram.svg';
 import TikTok from '/public/svg/socials/tiktok.svg';
 import Twitch from '/public/svg/socials/twitch.svg';

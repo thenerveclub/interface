@@ -75,28 +75,6 @@ function Updaters() {
 }
 
 export default function MyApp({ Component, pageProps }) {
-	const router = useRouter();
-
-	useEffect(() => {
-		// Use all urlNames from CHAINS to create a list of valid networks
-		const validNetworks = Object.values(CHAINS).map((chain) => chain.urlName);
-
-		// Extract network from the URL
-		const network = router.query.network;
-
-		// Redirect if network is invalid
-		if (network && !validNetworks.includes(network)) {
-			router.push('/polygon'); // Redirect to a default network
-		}
-
-		// Handle client-side redirect for the root path
-		if (router.pathname === '/') {
-			router.push('/polygon');
-		}
-
-		// ... existing useEffect code for connectors
-	}, [router.query.network, router.pathname]);
-
 	useEffect(() => {
 		const connectorsToConnect = [metaMask, walletConnectV2, coinbaseWallet];
 		connectorsToConnect.forEach(async (connector) => {

@@ -1,16 +1,17 @@
 import styled from '@emotion/styled';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { Box, Button, Skeleton, Tab, Tabs, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import router from 'next/router';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import SelectSort from '../../../../../components/SelectSort';
-import CreateTask from '../../../../../components/modal/createTask';
-import Connect from '../../../../../components/modal/menu/Connect';
-import useActivePlayerTasks from '../../../../../hooks/useActivePlayerTasks';
-import useCompletedPlayerTasks from '../../../../../hooks/useCompletedPlayerTasks';
-import { currencySlice } from '../../../../../state/currency/currencySlice';
-import { CHAINS } from '../../../../../utils/chains';
+import SelectSort from '../../../../components/SelectSort';
+import CreateTask from '../../../../components/modal/createTask';
+import Connect from '../../../../components/modal/menu/Connect';
+import useActivePlayerTasks from '../../../../hooks/useActivePlayerTasks';
+import useCompletedPlayerTasks from '../../../../hooks/useCompletedPlayerTasks';
+import { currencySlice } from '../../../../state/currency/currencySlice';
+import { CHAINS } from '../../../../utils/chains';
 
 const StyledTabs = styled(Tabs)<{ theme: any }>`
 	// target child element
@@ -58,6 +59,8 @@ const PanelBox = styled(Box)`
 const ActiveFilterBox = styled(Box)`
 	display: flex;
 	flex-direction: row;
+	justify-content: center;
+	align-items: center;
 	width: 100%;
 	height: 40px;
 
@@ -129,58 +132,45 @@ const CreateTaskBox = styled(Box)`
 `;
 
 const ActiveTabSection = styled(Box)`
-	display: grid;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
 	align-items: center;
-	justify-content: center;
-	margin: 2rem auto 0 auto;
-	grid-template-columns: repeat(6, 1fr);
-	grid-gap: 2rem;
+	justify-content: space-evenly;
+	margin: 1rem auto 5rem auto;
+	gap: 2rem;
+	min-width: 100%;
 
-	li {
-		grid-column: span 2;
-	}
-
-	@media (min-width: 1001px) {
-		/* Apply complex grid rules for screens wider than 960px */
-		li:last-child:nth-of-type(3n - 1) {
-			grid-column-end: -2;
-		}
-
-		li:nth-last-of-type(2):nth-of-type(3n + 1) {
-			grid-column-end: 4;
-		}
-
-		/* Dealing with single orphan */
-		li:last-child:nth-of-type(3n - 2) {
-			grid-column-end: 5;
-		}
-	}
-
-	@media (max-width: 1024px) {
-		display: grid;
-		grid-template-columns: 1fr;
-		margin: 2rem auto 0 auto;
-		/* Simplified grid for mobile devices */
+	@media (max-width: 680px) {
+		flex-direction: column;
+		margin: 1rem auto 5rem auto;
+		width: 100%;
 	}
 `;
 
 const TaskCard = styled(Box)<{ theme: any }>`
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
+	justify-content: space-between;
 	align-items: center;
 	margin: 0 auto 0 auto;
-	width: 350px;
-	max-width: 350px;
-	height: 300px;
+	min-width: 450px;
+	max-width: 450px;
+	min-height: 300px;
 	max-height: 300px;
 	background-color: ${({ theme }) => theme.palette.background.default};
 	border: 0.5px solid ${({ theme }) => theme.palette.secondary.main};
 	border-radius: ${({ theme }) => theme.customShape.borderRadius};
+	padding: 1rem;
 
-	@media (max-width: 1024px) {
-		width: 90%; // Make the width responsive
-		max-width: 100%; // Ensure it doesn't overflow the container
+	@media (max-width: 1000px) {
+		min-width: 350px;
+		max-width: 350px;
+	}
+
+	@media (max-width: 680px) {
+		min-width: 90vw;
+		max-width: 90vw;
 	}
 `;
 
@@ -189,85 +179,76 @@ const TaskBoxSection = styled(Box)`
 	justify-content: center;
 	align-items: center;
 	margin: 0 auto 0 auto;
+	height: 100%;
+	flex-grow: 1;
 
-	@media (max-width: 1024px) {
+	p {
+		font-size: 1rem;
+		text-align: center;
+	}
+
+	@media (max-width: 1200px) {
 	}
 `;
 
 const TaskBoxSectionOne = styled(Box)`
 	display: flex;
 	flex-direction: row;
+	justify-content: space-between;
 	height: 25px;
 	width: 100%;
-	flex: 1;
 	margin: 0 auto 0 auto;
-	position: absolute;
-	bottom: 85px;
+	padding: 0;
 
-	a {
+	p {
 		display: flex;
-		flex: 1;
 		height: 25px;
-		font-size: 16px;
+		font-size: 1rem;
 		cursor: default;
-		align-items: center;
-		justify-content: center;
-
-		&:first-of-type {
-			justify-content: flex-start;
-			margin-left: 1.5rem;
-		}
-
-		&:last-child {
-			justify-content: flex-end;
-			margin-right: 1.5rem;
-		}
+		margin: 0;
 	}
 
-	@media (max-width: 1024px) {
-		justify-content: center;
+	@media (max-width: 1200px) {
 	}
 `;
 
 const TaskBoxSectionTwo = styled(Box)`
 	display: flex;
 	flex-direction: row;
+	justify-content: space-between;
 	height: 25px;
 	width: 100%;
-	flex: 1;
 	margin: 0 auto 0 auto;
-	position: absolute;
-	bottom: 60px;
+	padding: 0;
 
-	a {
+	p {
 		display: flex;
-		flex: 1;
 		height: 25px;
-		font-size: 16px;
+		font-size: 1rem;
 		cursor: default;
-		align-items: center;
-		justify-content: center;
-
-		&:first-of-type {
-			justify-content: flex-start;
-			margin-left: 1.5rem;
-		}
-
-		&:last-child {
-			justify-content: flex-end;
-			margin-right: 1.5rem;
-		}
+		margin: 0;
 	}
 
-	@media (max-width: 1024px) {
-		justify-content: center;
+	@media (max-width: 1200px) {
 	}
+`;
+
+const BottomContainer = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	margin: 0 auto 0 auto;
 `;
 
 const TaskButton = styled(Button)`
 	color: #fff;
-	width: 90%;
+	width: 100%;
 	font-size: 16px;
+	margin: 0.5rem auto 0 auto;
+	text-transform: none;
+	background-color: rgba(255, 127.5, 0, 1);
 
 	&:hover {
 		background-color: rgba(255, 127.5, 0, 1);
@@ -290,6 +271,7 @@ interface PlayerDaresProps {
 
 const PlayerDares: React.FC<PlayerDaresProps> = ({ registerStatus, checksumAddress, checksumAccount, network, chainIdUrl }) => {
 	const theme = useTheme();
+
 	// Redux
 	const dispatch = useDispatch();
 	const account = useSelector((state: { account: string }) => state.account);
@@ -397,9 +379,34 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ registerStatus, checksumAddre
 						<li style={{ listStyle: 'none' }} key={tad}>
 							<TaskCard theme={theme}>
 								<TaskBoxSection>
-									<a>{tad.description}</a>
+									<p>{tad.description}</p>
 								</TaskBoxSection>
-								<TaskButton onClick={() => router.push(`/${network}/dare/` + tad.id)}>View Task</TaskButton>
+								<BottomContainer>
+									<TaskBoxSectionOne>
+										<p>#{tad.id}</p>
+										<p>
+											{tad.participants}{' '}
+											<PeopleAltIcon style={{ display: 'felx', fontSize: '18px', fill: 'white', height: '100%', marginLeft: '0.5rem' }} />
+										</p>
+									</TaskBoxSectionOne>
+									<TaskBoxSectionTwo>
+										{currencyValue === false ? (
+											<p>
+												{((tad?.amount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
+											</p>
+										) : (
+											<p>${((tad?.amount / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</p>
+										)}
+										{currencyValue === false ? (
+											<p>
+												{((tad?.entranceAmount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
+											</p>
+										) : (
+											<p>${((tad?.entranceAmount / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</p>
+										)}
+									</TaskBoxSectionTwo>
+									<TaskButton onClick={() => router.push(`/dare/` + tad.id)}>View Task</TaskButton>
+								</BottomContainer>
 							</TaskCard>
 						</li>
 					))}
@@ -431,57 +438,33 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ registerStatus, checksumAddre
 						<li style={{ listStyle: 'none' }} key={tad.id}>
 							<TaskCard theme={theme}>
 								<TaskBoxSection>
-									<a>{tad.description}</a>
+									<p>{tad.description}</p>
 								</TaskBoxSection>
-								{/* <TaskBoxSectionOne>
-									<a>#{tad.id}</a>
-									{tad?.participants && tad?.participants <= 0 ? <a>{tad.participants} Participants</a> : <a>{tad.participants} Participant</a>}
-								</TaskBoxSectionOne>
-								<TaskBoxSectionTwo>
-									{tad?.amount ? (
-										currencyValue === false ? (
-											<a>
+								<BottomContainer>
+									<TaskBoxSectionOne>
+										<p>#{tad.id}</p>
+										<p>
+											{tad.participants} <PeopleAltIcon style={{ fontSize: '18px', fill: 'white', height: '100%', marginLeft: '0.5rem' }} />
+										</p>
+									</TaskBoxSectionOne>
+									<TaskBoxSectionTwo>
+										{currencyValue === false ? (
+											<p>
 												{((tad?.amount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
-											</a>
+											</p>
 										) : (
-											<a>${((tad?.amount / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</a>
-										)
-									) : (
-										<span>
-											<Skeleton
-												sx={{
-													backgroundColor: 'rgba(152, 161, 192, 0.4)',
-													borderRadius: '10px',
-												}}
-												variant="text"
-												width={75}
-												height={30}
-											/>
-										</span>
-									)}
-									{tad?.entranceAmount ? (
-										currencyValue === false ? (
-											<a>
+											<p>${((tad?.amount / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</p>
+										)}
+										{currencyValue === false ? (
+											<p>
 												{((tad?.entranceAmount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
-											</a>
+											</p>
 										) : (
-											<a>${((tad?.entranceAmount / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</a>
-										)
-									) : (
-										<span>
-											<Skeleton
-												sx={{
-													backgroundColor: 'rgba(152, 161, 192, 0.4)',
-													borderRadius: '10px',
-												}}
-												variant="text"
-												width={75}
-												height={30}
-											/>
-										</span>
-									)}
-								</TaskBoxSectionTwo> */}
-								<TaskButton onClick={() => router.push(`/${network}/dare/` + tad.id)}>View Task</TaskButton>
+											<p>${((tad?.entranceAmount / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</p>
+										)}
+									</TaskBoxSectionTwo>
+									<TaskButton onClick={() => router.push(`/dare/` + tad.id)}>View Task</TaskButton>
+								</BottomContainer>
 							</TaskCard>
 						</li>
 					))}

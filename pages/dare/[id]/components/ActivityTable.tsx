@@ -8,8 +8,8 @@ import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { currencySlice } from '../../../../../state/currency/currencySlice';
-import { CHAINS } from '../../../../../utils/chains';
+import { currencySlice } from '../../../../state/currency/currencySlice';
+import { CHAINS } from '../../../../utils/chains';
 
 const TaskCard = styled(Box)<{ theme: any }>`
 	display: flex;

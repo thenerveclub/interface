@@ -5,10 +5,10 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import Map from '../../../components/GoogleMap';
-import LoadingScreen from '../../../components/LoadingScreen';
-import { useCheckNameRegister } from '../../../hooks/useCheckNameRegister';
-import { CHAINS, nameToChainId } from '../../../utils/chains';
+import Map from '../../components/GoogleMap';
+import LoadingScreen from '../../components/LoadingScreen';
+import { useCheckNameRegister } from '../../hooks/useCheckNameRegister';
+import { CHAINS, nameToChainId } from '../../utils/chains';
 
 const StyledLayout = styled(Box)`
 	display: flex;

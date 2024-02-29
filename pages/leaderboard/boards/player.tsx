@@ -10,17 +10,17 @@ import Head from 'next/head';
 import router, { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import LoadingScreen from '../../../../components/LoadingScreen';
-import usePlayerRankingData from '../../../../hooks/rankingData/usePlayerRankingData';
-import { currencySlice } from '../../../../state/currency/currencySlice';
-import { CHAINS, nameToChainId } from '../../../../utils/chains';
+import LoadingScreen from '../../../components/LoadingScreen';
+import usePlayerRankingData from '../../../hooks/rankingData/usePlayerRankingData';
+import { currencySlice } from '../../../state/currency/currencySlice';
+import { CHAINS, nameToChainId } from '../../../utils/chains';
 import Instagram from '/public/svg/socials/instagram.svg';
 import TikTok from '/public/svg/socials/tiktok.svg';
 import Twitch from '/public/svg/socials/twitch.svg';
 import Twitter from '/public/svg/socials/twitter.svg';
 import Youtube from '/public/svg/socials/youtube.svg';
 
-const TrueLies = localFont({ src: '../../../../public/fonts/TrueLies.woff2', display: 'swap' });
+const TrueLies = localFont({ src: '../../../public/fonts/TrueLies.woff2', display: 'swap' });
 
 const StyledTwitter = styled(Twitter)<{ theme: any }>`
 	path {
@@ -329,7 +329,7 @@ export default function RankingPage() {
 
 	const handlePlayer = (playerId) => {
 		return () => {
-			router.push(`/${network}/player/${playerId}`);
+			router.push(`/player/${playerId}`);
 		};
 	};
 

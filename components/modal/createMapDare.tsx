@@ -314,7 +314,7 @@ const CreateMapDare: React.FC<CreateMapDareProps> = ({ chainIdUrl, isNetworkAvai
 
 	// State declaration
 	const [searchValue, setSearchValue] = useState('');
-	const playerSearchList = usePlayerDataSearchList(chainIdUrl, searchValue);
+	const playerSearchList = usePlayerDataSearchList(searchValue);
 	const [open, setOpen] = useState(true);
 	const [pendingTx, setPendingTx] = useState(false);
 	const [value, setValue] = useState('0.00');

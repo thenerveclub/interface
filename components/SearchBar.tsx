@@ -7,7 +7,7 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { Button, ClickAwayListener, IconButton, InputBase, List, Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import useTrendingDareList from '../hooks/searchData/trending/useTrendingDareList';
 import useTrendingPlayerList from '../hooks/searchData/trending/useTrendingPlayerList';
 import useDareDataSearchList from '../hooks/searchData/useDareDataSearchList';
@@ -218,28 +218,32 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 
 	// State declarations
 	const [searchValue, setSearchValue] = useState('');
-	const playerSearchList = usePlayerDataSearchList(chainIdUrl, searchValue);
+	const [searchValueQuery, setSearchValueQuery] = useState('');
+	const typingTimeoutRef = useRef(null);
+	const playerSearchList = usePlayerDataSearchList(searchValueQuery);
 	const trendingPlayersList = useTrendingPlayerList(chainIdUrl);
 	const trendingDareList = useTrendingDareList(chainIdUrl);
-	const dareSearchList = useDareDataSearchList(chainIdUrl, searchValue);
+	const dareSearchList = useDareDataSearchList(chainIdUrl, searchValueQuery);
 	const [isListVisible, setListVisible] = useState(false);
-	const [isChainListVisible, setChainListVisible] = useState(false);
 
 	// Initialize the searchHistory state as an empty array
 	const [searchHistory, setSearchHistory] = useState([]);
 
+	console.log('Search history:', searchHistory);
+
 	// Update searchHistory when the network prop changes
 	useEffect(() => {
-		if (typeof window !== 'undefined' && network) {
+		if (typeof window !== 'undefined') {
 			try {
-				const savedHistory = window.localStorage.getItem(`searchHistory_${network}`);
+				const savedHistory = window.localStorage.getItem(`searchHistory`);
+				console.log('Saved search history:', savedHistory);
 				setSearchHistory(savedHistory ? JSON.parse(savedHistory) : []);
 			} catch (error) {
 				console.error('Failed to parse search history from localStorage', error);
 				setSearchHistory([]);
 			}
 		}
-	}, [network]);
+	}, []);
 
 	// Call this function when a search item is clicked to add to history
 	const addToSearchHistory = (searchItem) => {
@@ -251,44 +255,56 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 
 	// Update search history in localStorage whenever it changes
 	useEffect(() => {
-		if (network) {
-			localStorage.setItem(`searchHistory_${network}`, JSON.stringify(searchHistory));
-		}
-	}, [searchHistory, network]);
+		localStorage.setItem(`searchHistory`, JSON.stringify(searchHistory));
+	}, [searchHistory]);
 
 	const clearSearchHistory = () => {
 		// Clear the search history from the state
 		setSearchHistory([]);
 		// Remove the search history from localStorage
-		localStorage.removeItem(`searchHistory_${network}`);
+		localStorage.removeItem(`searchHistory`);
 	};
 
 	const handleSearchChange = (e) => {
-		setSearchValue(e.target.value);
-		setListVisible(true); // Show search results when typing
+		const value = e.target.value;
+		setSearchValue(value); // Update the input field immediately
+		setListVisible(true); // Make the list visible immediately with no delay
+
+		// Clear the existing timeout every time the user types to reset the delay
+		if (typingTimeoutRef.current) {
+			clearTimeout(typingTimeoutRef.current);
+		}
+
+		// Set a new timeout to delay the proceeding actions (like fetching data)
+		typingTimeoutRef.current = setTimeout(() => {
+			// Delayed actions here
+			console.log('Proceed with delayed actions, e.g., fetching data');
+			setSearchValueQuery(value);
+		}, 1000); // 1-second delay
 	};
 
-	const handleChainChange = () => {
-		setChainListVisible(true); // Show available chains when clicking on the chain button
-	};
+	// Cleanup the timeout when the component unmounts
+	useEffect(() => {
+		return () => {
+			if (typingTimeoutRef.current) {
+				clearTimeout(typingTimeoutRef.current);
+			}
+		};
+	}, []);
 
 	const handleFocus = () => {
 		setListVisible(true); // Show search results when input is focused
 	};
 
-	const handleChainFocus = () => {
-		setChainListVisible(true); // Show available chains when clicking on the chain button
-	};
-
 	const handleListPlayerItemClick = (playerId, playerAddress) => {
-		router.push(`/${network}/player/${playerId}`);
+		router.push(`/player/${playerId}`);
 		setSearchValue('');
 		setListVisible(false);
 		addToSearchHistory({ type: 'player', id: playerId, address: playerAddress }); // Update to store an object with type and id
 	};
 
 	const handleListDareItemClick = (dareId, dareAmount, dareParticipants) => {
-		router.push(`/${network}/dare/${dareId}`);
+		router.push(`/dare/${dareId}`);
 		setSearchValue('');
 		setListVisible(false);
 		addToSearchHistory({ type: 'dare', id: dareId, amount: dareAmount, participants: dareParticipants }); // Same as above for dares
@@ -335,7 +351,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 			<ClickAwayListener
 				onClickAway={() => {
 					setListVisible(false);
-					setChainListVisible(false);
 				}}
 			>
 				<SearchBarContainer theme={theme} onSubmit={(e) => e.preventDefault()} elevation={0}>
@@ -345,16 +360,11 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 					<InputBase
 						fullWidth={true}
 						style={{ fontSize: '0.875rem' }}
-						placeholder={`Search players and dares on ${network}…`}
+						placeholder={`Search players and dares…`}
 						inputProps={{ 'aria-label': 'search' }}
 						value={searchValue}
 						onChange={handleSearchChange}
 						onFocus={handleFocus}
-						endAdornment={
-							<StyledChainButton theme={theme} onChange={handleChainChange} onFocus={handleChainFocus} style={{ justifyContent: 'center' }}>
-								{network === 'polygon' ? <PolygonLogo /> : <EthereumLogo />}
-							</StyledChainButton>
-						}
 					/>
 					{isListVisible && (
 						<SearchResultList theme={theme}>
@@ -507,14 +517,14 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 										<SearchResultItemStyled
 											theme={theme}
 											key={player.id}
-											onClick={() => handleListPlayerItemClick(player.userName, player.userAddress)}
+											onClick={() => handleListPlayerItemClick(player.name, player.resolver?.addr?.id)}
 										>
 											<div className="item-top">
-												<span className="player-name">{player.userName}</span>
+												<span className="player-name">{player.name}</span>
 												{/* <span className="player-number">{player.someNumber}</span> */}
 											</div>
 											<div className="item-bottom">
-												<a>{player.userAddress}</a>
+												<a>{player.resolver?.addr?.id}</a>
 												{/* <span className="player-additional-text">Earned</span> */}
 											</div>
 										</SearchResultItemStyled>
@@ -567,36 +577,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 							)}
 						</SearchResultList>
 					)}
-					{isChainListVisible && (
-						<SearchResultList theme={theme}>
-							<SearchResultTitle theme={theme}>Search mainnet</SearchResultTitle>
-							<SearchResultItemStyled theme={theme}>
-								<StyledChainButton
-									theme={theme}
-									onClick={() => {
-										router.push('/polygon');
-										setChainListVisible(false);
-									}}
-								>
-									<PolygonLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
-									Polygon
-								</StyledChainButton>
-							</SearchResultItemStyled>
-							<SearchResultTitle theme={theme}>Search testnet</SearchResultTitle>
-							<SearchResultItemStyled theme={theme}>
-								<StyledChainButton
-									theme={theme}
-									onClick={() => {
-										router.push('/goerli');
-										setChainListVisible(false);
-									}}
-								>
-									<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
-									Goerli
-								</StyledChainButton>
-							</SearchResultItemStyled>
-						</SearchResultList>
-					)}
 				</SearchBarContainer>
 			</ClickAwayListener>
 			<SearchBarMobile theme={theme}>
@@ -608,8 +588,15 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 						<MenuContainer>
 							<InputBase
 								fullWidth={true}
-								style={{ fontSize: '1rem', padding: '0 1rem 0.5rem 1rem' }}
-								placeholder={`Search players and dares on ${network}…`}
+								style={{
+									display: 'flex',
+									justifyContent: 'center',
+									fontSize: '1rem',
+									padding: '0.25rem 1rem 0.25rem 1rem',
+									border: `1px solid ${theme.palette.secondary.main}`,
+									borderRadius: theme.shape.borderRadius,
+								}}
+								placeholder={`Search players and dares…`}
 								inputProps={{ 'aria-label': 'search' }}
 								value={searchValue}
 								onChange={handleSearchChange}

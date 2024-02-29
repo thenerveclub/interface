@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { WarningAmber } from '@mui/icons-material';
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getAddChainParameters } from '../utils/chains';
@@ -117,6 +118,8 @@ const SearchResultTitle = styled.div<{ theme: any }>`
 
 export default function SelectChain() {
 	const theme = useTheme();
+	const router = useRouter();
+	const network = router.query.network as string;
 
 	// Redux
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
@@ -152,6 +155,14 @@ export default function SelectChain() {
 		}
 	};
 
+	const [newNetwork, setNewNetwork] = useState(network);
+
+	const handleChangePush = async (event: SelectChangeEvent) => {
+		const chain = event.target.value as unknown as string;
+		router.push(`/${chain}`);
+		setNewNetwork(chain);
+	};
+
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [isFocused, setIsFocused] = useState(false);
 
@@ -167,57 +178,57 @@ export default function SelectChain() {
 
 	return (
 		<>
-			{isNetworkAvailable ? (
-				<StyledSelect
-					open={menuOpen}
-					onOpen={handleOpen}
-					onClose={handleClose}
-					theme={theme}
-					variant="outlined"
-					value={chain}
-					onChange={handleChange}
-					focus={isFocused}
-					MenuProps={{
-						PaperProps: {
-							sx: {
+			{/* {isNetworkAvailable ? ( */}
+			<StyledSelect
+				open={menuOpen}
+				onOpen={handleOpen}
+				onClose={handleClose}
+				theme={theme}
+				variant="outlined"
+				value={newNetwork}
+				onChange={handleChangePush}
+				focus={isFocused}
+				MenuProps={{
+					PaperProps: {
+						sx: {
+							backgroundColor: theme.palette.background.default,
+							outline: `1px solid ${theme.palette.warning.main}`,
+							borderRadius: 0,
+							// minWidth: '90%',
+							// maxWidth: '90%',
+							padding: '0px',
+							margin: '0 auto 0 auto',
+							'& .MuiMenuItem-root': {
 								backgroundColor: theme.palette.background.default,
-								outline: `1px solid ${theme.palette.warning.main}`,
-								borderRadius: 0,
-								// minWidth: '90%',
-								// maxWidth: '90%',
-								padding: '0px',
-								margin: '0 auto 0 auto',
-								'& .MuiMenuItem-root': {
-									backgroundColor: theme.palette.background.default,
-								},
-								'& .MuiMenuItem-root:hover': {
-									backgroundColor: theme.palette.warning.main,
-								},
+							},
+							'& .MuiMenuItem-root:hover': {
+								backgroundColor: theme.palette.warning.main,
 							},
 						},
-					}}
-				>
-					<SearchResultTitle theme={theme}>Mainnet</SearchResultTitle>
-					<MenuItemStyled theme={theme} value={137} disabled={chainId === 137}>
-						<PolygonLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
-						<a>Polygon</a>
+					},
+				}}
+			>
+				<SearchResultTitle theme={theme}>Mainnet</SearchResultTitle>
+				<MenuItemStyled theme={theme} value={'polygon'} disabled={network === 'polygon'}>
+					<PolygonLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+					<a>Polygon</a>
+				</MenuItemStyled>
+				{testnetsValue && <SearchResultTitle theme={theme}>Testnet</SearchResultTitle>}
+				{testnetsValue && (
+					<MenuItemStyled theme={theme} value={'goerli'} disabled={network === 'goerli'}>
+						<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+						<a>Goerli</a>
 					</MenuItemStyled>
-					{testnetsValue && <SearchResultTitle theme={theme}>Testnet</SearchResultTitle>}
-					{testnetsValue && (
-						<MenuItemStyled theme={theme} value={5} disabled={chainId === 5}>
-							<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
-							<a>Goerli</a>
-						</MenuItemStyled>
-					)}
-				</StyledSelect>
-			) : (
+				)}
+			</StyledSelect>
+			{/* ) : (
 				<StyledSelect
 					open={menuOpen}
 					onOpen={handleOpen}
 					onClose={handleClose}
 					theme={theme}
 					value={chain}
-					onChange={handleChange}
+					onChange={handleChangePush}
 					focus={isFocused}
 					MenuProps={{
 						PaperProps: {
@@ -256,7 +267,7 @@ export default function SelectChain() {
 						</MenuItemStyled>
 					)}
 				</StyledSelect>
-			)}
+			)} */}
 		</>
 	);
 }

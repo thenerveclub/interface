@@ -7,7 +7,7 @@ import { useState } from 'react';
 import DareLeaderboard from './boards/dare';
 import PlayerLeaderboard from './boards/player';
 
-const TrueLies = localFont({ src: '../../../public/fonts/TrueLies.woff2', display: 'swap' });
+const TrueLies = localFont({ src: '../../public/fonts/TrueLies.woff2', display: 'swap' });
 
 const StyledBox = styled(Box)`
 	display: flex;
