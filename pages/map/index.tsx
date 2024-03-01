@@ -7,7 +7,6 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import Map from '../../components/GoogleMap';
 import LoadingScreen from '../../components/LoadingScreen';
-import { useCheckNameRegister } from '../../hooks/useCheckNameRegister';
 import { CHAINS, nameToChainId } from '../../utils/chains';
 
 const StyledLayout = styled(Box)`
@@ -58,9 +57,6 @@ export default function IndexPage() {
 
 	// Network Check
 	const isNetworkAvailable = availableChains.includes(chainId);
-
-	// Get data
-	// const registerStatus = useCheckNameRegister(isNetworkAvailable ? chainIdUrl : 137, playerID);
 
 	return (
 		<>

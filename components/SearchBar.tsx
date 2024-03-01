@@ -6,6 +6,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { Button, ClickAwayListener, IconButton, InputBase, List, Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import local from 'next/font/local';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import useTrendingDareList from '../hooks/searchData/trending/useTrendingDareList';
@@ -229,19 +230,14 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 	// Initialize the searchHistory state as an empty array
 	const [searchHistory, setSearchHistory] = useState([]);
 
-	console.log('Search history:', searchHistory);
-
-	// Update searchHistory when the network prop changes
+	// Update searchHistory from localStorage when the component mounts
 	useEffect(() => {
-		if (typeof window !== 'undefined') {
-			try {
-				const savedHistory = window.localStorage.getItem(`searchHistory`);
-				console.log('Saved search history:', savedHistory);
-				setSearchHistory(savedHistory ? JSON.parse(savedHistory) : []);
-			} catch (error) {
-				console.error('Failed to parse search history from localStorage', error);
-				setSearchHistory([]);
-			}
+		try {
+			const savedHistory = window.localStorage.getItem('searchHistory');
+			setSearchHistory(savedHistory ? JSON.parse(savedHistory) : []);
+		} catch (error) {
+			console.error('Failed to parse search history from localStorage', error);
+			setSearchHistory([]);
 		}
 	}, []);
 
@@ -249,19 +245,13 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 	const addToSearchHistory = (searchItem) => {
 		setSearchHistory((prevHistory) => {
 			const newHistory = [searchItem, ...prevHistory.filter((item) => item.id !== searchItem.id)].slice(0, 3); // Keep only the first 3 items
+			localStorage.setItem('searchHistory', JSON.stringify(newHistory));
 			return newHistory;
 		});
 	};
 
-	// Update search history in localStorage whenever it changes
-	useEffect(() => {
-		localStorage.setItem(`searchHistory`, JSON.stringify(searchHistory));
-	}, [searchHistory]);
-
 	const clearSearchHistory = () => {
-		// Clear the search history from the state
 		setSearchHistory([]);
-		// Remove the search history from localStorage
 		localStorage.removeItem(`searchHistory`);
 	};
 
@@ -278,7 +268,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 		// Set a new timeout to delay the proceeding actions (like fetching data)
 		typingTimeoutRef.current = setTimeout(() => {
 			// Delayed actions here
-			console.log('Proceed with delayed actions, e.g., fetching data');
 			setSearchValueQuery(value);
 		}, 1000); // 1-second delay
 	};
@@ -766,16 +755,16 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 											theme={theme}
 											key={player.id}
 											onClick={() => {
-												handleListPlayerItemClick(player.userName, player.userAddress);
+												handleListPlayerItemClick(player.name, player.resolver?.addr?.id);
 												toggleMenu();
 											}}
 										>
 											<div className="item-top">
-												<span className="player-name">{player.userName}</span>
+												<span className="player-name">{player.name}</span>
 												{/* <span className="player-number">{player.someNumber}</span> */}
 											</div>
 											<div className="item-bottom">
-												<a>{player.userAddress}</a>
+												<a>{player.resolver?.addr?.id}</a>
 												{/* <span className="player-additional-text">Earned</span> */}
 											</div>
 										</SearchResultItemStyled>

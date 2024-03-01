@@ -3,13 +3,12 @@ import { ContentCopy, OpenInNew } from '@mui/icons-material';
 import { Box, Fade, SpeedDial, SpeedDialIcon, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import LoadingScreen from '../../../components/LoadingScreen';
 import BlacklistPlayer from '../../../components/modal/blacklistPlayer';
 import CreateTask from '../../../components/modal/createTask';
 import RegisterName from '../../../components/modal/registerName';
-import { useCheckNameRegister } from '../../../hooks/useCheckNameRegister';
 import useENSName from '../../../hooks/useENSName';
 import usePlayerData from '../../../hooks/usePlayerData';
 import { CHAINS, nameToChainId } from '../../../utils/chains';
@@ -110,7 +109,6 @@ export default function PlayerPage() {
 
 	// Usernames
 	const id = router.query.id as string;
-	const playerID = id;
 
 	// Redux
 	const account = useSelector((state: { account: string }) => state.account);
@@ -121,27 +119,41 @@ export default function PlayerPage() {
 	// Network Check
 	const isNetworkAvailable = availableChains.includes(chainId);
 
-	// Get data
-	const registerStatus = useCheckNameRegister(isNetworkAvailable ? chainIdUrl : 137, playerID);
-
 	// Address Checksumed And Lowercased
-	const checksumAddress = registerStatus?.toLowerCase();
 	const checksumAccount = account?.toLowerCase();
 
 	const { ensName, address } = useENSName(id);
 
-	const { playerData, isLoading } = usePlayerData(isNetworkAvailable ? chainIdUrl : 137, checksumAddress);
+	const { playerData, isLoading } = usePlayerData(isNetworkAvailable ? chainIdUrl : 137, address);
 
 	// Copy Address To Clipboard && Tooltip
 	const [copied, setCopied] = useState(false);
 	function handleCopyAddress() {
-		navigator.clipboard.writeText(playerData?.[0]?.id ? playerData?.[0]?.id.toUpperCase() : checksumAddress.toUpperCase());
+		navigator.clipboard.writeText(playerData?.[0]?.id ? playerData?.[0]?.id.toUpperCase() : address.toUpperCase());
 		setCopied(true);
 
 		setTimeout(() => {
 			setCopied(false);
 		}, 2000); // Reset to "Copy Address" after 2 seconds
 	}
+
+	const [word, setWord] = useState('');
+	const localStorageKey = 'mySimpleWord';
+
+	// Load the word from localStorage when the component mounts
+	useEffect(() => {
+		const savedWord = localStorage.getItem(localStorageKey);
+		if (savedWord) {
+			setWord(savedWord);
+		}
+	}, []);
+
+	// Function to handle form submission
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		localStorage.setItem(localStorageKey, word);
+		alert('Word saved to localStorage!');
+	};
 
 	return (
 		<>
@@ -158,7 +170,7 @@ export default function PlayerPage() {
 								</a>
 								<a>
 									{account && checksumAccount !== address ? (
-										<BlacklistPlayer checksumAddress={checksumAddress} chainId={chainId} chainIdUrl={chainIdUrl} />
+										<BlacklistPlayer checksumAddress={address} chainId={chainId} chainIdUrl={chainIdUrl} />
 									) : null}
 								</a>
 							</PlayerBox>
@@ -177,11 +189,11 @@ export default function PlayerPage() {
 										<ContentCopy style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
 									</a>
 								</Tooltip>
-								<Tooltip title="View On Explorer" placement="bottom" disableInteractive TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}>
+								{/* <Tooltip title="View On Explorer" placement="bottom" disableInteractive TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}>
 									<a href={CHAINS[chainId]?.blockExplorerUrls[0] + 'address/' + playerData?.[0]?.id} target="_blank" style={{ cursor: 'pointer' }}>
 										<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
 									</a>
-								</Tooltip>
+								</Tooltip> */}
 							</AddressBox>
 							{/* <PlayerSocials
 								checksumAddress={checksumAddress}
@@ -191,7 +203,7 @@ export default function PlayerPage() {
 								chainIdUrl={chainIdUrl}
 							/> */}
 							<PlayerStatistics
-								checksumAddress={checksumAddress}
+								checksumAddress={address}
 								chainId={chainId}
 								playerData={playerData}
 								isNetworkAvailable={isNetworkAvailable}
@@ -200,15 +212,15 @@ export default function PlayerPage() {
 						</StyledLeftSectionBox>
 					</StyledSection>
 					<PlayerDares
-						registerStatus={registerStatus}
-						checksumAddress={checksumAddress}
+						registerStatus={ensName}
+						checksumAddress={address}
 						checksumAccount={checksumAccount}
 						network={network}
 						chainIdUrl={chainIdUrl}
 					/>
 					<CreateTaskBox>
-						{account && checksumAccount !== checksumAddress && (
-							<CreateTask registerStatus={registerStatus} chainIdUrl={chainIdUrl} isNetworkAvailable={isNetworkAvailable} />
+						{account && checksumAccount !== address && (
+							<CreateTask registerStatus={ensName} chainIdUrl={chainIdUrl} isNetworkAvailable={isNetworkAvailable} />
 						)}
 					</CreateTaskBox>
 				</StyledBox>
