@@ -176,7 +176,7 @@ export default function PlayerPage() {
 									</a>
 								</Tooltip>
 							</AddressBox>
-							<PlayerStatistics checksumAddress={address} chainId={chainId} playerData={playerData} />
+							{/* <PlayerStatistics checksumAddress={address} chainId={chainId} playerData={playerData} /> */}
 						</StyledLeftSectionBox>
 					</StyledSection>
 					{/* <PlayerDares
