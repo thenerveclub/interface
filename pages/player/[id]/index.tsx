@@ -196,14 +196,14 @@ export default function PlayerPage() {
 							/> */}
 						</StyledLeftSectionBox>
 					</StyledSection>
-					{/* <PlayerDares
+					<PlayerDares
 						registerStatus={ensName}
 						checksumAddress={address}
 						checksumAccount={checksumAccount}
 						network={network}
 						chainIdUrl={chainIdUrl}
 					/>
-					*/}
+
 					<CreateTaskBox>
 						{account && checksumAccount !== address && (
 							<CreateTask registerStatus={ensName} chainIdUrl={chainIdUrl} isNetworkAvailable={isNetworkAvailable} />
