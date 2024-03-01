@@ -165,11 +165,11 @@ export default function PlayerPage() {
 						<StyledLeftSectionBox>
 							<PlayerBox>
 								<a>{ensName ? ensName : address ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}` : null}</a>
-								{/* <a>
+								<a>
 									{account && checksumAccount !== address ? (
 										<BlacklistPlayer checksumAddress={address} chainId={chainId} chainIdUrl={chainIdUrl} />
 									) : null}
-								</a> */}
+								</a>
 							</PlayerBox>
 							<AddressBox>
 								<a>
@@ -203,11 +203,12 @@ export default function PlayerPage() {
 						network={network}
 						chainIdUrl={chainIdUrl}
 					/>
+					*/}
 					<CreateTaskBox>
 						{account && checksumAccount !== address && (
 							<CreateTask registerStatus={ensName} chainIdUrl={chainIdUrl} isNetworkAvailable={isNetworkAvailable} />
 						)}
-					</CreateTaskBox> */}
+					</CreateTaskBox>
 				</StyledBox>
 			)}
 		</>
