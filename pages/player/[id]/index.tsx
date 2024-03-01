@@ -109,6 +109,7 @@ export default function PlayerPage() {
 
 	// Usernames
 	const id = router.query.id as string;
+	const encodedId = encodeURIComponent(id);
 
 	// Redux
 	const account = useSelector((state: { account: string }) => state.account);
@@ -122,7 +123,7 @@ export default function PlayerPage() {
 	// Address Checksumed And Lowercased
 	const checksumAccount = account?.toLowerCase();
 
-	const { ensName, address } = useENSName(id);
+	const { ensName, address } = useENSName(encodedId);
 
 	const { playerData, isLoading } = usePlayerData(isNetworkAvailable ? chainIdUrl : 137, address);
 
