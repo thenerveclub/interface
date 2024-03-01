@@ -187,22 +187,22 @@ export default function PlayerPage() {
 									</a>
 								</Tooltip>
 							</AddressBox>
-							{/* <PlayerStatistics
+							<PlayerStatistics
 								checksumAddress={address}
 								chainId={chainId}
 								playerData={playerData}
 								isNetworkAvailable={isNetworkAvailable}
 								network={network}
-							/> */}
+							/>
 						</StyledLeftSectionBox>
 					</StyledSection>
-					<PlayerDares
+					{/* <PlayerDares
 						registerStatus={ensName}
 						checksumAddress={address}
 						checksumAccount={checksumAccount}
 						network={network}
 						chainIdUrl={chainIdUrl}
-					/>
+					/> */}
 
 					<CreateTaskBox>
 						{account && checksumAccount !== address && (
