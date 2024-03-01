@@ -102,10 +102,6 @@ const CreateTaskBox = styled(Box)`
 export default function PlayerPage() {
 	const theme = useTheme();
 	const router = useRouter();
-	const network = router.query.network as string;
-
-	// Name to Chain ID
-	const chainIdUrl = nameToChainId[network];
 
 	// Usernames
 	const id = router.query.id as string;
@@ -116,15 +112,12 @@ export default function PlayerPage() {
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
 
-	// Network Check
-	const isNetworkAvailable = availableChains.includes(chainId);
-
 	// Address Checksumed And Lowercased
 	const checksumAccount = account?.toLowerCase();
 
 	const { ensName, address } = useENSName(id);
 
-	const { playerData, isLoading } = usePlayerData(isNetworkAvailable ? chainIdUrl : 137, address);
+	const { playerData, isLoading } = usePlayerData(137, address);
 
 	// Copy Address To Clipboard && Tooltip
 	const [copied, setCopied] = useState(false);
@@ -165,11 +158,7 @@ export default function PlayerPage() {
 						<StyledLeftSectionBox>
 							<PlayerBox>
 								<a>{ensName ? ensName : address ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}` : null}</a>
-								<a>
-									{account && checksumAccount !== address ? (
-										<BlacklistPlayer checksumAddress={address} chainId={chainId} chainIdUrl={chainIdUrl} />
-									) : null}
-								</a>
+								<a>{account && checksumAccount !== address ? <BlacklistPlayer checksumAddress={address} chainId={chainId} /> : null}</a>
 							</PlayerBox>
 							<AddressBox>
 								<a>
@@ -187,13 +176,7 @@ export default function PlayerPage() {
 									</a>
 								</Tooltip>
 							</AddressBox>
-							<PlayerStatistics
-								checksumAddress={address}
-								chainId={chainId}
-								playerData={playerData}
-								isNetworkAvailable={isNetworkAvailable}
-								network={network}
-							/>
+							<PlayerStatistics checksumAddress={address} chainId={chainId} playerData={playerData} />
 						</StyledLeftSectionBox>
 					</StyledSection>
 					{/* <PlayerDares
@@ -204,11 +187,7 @@ export default function PlayerPage() {
 						chainIdUrl={chainIdUrl}
 					/> */}
 
-					<CreateTaskBox>
-						{account && checksumAccount !== address && (
-							<CreateTask registerStatus={ensName} chainIdUrl={chainIdUrl} isNetworkAvailable={isNetworkAvailable} />
-						)}
-					</CreateTaskBox>
+					<CreateTaskBox>{account && checksumAccount !== address && <CreateTask registerStatus={ensName} chainIdUrl={137} />}</CreateTaskBox>
 				</StyledBox>
 			)}
 		</>

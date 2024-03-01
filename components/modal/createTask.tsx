@@ -238,10 +238,9 @@ const StyledTextField = styled(TextField)<{ theme: any }>`
 interface CreateTaskProps {
 	registerStatus: any;
 	chainIdUrl: number;
-	isNetworkAvailable: boolean;
 }
 
-const CreateTask: React.FC<CreateTaskProps> = ({ registerStatus, chainIdUrl, isNetworkAvailable }) => {
+const CreateTask: React.FC<CreateTaskProps> = ({ registerStatus, chainIdUrl }) => {
 	const theme = useTheme();
 	const router = useRouter();
 	const { provider } = useWeb3React();
@@ -392,7 +391,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ registerStatus, chainIdUrl, isN
 							onChange={handleInputChange}
 							endAdornment={
 								<InputAdornment position="end">
-									<a style={{ color: theme.palette.text.primary }}>{isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}</a>
+									<a style={{ color: theme.palette.text.primary }}>{'MATIC'}</a>
 									<MaxButton theme={theme} onClick={setMaxValue}>
 										Max
 									</MaxButton>

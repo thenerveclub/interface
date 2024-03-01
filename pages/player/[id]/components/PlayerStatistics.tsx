@@ -56,11 +56,9 @@ interface PlayerStatisticsProps {
 	checksumAddress: string;
 	chainId: number;
 	playerData: any;
-	isNetworkAvailable: boolean;
-	network: string;
 }
 
-const PlayerStatistics: React.FC<PlayerStatisticsProps> = ({ checksumAddress, chainId, playerData, isNetworkAvailable, network }) => {
+const PlayerStatistics: React.FC<PlayerStatisticsProps> = ({ checksumAddress, chainId, playerData }) => {
 	const theme = useTheme();
 
 	// Redux
@@ -77,10 +75,10 @@ const PlayerStatistics: React.FC<PlayerStatisticsProps> = ({ checksumAddress, ch
 				{playerData?.[0]?.earned ? (
 					currencyValue === false ? (
 						<a>
-							{((playerData?.[0]?.earned / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
+							{((playerData?.[0]?.earned / 1e18) * 1).toFixed(2)} {'MATIC'}
 						</a>
 					) : (
-						<a>${((playerData?.[0]?.earned / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</a>
+						<a>${((playerData?.[0]?.earned / 1e18) * currencyPrice['polygon']?.usd).toFixed(2)}</a>
 					)
 				) : (
 					<a>
@@ -98,10 +96,10 @@ const PlayerStatistics: React.FC<PlayerStatisticsProps> = ({ checksumAddress, ch
 				{playerData?.[0]?.spent ? (
 					currencyValue === false ? (
 						<a>
-							{((playerData?.[0]?.spent / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
+							{((playerData?.[0]?.spent / 1e18) * 1).toFixed(2)} {'MATIC'}
 						</a>
 					) : (
-						<a>${((playerData?.[0]?.spent / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</a>
+						<a>${((playerData?.[0]?.spent / 1e18) * currencyPrice['polygon']?.usd).toFixed(2)}</a>
 					)
 				) : (
 					<a>

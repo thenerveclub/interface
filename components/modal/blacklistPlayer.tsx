@@ -179,10 +179,9 @@ const BlacklistButton = styled(Button)<{ theme: any }>`
 interface BlacklistPlayerProps {
 	checksumAddress: string;
 	chainId: number;
-	chainIdUrl: number;
 }
 
-const BlacklistPlayer: React.FC<BlacklistPlayerProps> = ({ checksumAddress, chainId, chainIdUrl }) => {
+const BlacklistPlayer: React.FC<BlacklistPlayerProps> = ({ checksumAddress, chainId }) => {
 	const theme = useTheme();
 
 	// State
@@ -213,7 +212,7 @@ const BlacklistPlayer: React.FC<BlacklistPlayerProps> = ({ checksumAddress, chai
 	// Blacklist Player
 	async function userToBlacklist() {
 		const signer = provider.getSigner();
-		const nerveGlobal = new ethers.Contract(CHAINS[chainIdUrl]?.contract, NerveGlobalABI, signer);
+		const nerveGlobal = new ethers.Contract(CHAINS[137]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
 			const tx = await nerveGlobal.setBlacklistUser(checksumAddress);
@@ -240,13 +239,13 @@ const BlacklistPlayer: React.FC<BlacklistPlayerProps> = ({ checksumAddress, chai
 	const handleNetworkChange = async () => {
 		if (metaMask) {
 			try {
-				await metaMask.activate(chainIdUrl);
+				await metaMask.activate(137);
 			} catch (error) {
 				console.error(error);
 			}
 		} else {
 			try {
-				await metaMask.activate(getAddChainParameters(chainIdUrl));
+				await metaMask.activate(getAddChainParameters(137));
 			} catch (error) {
 				console.error(error);
 			}
