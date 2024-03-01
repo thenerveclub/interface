@@ -130,24 +130,6 @@ export default function PlayerPage() {
 		}, 2000); // Reset to "Copy Address" after 2 seconds
 	}
 
-	const [word, setWord] = useState('');
-	const localStorageKey = 'mySimpleWord';
-
-	// Load the word from localStorage when the component mounts
-	useEffect(() => {
-		const savedWord = localStorage.getItem(localStorageKey);
-		if (savedWord) {
-			setWord(savedWord);
-		}
-	}, []);
-
-	// Function to handle form submission
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		localStorage.setItem(localStorageKey, word);
-		alert('Word saved to localStorage!');
-	};
-
 	return (
 		<>
 			{isLoading ? (
@@ -176,7 +158,7 @@ export default function PlayerPage() {
 									</a>
 								</Tooltip>
 							</AddressBox>
-							{/* <PlayerStatistics checksumAddress={address} chainId={chainId} playerData={playerData} /> */}
+							<PlayerStatistics checksumAddress={address} chainId={chainId} playerData={playerData} />
 						</StyledLeftSectionBox>
 					</StyledSection>
 					{/* <PlayerDares
