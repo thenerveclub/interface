@@ -236,11 +236,12 @@ const StyledTextField = styled(TextField)<{ theme: any }>`
 `;
 
 interface CreateTaskProps {
-	registerStatus: any;
-	chainIdUrl: number;
+	recipientAddress: any;
+	recipientENS: any;
+	network: number;
 }
 
-const CreateTask: React.FC<CreateTaskProps> = ({ registerStatus, chainIdUrl }) => {
+const CreateTask: React.FC<CreateTaskProps> = ({ recipientAddress, recipientENS, network }) => {
 	const theme = useTheme();
 	const router = useRouter();
 	const { provider } = useWeb3React();
@@ -326,7 +327,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ registerStatus, chainIdUrl }) =
 		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			const tx = await nerveGlobal.createTask(registerStatus, description, convertToSeconds(days, hours, minutes), 'en', '0', '0', {
+			const tx = await nerveGlobal.createTask(recipientAddress, description, convertToSeconds(days, hours, minutes), 'en', '0', '0', {
 				value: txValue,
 			});
 			await tx.wait();
@@ -344,13 +345,13 @@ const CreateTask: React.FC<CreateTaskProps> = ({ registerStatus, chainIdUrl }) =
 	const handleNetworkChange = async () => {
 		if (metaMask) {
 			try {
-				await metaMask.activate(chainIdUrl);
+				await metaMask.activate(network);
 			} catch (error) {
 				console.error(error);
 			}
 		} else {
 			try {
-				await metaMask.activate(getAddChainParameters(chainIdUrl));
+				await metaMask.activate(getAddChainParameters(network));
 			} catch (error) {
 				console.error(error);
 			}
@@ -465,7 +466,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ registerStatus, chainIdUrl }) =
 							onChange={(event) => setDescription(event.target.value)}
 						/>
 						<StyledSection style={{ margin: '2rem auto 1.5rem auto' }}>
-							{chainId === chainIdUrl ? (
+							{chainId === network ? (
 								pendingTx ? (
 									<BuyButton theme={theme} disabled>
 										Pending

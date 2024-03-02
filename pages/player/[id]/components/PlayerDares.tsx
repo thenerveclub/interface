@@ -13,6 +13,19 @@ import useCompletedPlayerTasks from '../../../../hooks/useCompletedPlayerTasks';
 import { currencySlice } from '../../../../state/currency/currencySlice';
 import { CHAINS } from '../../../../utils/chains';
 
+const ActiveBox = styled(Box)`
+	display: flex;
+	width: 100%;
+	margin: 2.5rem auto 0 auto;
+	border-bottom: 1px solid rgba(128, 128, 138, 1);
+
+	@media (max-width: 750px) {
+		width: fit-content;
+		justify-content: center;
+		align-items: center;
+	}
+`;
+
 const StyledTabs = styled(Tabs)<{ theme: any }>`
 	// target child element
 	& .MuiTabs-indicator {
@@ -20,17 +33,17 @@ const StyledTabs = styled(Tabs)<{ theme: any }>`
 	}
 
 	@media (max-width: 750px) {
-		width: 350px;
+		width: 100%;
 		justify-content: center;
 		align-items: center;
 	}
 `;
 
 const StyledTab = styled(Tab)<{ theme: any }>`
-	font-size: 0.925rem;
+	font-size: 1rem;
 	font-weight: 400;
 	text-transform: none;
-	min-width: 9.375rem;
+	min-width: 10rem;
 	color: ${({ theme }) => theme.palette.secondary.main};
 	background-color: transparent;
 
@@ -38,17 +51,6 @@ const StyledTab = styled(Tab)<{ theme: any }>`
 		color: ${({ theme }) => theme.palette.text.primary};
 		font-weight: 500;
 		font-size: 1rem;
-	}
-`;
-
-const ActiveBox = styled(Box)`
-	margin: 3rem auto 0 auto;
-	border-bottom: 1px solid rgba(128, 128, 138, 1);
-
-	@media (max-width: 750px) {
-		width: 300px;
-		justify-content: center;
-		align-items: center;
 	}
 `;
 
@@ -168,7 +170,7 @@ const TaskCard = styled(Box)<{ theme: any }>`
 		max-width: 350px;
 	}
 
-	@media (max-width: 680px) {
+	@media (max-width: 750px) {
 		min-width: 90vw;
 		max-width: 90vw;
 	}
@@ -262,14 +264,12 @@ interface TabPanelProps {
 }
 
 interface PlayerDaresProps {
-	registerStatus: any;
-	checksumAddress: string;
-	checksumAccount: string;
-	network: string;
-	chainIdUrl: number;
+	recipientAddress: any;
+	recipientENS: any;
+	network: number;
 }
 
-const PlayerDares: React.FC<PlayerDaresProps> = ({ registerStatus, checksumAddress, checksumAccount, network, chainIdUrl }) => {
+const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientENS, network }) => {
 	const theme = useTheme();
 
 	// Redux
@@ -291,8 +291,8 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ registerStatus, checksumAddre
 	};
 
 	// Active Player Tasks
-	const activePlayerTasks = useActivePlayerTasks(checksumAddress, chainId);
-	const completedPlayerTasks = useCompletedPlayerTasks(checksumAddress, chainId);
+	const activePlayerTasks = useActivePlayerTasks(recipientAddress, chainId);
+	const completedPlayerTasks = useCompletedPlayerTasks(recipientAddress, chainId);
 
 	const [filteredActiveTasks, setFilteredActiveTasks] = useState(activePlayerTasks);
 	const [filteredCompletedTasks, setFilteredCompletedTasks] = useState(completedPlayerTasks);
@@ -368,8 +368,8 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ registerStatus, checksumAddre
 							</StyledToggleButton>
 						</StyledToggleButtonGroup>
 						<CreateTaskBox>
-							{account && checksumAccount !== checksumAddress && (
-								<CreateTask registerStatus={registerStatus} chainIdUrl={chainIdUrl} isNetworkAvailable={isNetworkAvailable} />
+							{account && account.toLowerCase() !== recipientAddress && (
+								<CreateTask recipientAddress={recipientAddress} recipientENS={recipientENS} network={network} />
 							)}
 						</CreateTaskBox>
 					</ActiveTabRightSection>
@@ -427,8 +427,8 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ registerStatus, checksumAddre
 							</StyledToggleButton>
 						</StyledToggleButtonGroup>
 						<CreateTaskBox>
-							{account && checksumAccount !== checksumAddress && (
-								<CreateTask registerStatus={registerStatus} chainIdUrl={chainIdUrl} isNetworkAvailable={isNetworkAvailable} />
+							{account && account.toLowerCase() !== recipientAddress && (
+								<CreateTask recipientAddress={recipientAddress} recipientENS={recipientENS} network={network} />
 							)}
 						</CreateTaskBox>
 					</ActiveTabRightSection>

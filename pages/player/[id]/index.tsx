@@ -172,15 +172,9 @@ export default function PlayerPage() {
 					<PlayerStatistics checksumAddress={address} chainId={chainId} playerData={playerData} />
 				</StyledLeftSectionBox>
 			</StyledSection>
-			{/* <PlayerDares
-						registerStatus={ensName}
-						checksumAddress={address}
-						checksumAccount={checksumAccount}
-						network={network}
-						chainIdUrl={chainIdUrl}
-					/> */}
+			<PlayerDares recipientAddress={address} recipientENS={ensName} network={137} />
 
-			<CreateTaskBox>{account && checksumAccount !== address && <CreateTask registerStatus={ensName} chainIdUrl={137} />}</CreateTaskBox>
+			<CreateTaskBox>{account && checksumAccount !== address && <CreateTask recipientAddress={address} recipientENS={ensName} network={137} />}</CreateTaskBox>
 		</StyledBox>
 		// 	)}
 		// </>
