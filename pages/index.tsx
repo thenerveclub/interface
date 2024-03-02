@@ -26,7 +26,7 @@ const StyledLayout = styled(Box)`
 	margin: 2% auto;
 	background-color: transparent;
 
-	@media (max-width: 600px) {
+	@media (max-width: 750px) {
 		width: 95%;
 	}
 `;
@@ -48,7 +48,7 @@ const StyledBox = styled(Box)<{ theme: any }>`
 		width: 70%;
 	}
 
-	@media (max-width: 680px) {
+	@media (max-width: 750px) {
 		margin: 10rem auto 0 auto;
 
 		h1 {
@@ -73,7 +73,7 @@ const StyledTrending = styled(Box)`
 		font-size: 2.25rem;
 	}
 
-	@media (max-width: 680px) {
+	@media (max-width: 750px) {
 		justify-content: center;
 		margin: 5rem auto 0 auto;
 	}
@@ -89,7 +89,7 @@ const ActiveTabSection = styled(Box)`
 	gap: 2rem;
 	min-width: 100%;
 
-	@media (max-width: 680px) {
+	@media (max-width: 750px) {
 		flex-direction: column;
 		margin: 1rem auto 5rem auto;
 		width: 100%;
@@ -111,7 +111,7 @@ const TaskCard = styled(Box)<{ theme: any }>`
 	border-radius: ${({ theme }) => theme.customShape.borderRadius};
 	padding: 1rem;
 
-	@media (max-width: 1000px) {
+	@media (max-width: 750px) {
 		min-width: 350px;
 		max-width: 350px;
 	}
@@ -135,7 +135,7 @@ const TaskBoxSection = styled(Box)`
 		text-align: center;
 	}
 
-	@media (max-width: 1200px) {
+	@media (max-width: 750px) {
 	}
 `;
 
@@ -156,7 +156,7 @@ const TaskBoxSectionOne = styled(Box)`
 		margin: 0;
 	}
 
-	@media (max-width: 1200px) {
+	@media (max-width: 750px) {
 	}
 `;
 
@@ -177,7 +177,7 @@ const TaskBoxSectionTwo = styled(Box)`
 		margin: 0;
 	}
 
-	@media (max-width: 1200px) {
+	@media (max-width: 750px) {
 	}
 `;
 

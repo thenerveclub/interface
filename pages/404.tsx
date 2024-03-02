@@ -33,7 +33,7 @@ const StyledBox = styled(Box)<{ theme: any }>`
 		}
 	}
 
-	@media (max-width: 600px) {
+	@media (max-width: 750px) {
 		width: 95%;
 	}
 `;
@@ -53,7 +53,7 @@ const Text = styled(Typography)`
 		background-color: transparent;
 	}
 
-	@media (max-width: 600px) {
+	@media (max-width: 750px) {
 		font-size: 0.8rem;
 	}
 `;

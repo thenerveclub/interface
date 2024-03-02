@@ -19,7 +19,7 @@ const StyledTabs = styled(Tabs)<{ theme: any }>`
 		background-color: ${({ theme }) => theme.palette.warning.main};
 	}
 
-	@media (max-width: 1024px) {
+	@media (max-width: 750px) {
 		width: 350px;
 		justify-content: center;
 		align-items: center;
@@ -45,7 +45,7 @@ const ActiveBox = styled(Box)`
 	margin: 3rem auto 0 auto;
 	border-bottom: 1px solid rgba(128, 128, 138, 1);
 
-	@media (max-width: 1024px) {
+	@media (max-width: 750px) {
 		width: 300px;
 		justify-content: center;
 		align-items: center;
@@ -64,7 +64,7 @@ const ActiveFilterBox = styled(Box)`
 	width: 100%;
 	height: 40px;
 
-	@media (max-width: 1024px) {
+	@media (max-width: 750px) {
 		flex-direction: column;
 		align-items: center;
 	}
@@ -116,7 +116,7 @@ const ActiveTabRightSection = styled(Box)`
 	flex-direction: row;
 	justify-content: flex-end;
 
-	@media (max-width: 1024px) {
+	@media (max-width: 750px) {
 		justify-content: center;
 	}
 `;
@@ -125,7 +125,7 @@ const CreateTaskBox = styled(Box)`
 	display: flex;
 	// justify-content: flex-end;
 
-	@media (max-width: 1024px) {
+	@media (max-width: 750px) {
 		display: none;
 		visibility: hidden;
 	}
@@ -141,7 +141,7 @@ const ActiveTabSection = styled(Box)`
 	gap: 2rem;
 	min-width: 100%;
 
-	@media (max-width: 680px) {
+	@media (max-width: 750px) {
 		flex-direction: column;
 		margin: 1rem auto 5rem auto;
 		width: 100%;
@@ -163,7 +163,7 @@ const TaskCard = styled(Box)<{ theme: any }>`
 	border-radius: ${({ theme }) => theme.customShape.borderRadius};
 	padding: 1rem;
 
-	@media (max-width: 1000px) {
+	@media (max-width: 750px) {
 		min-width: 350px;
 		max-width: 350px;
 	}
@@ -187,7 +187,7 @@ const TaskBoxSection = styled(Box)`
 		text-align: center;
 	}
 
-	@media (max-width: 1200px) {
+	@media (max-width: 750px) {
 	}
 `;
 
@@ -208,7 +208,7 @@ const TaskBoxSectionOne = styled(Box)`
 		margin: 0;
 	}
 
-	@media (max-width: 1200px) {
+	@media (max-width: 750px) {
 	}
 `;
 
@@ -229,7 +229,7 @@ const TaskBoxSectionTwo = styled(Box)`
 		margin: 0;
 	}
 
-	@media (max-width: 1200px) {
+	@media (max-width: 750px) {
 	}
 `;
 

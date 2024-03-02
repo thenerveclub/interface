@@ -1,54 +1,59 @@
 import styled from '@emotion/styled';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
-import { Box, Fade, Grid, Skeleton, Tooltip } from '@mui/material';
+import { Box, Fade, Grid, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
 import useRankingEarned from '../../../../hooks/useRankingEarned';
 import useRankingSpent from '../../../../hooks/useRankingSpent';
-import { CHAINS } from '../../../../utils/chains';
 
 const StatisticBox = styled(Box)`
 	display: flex;
-	flex-direction: column;
-	justify-content: center;
+	flex-direction: row;
+	justify-content: left;
 	width: 100%;
-	margin: 2rem auto 0 auto;
-	text-align: center;
 
-	@media (max-width: 1024px) {
-		width: 95%;
+	@media (max-width: 750px) {
+		width: 80%;
+		justify-content: space-between;
+		padding: 0.5rem 0 0.5rem 0;
 	}
 `;
 
-const StyledGridFirst = styled(Grid)<{ theme: any }>`
+const StyledStatistics = styled(Grid)<{ theme: any }>`
 	display: flex;
-	justify-content: center;
-	// gap: 1rem;
-	font-size: 16px;
+	flex-direction: column;
+	padding: 1rem 1rem 1rem 0;
+	margin-right: 5rem;
 
-	a {
+	div {
+		display: flex;
+		flex-direction: column;
+	}
+
+	p {
 		display: flex;
 		color: ${({ theme }) => theme.palette.text.primary};
-		font-size: 16px;
-		width: 150px;
+		font-size: 1rem;
 		cursor: default;
-		justify-content: center;
-		align-items: center;
+		margin: 0;
 	}
-`;
 
-const StyledGridSecond = styled(Grid)`
-	display: flex;
-	justify-content: center;
-	color: #fff;
-	margin-top: 0.25rem;
+	@media (max-width: 750px) {
+		margin-right: 0;
+		padding: 0;
 
-	a {
-		font-size: 0.875rem;
-		font-weight: 400;
-		color: rgba(128, 128, 138, 1);
-		width: 150px;
-		cursor: default;
+		div {
+			display: flex;
+			flex-direction: column;
+		}
+
+		p {
+			display: flex;
+			color: ${({ theme }) => theme.palette.text.primary};
+			font-size: 0.925rem;
+			cursor: default;
+			width: 100%;
+		}
 	}
 `;
 
@@ -61,6 +66,8 @@ interface PlayerStatisticsProps {
 const PlayerStatistics: React.FC<PlayerStatisticsProps> = ({ checksumAddress, chainId, playerData }) => {
 	const theme = useTheme();
 
+	console.log('PlayerStatists:', checksumAddress, chainId, playerData);
+
 	// Redux
 	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
 	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
@@ -71,91 +78,61 @@ const PlayerStatistics: React.FC<PlayerStatisticsProps> = ({ checksumAddress, ch
 
 	return (
 		<StatisticBox>
-			<StyledGridFirst theme={theme}>
-				{playerData?.[0]?.earned ? (
-					currencyValue === false ? (
-						<a>
+			<StyledStatistics theme={theme}>
+				<div>
+					{currencyValue === false ? (
+						<p>
 							{((playerData?.[0]?.earned / 1e18) * 1).toFixed(2)} {'MATIC'}
-						</a>
+						</p>
 					) : (
-						<a>${((playerData?.[0]?.earned / 1e18) * currencyPrice['polygon']?.usd).toFixed(2)}</a>
-					)
-				) : (
-					<a>
-						<Skeleton
-							sx={{
-								backgroundColor: 'rgba(152, 161, 192, 0.4)',
-								borderRadius: '10px',
-							}}
-							variant="text"
-							width={75}
-							height={30}
-						/>
-					</a>
-				)}
-				{playerData?.[0]?.spent ? (
-					currencyValue === false ? (
-						<a>
+						<p>${((playerData?.[0]?.earned / 1e18) * currencyPrice['polygon']?.usd).toFixed(2)}</p>
+					)}
+				</div>
+				<div>
+					<p>Earnings</p>
+				</div>
+			</StyledStatistics>
+			<StyledStatistics theme={theme}>
+				<div>
+					{currencyValue === false ? (
+						<p>
 							{((playerData?.[0]?.spent / 1e18) * 1).toFixed(2)} {'MATIC'}
-						</a>
+						</p>
 					) : (
-						<a>${((playerData?.[0]?.spent / 1e18) * currencyPrice['polygon']?.usd).toFixed(2)}</a>
-					)
-				) : (
-					<a>
-						<Skeleton
-							sx={{
-								backgroundColor: 'rgba(152, 161, 192, 0.4)',
-								borderRadius: '10px',
-							}}
-							variant="text"
-							width={75}
-							height={30}
-						/>
-					</a>
-				)}
-				{playerData?.[0]?.spent ? (
-					<>
-						<a>
-							{rankingEarned} | {rankingSpent}
-							<Tooltip
-								title="Player Ranking: Most Earned | Most Spent"
-								placement="top"
-								disableInteractive
-								TransitionComponent={Fade}
-								TransitionProps={{ timeout: 600 }}
-							>
-								<InfoOutlined
-									style={{
-										display: 'flex',
-										marginLeft: '0.5rem',
-										fontSize: '1rem',
-										color: theme.palette.secondary.main,
-										cursor: 'help',
-									}}
-								/>
-							</Tooltip>
-						</a>
-					</>
-				) : (
-					<a>
-						<Skeleton
-							sx={{
-								backgroundColor: 'rgba(152, 161, 192, 0.4)',
-								borderRadius: '10px',
-							}}
-							variant="text"
-							width={75}
-							height={30}
-						/>
-					</a>
-				)}
-			</StyledGridFirst>
-			<StyledGridSecond>
-				<a>Earnings</a>
-				<a>Contributions</a>
-				<a>Rank</a>
-			</StyledGridSecond>
+						<p>${((playerData?.[0]?.spent / 1e18) * currencyPrice['polygon']?.usd).toFixed(2)}</p>
+					)}
+				</div>
+				<div>
+					<p>Contributions</p>
+				</div>
+			</StyledStatistics>
+			<StyledStatistics theme={theme}>
+				<div>
+					<p>
+						{rankingEarned} | {rankingSpent}
+						<Tooltip
+							title="Player Ranking: Most Earned | Most Spent"
+							placement="top"
+							disableInteractive
+							TransitionComponent={Fade}
+							TransitionProps={{ timeout: 600 }}
+						>
+							<InfoOutlined
+								style={{
+									display: 'flex',
+									marginLeft: '0.5rem',
+									fontSize: '1rem',
+									color: theme.palette.secondary.main,
+									cursor: 'help',
+								}}
+							/>
+						</Tooltip>
+					</p>
+				</div>
+				<div>
+					<p>Rank</p>
+				</div>
+			</StyledStatistics>
 		</StatisticBox>
 	);
 };
