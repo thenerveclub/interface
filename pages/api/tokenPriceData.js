@@ -2,6 +2,14 @@ let cachedData;
 let lastFetchTime;
 
 export default async function handler(req, res) {
+	// Check the referer header
+	const referer = req.headers.referer;
+
+	// Allow requests only from your domain
+	if (!referer || !referer.includes('nerveglobal.com')) {
+		return res.status(403).json({ message: 'Access denied' });
+	}
+
 	const cmcBaseUrl = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency';
 	const cmcHeaders = {
 		'X-CMC_PRO_API_KEY': process.env.CMC_API_KEY, // Store API key in environment variables
