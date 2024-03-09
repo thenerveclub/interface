@@ -5,13 +5,14 @@ import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import LoadingScreen from '../../../components/LoadingScreen';
-import JoinDare from '../../../components/modal/joinDare';
+import JoinDare from '../../../components/modal/join';
 import Connect from '../../../components/modal/menu/Connect';
 import ProveDare from '../../../components/modal/proveDare';
 import RedeemRecipient from '../../../components/modal/redeemRecipient';
 import RedeemUser from '../../../components/modal/redeemUser';
 import VoteTask from '../../../components/modal/voteTask';
 import useDareData from '../../../hooks/dareData/useDareData';
+import useENSName from '../../../hooks/useENSName';
 import { nameToChainId } from '../../../utils/chains';
 import ActivityTable from './components/ActivityTable';
 import Chart from './components/Chart';
@@ -85,41 +86,40 @@ const StyledRightSection = styled.section`
 export default function TaskPage() {
 	const theme = useTheme();
 	const router = useRouter();
-	const network = router.query.network as string;
 	const id = router.query.id as string;
 
-	// Name to Chain ID
-	const chainIdUrl = nameToChainId[network];
+	// split id to get chainId before "-" and task id after "-"
+	const network = id?.split('-')[0];
+	const taskId = id?.split('-')[1];
 
 	// Redux
 	const dispatch = useDispatch();
 	const account = useSelector((state: { account: string }) => state.account);
-	const chainId = useSelector((state: { chainId: number }) => state.chainId);
-	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
-	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
-	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
-
-	// Network Check
-	const isNetworkAvailable = availableChains.includes(chainIdUrl);
 
 	// State declarations
 
 	// Hooks
-	const { dareData, isLoading } = useDareData(isNetworkAvailable ? chainIdUrl : 137, id);
+	const { dareData, isLoading } = useDareData(network, taskId);
+
+	// console.log('dareData', dareData);
 
 	const finished = dareData?.[0]?.task.finished;
 	const timeover = dareData?.[0]?.task.endTask <= Math.floor(Date.now() / 1000);
 	const voteIsTrue = dareData?.[0]?.task.positiveVotes > dareData?.[0]?.task.negativeVotes ? true : false;
 	const proof = dareData?.[0]?.task.proofLink === '' ? false : true;
 	const isPlayer = dareData?.[0]?.task.recipientAddress.toLowerCase() === account.toLowerCase();
-	const player =
-		dareData?.[0]?.task.recipientName === ''
-			? `${dareData?.[0]?.task.recipientAddress.substring(0, 6)}...${dareData?.[0]?.task.recipientAddress.substring(
-					dareData?.[0]?.task.recipientAddress.length - 4
-			  )}`
-			: dareData?.[0]?.task.recipientName;
+	const playerAddress = dareData?.[0]?.task.recipientAddress;
+	const { ensName, address, error } = useENSName(playerAddress);
+	const player = ensName ? ensName : address;
+	console.log('player', playerAddress);
 	const proven = dareData?.[0]?.task.proofLink === '' ? false : true;
 	const playerClaimed = dareData?.[0]?.task.executed;
+
+	const description = dareData?.[0]?.task.description;
+	const initiator = dareData?.[0]?.task.initiatorAddress;
+	const participants = dareData?.[0]?.task.participants;
+	const entranceAmount = dareData?.[0]?.task.entranceAmount;
+	const amount = dareData?.[0]?.task.amount;
 
 	// Initialize variables to track if the user has joined and voted
 	let hasJoined = false;
@@ -140,7 +140,7 @@ export default function TaskPage() {
 		}
 	});
 
-	console.log('playerClaimed ', playerClaimed);
+	// console.log('playerClaimed ', playerClaimed);
 
 	// Twitch Live Status
 	// const twitchLink = playerData[0]?.userSocialStat?.twitch.includes('twitch') ? playerData[0]?.userSocialStat?.twitch : '';
@@ -166,9 +166,16 @@ export default function TaskPage() {
 				<StyledBox>
 					<StyledGridBox>
 						<StyledLeftSection>
-							<DescriptionCard dareData={dareData} player={player} />
-							<DetailsCard id={id} network={network} dareData={dareData} />
-							<ActivityTable id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} />
+							<DescriptionCard description={description} initiator={initiator} player={player} />
+							<DetailsCard
+								network={network}
+								id={taskId}
+								player={player}
+								participants={participants}
+								entranceAmount={entranceAmount}
+								amount={amount}
+							/>
+							<ActivityTable network={network} id={taskId} dareData={dareData} />
 							{/* <Chart dareData={dareData} /> */}
 						</StyledLeftSection>
 						<StyledRightSection>
@@ -177,20 +184,14 @@ export default function TaskPage() {
 								finished || timeover ? (
 									isPlayer ? (
 										voteIsTrue && !playerClaimed ? (
-											<RedeemRecipient
-												id={id}
-												dareData={dareData}
-												chainIdUrl={chainIdUrl}
-												network={network}
-												isNetworkAvailable={isNetworkAvailable}
-											/>
+											<RedeemRecipient id={id} dareData={dareData} network={network} />
 										) : (
 											<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
 												<p>{playerClaimed ? 'You have claimed your win' : 'You has lost the dare'}</p>
 											</div>
 										)
 									) : !voteIsTrue && !hasClaimed ? (
-										<RedeemUser id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
+										<RedeemUser id={id} dareData={dareData} network={network} />
 									) : (
 										<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
 											<p>{hasClaimed ? 'You have claimed your stake' : 'Player has won the dare'}</p>
@@ -198,23 +199,14 @@ export default function TaskPage() {
 									)
 								) : isPlayer ? (
 									!proven ? (
-										<ProveDare id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
+										<ProveDare id={id} dareData={dareData} network={network} />
 									) : (
-										voteIsTrue &&
-										playerClaimed && (
-											<RedeemRecipient
-												id={id}
-												dareData={dareData}
-												chainIdUrl={chainIdUrl}
-												network={network}
-												isNetworkAvailable={isNetworkAvailable}
-											/>
-										)
+										voteIsTrue && playerClaimed && <RedeemRecipient id={id} dareData={dareData} network={network} />
 									)
 								) : !hasJoined ? (
-									<JoinDare id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
+									<JoinDare id={id} dareData={dareData} network={network} />
 								) : !hasVoted ? (
-									<VoteTask id={id} dareData={dareData} chainIdUrl={chainIdUrl} network={network} isNetworkAvailable={isNetworkAvailable} />
+									<VoteTask id={id} dareData={dareData} network={network} />
 								) : (
 									<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
 										<p>{userVote === true ? 'You voted true' : 'Yout voted false'}</p>

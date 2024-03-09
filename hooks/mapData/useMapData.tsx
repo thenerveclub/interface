@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { CHAINS } from '../../utils/chains';
 
-const useMapData = (chainIdUrl: number) => {
+const useMapData = (network: number) => {
 	const [mapData, setMapData] = useState<any[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 
 	useEffect(() => {
 		setIsLoading(true);
 
-		if (!chainIdUrl) {
+		if (!network) {
 			// Handle the case where the chainIdUrl is not ready or not valid
 			setMapData([]);
 			setIsLoading(false);
@@ -30,7 +30,7 @@ const useMapData = (chainIdUrl: number) => {
       `;
 
 			try {
-				const fetchMapData = await fetch(CHAINS[chainIdUrl]?.graphApi, {
+				const fetchMapData = await fetch(CHAINS[network]?.graphApi, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ query: QueryForMapData }),
@@ -47,7 +47,7 @@ const useMapData = (chainIdUrl: number) => {
 		};
 
 		getMapData();
-	}, [chainIdUrl]);
+	}, [network]);
 
 	return { mapData, isLoading };
 };

@@ -286,16 +286,11 @@ const StyledTableContainer = styled(Box)<{ theme: any }>`
 export default function RankingPage() {
 	const theme = useTheme();
 	const router = useRouter();
-	const network = router.query.network as string;
-
-	// Name to Chain ID
-	const chainIdUrl = nameToChainId[network];
 
 	// Redux
 	const dispatch = useDispatch();
 	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
 	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
-	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
 
 	// Toogle Button For Token Price
 	const handleToggle = (event, newCurrency) => {
@@ -303,12 +298,10 @@ export default function RankingPage() {
 		dispatch(currencySlice.actions.updateCurrency(newCurrency));
 	};
 
-	// Network Check
-	const isNetworkAvailable = availableChains.includes(chainIdUrl);
-
 	const [order, setOrder] = useState('desc');
 	const [orderBy, setOrderBy] = useState('earned');
-	const { rankingList, isLoading } = usePlayerRankingData(isNetworkAvailable ? chainIdUrl : 137, orderBy);
+	const { rankingList, isLoading } = usePlayerRankingData(137, orderBy);
+	const network = 137;
 
 	const createSortHandler = (property) => (event) => {
 		const isAsc = orderBy === property && order === 'desc';
@@ -392,7 +385,7 @@ export default function RankingPage() {
 						</Title> */}
 						<StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
 							<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
-								{isNetworkAvailable ? <a>{CHAINS[chainIdUrl]?.nameToken}</a> : <a>MATIC</a>}
+								ETH
 							</StyledToggleButton>
 							<StyledToggleButton theme={theme} disabled={currencyValue === true} value={true}>
 								<a>USD</a>
@@ -466,7 +459,7 @@ export default function RankingPage() {
 															gap: '5px',
 															alignItems: 'center',
 														}}
-														href={CHAINS[isNetworkAvailable ? chainIdUrl : 137]?.blockExplorerUrls[0] + 'address/' + row.id}
+														href={CHAINS[137]?.blockExplorerUrls[0] + 'address/' + row.id}
 														target="_blank"
 													>
 														{`${row.id.slice(0, 6)}...${row.id.slice(-4)}`}
@@ -493,18 +486,14 @@ export default function RankingPage() {
 												</TableCell> */}
 												<TableCell style={{ textAlign: 'right' }}>
 													{currencyValue === false ? (
-														<a>
-															{formatNumber(row.earned)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
-														</a>
+														<a>{formatNumber(row.earned)} ETH</a>
 													) : (
 														<a>${formatNumber(row.earned * currencyPrice[network]?.usd)}</a>
 													)}
 												</TableCell>
 												<TableCell style={{ textAlign: 'right' }}>
 													{currencyValue === false ? (
-														<a>
-															{formatNumber(row.spent)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
-														</a>
+														<a>{formatNumber(row.spent)} ETH</a>
 													) : (
 														<a>${formatNumber(row.spent * currencyPrice[network]?.usd)}</a>
 													)}

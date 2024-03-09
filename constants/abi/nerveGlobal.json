@@ -3,49 +3,11 @@
 	{
 		"anonymous": false,
 		"inputs": [
-			{ "indexed": true, "internalType": "address", "name": "user", "type": "address" },
-			{ "indexed": false, "internalType": "string", "name": "latitude", "type": "string" },
-			{ "indexed": false, "internalType": "string", "name": "longitude", "type": "string" }
-		],
-		"name": "LocationRegistered",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{ "indexed": true, "internalType": "address", "name": "user", "type": "address" },
-			{ "indexed": false, "internalType": "bytes32", "name": "registeredName", "type": "bytes32" }
-		],
-		"name": "NameRegistered",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{ "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" },
-			{ "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }
-		],
-		"name": "OwnershipTransferred",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
 			{ "indexed": true, "internalType": "address", "name": "recipient", "type": "address" },
 			{ "indexed": true, "internalType": "uint256", "name": "taskID", "type": "uint256" },
 			{ "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" }
 		],
-		"name": "RecipientRedeemed",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{ "indexed": true, "internalType": "address", "name": "user", "type": "address" },
-			{ "indexed": false, "internalType": "string[]", "name": "socialLinks", "type": "string[]" },
-			{ "indexed": false, "internalType": "string[]", "name": "socialIds", "type": "string[]" }
-		],
-		"name": "SocialRegistered",
+		"name": "Claimed",
 		"type": "event"
 	},
 	{
@@ -58,11 +20,10 @@
 			{ "indexed": false, "internalType": "uint256", "name": "entranceAmount", "type": "uint256" },
 			{ "indexed": false, "internalType": "string", "name": "description", "type": "string" },
 			{ "indexed": false, "internalType": "uint256", "name": "endTask", "type": "uint256" },
-			{ "indexed": false, "internalType": "string", "name": "language", "type": "string" },
 			{ "indexed": false, "internalType": "string", "name": "latitude", "type": "string" },
 			{ "indexed": false, "internalType": "string", "name": "longitude", "type": "string" }
 		],
-		"name": "TaskAdded",
+		"name": "Created",
 		"type": "event"
 	},
 	{
@@ -72,7 +33,7 @@
 			{ "indexed": true, "internalType": "uint256", "name": "taskID", "type": "uint256" },
 			{ "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" }
 		],
-		"name": "TaskJoined",
+		"name": "Joined",
 		"type": "event"
 	},
 	{
@@ -81,16 +42,7 @@
 			{ "indexed": true, "internalType": "uint256", "name": "taskID", "type": "uint256" },
 			{ "indexed": false, "internalType": "string", "name": "proofLink", "type": "string" }
 		],
-		"name": "TaskProved",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{ "indexed": true, "internalType": "address", "name": "user", "type": "address" },
-			{ "indexed": false, "internalType": "address", "name": "userToBlacklist", "type": "address" }
-		],
-		"name": "UserBlacklisted",
+		"name": "Proven",
 		"type": "event"
 	},
 	{
@@ -100,7 +52,7 @@
 			{ "indexed": true, "internalType": "uint256", "name": "taskID", "type": "uint256" },
 			{ "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" }
 		],
-		"name": "UserRedeemed",
+		"name": "Redeemed",
 		"type": "event"
 	},
 	{
@@ -114,12 +66,11 @@
 		"name": "Voted",
 		"type": "event"
 	},
-	{ "inputs": [], "name": "activateFee", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
 	{
-		"inputs": [{ "internalType": "address", "name": "", "type": "address" }],
-		"name": "addressRegister",
-		"outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
-		"stateMutability": "view",
+		"inputs": [{ "internalType": "uint256", "name": "taskID", "type": "uint256" }],
+		"name": "claim",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -127,44 +78,19 @@
 			{ "internalType": "address", "name": "recipient", "type": "address" },
 			{ "internalType": "string", "name": "description", "type": "string" },
 			{ "internalType": "uint256", "name": "duration", "type": "uint256" },
-			{ "internalType": "string", "name": "language", "type": "string" },
 			{ "internalType": "string", "name": "latitude", "type": "string" },
 			{ "internalType": "string", "name": "longitude", "type": "string" }
 		],
-		"name": "createTask",
+		"name": "create",
 		"outputs": [],
 		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{ "internalType": "address payable", "name": "_nerveToken", "type": "address" },
-			{ "internalType": "address", "name": "_nerveBurn", "type": "address" }
-		],
-		"name": "initialize",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
 		"inputs": [{ "internalType": "uint256", "name": "taskID", "type": "uint256" }],
-		"name": "joinTask",
+		"name": "join",
 		"outputs": [],
 		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
-		"name": "nameRegister",
-		"outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "owner",
-		"outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -172,79 +98,16 @@
 			{ "internalType": "uint256", "name": "taskID", "type": "uint256" },
 			{ "internalType": "string", "name": "proofLink", "type": "string" }
 		],
-		"name": "proveTask",
+		"name": "prove",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
 		"inputs": [{ "internalType": "uint256", "name": "taskID", "type": "uint256" }],
-		"name": "redeemRecipient",
+		"name": "redeem",
 		"outputs": [],
 		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [{ "internalType": "uint256", "name": "taskID", "type": "uint256" }],
-		"name": "redeemUser",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [{ "internalType": "bytes32", "name": "registeredName", "type": "bytes32" }],
-		"name": "registerName",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{ "internalType": "string[]", "name": "socialLinks", "type": "string[]" },
-			{ "internalType": "string[]", "name": "socialIds", "type": "string[]" }
-		],
-		"name": "registerSocial",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{ "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
-	{
-		"inputs": [{ "internalType": "address", "name": "userToBlacklist", "type": "address" }],
-		"name": "setBlacklistUser",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [{ "internalType": "uint256", "name": "_taskFee", "type": "uint256" }],
-		"name": "setFee",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{ "internalType": "string", "name": "latitude", "type": "string" },
-			{ "internalType": "string", "name": "longitude", "type": "string" }
-		],
-		"name": "setLocation",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [{ "internalType": "address", "name": "_nerveBurn", "type": "address" }],
-		"name": "setNerveBurn",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "taskFee",
-		"outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -258,6 +121,7 @@
 			{ "internalType": "address", "name": "recipient", "type": "address" },
 			{ "internalType": "bool", "name": "executed", "type": "bool" },
 			{ "internalType": "bool", "name": "finished", "type": "bool" },
+			{ "internalType": "bool", "name": "proven", "type": "bool" },
 			{ "internalType": "uint24", "name": "positiveVotes", "type": "uint24" },
 			{ "internalType": "uint24", "name": "negativeVotes", "type": "uint24" }
 		],
@@ -265,18 +129,11 @@
 		"type": "function"
 	},
 	{
-		"inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }],
-		"name": "transferOwnership",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"inputs": [
 			{ "internalType": "uint256", "name": "taskID", "type": "uint256" },
-			{ "internalType": "bool", "name": "vote", "type": "bool" }
+			{ "internalType": "bool", "name": "value", "type": "bool" }
 		],
-		"name": "voteTask",
+		"name": "vote",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"

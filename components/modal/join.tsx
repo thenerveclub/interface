@@ -183,11 +183,11 @@ const JoinDare: React.FC<JoinDareProps> = ({ id, dareData, chainIdUrl, network, 
 	const [open, setOpen] = useState(false);
 	const { provider } = useWeb3React();
 	const { enqueueSnackbar } = useSnackbar();
-	const balance = useBalanceTracker();
 
 	// Redux
 	const account = useSelector((state: { account: string }) => state.account);
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
+	const balance = useBalanceTracker(provider, account);
 
 	// Handle open and close
 	const handleClose = () => {
@@ -271,7 +271,7 @@ const JoinDare: React.FC<JoinDareProps> = ({ id, dareData, chainIdUrl, network, 
 		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			const tx = await nerveGlobal.joinTask(id, { value: txValue });
+			const tx = await nerveGlobal.join(id, { value: txValue });
 			await tx.wait();
 			if (tx.hash) {
 				setPendingTx(false);

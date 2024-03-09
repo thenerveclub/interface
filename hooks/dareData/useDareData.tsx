@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { CHAINS } from '../../utils/chains';
 
-const useDareData = (chainIdUrl: number, id: string) => {
+const useDareData = (network: string, id: string) => {
 	const [dareData, setDareData] = useState<any[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 
 	useEffect(() => {
 		setIsLoading(true);
 
-		if (!chainIdUrl) {
+		if (!id) {
 			// Handle the case where the chainIdUrl is not ready or not valid
 			setDareData([]);
 			setIsLoading(false);
@@ -21,7 +21,6 @@ const useDareData = (chainIdUrl: number, id: string) => {
             userTasks(where: {task_: {id: "${id}"}}) {
                id
                userAddress
-               userName
                userStake
                blockNumber
                endTask
@@ -31,10 +30,7 @@ const useDareData = (chainIdUrl: number, id: string) => {
               task {
                id
                initiatorAddress
-               initiatorName
                recipientAddress
-               recipientName
-               accepted
                amount
                chainId
                description
@@ -52,7 +48,7 @@ const useDareData = (chainIdUrl: number, id: string) => {
       `;
 
 			try {
-				const fetchDareData = await fetch(CHAINS[chainIdUrl]?.graphApi, {
+				const fetchDareData = await fetch(CHAINS[network]?.graphApi, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ query: QueryForDareData }),
@@ -69,7 +65,7 @@ const useDareData = (chainIdUrl: number, id: string) => {
 		};
 
 		getDareData();
-	}, [chainIdUrl, id]);
+	}, [network, id]);
 
 	return { dareData, isLoading };
 };

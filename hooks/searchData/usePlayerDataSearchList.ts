@@ -7,7 +7,7 @@ const usePlayerDataSearchList = (keyWord: string) => {
 		const getPlayerDataSearchList = async () => {
 			const QueryForPlayerSearchList = `
 			 {
-				domains(first: 10, where: {name: "${keyWord}.eth"}) {
+				domains(first: 10, where: {name: "${keyWord.endsWith('.eth') ? keyWord : `${keyWord}.eth`}"}) {
 				  name
 				  resolver {
 					 addr {
@@ -26,7 +26,11 @@ const usePlayerDataSearchList = (keyWord: string) => {
 				});
 
 				const data = await fetchPlayerData.json();
-				setPlayerSearchList(data.data.domains);
+				if (data.data.domains[0].resolver === null) {
+					setPlayerSearchList([]);
+				} else {
+					setPlayerSearchList(data.data.domains);
+				}
 			} catch (error) {
 				console.error(error);
 			}

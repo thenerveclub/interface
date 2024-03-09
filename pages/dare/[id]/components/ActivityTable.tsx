@@ -162,13 +162,12 @@ const StyledTableRow = styled(TableRow)<{ theme: any }>`
 `;
 
 interface ActivityTableProps {
+	network: string;
 	id: string;
 	dareData: any;
-	chainIdUrl: number;
-	network: string;
 }
 
-const ActivityTable: React.FC<ActivityTableProps> = ({ id, dareData, chainIdUrl, network }) => {
+const ActivityTable: React.FC<ActivityTableProps> = ({ network, id, dareData }) => {
 	const theme = useTheme();
 	const router = useRouter();
 
@@ -179,9 +178,6 @@ const ActivityTable: React.FC<ActivityTableProps> = ({ id, dareData, chainIdUrl,
 	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
 	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
 	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
-
-	// Network Check
-	const isNetworkAvailable = availableChains.includes(chainIdUrl);
 
 	// State declarations
 	const [order, setOrder] = useState('desc');
@@ -256,7 +252,7 @@ const ActivityTable: React.FC<ActivityTableProps> = ({ id, dareData, chainIdUrl,
 				</StyledFilterGroup>
 				<StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
 					<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
-						{isNetworkAvailable ? <a>{CHAINS[chainIdUrl]?.nameToken}</a> : <a>MATIC</a>}
+						{CHAINS[network]?.nameToken}
 					</StyledToggleButton>
 					<StyledToggleButton theme={theme} disabled={currencyValue === true} value={true}>
 						<a>USD</a>
@@ -357,7 +353,7 @@ const ActivityTable: React.FC<ActivityTableProps> = ({ id, dareData, chainIdUrl,
 									<TableCell style={{ textAlign: 'left' }}>
 										{currencyValue === false ? (
 											<a>
-												{formatNumber(row.userStake)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
+												{formatNumber(row.userStake)} {CHAINS[network]?.nameToken}
 											</a>
 										) : (
 											<a>${formatNumber(row.userStake * currencyPrice[network]?.usd)}</a>

@@ -1,17 +1,28 @@
 import { useEffect, useState } from 'react';
 import { CHAINS } from '../utils/chains';
 
-export const useTAD = (checksumAddress: string, chainId: number) => {
-	const [tad, setTAD] = useState<any[]>([]);
+const useActivePlayerTasks = (checksumAddress: string) => {
+	const [activePlayerTasks, setActivePlayerTasks] = useState<{ [chainId: string]: any[] }>({});
+
 	const timestamp = Math.floor(Date.now() / 1000);
 
-	const QueryForDare = `
+	// console.log('checksumAddress', checksumAddress);
+
+	useEffect(() => {
+		if (!checksumAddress) {
+			// Handle the case where the checksumAddress is not ready or not valid
+			setActivePlayerTasks({});
+
+			return;
+		}
+
+		const getActivePlayerTasks = async () => {
+			const QueryForActiveTasks = `
    {
       tasks(where: { endTask_gt:"${timestamp}", recipientAddress:"${checksumAddress}", finished: false }, orderBy:amount, orderDirection:desc, first: 100) 
       {
 		 id
 		 initiatorAddress
-		 initiatorName
 		 endTask
 		 entranceAmount
 		 negativeVotes
@@ -20,26 +31,27 @@ export const useTAD = (checksumAddress: string, chainId: number) => {
 		 proofLink
 		 description
 		 amount
+		 chainId
       }
     }
   `;
 
-	useEffect(() => {
-		const getTAD = async () => {
 			try {
-				const response = await fetch(CHAINS[chainId]?.graphApi, {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ query: QueryForDare }),
+				const fetchPromises = Object.entries(CHAINS).map(([chainId, chainData]) => {
+					return fetch(chainData.graphApi, {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ query: QueryForActiveTasks }),
+					}).then((response) => response.json().then((data) => ({ [chainId]: data.data.tasks })));
 				});
 
-				const data = await response.json();
-
-				if (data && data.data && data.data.tasks) {
-					setTAD(data.data.tasks);
-				}
+				const allData = await Promise.all(fetchPromises);
+				const combinedData = allData.reduce((acc, data) => ({ ...acc, ...data }), {});
+				console.log('combinedData', combinedData);
+				setActivePlayerTasks(combinedData);
 			} catch (error) {
-				console.error(error);
+				console.log(error);
+				console.log('Error fetching TAD');
 			}
 		};
 
@@ -47,15 +59,15 @@ export const useTAD = (checksumAddress: string, chainId: number) => {
 		// const interval = setInterval(getTAD, 60000);
 
 		// Call the function on first page load
-		getTAD();
+		getActivePlayerTasks();
 
 		// Clear the interval on unmount
 		// return () => clearInterval(interval);
 
 		// Refresh the data when the chainId or checksumAddress changes
-	}, [chainId, checksumAddress]);
+	}, [checksumAddress]);
 
-	return tad;
+	return activePlayerTasks;
 };
 
-export default useTAD;
+export default useActivePlayerTasks;

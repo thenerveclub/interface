@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { Box, Divider, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
+import { CHAINS } from '../../../../utils/chains';
 
 const TaskCard = styled(Box)<{ theme: any }>`
 	display: flex;
@@ -99,27 +100,30 @@ const StyledSecondRow = styled(Box)<{ theme: any }>`
 `;
 
 interface DetailsCardProps {
-	id: string;
 	network: string;
-	dareData: any;
+	id: string;
+	player: string;
+	participants: number;
+	entranceAmount: string;
+	amount: string;
 }
 
-const DetailsCard: React.FC<DetailsCardProps> = ({ id, network, dareData }) => {
+const DetailsCard: React.FC<DetailsCardProps> = ({ network, id, player, participants, entranceAmount, amount }) => {
 	const theme = useTheme();
 	const router = useRouter();
 
-	const handleClickUser = (user, address) => {
+	const handleClickUser = (player) => {
 		return () => {
-			if (user === '') {
-				router.push(`/${network}/player/${address}`);
-			} else router.push(`/${network}/player/${user}`);
+			// if (player.endsWith('.eth')){
+			router.push(`/player/${player}`);
+			// } else router.push(`/${network}/player/${user}`);
 		};
 	};
 
 	function formatNumber(value) {
 		return (Number(value) / 1e18).toLocaleString('en-US', {
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 2,
+			minimumFractionDigits: 4,
+			maximumFractionDigits: 4,
 		});
 	}
 
@@ -134,16 +138,10 @@ const DetailsCard: React.FC<DetailsCardProps> = ({ id, network, dareData }) => {
 					<div>
 						<a>Player</a>
 						<a
-							style={{ display: 'flex', color: theme.palette.warning.main }}
-							onClick={handleClickUser(dareData?.[0]?.task.recipientName, dareData?.[0]?.task.recipientAddress)}
+							style={{ display: 'flex', color: theme.palette.warning.main, cursor: 'pointer', width: 'fit-content' }}
+							onClick={handleClickUser(player)}
 						>
-							<span style={{ cursor: 'pointer' }}>
-								{dareData?.[0]?.task.recipientName === ''
-									? `${dareData?.[0]?.task.recipientAddress.substring(0, 6)}...${dareData?.[0]?.task.recipientAddress.substring(
-											dareData?.[0]?.task.recipientAddress.length - 4
-									  )}`
-									: dareData?.[0]?.task.recipientName}
-							</span>
+							{player}
 						</a>
 					</div>
 					<div>
@@ -152,21 +150,21 @@ const DetailsCard: React.FC<DetailsCardProps> = ({ id, network, dareData }) => {
 					</div>
 					<div>
 						<a>Participants</a>
-						<a>{dareData?.[0]?.task.participants}</a>
+						<a>{participants}</a>
 					</div>
 					<div>
-						<a>Chain</a>
-						<a style={{ textTransform: 'capitalize' }}>{network}</a>
+						<a>Network</a>
+						<a style={{ textTransform: 'capitalize' }}>{CHAINS[network]?.name}</a>
 					</div>
 				</StyledFirstRow>
 				<StyledSecondRow theme={theme}>
 					<div>
 						<a>Entry Amount</a>
-						<a>{formatNumber(dareData?.[0]?.task.entranceAmount)}</a>
+						<a>{formatNumber(entranceAmount)}</a>
 					</div>
 					<div>
 						<a>Total Amount</a>
-						<a>{formatNumber(dareData?.[0]?.task.amount)}</a>
+						<a>{formatNumber(amount)}</a>
 					</div>
 				</StyledSecondRow>
 			</StyledContainer>

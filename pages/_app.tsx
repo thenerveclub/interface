@@ -1,18 +1,17 @@
 import { Web3ReactProvider } from '@web3-react/core';
-import { useRouter } from 'next/router';
 import { SnackbarProvider } from 'notistack';
 import { useEffect } from 'react';
 import { Provider, useDispatch } from 'react-redux';
 import Layout from '../components/layout/Layout';
-import usePrice from '../hooks/usePrice';
 import Account from '../state/account/accountUpdater';
 import ChainId from '../state/chainId/chainIdUpdater';
+import { currencyPriceSlice } from '../state/currencyPrice/currencyPriceSlice';
 import { customRPCSlice } from '../state/customRPC/customRPCSlice';
+import { filterSlice } from '../state/filter/filterSlice';
 import { store } from '../state/index';
 import { rpcSlice } from '../state/rpc/rpcSlice';
 import { testnetsSlice } from '../state/testnets/testnetsSlice';
 import { themeSlice } from '../state/theme/themeSlice';
-import { CHAINS } from '../utils/chains';
 import connectors from '../utils/connectors';
 import { coinbaseWallet } from '../utils/connectors/coinbaseWallet';
 import { metaMask } from '../utils/connectors/metaMask';
@@ -21,7 +20,6 @@ import { getName } from '../utils/connectorsNameAndLogo';
 
 function Updaters() {
 	const dispatch = useDispatch();
-	usePrice();
 
 	useEffect(() => {
 		// Load the theme, prefersSystemSetting, and testnets settings from localStorage when the app starts
@@ -52,6 +50,12 @@ function Updaters() {
 			dispatch(customRPCSlice.actions.updateCustomRPC(savedCustomRPC));
 		}
 
+		// Load filter setting from localStorage
+		const savedFilter = localStorage.getItem('filter');
+		if (savedFilter) {
+			dispatch(filterSlice.actions.updateFilter(JSON.parse(savedFilter)));
+		}
+
 		// Subscribe to store changes and persist them to localStorage
 		const unsubscribe = store.subscribe(() => {
 			const state = store.getState();
@@ -60,7 +64,22 @@ function Updaters() {
 			localStorage.setItem('testnets', state.testnets.toString());
 			localStorage.setItem('rpc', state.rpc);
 			localStorage.setItem('customRPC', state.customRPC);
+			localStorage.setItem('filter', JSON.stringify(state.filter));
 		});
+
+		// Fetch token data
+		const fetchTokenData = async () => {
+			try {
+				const response = await fetch('/api/tokenPriceData');
+				const data = await response.json();
+				dispatch(currencyPriceSlice.actions.updateCurrencyPrice(data));
+			} catch (error) {
+				console.error('Failed to fetch token data:', error);
+				// Handle error appropriately
+			}
+		};
+
+		fetchTokenData();
 
 		// Unsubscribe from the store when the component unmounts
 		return () => unsubscribe();

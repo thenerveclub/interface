@@ -459,6 +459,7 @@ function SettingsModal() {
 
 	const handleChange = (event) => {
 		setSelectedRpc(event.target.value);
+		// console.log('event.target.value', event.target.value);
 		dispatch(rpcSlice.actions.updateRPC(event.target.value));
 	};
 

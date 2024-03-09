@@ -7,7 +7,7 @@ function useENSName(input) {
 	const [ensName, setEnsName] = useState(null);
 	const [address, setAddress] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState(null);
+	const [error, setError] = useState(false);
 
 	// Redux
 	const customRPCValue = useSelector((state: { customRPC: string }) => state.customRPC);
@@ -33,18 +33,19 @@ function useENSName(input) {
 					if (resolvedAddress) {
 						setAddress(resolvedAddress.toLowerCase());
 						setEnsName(input);
+						setError(false);
 					} else {
-						setError(new Error('ENS name not found'));
+						setError(true);
 					}
 				} else {
 					// Assume the input is an address and look up its ENS name
 					const resolvedENSName = await provider.lookupAddress(input);
 					setAddress(input.toLowerCase());
 					setEnsName(resolvedENSName);
+					setError(false);
 				}
 			} catch (err) {
-				console.error(`Error fetching data: ${err}`);
-				setError(err);
+				setError(true);
 			} finally {
 				setIsLoading(false);
 			}

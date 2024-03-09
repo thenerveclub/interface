@@ -246,10 +246,17 @@ const CreateTask: React.FC<CreateTaskProps> = ({ recipientAddress, recipientENS,
 	const router = useRouter();
 	const { provider } = useWeb3React();
 	const { enqueueSnackbar } = useSnackbar();
-	const balance = useBalanceTracker();
+
+	// console.log('balance', balance, provider);
 
 	// Redux
+	const account = useSelector((state: { account: string }) => state.account);
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
+	const availableChains = useSelector((state: { availableChains: any }) => state.availableChains);
+
+	const balance = useBalanceTracker(provider, account);
+
+	// console.log('availableChains', availableChains);
 
 	// State
 	const [open, setOpen] = useState(false);
@@ -327,7 +334,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ recipientAddress, recipientENS,
 		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			const tx = await nerveGlobal.createTask(recipientAddress, description, convertToSeconds(days, hours, minutes), 'en', '0', '0', {
+			const tx = await nerveGlobal.create(recipientAddress, description, convertToSeconds(days, hours, minutes), '0', '0', {
 				value: txValue,
 			});
 			await tx.wait();
@@ -466,7 +473,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ recipientAddress, recipientENS,
 							onChange={(event) => setDescription(event.target.value)}
 						/>
 						<StyledSection style={{ margin: '2rem auto 1.5rem auto' }}>
-							{chainId === network ? (
+							{availableChains.includes(chainId) ? (
 								pendingTx ? (
 									<BuyButton theme={theme} disabled>
 										Pending

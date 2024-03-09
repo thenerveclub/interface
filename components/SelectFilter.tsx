@@ -1,10 +1,12 @@
 import styled from '@emotion/styled';
-import SwapVertIcon from '@mui/icons-material/SwapVert';
-import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import { Checkbox, MenuItem, Select } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { sortSlice } from '../state/sort/sortSlice';
+import { filterSlice } from '../state/filter/filterSlice';
+import EthereumLogo from '/public/svg/chains/ethereum.svg';
+import PolygonLogo from '/public/svg/chains/polygon.svg';
 
 const StyledSelect = styled(Select, {
 	shouldForwardProp: (prop) => prop !== 'focus' && prop !== 'open', // add this line
@@ -15,13 +17,13 @@ const StyledSelect = styled(Select, {
 	border: 1px solid ${({ theme, open, focus }) => (open || focus ? theme.palette.warning.main : theme.palette.secondary.main)};
 	border-radius: ${({ theme, open }) =>
 		open ? `${theme.customShape.borderRadius} ${theme.customShape.borderRadius} 0px 0px` : theme.shape.borderRadius};
-	min-height: 35px;
-	height: 35px;
-	min-width: 225px;
+	// min-height: 35px;
+	// height: 35px;
+	min-width: 150px;
 	max-width: 375px;
 	transition: all 0.5s ease-in-out;
-	margin-left: 1rem;
 	cursor: pointer;
+	z-index: 10;
 
 	&:hover {
 		border: 1px solid ${({ theme }) => theme.palette.warning.main};
@@ -38,15 +40,15 @@ const StyledSelect = styled(Select, {
 		align-content: center;
 		vertical-align: middle;
 		text-align: center;
+		background-color: transparent;
+		width: 100%;
+		z-index: 999;
+		// min-height: 5px;
+		// height: 5px;
 	}
 
 	& .MuiSelect-icon {
 		color: ${({ theme }) => theme.palette.text.primary};
-	}
-
-	& .MuiPaper-root {
-		min-width: 225px;
-		max-width: 375px;
 	}
 
 	@media (max-width: 960px) {
@@ -79,31 +81,17 @@ const MenuItemStyled = styled(MenuItem)<{ theme: any }>`
 	}
 `;
 
-const SearchResultTitle = styled.div<{ theme: any }>`
-	font-size: 0.75rem;
-	color: ${({ theme }) => theme.palette.secondary.main};
-	background-color: transparent;
-	padding: 0.5rem;
-	font-weight: bold;
-	text-align: left;
-	border-top-left-radius: 15px;
-	border-top-right-radius: 15px;
-`;
-
-export default function SelectSort() {
+export default function SelectFilter() {
 	const theme = useTheme();
 	// Redux
 	const dispatch = useDispatch();
-	const sort = useSelector((state: { sort: number }) => state.sort);
-
-	const handleChange = (event: SelectChangeEvent) => {
-		dispatch(sortSlice.actions.updateSort(event.target.value));
-	};
+	const filter = useSelector((state: { filter: number[] }) => state.filter);
 
 	// State
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [isFocused, setIsFocused] = useState(false);
 
+	// Updated handleOpen and handleClose functions
 	const handleOpen = () => {
 		setMenuOpen(true);
 		setIsFocused(true);
@@ -120,11 +108,11 @@ export default function SelectSort() {
 				open={menuOpen}
 				onOpen={handleOpen}
 				onClose={handleClose}
+				focus={isFocused}
 				theme={theme}
 				variant="outlined"
-				value={sort}
-				onChange={handleChange}
-				focus={isFocused}
+				// value={filter}
+				// onChange={handleChange}
 				MenuProps={{
 					PaperProps: {
 						sx: {
@@ -144,33 +132,27 @@ export default function SelectSort() {
 						},
 					},
 				}}
+				startAdornment={
+					<div style={{ display: 'flex' }}>
+						<FilterAltIcon style={{ color: theme.palette.text.primary, marginRight: '8px' }} />
+						Filter
+					</div>
+				}
 			>
-				<SearchResultTitle theme={theme}>Stake</SearchResultTitle>
-				<MenuItemStyled theme={theme} value={1} disabled={sort === 1 ? true : false}>
-					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.text.primary, transform: 'scaleY(-1)' }} />
-					<a>{sort === 1 ? 'Stake: Low to High' : 'Low to High'}</a>
+				<MenuItemStyled theme={theme} onClick={() => dispatch(filterSlice.actions.toggleFilterItem(1))}>
+					<Checkbox checked={filter.includes(1)} style={{ backgroundColor: 'transparent', color: theme.palette.text.primary }} />
+					<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+					Ethereum
 				</MenuItemStyled>
-				<MenuItemStyled theme={theme} value={2} disabled={sort === 2 ? true : false}>
-					{/* <SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.text.primary }} /> */}
-					<a>{sort === 2 ? 'Stake: High to Low' : 'High to Low'}</a>
+				<MenuItemStyled theme={theme} onClick={() => dispatch(filterSlice.actions.toggleFilterItem(11155111))}>
+					<Checkbox checked={filter.includes(11155111)} style={{ backgroundColor: 'transparent', color: theme.palette.text.primary }} />
+					<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+					Sepolia
 				</MenuItemStyled>
-				<SearchResultTitle theme={theme}>Participants</SearchResultTitle>
-				<MenuItemStyled theme={theme} value={3} disabled={sort === 3 ? true : false}>
-					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.text.primary, transform: 'scaleY(-1)' }} />
-					<a>{sort === 3 ? 'Participants: Low to High' : 'Low to High'}</a>
-				</MenuItemStyled>
-				<MenuItemStyled theme={theme} value={4} disabled={sort === 4 ? true : false}>
-					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.text.primary }} />
-					<a>{sort === 4 ? 'Participants: High to Low' : 'High to Low'}</a>
-				</MenuItemStyled>
-				<SearchResultTitle theme={theme}>Entry Amount</SearchResultTitle>
-				<MenuItemStyled theme={theme} value={5} disabled={sort === 5 ? true : false}>
-					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.text.primary, transform: 'scaleY(-1)' }} />
-					<a>{sort === 5 ? 'Entry Amount: Low to High' : 'Low to High'}</a>
-				</MenuItemStyled>
-				<MenuItemStyled theme={theme} value={6} disabled={sort === 6 ? true : false}>
-					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.text.primary }} />
-					<a>{sort === 6 ? 'Entry Amount: High to Low' : 'High to Low'}</a>
+				<MenuItemStyled theme={theme} onClick={() => dispatch(filterSlice.actions.toggleFilterItem(137))}>
+					<Checkbox checked={filter.includes(137)} style={{ backgroundColor: 'transparent', color: theme.palette.text.primary }} />
+					<PolygonLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+					Polygon
 				</MenuItemStyled>
 			</StyledSelect>
 		</>

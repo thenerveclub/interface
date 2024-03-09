@@ -5,13 +5,16 @@ import { useTheme } from '@mui/material/styles';
 import router from 'next/router';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import SelectFilter from '../../../../components/SelectFilter';
 import SelectSort from '../../../../components/SelectSort';
-import CreateTask from '../../../../components/modal/createTask';
+import CreateTask from '../../../../components/modal/create';
 import Connect from '../../../../components/modal/menu/Connect';
 import useActivePlayerTasks from '../../../../hooks/useActivePlayerTasks';
 import useCompletedPlayerTasks from '../../../../hooks/useCompletedPlayerTasks';
 import { currencySlice } from '../../../../state/currency/currencySlice';
 import { CHAINS } from '../../../../utils/chains';
+import EthereumLogo from '/public/svg/chains/ethereum.svg';
+import PolygonLogo from '/public/svg/chains/polygon.svg';
 
 const ActiveBox = styled(Box)`
 	display: flex;
@@ -176,6 +179,20 @@ const TaskCard = styled(Box)<{ theme: any }>`
 	}
 `;
 
+const StyledNetwork = styled.div<{ theme: any }>`
+	display: flex;
+	justify-content: right;
+	align-items: center;
+	width: fit-content;
+	margin: 0 0 0 auto;
+	height: 35px;
+	color: rgba(255, 255, 255, 0.75);
+	font-size: 0.925rem;
+	background-color: rgba(134, 134, 139, 0.25);
+	border-radius: 12px;
+	padding: 0.5rem;
+`;
+
 const TaskBoxSection = styled(Box)`
 	display: flex;
 	justify-content: center;
@@ -267,22 +284,32 @@ interface PlayerDaresProps {
 	recipientAddress: any;
 	recipientENS: any;
 	network: number;
+	error: any;
 }
 
-const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientENS, network }) => {
+const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientENS, network, error }) => {
 	const theme = useTheme();
 
 	// Redux
 	const dispatch = useDispatch();
 	const account = useSelector((state: { account: string }) => state.account);
-	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
 	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
-	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
 	const sort = useSelector((state: { sort: number }) => state.sort);
+	const filter = useSelector((state: { filter: number[] }) => state.filter);
 
-	// Network Check
-	const isNetworkAvailable = availableChains.includes(chainId);
+	// console.log('filter', selectedChains);
+	function getChainLogoComponent(chainId) {
+		if (!chainId) return null;
+
+		const LogoComponent = {
+			1: EthereumLogo,
+			11155111: EthereumLogo,
+			137: PolygonLogo,
+		}[chainId];
+
+		return <LogoComponent style={{ display: 'flex', marginRight: '8px' }} width="18" height="18" alt="Logo" />;
+	}
 
 	// Toogle Button For Token Price
 	const handleToggle = (event, newCurrency) => {
@@ -291,11 +318,13 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 	};
 
 	// Active Player Tasks
-	const activePlayerTasks = useActivePlayerTasks(recipientAddress, chainId);
-	const completedPlayerTasks = useCompletedPlayerTasks(recipientAddress, chainId);
+	const activePlayerTasks = useActivePlayerTasks(recipientAddress);
+	const completedPlayerTasks = useCompletedPlayerTasks(recipientAddress, network);
 
-	const [filteredActiveTasks, setFilteredActiveTasks] = useState(activePlayerTasks);
-	const [filteredCompletedTasks, setFilteredCompletedTasks] = useState(completedPlayerTasks);
+	const [filteredActiveTasks, setFilteredActiveTasks] = useState([]);
+	const [filteredCompletedTasks, setFilteredCompletedTasks] = useState([]);
+
+	// console.log('filteredActiveTasks', filteredActiveTasks);
 
 	// Tab Panel
 	function TabPanel(props: TabPanelProps) {
@@ -314,6 +343,11 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 	};
 
 	useEffect(() => {
+		// Combine tasks from all chains into a single array
+		const combineTasks = (allTasks) => {
+			return Object.values(allTasks).flat();
+		};
+
 		// Create a function that returns sorted tasks based on the sort option
 		const sortTasks = (tasks, sortOption) => {
 			if (!tasks) return [];
@@ -335,14 +369,28 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 			}
 		};
 
-		// Apply the sorting function to both active and completed tasks
-		const sortedActiveTasks = sortTasks(activePlayerTasks, sort);
-		const sortedCompletedTasks = sortTasks(completedPlayerTasks, sort);
+		// Filter tasks by selected chains
+		const filterBySelectedChains = (tasks, selectedChains) => {
+			return tasks.filter((task) => {
+				const taskChainIdNum = Number(task.chainId); // Convert to number
+				return selectedChains.includes(taskChainIdNum);
+			});
+		};
 
-		// Update the state with the sorted tasks
-		setFilteredActiveTasks(sortedActiveTasks);
-		setFilteredCompletedTasks(sortedCompletedTasks);
-	}, [sort, activePlayerTasks, completedPlayerTasks]); // dependencies include sort value and the tasks themselves
+		// Combine, sort, and then filter tasks
+		const combinedActiveTasks = combineTasks(activePlayerTasks);
+		const combinedCompletedTasks = combineTasks(completedPlayerTasks);
+
+		const sortedActiveTasks = sortTasks(combinedActiveTasks, sort);
+		const sortedCompletedTasks = sortTasks(combinedCompletedTasks, sort);
+
+		const filteredActiveTasks = filterBySelectedChains(sortedActiveTasks, filter);
+		const filteredCompletedTasks = filterBySelectedChains(sortedCompletedTasks, filter);
+
+		// Update the state with the filtered and sorted tasks
+		setFilteredActiveTasks(filteredActiveTasks);
+		setFilteredCompletedTasks(filteredCompletedTasks);
+	}, [sort, activePlayerTasks, completedPlayerTasks, filter]); // Include 'selectedChains' in the dependencies array
 
 	return (
 		<>
@@ -357,27 +405,34 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 					{/* <ActiveTabLeftSection></ActiveTabLeftSection> */}
 					<ActiveTabRightSection>
 						{/* // Filter StyledSection */}
+						<SelectFilter />
 						<SelectSort />
 
 						<StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
 							<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
-								{isNetworkAvailable ? <a>{CHAINS[chainId]?.nameToken}</a> : <a>MATIC</a>}
+								ETH
 							</StyledToggleButton>
 							<StyledToggleButton theme={theme} disabled={currencyValue === true} value={true}>
 								<a>USD</a>
 							</StyledToggleButton>
 						</StyledToggleButtonGroup>
-						<CreateTaskBox>
-							{account && account.toLowerCase() !== recipientAddress && (
-								<CreateTask recipientAddress={recipientAddress} recipientENS={recipientENS} network={network} />
-							)}
-						</CreateTaskBox>
+						{!error && (
+							<CreateTaskBox>
+								{account && account.toLowerCase() !== recipientAddress && (
+									<CreateTask recipientAddress={recipientAddress} recipientENS={recipientENS} network={network} />
+								)}
+							</CreateTaskBox>
+						)}
 					</ActiveTabRightSection>
 				</ActiveFilterBox>
 				<ActiveTabSection>
 					{filteredActiveTasks.map((tad) => (
-						<li style={{ listStyle: 'none' }} key={tad}>
+						<li style={{ listStyle: 'none' }} key={tad.id}>
 							<TaskCard theme={theme}>
+								<StyledNetwork theme={theme}>
+									{getChainLogoComponent(tad?.chainId)}
+									{CHAINS[tad.chainId].name}
+								</StyledNetwork>
 								<TaskBoxSection>
 									<p>{tad.description}</p>
 								</TaskBoxSection>
@@ -391,21 +446,17 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 									</TaskBoxSectionOne>
 									<TaskBoxSectionTwo>
 										{currencyValue === false ? (
-											<p>
-												{((tad?.amount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
-											</p>
+											<p>{((tad?.amount / 1e18) * 1).toFixed(4)} ETH</p>
 										) : (
 											<p>${((tad?.amount / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</p>
 										)}
 										{currencyValue === false ? (
-											<p>
-												{((tad?.entranceAmount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
-											</p>
+											<p>{((tad?.entranceAmount / 1e18) * 1).toFixed(4)} ETH</p>
 										) : (
 											<p>${((tad?.entranceAmount / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</p>
 										)}
 									</TaskBoxSectionTwo>
-									<TaskButton onClick={() => router.push(`/dare/` + tad.id)}>View Task</TaskButton>
+									<TaskButton onClick={() => router.push(`/dare/${tad.chainId}-` + tad.id)}>View Task</TaskButton>
 								</BottomContainer>
 							</TaskCard>
 						</li>
@@ -420,17 +471,19 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 						<SelectSort />
 						<StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
 							<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
-								{isNetworkAvailable ? <a>{CHAINS[chainId]?.nameToken}</a> : <a>MATIC</a>}
+								ETH
 							</StyledToggleButton>
 							<StyledToggleButton theme={theme} disabled={currencyValue === true} value={true}>
 								<a>USD</a>
 							</StyledToggleButton>
 						</StyledToggleButtonGroup>
-						<CreateTaskBox>
-							{account && account.toLowerCase() !== recipientAddress && (
-								<CreateTask recipientAddress={recipientAddress} recipientENS={recipientENS} network={network} />
-							)}
-						</CreateTaskBox>
+						{!error && (
+							<CreateTaskBox>
+								{account && account.toLowerCase() !== recipientAddress && (
+									<CreateTask recipientAddress={recipientAddress} recipientENS={recipientENS} network={network} />
+								)}
+							</CreateTaskBox>
+						)}
 					</ActiveTabRightSection>
 				</ActiveFilterBox>
 				<ActiveTabSection>
@@ -449,21 +502,17 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 									</TaskBoxSectionOne>
 									<TaskBoxSectionTwo>
 										{currencyValue === false ? (
-											<p>
-												{((tad?.amount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
-											</p>
+											<p>{((tad?.amount / 1e18) * 1).toFixed(2)} ETH</p>
 										) : (
 											<p>${((tad?.amount / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</p>
 										)}
 										{currencyValue === false ? (
-											<p>
-												{((tad?.entranceAmount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
-											</p>
+											<p>{((tad?.entranceAmount / 1e18) * 1).toFixed(2)} ETH</p>
 										) : (
 											<p>${((tad?.entranceAmount / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</p>
 										)}
 									</TaskBoxSectionTwo>
-									<TaskButton onClick={() => router.push(`/dare/` + tad.id)}>View Task</TaskButton>
+									<TaskButton onClick={() => router.push(`/dare/${tad.chainId}-` + tad.id)}>View Task</TaskButton>
 								</BottomContainer>
 							</TaskCard>
 						</li>

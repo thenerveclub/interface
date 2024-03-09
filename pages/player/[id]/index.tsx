@@ -5,13 +5,9 @@ import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import LoadingScreen from '../../../components/LoadingScreen';
-import BlacklistPlayer from '../../../components/modal/blacklistPlayer';
-import CreateTask from '../../../components/modal/createTask';
-import RegisterName from '../../../components/modal/registerName';
+import CreateTask from '../../../components/modal/create';
 import useENSName from '../../../hooks/useENSName';
 import usePlayerData from '../../../hooks/usePlayerData';
-import { CHAINS, nameToChainId } from '../../../utils/chains';
 import PlayerDares from './components/PlayerDares';
 import PlayerStatistics from './components/PlayerStatistics';
 
@@ -104,16 +100,15 @@ export default function PlayerPage() {
 	// Usernames
 	const id = router.query.id as string;
 
+	// console.log('id', id);
+
 	// Redux
 	const account = useSelector((state: { account: string }) => state.account);
-	const ens = useSelector((state: { ens: string }) => state.ens);
-	const chainId = useSelector((state: { chainId: number }) => state.chainId);
-	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
 
 	// Address Checksumed And Lowercased
 	const checksumAccount = account?.toLowerCase();
 
-	const { ensName, address } = useENSName(id);
+	const { ensName, address, error } = useENSName(id?.toLowerCase());
 
 	const { playerData, isLoading } = usePlayerData(137, address);
 
@@ -138,7 +133,6 @@ export default function PlayerPage() {
 				<StyledLeftSectionBox>
 					<PlayerBox>
 						<p>{ensName ? ensName : address ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}` : null}</p>
-						<p>{account && checksumAccount !== address ? <BlacklistPlayer checksumAddress={address} chainId={chainId} /> : null}</p>
 					</PlayerBox>
 					<AddressBox>
 						<p>
@@ -169,12 +163,16 @@ export default function PlayerPage() {
 							</a>
 						</Tooltip>
 					</AddressBox>
-					<PlayerStatistics checksumAddress={address} chainId={chainId} playerData={playerData} />
+					<PlayerStatistics checksumAddress={address} network={137} playerData={playerData} />
 				</StyledLeftSectionBox>
 			</StyledSection>
-			<PlayerDares recipientAddress={address} recipientENS={ensName} network={137} />
+			<PlayerDares recipientAddress={address} recipientENS={ensName} network={137} error={error} />
 
-			<CreateTaskBox>{account && checksumAccount !== address && <CreateTask recipientAddress={address} recipientENS={ensName} network={137} />}</CreateTaskBox>
+			{!error && (
+				<CreateTaskBox>
+					{account && checksumAccount !== address && <CreateTask recipientAddress={address} recipientENS={ensName} network={137} />}
+				</CreateTaskBox>
+			)}
 		</StyledBox>
 		// 	)}
 		// </>

@@ -159,7 +159,7 @@ const ProveDare: React.FC<ProveDareProps> = ({ id, dareData, chainIdUrl, network
 		}, 500); // <-- Length of the slide-down animation
 	};
 
-	console.log('proveLink', proveLink);
+	// console.log('proveLink', proveLink);
 
 	// Prove Function
 	async function proveFunction() {

@@ -1,16 +1,22 @@
 import styled from '@emotion/styled';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Divider, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import localFont from 'next/font/local';
 import Head from 'next/head';
 import router, { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import LoadingScreen from '../components/LoadingScreen';
+import SelectFilter from '../components/SelectFilter';
+import SelectSort from '../components/SelectSort';
+import useGlobalStats from '../hooks/globalStats/useGlobalStats';
 import useTrendingDareList from '../hooks/searchData/trending/useTrendingDareList';
 import useActivePlayerTasks from '../hooks/useActivePlayerTasks';
+import { currencySlice } from '../state/currency/currencySlice';
 import { CHAINS, nameToChainId } from '../utils/chains';
+import EthereumLogo from '/public/svg/chains/ethereum.svg';
+import PolygonLogo from '/public/svg/chains/polygon.svg';
 
 const TrueLies = localFont({ src: '../public/fonts/TrueLies.woff2', display: 'swap' });
 
@@ -31,35 +37,49 @@ const StyledLayout = styled(Box)`
 	}
 `;
 
-const StyledBox = styled(Box)<{ theme: any }>`
+const StyledGlobalStats = styled(Box)<{ theme: any }>`
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
 	margin: 7.5rem auto 0 auto;
+	width: 75%;
 
 	h1 {
 		margin: 0 auto 0 auto;
-		font-size: 5rem;
+		font-size: 2rem;
 		font-weight: 100;
 		font-family: ${TrueLies.style.fontFamily};
 		color: ${(props) => props.theme.palette.text.primary};
 	}
 
-	h4 {
-		margin: 1rem auto 0 auto;
-		font-size: 1.3125rem;
-		width: 70%;
-	}
-
 	@media (max-width: 750px) {
+		flex-direction: column;
 		margin: 10rem auto 0 auto;
 
 		h1 {
 			font-size: 4rem;
 			color: ${(props) => props.theme.palette.text.primary};
 		}
+	}
+`;
 
-		h4 {
-			font-size: 1.3125rem;
-			width: 90%;
-		}
+const StyledGlobalStat = styled(Box)<{ theme: any }>`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin: 0 auto 0 auto;
+	width: 100%;
+
+	h1 {
+		margin: 0 auto 0 auto;
+		font-size: 2rem;
+		font-weight: 100;
+		font-family: ${TrueLies.style.fontFamily};
+		color: ${(props) => props.theme.palette.text.primary};
+	}
+
+	@media (max-width: 750px) {
 	}
 `;
 
@@ -120,6 +140,20 @@ const TaskCard = styled(Box)<{ theme: any }>`
 		min-width: 90vw;
 		max-width: 90vw;
 	}
+`;
+
+const StyledNetwork = styled.div<{ theme: any }>`
+	display: flex;
+	justify-content: right;
+	align-items: center;
+	width: fit-content;
+	margin: 0 0 0 auto;
+	height: 35px;
+	color: rgba(255, 255, 255, 0.75);
+	font-size: 0.925rem;
+	background-color: rgba(134, 134, 139, 0.25);
+	border-radius: 12px;
+	padding: 0.5rem;
 `;
 
 const TaskBoxSection = styled(Box)`
@@ -203,26 +237,153 @@ const TaskButton = styled(Button)`
 	}
 `;
 
+const ActiveFilterBox = styled(Box)`
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 40px;
+
+	@media (max-width: 750px) {
+		flex-direction: column;
+		align-items: center;
+	}
+`;
+
+const ActiveTabRightSection = styled(Box)`
+	min-width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+
+	@media (max-width: 750px) {
+		justify-content: center;
+	}
+`;
+
+const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{ theme: any }>`
+	background-color: transparent;
+	height: 35px;
+	width: 150px;
+	margin-left: 1rem;
+	cursor: not-allowed;
+
+	& .MuiToggleButton-root {
+		&:hover {
+			background-color: transparent;
+			border: 1px solid ${({ theme }) => theme.palette.warning.main};
+			border-left: 1px solid ${({ theme }) => theme.palette.warning.main};
+		}
+	}
+`;
+
+const StyledToggleButton = styled(ToggleButton)<{ theme: any }>`
+	color: ${({ theme }) => theme.palette.secondary.main};
+	background-color: transparent;
+	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
+	border-radius: ${({ theme }) => theme.customShape.borderRadius};
+	cursor: pointer;
+	// font-size: 1rem;
+	font-weight: 500;
+	width: 150px;
+
+	&.Mui-selected {
+		color: ${({ theme }) => theme.palette.text.primary};
+		background-color: transparent;
+		border: 1px solid ${({ theme }) => theme.palette.secondary.main};
+	}
+`;
+
 export default function IndexPage() {
 	const theme = useTheme();
 	const router = useRouter();
-	const network = router.query.network as string;
 	const isLoading = false;
 
 	// Redux
-	const chainId = useSelector((state: { chainId: number }) => state.chainId);
+	const dispatch = useDispatch();
 	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
 	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
-	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
+	const sort = useSelector((state: { sort: number }) => state.sort);
+	const filter = useSelector((state: { filter: number[] }) => state.filter);
 
-	// Network Check
-	const isNetworkAvailable = availableChains.includes(chainId);
+	// const ethPrice = useSelector((state) => state.currencyPrice.eth);
+	// const maticPrice = useSelector((state) => state.currencyPrice.matic);
 
-	// Name to Chain ID
-	const chainIdUrl = nameToChainId[network];
+	console.log('currencyPrice', currencyPrice);
+
+	// console.log('filter', selectedChains);
+	function getChainLogoComponent(chainId) {
+		if (!chainId) return null;
+
+		const LogoComponent = {
+			1: EthereumLogo,
+			11155111: EthereumLogo,
+			137: PolygonLogo,
+		}[chainId];
+
+		return <LogoComponent style={{ display: 'flex', marginRight: '8px' }} width="18" height="18" alt="Logo" />;
+	}
 
 	// Active Player Tasks
-	const trendingDareList = useTrendingDareList(chainIdUrl);
+	const trendingDareList = useTrendingDareList();
+
+	// Global Statistic
+	const { individualChains, allChains } = useGlobalStats();
+
+	// Toogle Button For Token Price
+	const handleToggle = (event, newCurrency) => {
+		// update currencyValue in redux
+		dispatch(currencySlice.actions.updateCurrency(newCurrency));
+	};
+
+	const [filteredActiveTasks, setFilteredActiveTasks] = useState([]);
+
+	useEffect(() => {
+		// Combine tasks from all chains into a single array
+		const combineTasks = (allTasks) => {
+			return Object.values(allTasks).flat();
+		};
+
+		// Create a function that returns sorted tasks based on the sort option
+		const sortTasks = (tasks, sortOption) => {
+			if (!tasks) return [];
+			switch (sortOption) {
+				case 1:
+					return [...tasks].sort((a, b) => a.amount - b.amount);
+				case 2:
+					return [...tasks].sort((a, b) => b.amount - a.amount);
+				case 3:
+					return [...tasks].sort((a, b) => a.participants - b.participants);
+				case 4:
+					return [...tasks].sort((a, b) => b.participants - a.participants);
+				case 5:
+					return [...tasks].sort((a, b) => a.entranceAmount - b.entranceAmount);
+				case 6:
+					return [...tasks].sort((a, b) => b.entranceAmount - a.entranceAmount);
+				default:
+					return tasks; // return original tasks if no sort option matches
+			}
+		};
+
+		// Filter tasks by selected chains
+		const filterBySelectedChains = (tasks, selectedChains) => {
+			return tasks.filter((task) => {
+				const taskChainIdNum = Number(task.chainId); // Convert to number
+				return selectedChains.includes(taskChainIdNum);
+			});
+		};
+
+		// Combine, sort, and then filter tasks
+		const combinedActiveTasks = combineTasks(trendingDareList);
+		const sortedActiveTasks = sortTasks(combinedActiveTasks, sort);
+		const filteredActiveTasks = filterBySelectedChains(sortedActiveTasks, filter);
+
+		// Update the state with the filtered and sorted tasks
+		setFilteredActiveTasks(filteredActiveTasks);
+	}, [sort, trendingDareList, filter]); // Include 'selectedChains' in the dependencies array
+
+	// console.log('filteredActiveTasks', filteredActiveTasks);
 
 	// Function to send a notification
 	// const sendNotification = () => {
@@ -286,38 +447,70 @@ export default function IndexPage() {
 						<meta name="twitter:image" content="https://dapp.nerveglobal.com/favicon.ico" />
 					</Head>
 					<StyledLayout>
+						<StyledGlobalStats theme={theme}>
+							<StyledGlobalStat theme={theme}>
+								<h1>{allChains?.earnings} ETH</h1>
+								<h1>Earnings</h1>
+							</StyledGlobalStat>
+							<StyledGlobalStat theme={theme}>
+								<h1>{allChains?.count}</h1>
+								<h1>Tasks</h1>
+							</StyledGlobalStat>
+							<StyledGlobalStat theme={theme}>
+								<h1>{allChains?.users}</h1>
+								<h1>Users</h1>
+							</StyledGlobalStat>
+						</StyledGlobalStats>
+						<Divider style={{ width: '100%', backgroundColor: theme.palette.secondary.main }} />
+						<ActiveFilterBox>
+							{/* <ActiveTabLeftSection></ActiveTabLeftSection> */}
+							<ActiveTabRightSection>
+								{/* // Filter StyledSection */}
+								<SelectFilter />
+								<SelectSort />
+
+								<StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
+									<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
+										ETH
+									</StyledToggleButton>
+									<StyledToggleButton theme={theme} disabled={currencyValue === true} value={true}>
+										<a>USD</a>
+									</StyledToggleButton>
+								</StyledToggleButtonGroup>
+							</ActiveTabRightSection>
+						</ActiveFilterBox>
 						<ActiveTabSection>
-							{trendingDareList.map((trendingDare) => (
-								<li style={{ listStyle: 'none' }} key={trendingDare}>
+							{filteredActiveTasks.map((tad) => (
+								<li style={{ listStyle: 'none' }} key={tad.id}>
 									<TaskCard theme={theme}>
+										<StyledNetwork theme={theme}>
+											{getChainLogoComponent(tad?.chainId)}
+											{CHAINS[tad.chainId].name}
+										</StyledNetwork>
 										<TaskBoxSection>
-											<p>{trendingDare.description}</p>
+											<p>{tad.description}</p>
 										</TaskBoxSection>
 										<BottomContainer>
 											<TaskBoxSectionOne>
-												<p>#{trendingDare.id}</p>
+												<p>#{tad.id}</p>
 												<p>
-													{trendingDare.participants}{' '}
+													{tad.participants}{' '}
 													<PeopleAltIcon style={{ display: 'felx', fontSize: '18px', fill: 'white', height: '100%', marginLeft: '0.5rem' }} />
 												</p>
 											</TaskBoxSectionOne>
 											<TaskBoxSectionTwo>
 												{currencyValue === false ? (
-													<p>
-														{((trendingDare?.amount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
-													</p>
+													<p>{((tad?.amount / 1e18) * 1).toFixed(4)} ETH</p>
 												) : (
-													<p>${((trendingDare?.amount / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</p>
+													<p>${((tad?.amount / 1e18) * currencyPrice[tad?.chainId]?.usd).toFixed(2)}</p>
 												)}
 												{currencyValue === false ? (
-													<p>
-														{((trendingDare?.entranceAmount / 1e18) * 1).toFixed(2)} {isNetworkAvailable ? CHAINS[chainId]?.nameToken : 'MATIC'}
-													</p>
+													<p>{((tad?.entranceAmount / 1e18) * 1).toFixed(4)} ETH</p>
 												) : (
-													<p>${((trendingDare?.entranceAmount / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</p>
+													<p>${((tad?.entranceAmount / 1e18) * currencyPrice[tad?.chainId]?.usd).toFixed(2)}</p>
 												)}
 											</TaskBoxSectionTwo>
-											<TaskButton onClick={() => router.push(`/dare/` + trendingDare.id)}>View Task</TaskButton>
+											<TaskButton onClick={() => router.push(`/dare/${tad.chainId}-` + tad.id)}>View Task</TaskButton>
 										</BottomContainer>
 									</TaskCard>
 								</li>

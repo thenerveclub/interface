@@ -62,6 +62,7 @@ const StyledDivider = styled(Divider)<{ theme: any }>`
 
 const StyledTableContainer = styled(Box)<{ theme: any }>`
 	display: flex;
+	justify-content: flex-start;
 	flex-direction: column;
 	justify-content: left;
 	align-items: left;
@@ -69,11 +70,25 @@ const StyledTableContainer = styled(Box)<{ theme: any }>`
 	font-size: 1rem;
 	cursor: default;
 
+	p {
+		color: white;
+		font-size: 0.925rem;
+		cursor: default;
+		padding: 0;
+		margin: 0 0.5rem 0 0;
+	}
+
 	a {
 		color: ${({ theme }) => theme.palette.secondary.main};
 		font-size: 0.925rem;
 		cursor: default;
-		padding: 1rem;
+		padding: 0;
+		margin: 0;
+		cursor: pointer;
+
+		&:hover {
+			text-decoration: underline;
+		}
 	}
 
 	@media (max-width: 960px) {
@@ -87,11 +102,12 @@ const StyledTableContainer = styled(Box)<{ theme: any }>`
 `;
 
 interface DescriptionCardProps {
-	dareData: any;
+	description: string;
+	initiator: string;
 	player: string;
 }
 
-const DescriptionCard: React.FC<DescriptionCardProps> = ({ dareData, player }) => {
+const DescriptionCard: React.FC<DescriptionCardProps> = ({ description, initiator, player }) => {
 	const theme = useTheme();
 	const router = useRouter();
 	const path = `https://nerveglobal.com${router.asPath}`;
@@ -123,12 +139,14 @@ const DescriptionCard: React.FC<DescriptionCardProps> = ({ dareData, player }) =
 				<StyledDivider theme={theme} />
 			</StyledCardHeader>
 			<StyledTableContainer theme={theme}>
-				{dareData?.[0]?.task.description}
-				<a>
-					By ({dareData?.[0]?.task.initiatorAddress.substring(0, 6)}...
-					{dareData?.[0]?.task.initiatorAddress.substring(dareData?.[0]?.task.initiatorAddress.length - 4).toUpperCase()})
-					{dareData?.[0]?.task.initiatorName}
-				</a>
+				<div style={{ display: 'flex', marginBottom: '0.5rem' }}>
+					<p>By</p>
+					<a onClick={() => router.push(`/player/${initiator}`)}>
+						({initiator?.substring(0, 6)}...
+						{initiator?.substring(initiator?.length - 4).toUpperCase()})
+					</a>
+				</div>
+				{description}
 			</StyledTableContainer>
 		</TaskCard>
 	);

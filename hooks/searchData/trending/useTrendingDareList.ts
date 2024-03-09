@@ -1,16 +1,10 @@
 import { useEffect, useState } from 'react';
 import { CHAINS } from '../../../utils/chains';
 
-const useTrendingDareList = (chainIdUrl: number) => {
-	const [trendingDareList, setTrendingDareList] = useState<any[]>([]);
+const useTrendingDareList = () => {
+	const [trendingDareList, setTrendingDareList] = useState<{ [chainId: string]: any[] }>({});
 
 	useEffect(() => {
-		if (!chainIdUrl) {
-			// Handle the case where the chainIdUrl is not ready or not valid
-			setTrendingDareList([]);
-			return;
-		}
-
 		const getTrendingDareData = async () => {
 			const QueryForTrendingDareList = `
 			{
@@ -25,26 +19,30 @@ const useTrendingDareList = (chainIdUrl: number) => {
 				  description
 				  entranceAmount
 				  participants
+				  chainId
 				}
 			 }
       `;
 
 			try {
-				const response = await fetch(CHAINS[chainIdUrl]?.graphApi, {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ query: QueryForTrendingDareList }),
+				const fetchPromises = Object.entries(CHAINS).map(([chainId, chainData]) => {
+					return fetch(chainData.graphApi, {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ query: QueryForTrendingDareList }),
+					}).then((response) => response.json().then((data) => ({ [chainId]: data.data.tasks })));
 				});
 
-				const data = await response.json();
-				setTrendingDareList(data.data.tasks);
+				const allData = await Promise.all(fetchPromises);
+				const combinedData = allData.reduce((acc, data) => ({ ...acc, ...data }), {});
+				setTrendingDareList(combinedData);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 
 		getTrendingDareData();
-	}, [chainIdUrl]);
+	}, []);
 
 	return trendingDareList;
 };

@@ -59,22 +59,22 @@ const StyledStatistics = styled(Grid)<{ theme: any }>`
 
 interface PlayerStatisticsProps {
 	checksumAddress: string;
-	chainId: number;
+	network: any;
 	playerData: any;
 }
 
-const PlayerStatistics: React.FC<PlayerStatisticsProps> = ({ checksumAddress, chainId, playerData }) => {
+const PlayerStatistics: React.FC<PlayerStatisticsProps> = ({ checksumAddress, network, playerData }) => {
 	const theme = useTheme();
 
-	console.log('PlayerStatists:', checksumAddress, chainId, playerData);
+	// console.log('PlayerStatists:', checksumAddress, network, playerData);
 
 	// Redux
 	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
 	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
 
 	// Ranking Data
-	const rankingEarned = useRankingEarned(checksumAddress, chainId);
-	const rankingSpent = useRankingSpent(checksumAddress, chainId);
+	const rankingEarned = useRankingEarned(checksumAddress, network);
+	const rankingSpent = useRankingSpent(checksumAddress, network);
 
 	return (
 		<StatisticBox>

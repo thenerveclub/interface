@@ -1,55 +1,38 @@
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { CHAINS } from '../utils/chains';
 
-function useBalanceTracker() {
-	// Redux
-	const account = useSelector((state: { account: string }) => state.account);
-	const chainId = useSelector((state: { chainId: number }) => state.chainId);
-	const rpcValue = useSelector((state: { rpc: string }) => state.rpc);
-	const customRPCValue = useSelector((state: { customRPC: string }) => state.customRPC);
+function useBalanceTracker(provider, account) {
+	const [balance, setBalance] = useState<string>('0.00');
 
-	const customRpcUrl = customRPCValue === '' ? CHAINS[chainId]?.[rpcValue] : customRPCValue;
-	const provider = new ethers.providers.StaticJsonRpcProvider(customRpcUrl);
-	const [cryptoBalance, setCryptoBalance] = useState<string>('0.00');
+	// console.log('provider', provider, 'account', account);
 
 	useEffect(() => {
-		if (!provider || !account) return;
+		if (provider && account) {
+			let stale = false;
 
-		let mounted = true;
+			const fetchBalance = async () => {
+				try {
+					const balance = await provider.getBalance(account);
+					if (stale) return;
+					const formattedBalance = ethers.utils.formatEther(balance);
+					setBalance(formattedBalance);
+				} catch (error) {
+					console.error('Error fetching balance:', error);
+					if (!stale) {
+						setBalance('Error');
+					}
+				}
+			};
 
-		// Function to fetch MATIC balance
-		const fetchMaticBalance = async () => {
-			const balance = await provider.getBalance(account);
-			if (mounted) {
-				setCryptoBalance(ethers.utils.formatEther(balance));
-			}
-		};
+			fetchBalance();
 
-		// Listen to new blocks
-		provider.on('block', async (blockNumber) => {
-			// Fetch transactions from the block
-			const block = await provider.getBlockWithTransactions(blockNumber);
-			const isUserInvolved = block.transactions.some((tx) => tx.from === account || tx.to === account);
+			return () => {
+				stale = true;
+			};
+		}
+	}, [provider, account]);
 
-			// If user's address is involved in any transaction, update the balance
-			if (isUserInvolved) {
-				fetchMaticBalance();
-			}
-		});
-
-		// Initial fetch
-		fetchMaticBalance();
-
-		// Clean up
-		return () => {
-			mounted = false;
-			provider.removeAllListeners('block');
-		};
-	}, [provider, account, chainId]);
-
-	return cryptoBalance;
+	return balance;
 }
 
 export default useBalanceTracker;

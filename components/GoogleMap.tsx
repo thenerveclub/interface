@@ -23,14 +23,10 @@ const StyledDiv = styled.div`
 `;
 
 interface GoogleMapProps {
-	apiKey: string;
-	chainIdUrl: number;
-	// registerStatus: any;
-	isNetworkAvailable: boolean;
 	network: any;
 }
 
-const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, chainIdUrl, isNetworkAvailable, network }) => {
+const GoogleMap: React.FC<GoogleMapProps> = ({ network }) => {
 	const mapRef = useRef(null);
 	const router = useRouter();
 
@@ -57,7 +53,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, chainIdUrl, isNetworkAvai
 	};
 
 	// Use the useMapData hook to get map data
-	const { mapData, isLoading } = useMapData(chainIdUrl);
+	const { mapData, isLoading } = useMapData(network);
 
 	const applyMapStyle = () => {
 		if (map) {
@@ -187,7 +183,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, chainIdUrl, isNetworkAvai
 	useEffect(() => {
 		const loadGoogleMapsScript = () => {
 			const script = document.createElement('script');
-			script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}`;
+			script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;
 			script.async = true;
 			script.onload = initializeMap;
 			script.onerror = () => console.error('Google Maps script failed to load.');
@@ -199,7 +195,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, chainIdUrl, isNetworkAvai
 		} else if (!document.getElementById('google-maps-script')) {
 			loadGoogleMapsScript();
 		}
-	}, [apiKey, appliedTheme]);
+	}, [appliedTheme]);
 
 	useEffect(() => {
 		if (map && !isLoading && Array.isArray(mapData)) {
@@ -207,19 +203,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ apiKey, chainIdUrl, isNetworkAvai
 		}
 	}, [mapData, isLoading, map]);
 
-	return (
-		<StyledDiv ref={mapRef}>
-			{isModalVisible && (
-				<CreateMapDare
-					chainIdUrl={chainIdUrl}
-					isNetworkAvailable={isNetworkAvailable}
-					modalCoords={modalCoords}
-					onClose={() => setModalVisible(false)}
-					network={network}
-				/>
-			)}
-		</StyledDiv>
-	);
+	return <StyledDiv ref={mapRef}>{isModalVisible && <CreateMapDare modalCoords={modalCoords} onClose={() => setModalVisible(false)} />}</StyledDiv>;
 };
 
 export default GoogleMap;

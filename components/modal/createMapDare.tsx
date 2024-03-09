@@ -295,19 +295,15 @@ const SearchResultItemStyled = styled.div<{ theme: any }>`
 `;
 
 interface CreateMapDareProps {
-	// registerStatus: any;
-	chainIdUrl: number;
-	isNetworkAvailable: boolean;
 	modalCoords: any;
 	onClose: any;
-	network: any;
 }
 
-const CreateMapDare: React.FC<CreateMapDareProps> = ({ chainIdUrl, isNetworkAvailable, modalCoords, onClose, network }) => {
+const CreateMapDare: React.FC<CreateMapDareProps> = ({ modalCoords, onClose }) => {
 	const theme = useTheme();
-	const { provider } = useWeb3React();
+	const { account, provider } = useWeb3React();
 	const { enqueueSnackbar } = useSnackbar();
-	const balance = useBalanceTracker();
+	const balance = useBalanceTracker(provider, account);
 
 	// Redux
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
@@ -325,6 +321,7 @@ const CreateMapDare: React.FC<CreateMapDareProps> = ({ chainIdUrl, isNetworkAvai
 	const [hours, setHours] = useState('0');
 	const [minutes, setMinutes] = useState('0');
 	const [isListVisible, setListVisible] = useState(false);
+	const [network, setNetwork] = useState(137);
 
 	const registerStatus = 'XXX';
 
@@ -443,13 +440,13 @@ const CreateMapDare: React.FC<CreateMapDareProps> = ({ chainIdUrl, isNetworkAvai
 	const handleNetworkChange = async () => {
 		if (metaMask) {
 			try {
-				await metaMask.activate(chainIdUrl);
+				await metaMask.activate(network);
 			} catch (error) {
 				console.error(error);
 			}
 		} else {
 			try {
-				await metaMask.activate(getAddChainParameters(chainIdUrl));
+				await metaMask.activate(getAddChainParameters(network));
 			} catch (error) {
 				console.error(error);
 			}
@@ -525,7 +522,7 @@ const CreateMapDare: React.FC<CreateMapDareProps> = ({ chainIdUrl, isNetworkAvai
 							onChange={handleInputChange}
 							endAdornment={
 								<InputAdornment position="end">
-									<a style={{ color: theme.palette.text.primary }}>{isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}</a>
+									<a style={{ color: theme.palette.text.primary }}>ETH</a>
 									<MaxButton theme={theme} onClick={setMaxValue}>
 										Max
 									</MaxButton>
@@ -631,7 +628,7 @@ const CreateMapDare: React.FC<CreateMapDareProps> = ({ chainIdUrl, isNetworkAvai
 						</StyledTitle>
 
 						<StyledSection style={{ margin: '2rem auto 1.5rem auto' }}>
-							{chainId === chainIdUrl ? (
+							{chainId === network ? (
 								pendingTx ? (
 									<BuyButton theme={theme}>Pending</BuyButton>
 								) : (
