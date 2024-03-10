@@ -7,11 +7,15 @@ import {
 	Box,
 	Button,
 	CircularProgress,
+	FormControl,
 	Grid,
 	Input,
 	InputAdornment,
+	InputLabel,
+	MenuItem,
 	Modal,
 	OutlinedInput,
+	Select,
 	Slider,
 	SpeedDial,
 	SpeedDialIcon,
@@ -25,9 +29,10 @@ import { ethers } from 'ethers';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
 import useBalanceTracker from '../../hooks/useBalanceTracker';
+import { createTriggerSlice } from '../../state/create/createTriggerSlice';
 import { CHAINS, getAddChainParameters } from '../../utils/chains';
 import { metaMask } from '../../utils/connectors/metaMask';
 
@@ -238,10 +243,9 @@ const StyledTextField = styled(TextField)<{ theme: any }>`
 interface CreateTaskProps {
 	recipientAddress: any;
 	recipientENS: any;
-	network: number;
 }
 
-const CreateTask: React.FC<CreateTaskProps> = ({ recipientAddress, recipientENS, network }) => {
+const CreateTask: React.FC<CreateTaskProps> = ({ recipientAddress, recipientENS }) => {
 	const theme = useTheme();
 	const router = useRouter();
 	const { provider } = useWeb3React();
@@ -250,6 +254,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ recipientAddress, recipientENS,
 	// console.log('balance', balance, provider);
 
 	// Redux
+	const dispatch = useDispatch();
 	const account = useSelector((state: { account: string }) => state.account);
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 	const availableChains = useSelector((state: { availableChains: any }) => state.availableChains);
@@ -268,6 +273,11 @@ const CreateTask: React.FC<CreateTaskProps> = ({ recipientAddress, recipientENS,
 	const [days, setDays] = useState('0');
 	const [hours, setHours] = useState('0');
 	const [minutes, setMinutes] = useState('0');
+	const [network, setNetwork] = useState('');
+
+	const handleChange = (event) => {
+		setNetwork(event.target.value);
+	};
 
 	// Validation function
 	const validateInput = (value, max) => {
@@ -341,6 +351,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ recipientAddress, recipientENS,
 			if (tx.hash) {
 				setPendingTx(false);
 				handleClose();
+				dispatch(createTriggerSlice.actions.setCreateTrigger(true));
 			}
 		} catch (error) {
 			setPendingTx(false);
@@ -352,13 +363,13 @@ const CreateTask: React.FC<CreateTaskProps> = ({ recipientAddress, recipientENS,
 	const handleNetworkChange = async () => {
 		if (metaMask) {
 			try {
-				await metaMask.activate(network);
+				await metaMask.activate(Number(network));
 			} catch (error) {
 				console.error(error);
 			}
 		} else {
 			try {
-				await metaMask.activate(getAddChainParameters(network));
+				await metaMask.activate(getAddChainParameters(Number(network)));
 			} catch (error) {
 				console.error(error);
 			}
@@ -384,6 +395,21 @@ const CreateTask: React.FC<CreateTaskProps> = ({ recipientAddress, recipientENS,
 						Create Task
 					</Typography>
 					<StatisticBox>
+						<StyledTitle theme={theme}>
+							<div>
+								<a style={{ color: theme.palette.text.primary, marginRight: '0.25rem' }}>Select Network</a>
+								<Tooltip title="Mandatory contribution for participation." placement="top">
+									<InfoOutlinedIcon style={{ fontSize: '1rem', color: theme.palette.secondary.main, cursor: 'default' }} />
+								</Tooltip>
+							</div>
+							<FormControl fullWidth>
+								<InputLabel id="chain-select-label">Select Network</InputLabel>
+								<Select labelId="chain-select-label" id="chain-select" value={network} label="Select Network" onChange={handleChange}>
+									<MenuItem value={11155111}>Sepolia</MenuItem>
+									<MenuItem value={137}>Polygon</MenuItem>
+								</Select>
+							</FormControl>
+						</StyledTitle>
 						<StyledTitle theme={theme}>
 							<div>
 								<a style={{ color: theme.palette.text.primary, marginRight: '0.25rem' }}>Entry amount</a>
@@ -473,7 +499,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ recipientAddress, recipientENS,
 							onChange={(event) => setDescription(event.target.value)}
 						/>
 						<StyledSection style={{ margin: '2rem auto 1.5rem auto' }}>
-							{availableChains.includes(chainId) ? (
+							{chainId === Number(network) ? (
 								pendingTx ? (
 									<BuyButton theme={theme} disabled>
 										Pending
@@ -484,13 +510,15 @@ const CreateTask: React.FC<CreateTaskProps> = ({ recipientAddress, recipientENS,
 									</BuyButton>
 								)
 							) : (
-								<ChangeNetworkButton
-									theme={theme}
-									onClick={handleNetworkChange}
-									startIcon={pendingTx && <CircularProgress color="secondary" thickness={2.5} size={20} />}
-								>
-									Change Network
-								</ChangeNetworkButton>
+								network && (
+									<ChangeNetworkButton
+										theme={theme}
+										onClick={handleNetworkChange}
+										startIcon={pendingTx && <CircularProgress color="secondary" thickness={2.5} size={20} />}
+									>
+										Change Network
+									</ChangeNetworkButton>
+								)
 							)}
 						</StyledSection>
 					</StatisticBox>

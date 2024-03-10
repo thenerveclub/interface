@@ -1,16 +1,15 @@
 import styled from '@emotion/styled';
-import { Redeem } from '@mui/icons-material';
 import { Box, Divider, Grid, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import LoadingScreen from '../../../components/LoadingScreen';
+import Claim from '../../../components/modal/claim';
 import JoinDare from '../../../components/modal/join';
 import Connect from '../../../components/modal/menu/Connect';
-import ProveDare from '../../../components/modal/proveDare';
-import RedeemRecipient from '../../../components/modal/redeemRecipient';
-import RedeemUser from '../../../components/modal/redeemUser';
-import VoteTask from '../../../components/modal/voteTask';
+import ProveDare from '../../../components/modal/prove';
+import Redeem from '../../../components/modal/redeem';
+import VoteTask from '../../../components/modal/vote';
 import useDareData from '../../../hooks/dareData/useDareData';
 import useENSName from '../../../hooks/useENSName';
 import { nameToChainId } from '../../../utils/chains';
@@ -184,14 +183,14 @@ export default function TaskPage() {
 								finished || timeover ? (
 									isPlayer ? (
 										voteIsTrue && !playerClaimed ? (
-											<RedeemRecipient id={id} dareData={dareData} network={network} />
+											<Claim dareData={dareData} />
 										) : (
 											<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
 												<p>{playerClaimed ? 'You have claimed your win' : 'You has lost the dare'}</p>
 											</div>
 										)
 									) : !voteIsTrue && !hasClaimed ? (
-										<RedeemUser id={id} dareData={dareData} network={network} />
+										<Redeem dareData={dareData} />
 									) : (
 										<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
 											<p>{hasClaimed ? 'You have claimed your stake' : 'Player has won the dare'}</p>
@@ -199,14 +198,14 @@ export default function TaskPage() {
 									)
 								) : isPlayer ? (
 									!proven ? (
-										<ProveDare id={id} dareData={dareData} network={network} />
+										<ProveDare dareData={dareData} />
 									) : (
-										voteIsTrue && playerClaimed && <RedeemRecipient id={id} dareData={dareData} network={network} />
+										voteIsTrue && playerClaimed && <Redeem dareData={dareData} />
 									)
 								) : !hasJoined ? (
 									<JoinDare id={id} dareData={dareData} network={network} />
 								) : !hasVoted ? (
-									<VoteTask id={id} dareData={dareData} network={network} />
+									<VoteTask dareData={dareData} />
 								) : (
 									<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
 										<p>{userVote === true ? 'You voted true' : 'Yout voted false'}</p>

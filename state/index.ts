@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
 import { accountSlice } from './account/accountSlice';
 import { availableChainsSlice, chainIdSlice } from './chainId/chainIdSlice';
+import { createTriggerSlice } from './create/createTriggerSlice';
 import { currencySlice } from './currency/currencySlice';
 import { currencyPriceSlice } from './currencyPrice/currencyPriceSlice';
 import { customRPCSlice } from './customRPC/customRPCSlice';
@@ -26,6 +27,7 @@ export const store = configureStore({
 		testnets: testnetsSlice.reducer,
 		sort: sortSlice.reducer,
 		filter: filterSlice.reducer,
+		createTrigger: createTriggerSlice.reducer,
 	},
 	middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
 });

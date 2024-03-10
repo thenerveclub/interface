@@ -6,7 +6,8 @@ import { ethers } from 'ethers';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
-import { CHAINS } from '../../utils/chains';
+import { CHAINS, getAddChainParameters } from '../../utils/chains';
+import { metaMask } from '../../utils/connectors/metaMask';
 
 const BuyButton = styled(Button)<{ theme: any }>`
 	color: #fff;
@@ -26,14 +27,10 @@ const BuyButton = styled(Button)<{ theme: any }>`
 `;
 
 interface RedeemUserProps {
-	id: string;
 	dareData: any;
-	chainIdUrl: number;
-	network: string;
-	isNetworkAvailable: boolean;
 }
 
-const RedeemRecipient: React.FC<RedeemUserProps> = ({ id, dareData, chainIdUrl, network, isNetworkAvailable }) => {
+const RedeemRecipient: React.FC<RedeemUserProps> = ({ dareData }) => {
 	const theme = useTheme();
 	const { provider } = useWeb3React();
 
@@ -44,15 +41,31 @@ const RedeemRecipient: React.FC<RedeemUserProps> = ({ id, dareData, chainIdUrl, 
 	const [pendingTx, setPendingTx] = useState(false);
 	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
-	// Join Function
-	async function redeemRecipient() {
+	// Redeem Function
+	async function redeem() {
+		if (chainId !== dareData[0]?.task.chainId) {
+			if (metaMask) {
+				try {
+					await metaMask.activate(Number(dareData[0]?.task?.chainId));
+				} catch (error) {
+					console.error(error);
+				}
+			} else {
+				try {
+					await metaMask.activate(getAddChainParameters(Number(dareData[0]?.task?.chainId)));
+				} catch (error) {
+					console.error(error);
+				}
+			}
+		}
 		const signer = provider.getSigner();
-		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
+		const nerveGlobal = new ethers.Contract(CHAINS[dareData[0]?.task.chainId]?.contract, NerveGlobalABI, signer);
+
 		try {
 			setPendingTx(true);
 			setIsButtonDisabled(true); // Disable button immediately on click
 
-			const tx = await nerveGlobal.redeemRecipient(id);
+			const tx = await nerveGlobal.redeem(dareData[0]?.task.id);
 			await tx.wait();
 			if (tx.hash) {
 				setPendingTx(false);
@@ -73,7 +86,7 @@ const RedeemRecipient: React.FC<RedeemUserProps> = ({ id, dareData, chainIdUrl, 
 					Pending
 				</BuyButton>
 			) : (
-				<BuyButton theme={theme} onClick={redeemRecipient} disabled={isButtonDisabled}>
+				<BuyButton theme={theme} onClick={redeem} disabled={isButtonDisabled}>
 					Redeem Recipient
 				</BuyButton>
 			)}

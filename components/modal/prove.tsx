@@ -1,6 +1,6 @@
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Box, Button, Modal, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, InputAdornment, Modal, OutlinedInput, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
@@ -8,7 +8,8 @@ import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
-import { CHAINS } from '../../utils/chains';
+import { CHAINS, getAddChainParameters } from '../../utils/chains';
+import { metaMask } from '../../utils/connectors/metaMask';
 
 const StyledModal = styled(Modal)`
 	.MuiModal-backdrop {
@@ -51,6 +52,10 @@ const ModalButton = styled(Button)<{ theme: any }>`
 	&:hover {
 		background-color: ${({ theme }) => theme.palette.warning.main};
 	}
+
+	&:disabled {
+		background-color: ${({ theme }) => theme.palette.warning.main};
+	}
 `;
 
 const ConnectBox = styled(Box)<{ theme: any }>`
@@ -90,46 +95,56 @@ const StyledSection = styled.section`
 	}
 `;
 
-const BuyButton = styled(Button)<{ theme: any }>`
-	color: #fff;
+const StatisticBox = styled(Box)`
+	width: 90%;
+	margin: 0 auto 0 auto;
+
+	a {
+		font-size: 16px;
+		cursor: default;
+	}
+`;
+
+const RegisterNameButton = styled(Button)<{ theme: any }>`
+	display: flex;
+	color: ${({ theme }) => theme.palette.text.primary};
 	text-transform: none;
-	font-size: 16px;
-	border: none;
+	width: 150px;
+	font-size: 1rem;
+	font-weight: 400;
 	line-height: 1.5;
+	height: 100%;
 	background-color: ${({ theme }) => theme.palette.warning.main};
-	border-radius: ${({ theme }) => theme.shape.borderRadius};
-	height: 40px;
-	width: 125px;
-	margin-left: 1rem;
+	border-radius: ${({ theme }) => theme.customShape.borderRadius};
 
 	&:hover {
 		background-color: ${({ theme }) => theme.palette.warning.main};
 	}
 
 	&:disabled {
-		// color: ${({ theme }) => theme.palette.secondary.main};
-		background-color: ${({ theme }) => theme.palette.warning.dark};
+		color: ${({ theme }) => theme.palette.secondary.main};
+		background-color: ${({ theme }) => theme.palette.warning.main};
 	}
 `;
 
-interface VoteTaskProps {
-	id: string;
+interface ProveDareProps {
 	dareData: any;
-	chainIdUrl: number;
-	network: string;
-	isNetworkAvailable: boolean;
 }
 
-const VoteTask: React.FC<VoteTaskProps> = ({ id, dareData, chainIdUrl, network, isNetworkAvailable }) => {
+const ProveDare: React.FC<ProveDareProps> = ({ dareData }) => {
 	const theme = useTheme();
 	const { provider } = useWeb3React();
 	const { enqueueSnackbar } = useSnackbar();
+
+	// Redux
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 
 	// State
 	const [open, setOpen] = useState(false);
 	const [pendingTx, setPendingTx] = useState(false);
 	const [isClosing, setIsClosing] = useState(false); // <-- New state to track closing status
+	const [proveLink, setProveLink] = useState('');
+	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
 	// Handle open and close modal
 	const handleOpen = () => setOpen(true);
@@ -143,46 +158,52 @@ const VoteTask: React.FC<VoteTaskProps> = ({ id, dareData, chainIdUrl, network, 
 		}, 500); // <-- Length of the slide-down animation
 	};
 
-	// Vote Function -> True
-	async function voteFunctionTrue() {
+	// console.log('proveLink', proveLink);
+
+	// Prove Function
+	async function proveFunction() {
 		const signer = provider.getSigner();
-		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
+		const nerveGlobal = new ethers.Contract(CHAINS[dareData[0]?.task.chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			const tx = await nerveGlobal.voteTask(id, true);
+			setIsButtonDisabled(true); // Disable button immediately on click
+
+			const tx = await nerveGlobal.prove(dareData[0]?.task.id, proveLink);
 			await tx.wait();
 			if (tx.hash) {
 				setPendingTx(false);
+				// Set a timeout to re-enable the button after 1 minute
+				setTimeout(() => setIsButtonDisabled(false), 60000); // 60000 ms = 1 minute
 				handleClose();
 			}
 		} catch (error) {
 			setPendingTx(false);
+			setIsButtonDisabled(false); // Re-enable button on error
 			console.log(error);
 		}
 	}
 
-	// Vote Function -> False
-	async function voteFunctionFalse() {
-		const signer = provider.getSigner();
-		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
-		try {
-			setPendingTx(true);
-			const tx = await nerveGlobal.voteTask(id, false);
-			await tx.wait();
-			if (tx.hash) {
-				setPendingTx(false);
-				handleClose();
+	// Change Network
+	const handleNetworkChange = async () => {
+		if (metaMask) {
+			try {
+				await metaMask.activate(Number(dareData[0]?.task?.chainId));
+			} catch (error) {
+				console.error(error);
 			}
-		} catch (error) {
-			setPendingTx(false);
-			console.log(error);
+		} else {
+			try {
+				await metaMask.activate(getAddChainParameters(Number(dareData[0]?.task?.chainId)));
+			} catch (error) {
+				console.error(error);
+			}
 		}
-	}
+	};
 
 	return (
 		<>
-			<ModalButton theme={theme} onClick={handleOpen}>
-				Vote Task
+			<ModalButton theme={theme} onClick={handleOpen} disabled={isButtonDisabled}>
+				Prove Dare
 			</ModalButton>
 			<StyledModal open={open} onClose={handleClose}>
 				<ConnectBox theme={theme} className={isClosing ? 'closing' : ''}>
@@ -194,32 +215,54 @@ const VoteTask: React.FC<VoteTaskProps> = ({ id, dareData, chainIdUrl, network, 
 						variant="h6"
 						component="h2"
 					>
-						Vote Task
+						Prove Dare
 					</Typography>
-					<StyledSection style={{ margin: '2rem auto 1.5rem auto' }}>
-						{pendingTx ? (
-							<BuyButton theme={theme} disabled>
-								Pending
-							</BuyButton>
-						) : (
-							<BuyButton theme={theme} onClick={voteFunctionTrue}>
-								True
-							</BuyButton>
-						)}
-						{pendingTx ? (
-							<BuyButton theme={theme} disabled>
-								Pending
-							</BuyButton>
-						) : (
-							<BuyButton theme={theme} onClick={voteFunctionFalse}>
-								False
-							</BuyButton>
-						)}
-					</StyledSection>
+					<StatisticBox>
+						<OutlinedInput
+							sx={{
+								color: '#fff',
+								height: '40px',
+								'& .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
+								'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: 'rgba(152, 161, 192, 1)' },
+							}}
+							fullWidth={true}
+							id="outlined-adornment-name"
+							type="string"
+							required={false}
+							// value={name}
+							// startAdornment={
+							// 	<InputAdornment position="start" sx={{ color: 'gray' }}>
+							// 		player/
+							// 	</InputAdornment>
+							// }
+							onChange={(event) => setProveLink(event.target.value)}
+						/>
+
+						<StyledSection style={{ margin: '2rem auto 1.5rem auto' }}>
+							{chainId !== dareData[0]?.task.chainId ? (
+								<RegisterNameButton
+									theme={theme}
+									onClick={!pendingTx ? proveFunction : null}
+									disabled={pendingTx} // Disable if pending or no changes
+									startIcon={pendingTx && <CircularProgress color="secondary" thickness={2.5} size={20} />}
+								>
+									{pendingTx ? 'Pending' : 'Prove Dare'}
+								</RegisterNameButton>
+							) : (
+								<RegisterNameButton
+									theme={theme}
+									onClick={handleNetworkChange}
+									startIcon={pendingTx && <CircularProgress color="secondary" thickness={2.5} size={20} />}
+								>
+									Change Network
+								</RegisterNameButton>
+							)}
+						</StyledSection>
+					</StatisticBox>
 				</ConnectBox>
 			</StyledModal>
 		</>
 	);
 };
 
-export default VoteTask;
+export default ProveDare;

@@ -171,14 +171,10 @@ const ChangeNetworkButton = styled(Button)<{ theme: any }>`
 `;
 
 interface JoinDareProps {
-	id: string;
 	dareData: any;
-	chainIdUrl: number;
-	network: string;
-	isNetworkAvailable: boolean;
 }
 
-const JoinDare: React.FC<JoinDareProps> = ({ id, dareData, chainIdUrl, network, isNetworkAvailable }) => {
+const JoinDare: React.FC<JoinDareProps> = ({ dareData }) => {
 	const theme = useTheme();
 	const [open, setOpen] = useState(false);
 	const { provider } = useWeb3React();
@@ -268,10 +264,10 @@ const JoinDare: React.FC<JoinDareProps> = ({ id, dareData, chainIdUrl, network, 
 	// Join Function
 	async function onJoin() {
 		const signer = provider.getSigner();
-		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
+		const nerveGlobal = new ethers.Contract(CHAINS[dareData[0]?.task?.chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			const tx = await nerveGlobal.join(id, { value: txValue });
+			const tx = await nerveGlobal.join(dareData[0]?.task?.id, { value: txValue });
 			await tx.wait();
 			if (tx.hash) {
 				setPendingTx(false);
@@ -287,13 +283,13 @@ const JoinDare: React.FC<JoinDareProps> = ({ id, dareData, chainIdUrl, network, 
 	const handleNetworkChange = async () => {
 		if (metaMask) {
 			try {
-				await metaMask.activate(chainIdUrl);
+				await metaMask.activate(Number(dareData[0]?.task?.chainId));
 			} catch (error) {
 				console.error(error);
 			}
 		} else {
 			try {
-				await metaMask.activate(getAddChainParameters(chainIdUrl));
+				await metaMask.activate(getAddChainParameters(Number(dareData[0]?.task?.chainId)));
 			} catch (error) {
 				console.error(error);
 			}
@@ -337,7 +333,7 @@ const JoinDare: React.FC<JoinDareProps> = ({ id, dareData, chainIdUrl, network, 
 						onChange={handleInputChange}
 						endAdornment={
 							<InputAdornment position="end">
-								<a style={{ color: theme.palette.text.primary }}>{isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}</a>
+								<a style={{ color: theme.palette.text.primary }}>{CHAINS[dareData[0]?.task?.chainId]?.nameToken}</a>
 								<MaxButton theme={theme} onClick={setMaxValue}>
 									Max
 								</MaxButton>
@@ -372,7 +368,7 @@ const JoinDare: React.FC<JoinDareProps> = ({ id, dareData, chainIdUrl, network, 
 						))}
 
 					<StyledSection style={{ margin: '2rem auto 1.5rem auto' }}>
-						{chainId === chainIdUrl ? (
+						{chainId !== Number(dareData[0]?.task?.chainId) ? (
 							pendingTx ? (
 								<BuyButton theme={theme} disabled>
 									Pending

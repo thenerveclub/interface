@@ -7,7 +7,8 @@ import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
-import { CHAINS } from '../../utils/chains';
+import { CHAINS, getAddChainParameters } from '../../utils/chains';
+import { metaMask } from '../../utils/connectors/metaMask';
 
 const BuyButton = styled(Button)<{ theme: any }>`
 	color: #fff;
@@ -27,14 +28,10 @@ const BuyButton = styled(Button)<{ theme: any }>`
 `;
 
 interface RedeemUserProps {
-	id: string;
 	dareData: any;
-	chainIdUrl: number;
-	network: string;
-	isNetworkAvailable: boolean;
 }
 
-const RedeemUser: React.FC<RedeemUserProps> = ({ id, dareData, chainIdUrl, network, isNetworkAvailable }) => {
+const RedeemUser: React.FC<RedeemUserProps> = ({ dareData }) => {
 	const theme = useTheme();
 	const { provider } = useWeb3React();
 	const { enqueueSnackbar } = useSnackbar();
@@ -45,29 +42,43 @@ const RedeemUser: React.FC<RedeemUserProps> = ({ id, dareData, chainIdUrl, netwo
 	// State
 	const [pendingTx, setPendingTx] = useState(false);
 
-	// Join Function
-	async function onRegisterName() {
-		const signer = provider.getSigner();
-		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
-		try {
-			setPendingTx(true);
-			const tx = await nerveGlobal.redeemUser(id);
-			enqueueSnackbar('Transaction signed succesfully!', {
-				variant: 'success',
-			});
-			await tx.wait();
-			if (tx.hash) {
-				enqueueSnackbar('Transaction mined succesfully!', {
-					variant: 'success',
-				});
-				setPendingTx(false);
+	// Claim Function
+	async function claim() {
+		let shouldProceed = true;
+
+		if (chainId !== dareData[0]?.task.chainId) {
+			if (metaMask) {
+				try {
+					await metaMask.activate(Number(dareData[0]?.task?.chainId));
+				} catch (error) {
+					console.error(error);
+					shouldProceed = false;
+				}
+			} else {
+				try {
+					await metaMask.activate(getAddChainParameters(Number(dareData[0]?.task?.chainId)));
+				} catch (error) {
+					console.error(error);
+					shouldProceed = false;
+				}
 			}
-		} catch (error) {
-			enqueueSnackbar('Transaction failed!', {
-				variant: 'error',
-			});
-			setPendingTx(false);
-			console.log(error);
+		}
+
+		if (shouldProceed) {
+			const signer = provider.getSigner();
+			const nerveGlobal = new ethers.Contract(CHAINS[dareData[0]?.task.chainId]?.contract, NerveGlobalABI, signer);
+
+			try {
+				setPendingTx(true);
+				const tx = await nerveGlobal.claim(dareData[0]?.task.id);
+				await tx.wait();
+				if (tx.hash) {
+					setPendingTx(false);
+				}
+			} catch (error) {
+				setPendingTx(false);
+				console.log(error);
+			}
 		}
 	}
 
@@ -78,7 +89,7 @@ const RedeemUser: React.FC<RedeemUserProps> = ({ id, dareData, chainIdUrl, netwo
 					Pending
 				</BuyButton>
 			) : (
-				<BuyButton theme={theme} onClick={onRegisterName}>
+				<BuyButton theme={theme} onClick={claim}>
 					Redeem User
 				</BuyButton>
 			)}

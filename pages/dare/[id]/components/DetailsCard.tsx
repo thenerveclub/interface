@@ -141,7 +141,7 @@ const DetailsCard: React.FC<DetailsCardProps> = ({ network, id, player, particip
 							style={{ display: 'flex', color: theme.palette.warning.main, cursor: 'pointer', width: 'fit-content' }}
 							onClick={handleClickUser(player)}
 						>
-							{player}
+							{player.includes('.eth') ? player : player.slice(0, 6) + '...' + player.slice(-4)}
 						</a>
 					</div>
 					<div>

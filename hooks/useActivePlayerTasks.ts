@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { createTriggerSlice } from '../state/create/createTriggerSlice';
 import { CHAINS } from '../utils/chains';
 
 const useActivePlayerTasks = (checksumAddress: string) => {
 	const [activePlayerTasks, setActivePlayerTasks] = useState<{ [chainId: string]: any[] }>({});
-
 	const timestamp = Math.floor(Date.now() / 1000);
 
-	// console.log('checksumAddress', checksumAddress);
+	// Redux
+	const dispatch = useDispatch();
+	const triggered = useSelector((state: { createTrigger: boolean }) => state.createTrigger);
 
 	useEffect(() => {
 		if (!checksumAddress) {
@@ -65,7 +68,9 @@ const useActivePlayerTasks = (checksumAddress: string) => {
 		// return () => clearInterval(interval);
 
 		// Refresh the data when the chainId or checksumAddress changes
-	}, [checksumAddress]);
+		dispatch(createTriggerSlice.actions.setCreateTrigger(false));
+		console.log('triggered');
+	}, [checksumAddress, triggered]);
 
 	return activePlayerTasks;
 };

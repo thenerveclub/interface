@@ -419,7 +419,7 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 						{!error && (
 							<CreateTaskBox>
 								{account && account.toLowerCase() !== recipientAddress && (
-									<CreateTask recipientAddress={recipientAddress} recipientENS={recipientENS} network={network} />
+									<CreateTask recipientAddress={recipientAddress} recipientENS={recipientENS} />
 								)}
 							</CreateTaskBox>
 						)}
@@ -480,7 +480,7 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 						{!error && (
 							<CreateTaskBox>
 								{account && account.toLowerCase() !== recipientAddress && (
-									<CreateTask recipientAddress={recipientAddress} recipientENS={recipientENS} network={network} />
+									<CreateTask recipientAddress={recipientAddress} recipientENS={recipientENS} />
 								)}
 							</CreateTaskBox>
 						)}

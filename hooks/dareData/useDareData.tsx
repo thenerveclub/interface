@@ -1,9 +1,15 @@
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { createTriggerSlice } from '../../state/create/createTriggerSlice';
 import { CHAINS } from '../../utils/chains';
 
 const useDareData = (network: string, id: string) => {
 	const [dareData, setDareData] = useState<any[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
+
+	// Redux
+	const dispatch = useDispatch();
+	const triggered = useSelector((state: { createTrigger: boolean }) => state.createTrigger);
 
 	useEffect(() => {
 		setIsLoading(true);
@@ -65,7 +71,9 @@ const useDareData = (network: string, id: string) => {
 		};
 
 		getDareData();
-	}, [network, id]);
+		// dispatch(createTriggerSlice.actions.setCreateTrigger(false));
+		// console.log('triggered');
+	}, [network, id, triggered]);
 
 	return { dareData, isLoading };
 };

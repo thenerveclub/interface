@@ -2,13 +2,13 @@ let cachedData;
 let lastFetchTime;
 
 export default async function handler(req, res) {
-	// Check the referer header
-	const referer = req.headers.referer;
+	// // Check the referer header
+	// const referer = req.headers.referer;
 
-	// Allow requests only from your domain
-	if (!referer || !referer.includes('nerveglobal.com')) {
-		return res.status(403).json({ message: 'Access denied' });
-	}
+	// // Allow requests only from your domain
+	// if (!referer || !referer.includes('nerveglobal.com')) {
+	// 	return res.status(403).json({ message: 'Access denied' });
+	// }
 
 	const cmcBaseUrl = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency';
 	const cmcHeaders = {

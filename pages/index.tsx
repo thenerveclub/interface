@@ -307,11 +307,6 @@ export default function IndexPage() {
 	const sort = useSelector((state: { sort: number }) => state.sort);
 	const filter = useSelector((state: { filter: number[] }) => state.filter);
 
-	// const ethPrice = useSelector((state) => state.currencyPrice.eth);
-	// const maticPrice = useSelector((state) => state.currencyPrice.matic);
-
-	console.log('currencyPrice', currencyPrice);
-
 	// console.log('filter', selectedChains);
 	function getChainLogoComponent(chainId) {
 		if (!chainId) return null;
@@ -329,7 +324,7 @@ export default function IndexPage() {
 	const trendingDareList = useTrendingDareList();
 
 	// Global Statistic
-	const { individualChains, allChains } = useGlobalStats();
+	const { individualChains, allChains } = useGlobalStats(currencyPrice);
 
 	// Toogle Button For Token Price
 	const handleToggle = (event, newCurrency) => {
@@ -449,7 +444,7 @@ export default function IndexPage() {
 					<StyledLayout>
 						<StyledGlobalStats theme={theme}>
 							<StyledGlobalStat theme={theme}>
-								<h1>{allChains?.earnings} ETH</h1>
+								<h1>${allChains?.earnings}</h1>
 								<h1>Earnings</h1>
 							</StyledGlobalStat>
 							<StyledGlobalStat theme={theme}>
