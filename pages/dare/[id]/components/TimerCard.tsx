@@ -3,7 +3,7 @@ import { Box, Divider } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 
-const TaskCard = styled(Box)`
+const TaskCard = styled(Box)<{ theme: any }>`
 	display: flex;
 	flex-direction: column;
 	width: 70%;
@@ -30,7 +30,7 @@ const StyledCardHeader = styled(Box)`
 	}
 `;
 
-const StyledDivider = styled(Divider)`
+const StyledDivider = styled(Divider)<{ theme: any }>`
 	border-bottom: 0.5px solid ${({ theme }) => theme.palette.secondary.main};
 `;
 
@@ -42,12 +42,15 @@ const StyledTableContainer = styled(Box)`
 `;
 
 interface TimerCardProps {
-	unixTimestamp: number;
+	dareData: any;
 }
 
-const TimerCard: React.FC<TimerCardProps> = ({ unixTimestamp }) => {
+const TimerCard: React.FC<TimerCardProps> = ({ dareData }) => {
 	const theme = useTheme();
 	const [countdown, setCountdown] = useState('');
+
+	// State
+	const unixTimestamp = Number(dareData?.[0]?.task.endTask);
 
 	const getFormattedCountdown = (endTimeUnix: number) => {
 		const taskEndTime = new Date(endTimeUnix * 1000);

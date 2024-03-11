@@ -154,73 +154,59 @@ export default function TaskPage() {
 	// const youTubeChannelName = 'inscope21';
 	// const isYouTubeLive = useYouTubeStatus(youTubeChannelName);
 
-	// Task end time to unix timestamp in number
-	const unixTimestamp = Number(dareData?.[0]?.task.endTask);
-
 	return (
 		<>
-			{isLoading ? (
-				<LoadingScreen />
-			) : (
-				<StyledBox>
-					<StyledGridBox>
-						<StyledLeftSection>
-							<DescriptionCard description={description} initiator={initiator} player={player} />
-							<DetailsCard
-								network={network}
-								id={taskId}
-								player={player}
-								participants={participants}
-								entranceAmount={entranceAmount}
-								amount={amount}
-							/>
-							<ActivityTable network={network} id={taskId} dareData={dareData} />
-							{/* <Chart dareData={dareData} /> */}
-						</StyledLeftSection>
-						<StyledRightSection>
-							<TimerCard unixTimestamp={unixTimestamp} />
-							{account ? (
-								finished || timeover ? (
-									isPlayer ? (
-										voteIsTrue && !playerClaimed ? (
-											<Claim dareData={dareData} />
-										) : (
-											<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-												<p>{playerClaimed ? 'You have claimed your win' : 'You has lost the dare'}</p>
-											</div>
-										)
-									) : !voteIsTrue && !hasClaimed ? (
-										<Redeem dareData={dareData} />
+			<StyledBox>
+				<StyledGridBox>
+					<StyledLeftSection>
+						<DescriptionCard description={description} initiator={initiator} player={player} />
+						<DetailsCard network={network} id={taskId} player={player} participants={participants} entranceAmount={entranceAmount} amount={amount} />
+						<ActivityTable network={network} id={taskId} dareData={dareData} />
+						{/* <Chart dareData={dareData} /> */}
+					</StyledLeftSection>
+					<StyledRightSection>
+						<TimerCard dareData={dareData} />
+						{account ? (
+							finished || timeover ? (
+								isPlayer ? (
+									voteIsTrue && !playerClaimed ? (
+										<Claim dareData={dareData} />
 									) : (
 										<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-											<p>{hasClaimed ? 'You have claimed your stake' : 'Player has won the dare'}</p>
+											<p>{playerClaimed ? 'You have claimed your win' : 'You has lost the dare'}</p>
 										</div>
 									)
-								) : isPlayer ? (
-									!proven ? (
-										<ProveDare dareData={dareData} />
-									) : (
-										voteIsTrue && playerClaimed && <Redeem dareData={dareData} />
-									)
-								) : !hasJoined ? (
-									<JoinDare id={id} dareData={dareData} network={network} />
-								) : !hasVoted ? (
-									<VoteTask dareData={dareData} />
+								) : !voteIsTrue && !hasClaimed ? (
+									<Redeem dareData={dareData} />
 								) : (
 									<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-										<p>{userVote === true ? 'You voted true' : 'Yout voted false'}</p>
+										<p>{hasClaimed ? 'You have claimed your stake' : 'Player has won the dare'}</p>
 									</div>
 								)
+							) : isPlayer ? (
+								!proven ? (
+									<ProveDare dareData={dareData} />
+								) : (
+									voteIsTrue && playerClaimed && <Redeem dareData={dareData} />
+								)
+							) : !hasJoined ? (
+								<JoinDare dareData={dareData} />
+							) : !hasVoted ? (
+								<VoteTask dareData={dareData} />
 							) : (
 								<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-									<Connect />
+									<p>{userVote === true ? 'You voted true' : 'Yout voted false'}</p>
 								</div>
-							)}
-							{proof && <ProofCard dareData={dareData} />}
-						</StyledRightSection>
-					</StyledGridBox>
-				</StyledBox>
-			)}
+							)
+						) : (
+							<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+								<Connect />
+							</div>
+						)}
+						{proof && <ProofCard dareData={dareData} />}
+					</StyledRightSection>
+				</StyledGridBox>
+			</StyledBox>
 		</>
 	);
 }

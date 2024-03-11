@@ -7,12 +7,13 @@ import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
 import { forwardRef, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
 import useBalanceTracker from '../../hooks/useBalanceTracker';
 import { CHAINS, getAddChainParameters } from '../../utils/chains';
 import { metaMask } from '../../utils/connectors/metaMask';
 import Connect from './menu/Connect';
+import { joinTriggerSlice } from '../../state/trigger/joinTriggerSlice';
 
 const StyledModal = styled(Modal)`
 	.MuiModal-backdrop {
@@ -181,6 +182,7 @@ const JoinDare: React.FC<JoinDareProps> = ({ dareData }) => {
 	const { enqueueSnackbar } = useSnackbar();
 
 	// Redux
+	const dispatch = useDispatch();
 	const account = useSelector((state: { account: string }) => state.account);
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 	const balance = useBalanceTracker(provider, account);
@@ -270,8 +272,11 @@ const JoinDare: React.FC<JoinDareProps> = ({ dareData }) => {
 			const tx = await nerveGlobal.join(dareData[0]?.task?.id, { value: txValue });
 			await tx.wait();
 			if (tx.hash) {
-				setPendingTx(false);
+				// wait 2 seconds
+				await new Promise((resolve) => setTimeout(resolve, 2000));
+				dispatch(joinTriggerSlice.actions.setJoinTrigger(true));
 				handleClose();
+				setPendingTx(false);
 			}
 		} catch (error) {
 			setPendingTx(false);

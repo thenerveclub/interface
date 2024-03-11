@@ -32,7 +32,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
 import useBalanceTracker from '../../hooks/useBalanceTracker';
-import { createTriggerSlice } from '../../state/create/createTriggerSlice';
+import { createTriggerSlice } from '../../state/trigger/createTriggerSlice';
 import { CHAINS, getAddChainParameters } from '../../utils/chains';
 import { metaMask } from '../../utils/connectors/metaMask';
 
@@ -349,9 +349,11 @@ const CreateTask: React.FC<CreateTaskProps> = ({ recipientAddress, recipientENS 
 			});
 			await tx.wait();
 			if (tx.hash) {
-				setPendingTx(false);
-				handleClose();
+				// wait 2 seconds
+				await new Promise((resolve) => setTimeout(resolve, 2000));
 				dispatch(createTriggerSlice.actions.setCreateTrigger(true));
+				handleClose();
+				setPendingTx(false);
 			}
 		} catch (error) {
 			setPendingTx(false);

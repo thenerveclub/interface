@@ -5,10 +5,11 @@ import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
 import { CHAINS, getAddChainParameters } from '../../utils/chains';
 import { metaMask } from '../../utils/connectors/metaMask';
+import { claimTriggerSlice } from '../../state/trigger/claimTriggerSlice';
 
 const BuyButton = styled(Button)<{ theme: any }>`
 	color: #fff;
@@ -27,6 +28,28 @@ const BuyButton = styled(Button)<{ theme: any }>`
 	}
 `;
 
+const ChangeNetworkButton = styled(Button)<{ theme: any }>`
+	display: flex;
+	color: ${({ theme }) => theme.palette.text.primary};
+	text-transform: none;
+	width: 150px;
+	font-size: 1rem;
+	font-weight: 400;
+	line-height: 1.5;
+	height: 100%;
+	background-color: ${({ theme }) => theme.palette.warning.main};
+	border-radius: ${({ theme }) => theme.customShape.borderRadius};
+
+	&:hover {
+		background-color: ${({ theme }) => theme.palette.warning.main};
+	}
+
+	&:disabled {
+		color: ${({ theme }) => theme.palette.secondary.main};
+		background-color: ${({ theme }) => theme.palette.warning.dark};
+	}
+`;
+
 interface RedeemUserProps {
 	dareData: any;
 }
@@ -37,34 +60,15 @@ const RedeemUser: React.FC<RedeemUserProps> = ({ dareData }) => {
 	const { enqueueSnackbar } = useSnackbar();
 
 	// Redux
+	const dispatch = useDispatch();
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 
 	// State
 	const [pendingTx, setPendingTx] = useState(false);
+	const network = dareData[0]?.task.chainId;
 
 	// Claim Function
 	async function claim() {
-		let shouldProceed = true;
-
-		if (chainId !== dareData[0]?.task.chainId) {
-			if (metaMask) {
-				try {
-					await metaMask.activate(Number(dareData[0]?.task?.chainId));
-				} catch (error) {
-					console.error(error);
-					shouldProceed = false;
-				}
-			} else {
-				try {
-					await metaMask.activate(getAddChainParameters(Number(dareData[0]?.task?.chainId)));
-				} catch (error) {
-					console.error(error);
-					shouldProceed = false;
-				}
-			}
-		}
-
-		if (shouldProceed) {
 			const signer = provider.getSigner();
 			const nerveGlobal = new ethers.Contract(CHAINS[dareData[0]?.task.chainId]?.contract, NerveGlobalABI, signer);
 
@@ -73,18 +77,38 @@ const RedeemUser: React.FC<RedeemUserProps> = ({ dareData }) => {
 				const tx = await nerveGlobal.claim(dareData[0]?.task.id);
 				await tx.wait();
 				if (tx.hash) {
+					// wait 2 seconds
+					await new Promise((resolve) => setTimeout(resolve, 2000));
+					dispatch(claimTriggerSlice.actions.setClaimTrigger(true));
 					setPendingTx(false);
 				}
 			} catch (error) {
 				setPendingTx(false);
 				console.log(error);
 			}
-		}
 	}
+
+	// Change Network
+	const handleNetworkChange = async () => {
+		if (metaMask) {
+			try {
+				await metaMask.activate(Number(network));
+			} catch (error) {
+				console.error(error);
+			}
+		} else {
+			try {
+				await metaMask.activate(getAddChainParameters(Number(network)));
+			} catch (error) {
+				console.error(error);
+			}
+		}
+	};
 
 	return (
 		<>
-			{pendingTx ? (
+		{chainId === Number(network) ? (
+			pendingTx ? (
 				<BuyButton theme={theme} startIcon={<CircularProgress color="info" thickness={2.5} size={20} />} disabled={true}>
 					Pending
 				</BuyButton>
@@ -92,6 +116,17 @@ const RedeemUser: React.FC<RedeemUserProps> = ({ dareData }) => {
 				<BuyButton theme={theme} onClick={claim}>
 					Redeem User
 				</BuyButton>
+			)
+			) : (
+				network && (
+					<ChangeNetworkButton
+						theme={theme}
+						onClick={handleNetworkChange}
+						startIcon={pendingTx && <CircularProgress color="secondary" thickness={2.5} size={20} />}
+					>
+						Change Network
+					</ChangeNetworkButton>
+				)
 			)}
 		</>
 	);

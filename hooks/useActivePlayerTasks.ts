@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createTriggerSlice } from '../state/create/createTriggerSlice';
+import { createTriggerSlice } from '../state/trigger/createTriggerSlice';
 import { CHAINS } from '../utils/chains';
 
 const useActivePlayerTasks = (checksumAddress: string) => {

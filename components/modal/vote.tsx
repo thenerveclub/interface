@@ -6,8 +6,9 @@ import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
+import { voteTriggerSlice } from '../../state/trigger/voteTriggerSlice';
 import { CHAINS, getAddChainParameters } from '../../utils/chains';
 import { metaMask } from '../../utils/connectors/metaMask';
 
@@ -162,6 +163,7 @@ const VoteTask: React.FC<VoteTaskProps> = ({ dareData }) => {
 	const { enqueueSnackbar } = useSnackbar();
 
 	// Redux
+	const dispatch = useDispatch();
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 
 	// State
@@ -190,8 +192,11 @@ const VoteTask: React.FC<VoteTaskProps> = ({ dareData }) => {
 			const tx = await nerveGlobal.vote(dareData[0]?.task?.id, true);
 			await tx.wait();
 			if (tx.hash) {
-				setPendingTx(false);
+				// wait 2 seconds
+				await new Promise((resolve) => setTimeout(resolve, 2000));
+				dispatch(voteTriggerSlice.actions.setVoteTrigger(true));
 				handleClose();
+				setPendingTx(false);
 			}
 		} catch (error) {
 			setPendingTx(false);
@@ -208,8 +213,11 @@ const VoteTask: React.FC<VoteTaskProps> = ({ dareData }) => {
 			const tx = await nerveGlobal.vote(dareData[0]?.task?.id, false);
 			await tx.wait();
 			if (tx.hash) {
-				setPendingTx(false);
+				// wait 2 seconds
+				await new Promise((resolve) => setTimeout(resolve, 2000));
+				dispatch(voteTriggerSlice.actions.setVoteTrigger(true));
 				handleClose();
+				setPendingTx(false);
 			}
 		} catch (error) {
 			setPendingTx(false);

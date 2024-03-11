@@ -6,8 +6,9 @@ import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
+import { proveTriggerSlice } from '../../state/trigger/proveTriggerSlice';
 import { CHAINS, getAddChainParameters } from '../../utils/chains';
 import { metaMask } from '../../utils/connectors/metaMask';
 
@@ -137,6 +138,7 @@ const ProveDare: React.FC<ProveDareProps> = ({ dareData }) => {
 	const { enqueueSnackbar } = useSnackbar();
 
 	// Redux
+	const dispatch = useDispatch();
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 
 	// State
@@ -144,7 +146,6 @@ const ProveDare: React.FC<ProveDareProps> = ({ dareData }) => {
 	const [pendingTx, setPendingTx] = useState(false);
 	const [isClosing, setIsClosing] = useState(false); // <-- New state to track closing status
 	const [proveLink, setProveLink] = useState('');
-	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
 	// Handle open and close modal
 	const handleOpen = () => setOpen(true);
@@ -166,19 +167,17 @@ const ProveDare: React.FC<ProveDareProps> = ({ dareData }) => {
 		const nerveGlobal = new ethers.Contract(CHAINS[dareData[0]?.task.chainId]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			setIsButtonDisabled(true); // Disable button immediately on click
-
 			const tx = await nerveGlobal.prove(dareData[0]?.task.id, proveLink);
 			await tx.wait();
 			if (tx.hash) {
-				setPendingTx(false);
-				// Set a timeout to re-enable the button after 1 minute
-				setTimeout(() => setIsButtonDisabled(false), 60000); // 60000 ms = 1 minute
+				// wait 2 seconds
+				await new Promise((resolve) => setTimeout(resolve, 2000));
+				dispatch(proveTriggerSlice.actions.setProveTrigger(true));
 				handleClose();
+				setPendingTx(false);
 			}
 		} catch (error) {
 			setPendingTx(false);
-			setIsButtonDisabled(false); // Re-enable button on error
 			console.log(error);
 		}
 	}
@@ -202,7 +201,7 @@ const ProveDare: React.FC<ProveDareProps> = ({ dareData }) => {
 
 	return (
 		<>
-			<ModalButton theme={theme} onClick={handleOpen} disabled={isButtonDisabled}>
+			<ModalButton theme={theme} onClick={handleOpen}>
 				Prove Dare
 			</ModalButton>
 			<StyledModal open={open} onClose={handleClose}>

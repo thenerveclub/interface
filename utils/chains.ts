@@ -42,7 +42,7 @@ interface ExtendedChainInformation extends BasicChainInformation {
 function isExtendedChainInformation(
 	chainInformation: BasicChainInformation | ExtendedChainInformation
 ): chainInformation is ExtendedChainInformation {
-	return !!(chainInformation as ExtendedChainInformation).nativeCurrency;
+	return !!(chainInformation as ExtendedChainInformation)?.nativeCurrency;
 }
 
 export function getAddChainParameters(chainId: number): AddEthereumChainParameter | number {
@@ -123,6 +123,7 @@ export const CHAINS: {
 		urlName: 'sepolia',
 		name: 'Sepolia',
 		nameToken: 'ETH',
+		nativeCurrency: ETH,
 		blockExplorerUrls: ['https://sepolia.etherscan.io/'],
 		contract: '0x2abB51B241c7363651cb51C76AE989Bd0458DA6B',
 		blockTime: 10000,
