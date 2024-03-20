@@ -164,18 +164,22 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ location }) => {
 			const infoWindow = new google.maps.InfoWindow({
 				content: `
 				<div style="max-width: 200px; overflow: hidden; word-wrap: break-word;">
-				<h1 style="color: black; font-size: 0.875rem; font-weight: 400;">Player: ${dataItem?.recipientName}</h1>
+				<div style="display: flex; align-items: center; margin-top: 0.5rem; margin-bottom: 0.5rem; justify-content: center;">
+				<img src="${CHAINS[dataItem?.chainId]?.logo}" style="display: flex; margin-right: 0.5rem;" width="18" height="18" alt="Logo" />
+				<a style="color: black; font-size: 0.875rem; font-weight: 400;">${CHAINS[dataItem?.chainId]?.name}</a>
+				</div>
 				<br />
-				<a style="color: black; font-size: 0.875rem; font-weight: 300;">Amount: ${
+				<a style="color: black; font-size: 0.875rem; font-weight: 400; margin-top: 0.5rem;">${dataItem?.description}</a>
+				<br />
+				<a style="color: black; font-size: 0.875rem; font-weight: 400; margin-top: 0.5rem;">Amount: ${
 					currencyValue
 						? `$${formatNumber(dataItem?.amount * currencyPrice[CHAINS[dataItem?.chainId]?.nameToken.toLowerCase()])}`
 						: `${formatCrypto(dataItem?.amount)} ${CHAINS[dataItem?.chainId]?.nameToken}`
 				}</a>
 				<br />
-				<a style="color: black; font-size: 0.875rem; font-weight: 300;">${dataItem?.description}</a>
-				<br />
-				<img src="${CHAINS[dataItem?.chainId]?.logo}" style="display: flex; margin-right: 0.5rem;" width="18" height="18" alt="Logo" />
-				<a style="color: black; font-size: 0.875rem; font-weight: 300;">${CHAINS[dataItem?.chainId]?.name}</a>
+				<h1 style="color: black; font-size: 0.875rem; font-weight: 400;">Player: ${dataItem?.recipientAddress.substring(0, 6).toLowerCase()}...
+				${dataItem?.recipientAddress.substring(dataItem?.recipientAddress.length - 4).toLowerCase()}</h1>
+				</h1>
 				</div>
 				`,
 			});

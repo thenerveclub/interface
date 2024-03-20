@@ -148,7 +148,7 @@ const DescriptionCard: React.FC<DescriptionCardProps> = ({ dareData }) => {
 					<p>By</p>
 					<a onClick={() => router.push(`/player/${dareData[0]?.task.initiatorAddress}`)}>
 						({dareData[0]?.task.initiatorAddress?.substring(0, 6)}...
-						{dareData[0]?.task.initiatorAddress?.substring(dareData[0]?.task.initiatorAddress?.length - 4).toUpperCase()})
+						{dareData[0]?.task.initiatorAddress?.substring(dareData[0]?.task.initiatorAddress?.length - 4).toLowerCase()})
 					</a>
 				</div>
 			</StyledTableContainer>

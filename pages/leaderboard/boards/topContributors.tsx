@@ -175,7 +175,7 @@ const TopContributors: React.FC<TopContributorsProps> = ({ topContributors, load
 
 	return (
 		<>
-			{loading ? (
+			{loading || !sortedData ? (
 				<LoadingScreen />
 			) : (
 				<>

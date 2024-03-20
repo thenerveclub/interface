@@ -233,7 +233,7 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 
 	return (
 		<>
-			{loading ? (
+			{loading || !topDares ? (
 				<LoadingScreen />
 			) : (
 				<>

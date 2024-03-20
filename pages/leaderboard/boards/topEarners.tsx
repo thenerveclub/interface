@@ -173,7 +173,7 @@ const TopEarners: React.FC<TopEarnerProps> = ({ topEarners, loading, error }) =>
 
 	return (
 		<>
-			{loading ? (
+			{loading || !sortedData ? (
 				<LoadingScreen />
 			) : (
 				<>
