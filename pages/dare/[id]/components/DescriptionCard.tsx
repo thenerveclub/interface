@@ -9,7 +9,7 @@ import XSVG from 'public/svg/socials/x.svg';
 const TaskCard = styled(Box)<{ theme: any }>`
 	display: flex;
 	flex-direction: column;
-	width: 90%;
+	width: 100%;
 	margin: 0 auto 0 auto;
 	background-color: ${({ theme }) => theme.palette.background.default};
 	backdrop-filter: blur(15px) brightness(70%);
@@ -62,13 +62,19 @@ const StyledDivider = styled(Divider)<{ theme: any }>`
 
 const StyledTableContainer = styled(Box)<{ theme: any }>`
 	display: flex;
-	justify-content: flex-start;
 	flex-direction: column;
-	justify-content: left;
-	align-items: left;
+	justify-content: center;
 	padding: 1rem;
 	font-size: 1rem;
 	cursor: default;
+	height: 250px;
+
+	div {
+		display: flex;
+		justify-content: center;
+		align-items: right;
+		margin: 0.5rem 0 0.5rem 0;
+	}
 
 	p {
 		color: white;
@@ -101,52 +107,50 @@ const StyledTableContainer = styled(Box)<{ theme: any }>`
 	}
 `;
 
+const DescriptionSection = styled(Box)`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 0 auto 0 auto;
+	height: 100%;
+	flex-grow: 1;
+
+	p {
+		font-size: 1rem;
+		text-align: center;
+	}
+
+	@media (max-width: 750px) {
+	}
+`;
+
 interface DescriptionCardProps {
-	description: string;
-	initiator: string;
-	player: string;
+	dareData: any;
 }
 
-const DescriptionCard: React.FC<DescriptionCardProps> = ({ description, initiator, player }) => {
+const DescriptionCard: React.FC<DescriptionCardProps> = ({ dareData }) => {
 	const theme = useTheme();
 	const router = useRouter();
-	const path = `https://nerveglobal.com${router.asPath}`;
+
+	if (!dareData) return null;
 
 	return (
 		<TaskCard theme={theme}>
 			<StyledCardHeader theme={theme}>
 				<div>
 					<p>Description</p>
-					<a
-						href={`https://twitter.com/intent/tweet?text=The stakes have never been higher! 💰 Dive into the excitement on %23Nerve 🚀 Whether you're playing, watching, or betting, be part of the thrill. How much is at stake for ${player}? Check it out and spread the word! ➡️ %20${path}%20%23DoYouDare`}
-						target="_blank"
-					>
-						<XSVG />
-					</a>
-					<a
-						href={`https://telegram.me/share/url?url=${path}&text=The stakes have never been higher! 💰 Dive into the excitement on %23Nerve 🚀 Whether you're playing, watching, or betting, be part of the thrill. How much is at stake for 0xd0ba...fe46? Check it out and spread the word! ➡️%20${player}?%20Check%20it%20out%20and%20spread%20the%20word!%20%23DoYouDare`}
-						target="_blank"
-					>
-						<Telegram />
-					</a>
-					<a
-						href={`https://api.whatsapp.com/send?text=The stakes have never been higher! 💰 Dive into the excitement on %23Nerve 🚀 Whether you're playing, watching, or betting, be part of the thrill. How much is at stake for 0xd0ba...fe46? Check it out and spread the word! ➡️%20${path}%20%23DoYouDare`}
-						target="_blank"
-					>
-						<WhatsApp />
-					</a>
 				</div>
 				<StyledDivider theme={theme} />
 			</StyledCardHeader>
 			<StyledTableContainer theme={theme}>
-				<div style={{ display: 'flex', marginBottom: '0.5rem' }}>
+				<DescriptionSection>{dareData[0]?.task.description}</DescriptionSection>
+				<div>
 					<p>By</p>
-					<a onClick={() => router.push(`/player/${initiator}`)}>
-						({initiator?.substring(0, 6)}...
-						{initiator?.substring(initiator?.length - 4).toUpperCase()})
+					<a onClick={() => router.push(`/player/${dareData[0]?.task.initiatorAddress}`)}>
+						({dareData[0]?.task.initiatorAddress?.substring(0, 6)}...
+						{dareData[0]?.task.initiatorAddress?.substring(dareData[0]?.task.initiatorAddress?.length - 4).toUpperCase()})
 					</a>
 				</div>
-				{description}
 			</StyledTableContainer>
 		</TaskCard>
 	);

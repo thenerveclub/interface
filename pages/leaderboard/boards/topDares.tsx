@@ -10,7 +10,6 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import LoadingScreen from '../../../components/LoadingScreen';
-import useDareRankingData from '../../../hooks/rankingData/useDareRankingData';
 import { currencySlice } from '../../../state/currency/currencySlice';
 import { CHAINS, nameToChainId } from '../../../utils/chains';
 
@@ -26,7 +25,7 @@ const StyledBox = styled(Box)`
 	min-width: 1400px;
 	max-width: 1400px;
 	// height: 85vh;
-	margin: 5rem auto 0 auto;
+	margin: 2.5rem auto 5rem auto;
 	background-color: transparent;
 
 	@media (max-width: 680px) {
@@ -60,7 +59,7 @@ const Title = styled(Typography)<{ theme: any }>`
 
 const StyledTable = styled(Table)<{ theme: any }>`
 	width: 100%;
-	min-width: 1400px;
+	min-width: 1200px;
 	max-width: 1400px;
 	height: 100%;
 
@@ -78,6 +77,7 @@ const StyledButton = styled(Button)<{ theme: any }>`
 	background-color: transparent;
 	text-transform: none;
 	width: 100%;
+	cursor: default;
 
 	@media (max-width: 600px) {
 		font-size: 3rem;
@@ -94,8 +94,8 @@ const StyledTableRow = styled(TableRow)<{ theme: any }>`
 	}
 
 	&:hover {
-		transform: scale(1.02);
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		// transform: scale(1.02);
+		// box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	}
 `;
 
@@ -154,23 +154,24 @@ const StyledArrowCircleUpOutlinedIcon = styled(ArrowCircleUpOutlinedIcon)<{ them
 `;
 
 const StyledTableContainer = styled(Box)<{ theme: any }>`
-	height: 100vh;
+	// height: 100vh;
 	overflow-y: auto;
 `;
 
-export default function RankingDaresPage() {
+interface TopDaresProps {
+	topDares: any;
+	loading: any;
+	error: any;
+}
+
+const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 	const theme = useTheme();
 	const router = useRouter();
-	const network = router.query.network as string;
-
-	// Name to Chain ID
-	const chainIdUrl = nameToChainId[network];
 
 	// Redux
 	const dispatch = useDispatch();
 	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
 	const currencyPrice = useSelector((state: { currencyPrice: any }) => state.currencyPrice);
-	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
 
 	// Toogle Button For Token Price
 	const handleToggle = (event, newCurrency) => {
@@ -178,12 +179,8 @@ export default function RankingDaresPage() {
 		dispatch(currencySlice.actions.updateCurrency(newCurrency));
 	};
 
-	// Network Check
-	const isNetworkAvailable = availableChains.includes(chainIdUrl);
-
 	const [order, setOrder] = useState('desc');
 	const [orderBy, setOrderBy] = useState('amount');
-	const { rankingList, isLoading } = useDareRankingData(isNetworkAvailable ? chainIdUrl : 137, orderBy);
 
 	const createSortHandler = (property) => (event) => {
 		const isAsc = orderBy === property && order === 'desc';
@@ -191,35 +188,9 @@ export default function RankingDaresPage() {
 		setOrderBy(property);
 	};
 
-	const sortedData = [...rankingList].sort((a, b) => {
-		let aValue, bValue;
-
-		if (orderBy === 'voters') {
-			aValue = Number(a.positiveVotes) + Number(a.negativeVotes);
-			bValue = Number(b.positiveVotes) + Number(b.negativeVotes);
-		} else if (orderBy === 'voting') {
-			const totalVotesA = Number(a.positiveVotes) + Number(a.negativeVotes);
-			const totalVotesB = Number(b.positiveVotes) + Number(b.negativeVotes);
-			aValue = totalVotesA === 0 ? -1 : (Number(a.positiveVotes) / totalVotesA) * 100;
-			bValue = totalVotesB === 0 ? -1 : (Number(b.positiveVotes) / totalVotesB) * 100;
-		} else {
-			aValue = Number(a[orderBy]);
-			bValue = Number(b[orderBy]);
-		}
-
-		if (aValue === -1 && bValue !== -1) return 1; // Move a to the middle
-		if (bValue === -1 && aValue !== -1) return -1; // Move b to the middle
-
-		if (order === 'asc') {
-			return aValue - bValue;
-		} else {
-			return bValue - aValue;
-		}
-	});
-
-	const handleDare = (dareID) => {
+	const handleDare = (chainID, dareID) => {
 		return () => {
-			router.push(`/dare/${dareID}`);
+			router.push(`/dare/${chainID}-${dareID}`);
 		};
 	};
 
@@ -262,7 +233,7 @@ export default function RankingDaresPage() {
 
 	return (
 		<>
-			{isLoading ? (
+			{loading ? (
 				<LoadingScreen />
 			) : (
 				<>
@@ -286,14 +257,14 @@ export default function RankingDaresPage() {
 						{/* <Title theme={theme}>
 							<a>Dare Leaderboard</a>
 						</Title> */}
-						<StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
+						{/* <StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
 							<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
 								{isNetworkAvailable ? <a>{CHAINS[chainIdUrl]?.nameToken}</a> : <a>MATIC</a>}
 							</StyledToggleButton>
 							<StyledToggleButton theme={theme} disabled={currencyValue === true} value={true}>
 								<a>USD</a>
 							</StyledToggleButton>
-						</StyledToggleButtonGroup>
+						</StyledToggleButtonGroup> */}
 						<StyledTableContainer theme={theme}>
 							<StyledTable stickyHeader theme={theme}>
 								<TableHead>
@@ -301,9 +272,9 @@ export default function RankingDaresPage() {
 										<TableCell>#</TableCell>
 										<TableCell>Description</TableCell>
 										<TableCell>
-											<StyledButton theme={theme} onClick={createSortHandler('entranceAmount')}>
+											<StyledButton theme={theme}>
 												Entry Amount
-												{orderBy === 'entranceAmount' ? (
+												{/* {orderBy === 'entranceAmount' ? (
 													order === 'asc' ? (
 														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
 													) : (
@@ -313,14 +284,14 @@ export default function RankingDaresPage() {
 													<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
 												) : (
 													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-												)}
+												)} */}
 											</StyledButton>
 										</TableCell>
 
 										<TableCell>
-											<StyledButton theme={theme} onClick={createSortHandler('amount')}>
+											<StyledButton theme={theme}>
 												Total Amount
-												{orderBy === 'amount' ? (
+												{/* {orderBy === 'amount' ? (
 													order === 'asc' ? (
 														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
 													) : (
@@ -330,14 +301,14 @@ export default function RankingDaresPage() {
 													<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
 												) : (
 													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-												)}
+												)} */}
 											</StyledButton>
 										</TableCell>
 
 										<TableCell>
-											<StyledButton theme={theme} onClick={createSortHandler('participants')}>
+											<StyledButton theme={theme}>
 												Participants
-												{orderBy === 'participants' ? (
+												{/* {orderBy === 'participants' ? (
 													order === 'asc' ? (
 														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
 													) : (
@@ -347,14 +318,14 @@ export default function RankingDaresPage() {
 													<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
 												) : (
 													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-												)}
+												)} */}
 											</StyledButton>
 										</TableCell>
 
 										<TableCell>
-											<StyledButton theme={theme} onClick={createSortHandler('voters')}>
+											<StyledButton theme={theme}>
 												Voters
-												{orderBy === 'voters' ? (
+												{/* {orderBy === 'voters' ? (
 													order === 'asc' ? (
 														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
 													) : (
@@ -364,14 +335,14 @@ export default function RankingDaresPage() {
 													<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
 												) : (
 													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-												)}
+												)} */}
 											</StyledButton>
 										</TableCell>
 
 										<TableCell>
-											<StyledButton theme={theme} onClick={createSortHandler('voting')}>
+											<StyledButton theme={theme}>
 												Voting
-												{orderBy === 'voting' ? (
+												{/* {orderBy === 'voting' ? (
 													order === 'asc' ? (
 														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
 													) : (
@@ -381,15 +352,15 @@ export default function RankingDaresPage() {
 													<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
 												) : (
 													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-												)}
+												)} */}
 											</StyledButton>
 										</TableCell>
 									</TableRow>
 								</TableHead>
 								<TableBody>
-									{rankingList.length > 0 ? (
-										sortedData.map((row, index) => (
-											<StyledTableRow theme={theme} key={index} onClick={handleDare(row.id)}>
+									{topDares.length > 0 ? (
+										topDares.map((row, index) => (
+											<StyledTableRow theme={theme} key={index} onClick={handleDare(row.chainId, row.id)}>
 												<TableCell>{index + 1}</TableCell>
 												<TableCell>
 													<a style={{ cursor: 'pointer' }}>
@@ -399,19 +370,23 @@ export default function RankingDaresPage() {
 												<TableCell style={{ textAlign: 'right' }}>
 													{currencyValue === false ? (
 														<a style={{ cursor: 'pointer' }}>
-															{formatNumber(row.entranceAmount)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
+															{formatNumber(row.entranceAmount)} {CHAINS[row.chainId]?.nameToken}
 														</a>
 													) : (
-														<a style={{ cursor: 'pointer' }}>${formatNumber(row.entranceAmount * currencyPrice[network]?.usd)}</a>
+														<a style={{ cursor: 'pointer' }}>
+															${formatNumber(row.entranceAmount * currencyPrice[CHAINS[row.chainId]?.nameToken.toLowerCase()])}
+														</a>
 													)}
 												</TableCell>
 												<TableCell style={{ textAlign: 'right' }}>
 													{currencyValue === false ? (
 														<a style={{ cursor: 'pointer' }}>
-															{formatNumber(row.amount)} {isNetworkAvailable ? CHAINS[chainIdUrl]?.nameToken : 'MATIC'}
+															{formatNumber(row.amount)} {CHAINS[row.chainId]?.nameToken}
 														</a>
 													) : (
-														<a style={{ cursor: 'pointer' }}>${formatNumber(row.amount * currencyPrice[network]?.usd)}</a>
+														<a style={{ cursor: 'pointer' }}>
+															${formatNumber(row.amount * currencyPrice[CHAINS[row.chainId]?.nameToken.toLowerCase()])}
+														</a>
 													)}
 												</TableCell>
 												<TableCell style={{ textAlign: 'right' }}>{row.participants}</TableCell>
@@ -435,4 +410,6 @@ export default function RankingDaresPage() {
 			)}
 		</>
 	);
-}
+};
+
+export default TopDares;

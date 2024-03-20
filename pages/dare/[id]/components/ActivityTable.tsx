@@ -14,7 +14,7 @@ import { CHAINS } from '../../../../utils/chains';
 const TaskCard = styled(Box)<{ theme: any }>`
 	display: flex;
 	flex-direction: column;
-	width: 90%;
+	width: 100%;
 	max-height: 500px;
 	margin: 0 auto 0 auto;
 	background-color: ${({ theme }) => theme.palette.background.default};
@@ -22,6 +22,7 @@ const TaskCard = styled(Box)<{ theme: any }>`
 	border: 0.5px solid ${({ theme }) => theme.palette.secondary.main};
 	border-radius: ${({ theme }) => theme.customShape.borderRadius};
 	overflow: auto;
+	z-index: 999;
 
 	@media (max-width: 960px) {
 		width: 95%;
@@ -58,6 +59,7 @@ const StyledCardFilter = styled(Box)<{ theme: any }>`
 
 const StyledTableContainer = styled(Box)<{ theme: any }>`
 	overflow-y: auto;
+	z-index: 1;
 `;
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{ theme: any }>`
@@ -161,23 +163,31 @@ const StyledTableRow = styled(TableRow)<{ theme: any }>`
 	}
 `;
 
+const TableCellAmount = styled(TableCell)<{ theme: any }>`
+	text-align: left;
+	width: 15rem;
+
+	p {
+		margin: 0;
+		white-space: nowrap;
+	}
+
+	@media (max-width: 860px) {
+		min-width: 7.5rem;
+	}
+`;
+
 interface ActivityTableProps {
-	network: string;
-	id: string;
 	dareData: any;
 }
 
-const ActivityTable: React.FC<ActivityTableProps> = ({ network, id, dareData }) => {
+const ActivityTable: React.FC<ActivityTableProps> = ({ dareData }) => {
 	const theme = useTheme();
-	const router = useRouter();
 
 	// Redux
 	const dispatch = useDispatch();
-	const account = useSelector((state: { account: string }) => state.account);
-	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
 	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
-	const availableChains = useSelector((state: { availableChains: number[] }) => state.availableChains);
 
 	// State declarations
 	const [order, setOrder] = useState('desc');
@@ -220,12 +230,21 @@ const ActivityTable: React.FC<ActivityTableProps> = ({ network, id, dareData }) 
 		dispatch(currencySlice.actions.updateCurrency(newCurrency));
 	};
 
+	function formatCrypto(value) {
+		return (Number(value) / 1e18).toLocaleString('en-US', {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 4,
+		});
+	}
+
 	function formatNumber(value) {
 		return (Number(value) / 1e18).toLocaleString('en-US', {
 			minimumFractionDigits: 2,
 			maximumFractionDigits: 2,
 		});
 	}
+
+	if (!dareData) return null;
 
 	return (
 		<TaskCard theme={theme}>
@@ -252,7 +271,7 @@ const ActivityTable: React.FC<ActivityTableProps> = ({ network, id, dareData }) 
 				</StyledFilterGroup>
 				<StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
 					<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
-						{CHAINS[network]?.nameToken}
+						{CHAINS[dareData[0]?.task.chainId]?.nameToken}
 					</StyledToggleButton>
 					<StyledToggleButton theme={theme} disabled={currencyValue === true} value={true}>
 						<a>USD</a>
@@ -262,11 +281,11 @@ const ActivityTable: React.FC<ActivityTableProps> = ({ network, id, dareData }) 
 			<StyledTableContainer theme={theme}>
 				<StyledTable stickyHeader theme={theme}>
 					<TableHead>
-						<TableRow>
+						<TableRow style={{ zIndex: '1' }}>
 							<TableCell>Event</TableCell>
 							<TableCell>Amount</TableCell>
 							<TableCell>Address</TableCell>
-							<TableCell>Name</TableCell>
+							{/* <TableCell>Name</TableCell> */}
 
 							<TableCell>
 								<StyledButton theme={theme} onClick={createSortHandler('voted')}>
@@ -350,19 +369,27 @@ const ActivityTable: React.FC<ActivityTableProps> = ({ network, id, dareData }) 
 										)}
 									</TableCell>
 
-									<TableCell style={{ textAlign: 'left' }}>
-										{currencyValue === false ? (
-											<a>
-												{formatNumber(row.userStake)} {CHAINS[network]?.nameToken}
-											</a>
+									<TableCellAmount theme={theme}>
+										{row.task.initiatorAddress === row.userAddress ? (
+											currencyValue === false ? (
+												<p>
+													{formatCrypto(row.task.entranceAmount)} {CHAINS[dareData[0]?.task.chainId]?.nameToken}
+												</p>
+											) : (
+												<p>${formatNumber(row.task.entranceAmount * currencyPrice[CHAINS[dareData[0]?.task.chainId]?.nameToken?.toLowerCase()])}</p>
+											)
+										) : currencyValue === false ? (
+											<p>
+												{formatCrypto(row.userStake)} {CHAINS[dareData[0]?.task.chainId]?.nameToken}
+											</p>
 										) : (
-											<a>${formatNumber(row.userStake * currencyPrice[network]?.usd)}</a>
+											<p>${formatNumber(row.userStake * currencyPrice[CHAINS[dareData[0]?.task.chainId]?.nameToken?.toLowerCase()])}</p>
 										)}
-									</TableCell>
+									</TableCellAmount>
 									<TableCell style={{ textAlign: 'left' }}>{`${row.userAddress.slice(0, 6)}...${row.userAddress.slice(-4)}`}</TableCell>
-									<TableCell style={{ textAlign: 'left' }}>
+									{/* <TableCell style={{ textAlign: 'left' }}>
 										<a>{row.userName}</a>
-									</TableCell>
+									</TableCell> */}
 									<TableCell style={{ textAlign: 'right', color: row.voted ? theme.palette.success.contrastText : theme.palette.error.contrastText }}>
 										{row.voted ? 'Yes' : 'No'}
 									</TableCell>

@@ -1,0 +1,126 @@
+import fetch from 'node-fetch';
+import { CHAINS } from '../../utils/chains'; // Assuming this path is correct
+
+let cachedGlobalStats;
+let lastGlobalStatsFetchTime;
+
+// Function to fetch currency prices
+const fetchCurrencyPrices = async () => {
+	try {
+		const response = await fetch('https://canary.nerveglobal.com/api/tokenPriceData'); // Update with the correct URL/path
+		if (!response.ok) throw new Error('Failed to fetch currency prices');
+		return response.json();
+	} catch (error) {
+		console.error('Error fetching currency prices:', error);
+		return null;
+	}
+};
+
+// Function to format balance
+const formatBalance = (value) => {
+	return (Number(value) / 1e18).toLocaleString('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2,
+	});
+};
+
+// Function to fetch global stats from a specific chain
+const fetchStatsFromChain = async (chainId, chainData) => {
+	const query = `
+	{
+		userStats(first: 100, orderBy: earned, orderDirection: desc) {
+		  id
+		  earned
+		}
+	 }
+  `;
+
+	try {
+		const response = await fetch(chainData.graphApi, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ query }),
+		});
+
+		const data = await response.json();
+		return { [chainId]: data.data.userStats };
+	} catch (error) {
+		console.error(`Error fetching stats for chain ${chainId}:`, error);
+		return null;
+	}
+};
+
+// Function to fetch and sort player ranking based on a criterion
+const fetchAndAggregateData = async () => {
+	const currencyPrice = await fetchCurrencyPrices();
+	if (!currencyPrice) {
+		return null;
+	}
+
+	const fetchPromises = Object.entries(CHAINS).map(([chainId, chainData]) => fetchStatsFromChain(chainId, chainData));
+
+	const allData = (await Promise.all(fetchPromises)).reduce((acc, current) => {
+		const chainId = Object.keys(current)[0];
+		acc[chainId] = current[chainId];
+		return acc;
+	}, {});
+
+	const userData = {};
+	Object.entries(allData).forEach(([chainId, users]) => {
+		users.forEach((user) => {
+			const { id, earned } = user;
+			const tokenName = CHAINS[chainId].nameToken.toLowerCase();
+			const rate = currencyPrice[tokenName] || 1;
+
+			if (!userData[id]) {
+				userData[id] = { earned: 0 };
+			}
+			userData[id].earned += Number(earned) * rate;
+		});
+	});
+
+	const combinedData = Object.entries(userData).map(([id, data]) => ({
+		id,
+		earned: formatBalance(data.earned),
+	}));
+
+	combinedData.sort((a, b) => parseFloat(b.earned) - parseFloat(a.earned));
+
+	// Slice to get top 100
+	const top100 = combinedData.slice(0, 100);
+
+	return top100;
+};
+
+export default async function handler(req, res) {
+	// // Check the referer header
+	// const referer = req.headers.referer;
+
+	// // Allow requests only from your domain
+	// if (!referer || !referer.includes('nerveglobal.com')) {
+	// 	return res.status(403).json({ message: 'Access denied' });
+	// }
+
+	if (!cachedGlobalStats || new Date().getTime() - lastGlobalStatsFetchTime > 1 * 60 * 60 * 1000) {
+		try {
+			const aggregatedData = await fetchAndAggregateData();
+
+			if (aggregatedData) {
+				cachedGlobalStats = { rankedByEarned: aggregatedData };
+				lastGlobalStatsFetchTime = new Date().getTime();
+			}
+			res.status(200).json(cachedGlobalStats || { error: 'Failed to fetch top earners' });
+			return;
+		} catch (error) {
+			console.error('Failed to fetch top earners:', error);
+			if (cachedGlobalStats) {
+				res.status(200).json(cachedGlobalStats);
+				return;
+			}
+			res.status(500).json({ error: 'Failed to fetch top earners' });
+			return;
+		}
+	}
+
+	res.status(200).json(cachedGlobalStats);
+}

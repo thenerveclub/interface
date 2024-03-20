@@ -515,12 +515,12 @@ function SettingsModal() {
 						</StyledSwitchContainer>
 					</StyledTitles>
 
-					<StyledTitles theme={theme}>
+					{/* <StyledTitles theme={theme}>
 						<StyledDuoTitle theme={theme}>Show testnets</StyledDuoTitle>
 						<StyledSwitchContainer>
 							<IOSSwitch theme={theme} checked={showTestnets} onChange={handleChangeTestnets} />
 						</StyledSwitchContainer>
-					</StyledTitles>
+					</StyledTitles> */}
 
 					<StyledTitles theme={theme}>
 						<StyledDuoTitle theme={theme}>RPC endpoint</StyledDuoTitle>

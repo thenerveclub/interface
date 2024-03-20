@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { Box } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Map from '../../components/GoogleMap';
 
@@ -27,7 +28,30 @@ const StyledLayout = styled(Box)`
 
 export default function IndexPage() {
 	const theme = useTheme();
-	const [network, setNetwork] = useState(1);
+	const router = useRouter();
+	const { lat, lng } = router.query;
+
+	// Set default location values if necessary
+	const defaultLat = 20; // Example default latitude
+	const defaultLng = 0; // Example default longitude
+	const defaultZoom = 3; // Example default zoom level
+
+	const [location, setLocation] = useState({ latitude: defaultLat, longitude: defaultLng, zoom: defaultZoom });
+
+	useEffect(() => {
+		let latitude = defaultLat;
+		let longitude = defaultLng;
+		let zoom = defaultZoom;
+
+		if (lat && lng) {
+			// Convert URL parameters to numbers
+			latitude = Number(lat);
+			longitude = Number(lng);
+			zoom = Number(7); // Example zoom level
+		}
+
+		setLocation({ latitude, longitude, zoom });
+	}, [lat, lng]);
 
 	// Adjust the viewport height on mobile devices
 	useEffect(() => {
@@ -60,7 +84,7 @@ export default function IndexPage() {
 				<meta name="twitter:image" content="https://dapp.nerveglobal.com/favicon.ico" />
 			</Head>
 			<StyledLayout>
-				<Map network={network} />
+				<Map location={location} />
 			</StyledLayout>
 		</>
 	);

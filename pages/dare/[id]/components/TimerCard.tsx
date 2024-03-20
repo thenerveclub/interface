@@ -6,8 +6,8 @@ import React, { useEffect, useState } from 'react';
 const TaskCard = styled(Box)<{ theme: any }>`
 	display: flex;
 	flex-direction: column;
-	width: 70%;
-	margin: 0 auto;
+	width: 100%;
+	margin: 0 auto 0 auto;
 	background-color: ${({ theme }) => theme.palette.background.default};
 	backdrop-filter: blur(15px) brightness(70%);
 	border: 0.5px solid ${({ theme }) => theme.palette.secondary.main};
@@ -18,15 +18,38 @@ const TaskCard = styled(Box)<{ theme: any }>`
 	}
 `;
 
-const StyledCardHeader = styled(Box)`
+const StyledCardHeader = styled(Box)<{ theme: any }>`
 	display: flex;
 	flex-direction: column;
-	justify-content: left;
+	justify-content: space-between;
+
+	div {
+		display: flex;
+		flex-direction: row; /* Aligns children in a row */
+		justify-content: flex-end; /* Aligns children to the right */
+		align-items: center; /* Centers children vertically */
+		gap: 1rem; /* Ensures there is a 1rem gap between each child */
+		width: 100%;
+		height: 3rem;
+		padding-right: 1rem; /* Ensures content is 1rem from the right end */
+	}
 
 	a {
 		font-size: 16px;
-		cursor: default;
+		cursor: pointer;
+		fill: ${({ theme }) => theme.palette.secondary.main};
+		text-decoration: none;
+		height: auto;
+		&:hover {
+			text-decoration: underline;
+			fill: ${({ theme }) => theme.palette.warning.main};
+		}
+	}
+
+	p {
+		font-size: 1rem;
 		padding: 1rem;
+		margin-right: auto; /* Pushes everything else to the right */
 	}
 `;
 
@@ -58,7 +81,7 @@ const TimerCard: React.FC<TimerCardProps> = ({ dareData }) => {
 		const timeLeft = taskEndTime.getTime() - now.getTime();
 
 		if (timeLeft < 0) {
-			return '00d 00h 00m 00s'; // Task has ended
+			return 'Task has ended'; // Task has ended
 		}
 
 		const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24))
@@ -85,10 +108,14 @@ const TimerCard: React.FC<TimerCardProps> = ({ dareData }) => {
 		return () => clearInterval(interval); // Cleanup on unmount
 	}, [unixTimestamp]);
 
+	if (!dareData) return null;
+
 	return (
 		<TaskCard theme={theme}>
 			<StyledCardHeader theme={theme}>
-				<a>Time till task ends</a>
+				<div>
+					<p>Timer</p>
+				</div>
 				<StyledDivider theme={theme} />
 			</StyledCardHeader>
 			<StyledTableContainer theme={theme}>{countdown}</StyledTableContainer>

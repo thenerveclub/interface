@@ -3,14 +3,15 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { Box, Button, Skeleton, Tab, Tabs, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import router from 'next/router';
+import GoogleMaps from 'public/svg/tech/googlemaps.svg';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SelectFilter from '../../../../components/SelectFilter';
 import SelectSort from '../../../../components/SelectSort';
-import CreateTask from '../../../../components/modal/create';
+import CreateAtPlayer from '../../../../components/modal/create/createAtPlayer';
 import Connect from '../../../../components/modal/menu/Connect';
-import useActivePlayerTasks from '../../../../hooks/useActivePlayerTasks';
-import useCompletedPlayerTasks from '../../../../hooks/useCompletedPlayerTasks';
+import useActivePlayerTasks from '../../../../hooks/playerData/useActivePlayerTasks';
+import useCompletedPlayerTasks from '../../../../hooks/playerData/useCompletedPlayerTasks';
 import { currencySlice } from '../../../../state/currency/currencySlice';
 import { CHAINS } from '../../../../utils/chains';
 import EthereumLogo from '/public/svg/chains/ethereum.svg';
@@ -179,6 +180,38 @@ const TaskCard = styled(Box)<{ theme: any }>`
 	}
 `;
 
+const StyledInfo = styled.div<{ theme: any }>`
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	margin: 0 auto 0 auto;
+
+	@media (max-width: 750px) {
+	}
+`;
+
+const StyledMap = styled.div<{ theme: any }>`
+	display: flex;
+	justify-content: left;
+	align-items: center;
+	width: fit-content;
+	margin: 0 auto 0 0;
+	height: 35px;
+	color: rgba(255, 255, 255, 0.75);
+	font-size: 0.925rem;
+	background-color: rgba(134, 134, 139, 0.25);
+	border-radius: 12px;
+	padding: 0.5rem;
+	color: ${({ theme }) => theme.palette.text.primary};
+	cursor: default;
+
+	&:hover {
+		cursor: pointer;
+	}
+`;
+
 const StyledNetwork = styled.div<{ theme: any }>`
 	display: flex;
 	justify-content: right;
@@ -191,6 +224,8 @@ const StyledNetwork = styled.div<{ theme: any }>`
 	background-color: rgba(134, 134, 139, 0.25);
 	border-radius: 12px;
 	padding: 0.5rem;
+	color: ${({ theme }) => theme.palette.text.primary};
+	cursor: default;
 `;
 
 const TaskBoxSection = styled(Box)`
@@ -283,11 +318,10 @@ interface TabPanelProps {
 interface PlayerDaresProps {
 	recipientAddress: any;
 	recipientENS: any;
-	network: number;
 	error: any;
 }
 
-const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientENS, network, error }) => {
+const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientENS, error }) => {
 	const theme = useTheme();
 
 	// Redux
@@ -319,7 +353,7 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 
 	// Active Player Tasks
 	const activePlayerTasks = useActivePlayerTasks(recipientAddress);
-	const completedPlayerTasks = useCompletedPlayerTasks(recipientAddress, network);
+	const completedPlayerTasks = useCompletedPlayerTasks(recipientAddress);
 
 	const [filteredActiveTasks, setFilteredActiveTasks] = useState([]);
 	const [filteredCompletedTasks, setFilteredCompletedTasks] = useState([]);
@@ -392,6 +426,25 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 		setFilteredCompletedTasks(filteredCompletedTasks);
 	}, [sort, activePlayerTasks, completedPlayerTasks, filter]); // Include 'selectedChains' in the dependencies array
 
+	function formatCrypto(value) {
+		return (Number(value) / 1e18).toLocaleString('en-US', {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 4,
+		});
+	}
+
+	function formatNumber(value) {
+		return (Number(value) / 1e18).toLocaleString('en-US', {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2,
+		});
+	}
+
+	// Function to handle map click
+	const handleMapClick = (latitude, longitude) => {
+		router.push(`/map?lat=${latitude}&lng=${longitude}`);
+	};
+
 	return (
 		<>
 			<ActiveBox>
@@ -419,7 +472,7 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 						{!error && (
 							<CreateTaskBox>
 								{account && account.toLowerCase() !== recipientAddress && (
-									<CreateTask recipientAddress={recipientAddress} recipientENS={recipientENS} />
+									<CreateAtPlayer recipientAddress={recipientAddress} recipientENS={recipientENS} />
 								)}
 							</CreateTaskBox>
 						)}
@@ -429,10 +482,18 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 					{filteredActiveTasks.map((tad) => (
 						<li style={{ listStyle: 'none' }} key={tad.id}>
 							<TaskCard theme={theme}>
-								<StyledNetwork theme={theme}>
-									{getChainLogoComponent(tad?.chainId)}
-									{CHAINS[tad.chainId].name}
-								</StyledNetwork>
+								<StyledInfo theme={theme}>
+									{tad?.latitude && tad?.longitude !== '0' && (
+										<StyledMap theme={theme} onClick={() => handleMapClick(tad.latitude, tad.longitude)}>
+											<GoogleMaps style={{ fill: theme.palette.text.primary, display: 'flex', fontSize: '20px', marginRight: '0.5rem' }} />
+											Google Map
+										</StyledMap>
+									)}
+									<StyledNetwork theme={theme}>
+										{getChainLogoComponent(tad?.chainId)}
+										{CHAINS[tad.chainId].name}
+									</StyledNetwork>
+								</StyledInfo>
 								<TaskBoxSection>
 									<p>{tad.description}</p>
 								</TaskBoxSection>
@@ -446,14 +507,18 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 									</TaskBoxSectionOne>
 									<TaskBoxSectionTwo>
 										{currencyValue === false ? (
-											<p>{((tad?.amount / 1e18) * 1).toFixed(4)} ETH</p>
+											<p>
+												{formatCrypto(tad?.entranceAmount)} {CHAINS[tad?.chainId].nameToken}
+											</p>
 										) : (
-											<p>${((tad?.amount / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</p>
+											<p>${formatNumber(tad?.entranceAmount * currencyPrice[CHAINS[tad?.chainId]?.nameToken?.toLowerCase()])}</p>
 										)}
 										{currencyValue === false ? (
-											<p>{((tad?.entranceAmount / 1e18) * 1).toFixed(4)} ETH</p>
+											<p>
+												{formatCrypto(tad?.amount)} {CHAINS[tad?.chainId].nameToken}
+											</p>
 										) : (
-											<p>${((tad?.entranceAmount / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</p>
+											<p>${formatNumber(tad?.amount * currencyPrice[CHAINS[tad?.chainId]?.nameToken?.toLowerCase()])}</p>
 										)}
 									</TaskBoxSectionTwo>
 									<TaskButton onClick={() => router.push(`/dare/${tad.chainId}-` + tad.id)}>View Task</TaskButton>
@@ -468,7 +533,9 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 					{/* <ActiveTabLeftSection></ActiveTabLeftSection> */}
 					<ActiveTabRightSection>
 						{/* // Filter StyledSection */}
+						<SelectFilter />
 						<SelectSort />
+
 						<StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
 							<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
 								ETH
@@ -480,7 +547,7 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 						{!error && (
 							<CreateTaskBox>
 								{account && account.toLowerCase() !== recipientAddress && (
-									<CreateTask recipientAddress={recipientAddress} recipientENS={recipientENS} />
+									<CreateAtPlayer recipientAddress={recipientAddress} recipientENS={recipientENS} />
 								)}
 							</CreateTaskBox>
 						)}
@@ -490,6 +557,10 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 					{filteredCompletedTasks.map((tad) => (
 						<li style={{ listStyle: 'none' }} key={tad.id}>
 							<TaskCard theme={theme}>
+								<StyledNetwork theme={theme}>
+									{getChainLogoComponent(tad?.chainId)}
+									{CHAINS[tad.chainId].name}
+								</StyledNetwork>
 								<TaskBoxSection>
 									<p>{tad.description}</p>
 								</TaskBoxSection>
@@ -502,14 +573,18 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 									</TaskBoxSectionOne>
 									<TaskBoxSectionTwo>
 										{currencyValue === false ? (
-											<p>{((tad?.amount / 1e18) * 1).toFixed(2)} ETH</p>
+											<p>
+												{((tad?.entranceAmount / 1e18) * 1).toFixed(2)} {CHAINS[tad?.chainId].nameToken}
+											</p>
 										) : (
-											<p>${((tad?.amount / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</p>
+											<p>${formatNumber(tad?.entranceAmount * currencyPrice[CHAINS[tad?.chainId]?.nameToken?.toLowerCase()])}</p>
 										)}
 										{currencyValue === false ? (
-											<p>{((tad?.entranceAmount / 1e18) * 1).toFixed(2)} ETH</p>
+											<p>
+												{((tad?.amount / 1e18) * 1).toFixed(2)} {CHAINS[tad?.chainId].nameToken}
+											</p>
 										) : (
-											<p>${((tad?.entranceAmount / 1e18) * currencyPrice[network]?.usd).toFixed(2)}</p>
+											<p>${formatNumber(tad?.amount * currencyPrice[CHAINS[tad?.chainId]?.nameToken?.toLowerCase()])}</p>
 										)}
 									</TaskBoxSectionTwo>
 									<TaskButton onClick={() => router.push(`/dare/${tad.chainId}-` + tad.id)}>View Task</TaskButton>

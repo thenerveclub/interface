@@ -10,10 +10,10 @@ import { forwardRef, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
 import useBalanceTracker from '../../hooks/useBalanceTracker';
+import { joinTriggerSlice } from '../../state/trigger/joinTriggerSlice';
 import { CHAINS, getAddChainParameters } from '../../utils/chains';
 import { metaMask } from '../../utils/connectors/metaMask';
 import Connect from './menu/Connect';
-import { joinTriggerSlice } from '../../state/trigger/joinTriggerSlice';
 
 const StyledModal = styled(Modal)`
 	.MuiModal-backdrop {
@@ -189,6 +189,9 @@ const JoinDare: React.FC<JoinDareProps> = ({ dareData }) => {
 
 	// Handle open and close
 	const handleClose = () => {
+		// Prevent closing the modal if there's a pending transaction
+		if (pendingTx) return;
+		
 		setIsClosing(true); // <-- Set closing status to true
 		// Wait for the animation to complete before closing the modal
 		setTimeout(() => {
@@ -241,14 +244,14 @@ const JoinDare: React.FC<JoinDareProps> = ({ dareData }) => {
 
 	// Check if the input value exceeds the user's balance
 	const isOverBalance = () => {
-		return parseFloat(value) > parseFloat(formatNumber(balance));
+		return parseFloat(value) >= parseFloat(formatNumber(balance));
 	};
 
 	// Format Balance
 	function formatBalance(value) {
 		return Number(value).toLocaleString('en-US', {
 			minimumFractionDigits: 2,
-			maximumFractionDigits: 2,
+			maximumFractionDigits: 4,
 		});
 	}
 
@@ -256,7 +259,7 @@ const JoinDare: React.FC<JoinDareProps> = ({ dareData }) => {
 	function formatNumber(value) {
 		return Number(value / 1e18).toLocaleString('en-US', {
 			minimumFractionDigits: 2,
-			maximumFractionDigits: 2,
+			maximumFractionDigits: 4,
 		});
 	}
 
@@ -373,7 +376,7 @@ const JoinDare: React.FC<JoinDareProps> = ({ dareData }) => {
 						))}
 
 					<StyledSection style={{ margin: '2rem auto 1.5rem auto' }}>
-						{chainId !== Number(dareData[0]?.task?.chainId) ? (
+						{chainId === Number(dareData[0]?.task?.chainId) ? (
 							pendingTx ? (
 								<BuyButton theme={theme} disabled>
 									Pending

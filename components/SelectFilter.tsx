@@ -5,8 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { filterSlice } from '../state/filter/filterSlice';
-import EthereumLogo from '/public/svg/chains/ethereum.svg';
-import PolygonLogo from '/public/svg/chains/polygon.svg';
+import { CHAINS } from '../utils/chains';
 
 const StyledSelect = styled(Select, {
 	shouldForwardProp: (prop) => prop !== 'focus' && prop !== 'open', // add this line
@@ -83,6 +82,7 @@ const MenuItemStyled = styled(MenuItem)<{ theme: any }>`
 
 export default function SelectFilter() {
 	const theme = useTheme();
+
 	// Redux
 	const dispatch = useDispatch();
 	const filter = useSelector((state: { filter: number[] }) => state.filter);
@@ -139,21 +139,18 @@ export default function SelectFilter() {
 					</div>
 				}
 			>
-				<MenuItemStyled theme={theme} onClick={() => dispatch(filterSlice.actions.toggleFilterItem(1))}>
-					<Checkbox checked={filter.includes(1)} style={{ backgroundColor: 'transparent', color: theme.palette.text.primary }} />
-					<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
-					Ethereum
-				</MenuItemStyled>
-				<MenuItemStyled theme={theme} onClick={() => dispatch(filterSlice.actions.toggleFilterItem(11155111))}>
-					<Checkbox checked={filter.includes(11155111)} style={{ backgroundColor: 'transparent', color: theme.palette.text.primary }} />
-					<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
-					Sepolia
-				</MenuItemStyled>
-				<MenuItemStyled theme={theme} onClick={() => dispatch(filterSlice.actions.toggleFilterItem(137))}>
-					<Checkbox checked={filter.includes(137)} style={{ backgroundColor: 'transparent', color: theme.palette.text.primary }} />
-					<PolygonLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
-					Polygon
-				</MenuItemStyled>
+				{Object.entries(CHAINS).map(([chainId, chainInfo]) => {
+					if (chainInfo && chainInfo.name && chainInfo.logo) {
+						return (
+							<MenuItemStyled key={chainId} theme={theme} onClick={() => dispatch(filterSlice.actions.toggleFilterItem(Number(chainId)))}>
+								<Checkbox checked={filter.includes(Number(chainId))} style={{ backgroundColor: 'transparent', color: theme.palette.text.primary }} />
+								<img src={chainInfo.logo} style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt={`${chainInfo.name} Logo`} />
+								{chainInfo.name}
+							</MenuItemStyled>
+						);
+					}
+					return null;
+				})}
 			</StyledSelect>
 		</>
 	);

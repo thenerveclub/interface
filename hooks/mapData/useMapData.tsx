@@ -1,55 +1,28 @@
 import { useEffect, useState } from 'react';
-import { CHAINS } from '../../utils/chains';
 
-const useMapData = (network: number) => {
-	const [mapData, setMapData] = useState<any[]>([]);
-	const [isLoading, setIsLoading] = useState<boolean>(true);
+const useMapData = () => {
+	const [mapData, setMapData] = useState(null);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(null);
 
 	useEffect(() => {
-		setIsLoading(true);
-
-		if (!network) {
-			// Handle the case where the chainIdUrl is not ready or not valid
-			setMapData([]);
-			setIsLoading(false);
-			return;
-		}
-
-		const getMapData = async () => {
-			const QueryForMapData = `
-      {
-        tasks(first: 100) {
-          id
-          recipientAddress
-          taskLatitude
-          taskLongitude
-          description
-          recipientName
-        }
-      }
-      `;
-
+		const fetchGlobalStats = async () => {
 			try {
-				const fetchMapData = await fetch(CHAINS[network]?.graphApi, {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ query: QueryForMapData }),
-				});
-
-				const data = await fetchMapData.json();
-				setMapData(data.data.tasks);
-			} catch (error) {
-				console.error(error);
-				setMapData([]);
+				const response = await fetch('/api/mapData');
+				if (!response.ok) throw new Error('Network response was not ok');
+				const data = await response.json();
+				setMapData(data);
+			} catch (e) {
+				setError(e.message);
 			} finally {
-				setIsLoading(false);
+				setLoading(false);
 			}
 		};
 
-		getMapData();
-	}, [network]);
+		fetchGlobalStats();
+	}, []);
 
-	return { mapData, isLoading };
+	return { mapData, loading, error };
 };
 
 export default useMapData;

@@ -151,6 +151,9 @@ const ProveDare: React.FC<ProveDareProps> = ({ dareData }) => {
 	const handleOpen = () => setOpen(true);
 
 	const handleClose = () => {
+		// Prevent closing the modal if there's a pending transaction
+		if (pendingTx) return;
+		
 		setIsClosing(true); // <-- Set closing status to true
 		// Wait for the animation to complete before closing the modal
 		setTimeout(() => {

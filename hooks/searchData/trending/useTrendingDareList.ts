@@ -20,6 +20,8 @@ const useTrendingDareList = () => {
 				  entranceAmount
 				  participants
 				  chainId
+				  latitude
+				  longitude
 				}
 			 }
       `;

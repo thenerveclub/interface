@@ -3,8 +3,8 @@ import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { Box, Fade, Grid, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
-import useRankingEarned from '../../../../hooks/useRankingEarned';
-import useRankingSpent from '../../../../hooks/useRankingSpent';
+import useRankingEarned from '../../../../hooks/playerData/useRankingEarned';
+import useRankingSpent from '../../../../hooks/playerData/useRankingSpent';
 
 const StatisticBox = styled(Box)`
 	display: flex;
@@ -58,35 +58,24 @@ const StyledStatistics = styled(Grid)<{ theme: any }>`
 `;
 
 interface PlayerStatisticsProps {
-	checksumAddress: string;
-	network: any;
 	playerData: any;
+	checksumAddress: string;
 }
 
-const PlayerStatistics: React.FC<PlayerStatisticsProps> = ({ checksumAddress, network, playerData }) => {
+const PlayerStatistics: React.FC<PlayerStatisticsProps> = ({ playerData, checksumAddress }) => {
 	const theme = useTheme();
 
-	// console.log('PlayerStatists:', checksumAddress, network, playerData);
-
-	// Redux
-	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
-	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
-
 	// Ranking Data
-	const rankingEarned = useRankingEarned(checksumAddress, network);
-	const rankingSpent = useRankingSpent(checksumAddress, network);
+	const rankingEarned = useRankingEarned(checksumAddress);
+	const rankingSpent = useRankingSpent(checksumAddress);
+
+	if (!playerData) return null;
 
 	return (
 		<StatisticBox>
 			<StyledStatistics theme={theme}>
 				<div>
-					{currencyValue === false ? (
-						<p>
-							{((playerData?.[0]?.earned / 1e18) * 1).toFixed(2)} {'MATIC'}
-						</p>
-					) : (
-						<p>${((playerData?.[0]?.earned / 1e18) * currencyPrice['polygon']?.usd).toFixed(2)}</p>
-					)}
+					<p>${playerData?.allChains.earnedInUSD}</p>
 				</div>
 				<div>
 					<p>Earnings</p>
@@ -94,13 +83,7 @@ const PlayerStatistics: React.FC<PlayerStatisticsProps> = ({ checksumAddress, ne
 			</StyledStatistics>
 			<StyledStatistics theme={theme}>
 				<div>
-					{currencyValue === false ? (
-						<p>
-							{((playerData?.[0]?.spent / 1e18) * 1).toFixed(2)} {'MATIC'}
-						</p>
-					) : (
-						<p>${((playerData?.[0]?.spent / 1e18) * currencyPrice['polygon']?.usd).toFixed(2)}</p>
-					)}
+					<p>${playerData?.allChains.spentInUSD}</p>
 				</div>
 				<div>
 					<p>Contributions</p>

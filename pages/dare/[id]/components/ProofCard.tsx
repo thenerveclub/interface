@@ -91,6 +91,8 @@ const ProofCard: React.FC<ProofCardProps> = ({ dareData }) => {
 
 	const embedContent = getEmbedContent(dareData?.[0]?.task.proofLink);
 
+	if (!dareData) return null;
+	
 	return (
 		<TaskCard theme={theme}>
 			<StyledCardHeader theme={theme}>

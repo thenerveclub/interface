@@ -4,7 +4,10 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import useMapData from '../hooks/mapData/useMapData';
-import CreateMapDare from './modal/createMapDare';
+import { CHAINS } from '../utils/chains';
+import CreateMapDare from './modal/create/createMap';
+import EthereumLogo from '/public/svg/chains/ethereum.svg';
+import PolygonLogo from '/public/svg/chains/polygon.svg';
 
 const StyledDiv = styled.div`
 	display: flex;
@@ -23,15 +26,17 @@ const StyledDiv = styled.div`
 `;
 
 interface GoogleMapProps {
-	network: any;
+	location: { latitude: number; longitude: number; zoom: number };
 }
 
-const GoogleMap: React.FC<GoogleMapProps> = ({ network }) => {
+const GoogleMap: React.FC<GoogleMapProps> = ({ location }) => {
 	const mapRef = useRef(null);
 	const router = useRouter();
 
 	// Redux
 	const { currentTheme, prefersSystemSetting } = useSelector((state: any) => state.theme);
+	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
+	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
 
 	// State
 	const [map, setMap] = useState(null);
@@ -39,6 +44,21 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ network }) => {
 	const [modalCoords, setModalCoords] = useState({ lat: null, lng: null });
 	const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 	const [appliedTheme, setAppliedTheme] = useState(prefersDarkMode ? 'dark' : 'light');
+
+	// Helper functions
+	function formatCrypto(value) {
+		return (Number(value) / 1e18).toLocaleString('en-US', {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 4,
+		});
+	}
+
+	function formatNumber(value) {
+		return (Number(value) / 1e18).toLocaleString('en-US', {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2,
+		});
+	}
 
 	useEffect(() => {
 		setAppliedTheme(prefersSystemSetting ? (prefersDarkMode ? 'dark' : 'light') : currentTheme);
@@ -53,7 +73,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ network }) => {
 	};
 
 	// Use the useMapData hook to get map data
-	const { mapData, isLoading } = useMapData(network);
+	const { mapData, loading, error } = useMapData();
 
 	const applyMapStyle = () => {
 		if (map) {
@@ -102,8 +122,8 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ network }) => {
 		if (mapRef.current) {
 			// Check if mapRef.current is not null
 			const initializedMap = new google.maps.Map(mapRef.current, {
-				center: { lat: 20, lng: 0 },
-				zoom: 3,
+				center: { lat: location.latitude, lng: location.longitude },
+				zoom: location.zoom,
 				minZoom: 2,
 				restriction: {
 					latLngBounds: {
@@ -126,7 +146,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ network }) => {
 	};
 
 	const updateMarkers = () => {
-		if (!map || isLoading || !Array.isArray(mapData)) return;
+		if (!map || loading || !Array.isArray(mapData)) return;
 
 		// State or variable to keep track of the last clicked marker
 		let lastClickedMarker = null;
@@ -134,7 +154,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ network }) => {
 
 		mapData.forEach((dataItem) => {
 			const marker = new google.maps.Marker({
-				position: { lat: parseFloat(dataItem.taskLatitude), lng: parseFloat(dataItem.taskLongitude) },
+				position: { lat: parseFloat(dataItem?.latitude), lng: parseFloat(dataItem?.longitude) },
 				map: map,
 				animation: google.maps.Animation.DROP,
 				// title: dataItem.description, // This is the title that appears on hover
@@ -144,9 +164,20 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ network }) => {
 			const infoWindow = new google.maps.InfoWindow({
 				content: `
 				<div style="max-width: 200px; overflow: hidden; word-wrap: break-word;">
-				<h1 style="color: black; font-size: 0.875rem; font-weight: 400;">Player: ${dataItem.recipientName}</h1>
-				<a style="color: black; font-size: 0.875rem; font-weight: 300;">${dataItem.description}</a>
-				</div>`,
+				<h1 style="color: black; font-size: 0.875rem; font-weight: 400;">Player: ${dataItem?.recipientName}</h1>
+				<br />
+				<a style="color: black; font-size: 0.875rem; font-weight: 300;">Amount: ${
+					currencyValue
+						? `$${formatNumber(dataItem?.amount * currencyPrice[CHAINS[dataItem?.chainId]?.nameToken.toLowerCase()])}`
+						: `${formatCrypto(dataItem?.amount)} ${CHAINS[dataItem?.chainId]?.nameToken}`
+				}</a>
+				<br />
+				<a style="color: black; font-size: 0.875rem; font-weight: 300;">${dataItem?.description}</a>
+				<br />
+				<img src="${CHAINS[dataItem?.chainId]?.logo}" style="display: flex; margin-right: 0.5rem;" width="18" height="18" alt="Logo" />
+				<a style="color: black; font-size: 0.875rem; font-weight: 300;">${CHAINS[dataItem?.chainId]?.name}</a>
+				</div>
+				`,
 			});
 
 			// Show the info window on mouseover
@@ -163,7 +194,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ network }) => {
 			marker.addListener('click', () => {
 				if (window.innerWidth < 1024) {
 					if (lastClickedMarker === marker) {
-						router.push(`/dare/${dataItem.id}`);
+						router.push(`/dare/${dataItem.chainId}-${dataItem.id}`);
 						lastClickedMarker = null; // Reset the last clicked marker
 					} else {
 						if (lastOpenedInfoWindow) {
@@ -174,7 +205,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ network }) => {
 						lastOpenedInfoWindow = infoWindow;
 					}
 				} else {
-					router.push(`/dare/${dataItem.id}`);
+					router.push(`/dare/${dataItem.chainId}-${dataItem.id}`);
 				}
 			});
 		});
@@ -195,13 +226,13 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ network }) => {
 		} else if (!document.getElementById('google-maps-script')) {
 			loadGoogleMapsScript();
 		}
-	}, [appliedTheme]);
+	}, [appliedTheme, currencyValue, location]);
 
 	useEffect(() => {
-		if (map && !isLoading && Array.isArray(mapData)) {
+		if (map && !loading && Array.isArray(mapData)) {
 			updateMarkers();
 		}
-	}, [mapData, isLoading, map]);
+	}, [mapData, loading, map, currencyValue]);
 
 	return <StyledDiv ref={mapRef}>{isModalVisible && <CreateMapDare modalCoords={modalCoords} onClose={() => setModalVisible(false)} />}</StyledDiv>;
 };

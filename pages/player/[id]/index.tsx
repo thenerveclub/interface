@@ -5,9 +5,10 @@ import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import CreateTask from '../../../components/modal/create';
+import LoadingScreen from '../../../components/LoadingScreen';
+import CreateAtPlayer from '../../../components/modal/create/createAtPlayer';
+import usePlayerData from '../../../hooks/playerData/usePlayerData';
 import useENSName from '../../../hooks/useENSName';
-import usePlayerData from '../../../hooks/usePlayerData';
 import PlayerDares from './components/PlayerDares';
 import PlayerStatistics from './components/PlayerStatistics';
 
@@ -104,18 +105,19 @@ export default function PlayerPage() {
 
 	// Redux
 	const account = useSelector((state: { account: string }) => state.account);
+	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
 
 	// Address Checksumed And Lowercased
 	const checksumAccount = account?.toLowerCase();
 
 	const { ensName, address, error } = useENSName(id?.toLowerCase());
 
-	const { playerData, isLoading } = usePlayerData(137, address);
+	const { playerData, isLoading } = usePlayerData(address, currencyPrice);
 
 	// Copy Address To Clipboard && Tooltip
 	const [copied, setCopied] = useState(false);
 	function handleCopyAddress() {
-		navigator.clipboard.writeText(playerData?.[0]?.id ? playerData?.[0]?.id.toUpperCase() : address.toUpperCase());
+		navigator.clipboard.writeText(address);
 		setCopied(true);
 
 		setTimeout(() => {
@@ -124,57 +126,57 @@ export default function PlayerPage() {
 	}
 
 	return (
-		// <>
-		// 	{isLoading ? (
-		// 		<LoadingScreen />
-		// 	) : (
-		<StyledBox>
-			<StyledSection>
-				<StyledLeftSectionBox>
-					<PlayerBox>
-						<p>{ensName ? ensName : address ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}` : null}</p>
-					</PlayerBox>
-					<AddressBox>
-						<p>
-							({address?.substring(0, 6)}...{address?.substring(address?.length - 4)})
-						</p>
-						<Tooltip
-							title={copied ? 'Copied!' : 'Copy Address'}
-							placement="bottom"
-							disableInteractive
-							enterTouchDelay={100}
-							TransitionComponent={Fade}
-							TransitionProps={{ timeout: 600 }}
-						>
-							<p onClick={handleCopyAddress} style={{ cursor: 'pointer' }}>
-								<ContentCopy style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
-							</p>
-						</Tooltip>
-						<Tooltip
-							title="View On Explorer"
-							placement="bottom"
-							disableInteractive
-							enterTouchDelay={100}
-							TransitionComponent={Fade}
-							TransitionProps={{ timeout: 600 }}
-						>
-							<a href={`https://etherscan.io/address/${address}#multichain-portfolio`} target="_blank" style={{ cursor: 'pointer' }}>
-								<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
-							</a>
-						</Tooltip>
-					</AddressBox>
-					<PlayerStatistics checksumAddress={address} network={137} playerData={playerData} />
-				</StyledLeftSectionBox>
-			</StyledSection>
-			<PlayerDares recipientAddress={address} recipientENS={ensName} network={137} error={error} />
+		<>
+			{isLoading ? (
+				<LoadingScreen />
+			) : (
+				<StyledBox>
+					<StyledSection>
+						<StyledLeftSectionBox>
+							<PlayerBox>
+								<p>{ensName ? ensName : address ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}` : null}</p>
+							</PlayerBox>
+							<AddressBox>
+								<p>
+									({address?.substring(0, 6)}...{address?.substring(address?.length - 4)})
+								</p>
+								<Tooltip
+									title={copied ? 'Copied!' : 'Copy Address'}
+									placement="bottom"
+									disableInteractive
+									enterTouchDelay={100}
+									TransitionComponent={Fade}
+									TransitionProps={{ timeout: 600 }}
+								>
+									<p onClick={handleCopyAddress} style={{ cursor: 'pointer' }}>
+										<ContentCopy style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
+									</p>
+								</Tooltip>
+								<Tooltip
+									title="View On Explorer"
+									placement="bottom"
+									disableInteractive
+									enterTouchDelay={100}
+									TransitionComponent={Fade}
+									TransitionProps={{ timeout: 600 }}
+								>
+									<a href={`https://etherscan.io/address/${address}#multichain-portfolio`} target="_blank" style={{ cursor: 'pointer' }}>
+										<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
+									</a>
+								</Tooltip>
+							</AddressBox>
+							<PlayerStatistics playerData={playerData} checksumAddress={address} />
+						</StyledLeftSectionBox>
+					</StyledSection>
+					<PlayerDares recipientAddress={address} recipientENS={ensName} error={error} />
 
-			{!error && (
-				<CreateTaskBox>
-					{account && checksumAccount !== address && <CreateTask recipientAddress={address} recipientENS={ensName} network={137} />}
-				</CreateTaskBox>
+					{!error && (
+						<CreateTaskBox>
+							{account && checksumAccount !== address && <CreateAtPlayer recipientAddress={address} recipientENS={ensName} />}
+						</CreateTaskBox>
+					)}
+				</StyledBox>
 			)}
-		</StyledBox>
-		// 	)}
-		// </>
+		</>
 	);
 }

@@ -6,12 +6,16 @@ import {
 	Button,
 	CircularProgress,
 	ClickAwayListener,
+	FormControl,
 	InputAdornment,
 	InputBase,
+	InputLabel,
 	List,
+	MenuItem,
 	Modal,
 	OutlinedInput,
 	Paper,
+	Select,
 	TextField,
 	Tooltip,
 	Typography,
@@ -22,12 +26,13 @@ import { ethers } from 'ethers';
 import router from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
-import usePlayerDataSearchList from '../../hooks/searchData/usePlayerDataSearchList';
-import useBalanceTracker from '../../hooks/useBalanceTracker';
-import { CHAINS, getAddChainParameters } from '../../utils/chains';
-import { metaMask } from '../../utils/connectors/metaMask';
+import { useDispatch, useSelector } from 'react-redux';
+import NerveGlobalABI from '../../../constants/abi/nerveGlobal.json';
+import usePlayerDataSearchList from '../../../hooks/searchData/usePlayerDataSearchList';
+import useBalanceTracker from '../../../hooks/useBalanceTracker';
+import { createTriggerSlice } from '../../../state/trigger/createTriggerSlice';
+import { CHAINS, getAddChainParameters } from '../../../utils/chains';
+import { metaMask } from '../../../utils/connectors/metaMask';
 
 const StyledModal = styled(Modal)`
 	.MuiModal-backdrop {
@@ -306,6 +311,7 @@ const CreateMapDare: React.FC<CreateMapDareProps> = ({ modalCoords, onClose }) =
 	const balance = useBalanceTracker(provider, account);
 
 	// Redux
+	const dispatch = useDispatch();
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 
 	// State declaration
@@ -321,9 +327,13 @@ const CreateMapDare: React.FC<CreateMapDareProps> = ({ modalCoords, onClose }) =
 	const [hours, setHours] = useState('0');
 	const [minutes, setMinutes] = useState('0');
 	const [isListVisible, setListVisible] = useState(false);
-	const [network, setNetwork] = useState(137);
+	const [network, setNetwork] = useState('');
 
-	const registerStatus = 'XXX';
+	const handleChange = (event) => {
+		setNetwork(event.target.value);
+	};
+
+	const recipientAddress = '0x52B28292846c59dA23114496d6e6BfC875f54FF5';
 
 	const handleSearchChange = (e) => {
 		setSearchValue(e.target.value);
@@ -369,6 +379,9 @@ const CreateMapDare: React.FC<CreateMapDareProps> = ({ modalCoords, onClose }) =
 	const handleOpen = () => setOpen(true);
 
 	const handleClose = () => {
+		// Prevent closing the modal if there's a pending transaction
+		if (pendingTx) return;
+
 		setIsClosing(true); // <-- Set closing status to true
 
 		// Wait for the animation to complete before closing the modal
@@ -403,34 +416,28 @@ const CreateMapDare: React.FC<CreateMapDareProps> = ({ modalCoords, onClose }) =
 	// Create Dare Function
 	async function onCreateTask() {
 		const signer = provider.getSigner();
-		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
+		const nerveGlobal = new ethers.Contract(CHAINS[network]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			const tx = await nerveGlobal.createTask(
-				registerStatus,
+			const tx = await nerveGlobal.create(
+				recipientAddress,
 				description,
 				convertToSeconds(days, hours, minutes),
-				'en',
-				modalCoords.lat,
-				modalCoords.lng,
+				modalCoords.lat.toString(),
+				modalCoords.lng.toString(),
 				{
 					value: txValue,
 				}
 			);
-			enqueueSnackbar('Transaction signed succesfully!', {
-				variant: 'success',
-			});
 			await tx.wait();
 			if (tx.hash) {
-				enqueueSnackbar('Transaction mined succesfully!', {
-					variant: 'success',
-				});
+				// wait 2 seconds
+				await new Promise((resolve) => setTimeout(resolve, 2000));
+				dispatch(createTriggerSlice.actions.setCreateTrigger(true));
+				handleClose();
 				setPendingTx(false);
 			}
 		} catch (error) {
-			enqueueSnackbar('Transaction failed!', {
-				variant: 'error',
-			});
 			setPendingTx(false);
 			console.log(error);
 		}
@@ -440,13 +447,13 @@ const CreateMapDare: React.FC<CreateMapDareProps> = ({ modalCoords, onClose }) =
 	const handleNetworkChange = async () => {
 		if (metaMask) {
 			try {
-				await metaMask.activate(network);
+				await metaMask.activate(Number(network));
 			} catch (error) {
 				console.error(error);
 			}
 		} else {
 			try {
-				await metaMask.activate(getAddChainParameters(network));
+				await metaMask.activate(getAddChainParameters(Number(network)));
 			} catch (error) {
 				console.error(error);
 			}
@@ -510,6 +517,36 @@ const CreateMapDare: React.FC<CreateMapDareProps> = ({ modalCoords, onClose }) =
 
 						<StyledTitle theme={theme}>
 							<div>
+								<a style={{ color: theme.palette.text.primary, marginRight: '0.25rem' }}>Select Network</a>
+								<Tooltip title="Mandatory contribution for participation." placement="top">
+									<InfoOutlinedIcon style={{ fontSize: '1rem', color: theme.palette.secondary.main, cursor: 'default' }} />
+								</Tooltip>
+							</div>
+							<FormControl fullWidth>
+								<InputLabel id="chain-select-label">Select Network</InputLabel>
+								<Select labelId="chain-select-label" id="chain-select" value={network} label="Select Network" onChange={handleChange}>
+									{Object.entries(CHAINS).map(([chainId, chainInfo]) => {
+										if (chainInfo && chainInfo.name && chainInfo.logo) {
+											return (
+												<MenuItem key={chainId} value={chainId}>
+													<img
+														src={chainInfo.logo}
+														style={{ display: 'flex', marginRight: '8px' }}
+														width="22"
+														height="22"
+														alt={`${chainInfo.name} Logo`}
+													/>
+													{chainInfo.name}
+												</MenuItem>
+											);
+										}
+										return null;
+									})}
+								</Select>
+							</FormControl>
+						</StyledTitle>
+						<StyledTitle theme={theme}>
+							<div>
 								<a style={{ color: theme.palette.text.primary, marginRight: '0.25rem' }}>Entry amount</a>
 								<Tooltip title="Mandatory contribution for participation." placement="top">
 									<InfoOutlinedIcon style={{ fontSize: '1rem', color: theme.palette.secondary.main, cursor: 'default' }} />
@@ -522,7 +559,7 @@ const CreateMapDare: React.FC<CreateMapDareProps> = ({ modalCoords, onClose }) =
 							onChange={handleInputChange}
 							endAdornment={
 								<InputAdornment position="end">
-									<a style={{ color: theme.palette.text.primary }}>ETH</a>
+									<a style={{ color: theme.palette.text.primary }}>{CHAINS[network]?.nameToken}</a>
 									<MaxButton theme={theme} onClick={setMaxValue}>
 										Max
 									</MaxButton>
@@ -628,22 +665,26 @@ const CreateMapDare: React.FC<CreateMapDareProps> = ({ modalCoords, onClose }) =
 						</StyledTitle>
 
 						<StyledSection style={{ margin: '2rem auto 1.5rem auto' }}>
-							{chainId === network ? (
+							{chainId === Number(network) ? (
 								pendingTx ? (
-									<BuyButton theme={theme}>Pending</BuyButton>
+									<BuyButton theme={theme} disabled>
+										Pending
+									</BuyButton>
 								) : (
 									<BuyButton theme={theme} onClick={onCreateTask} disabled={value === '0' || value === '0.0' || value === '0.00' || value === '0.'}>
 										Create Task
 									</BuyButton>
 								)
 							) : (
-								<ChangeNetworkButton
-									theme={theme}
-									onClick={handleNetworkChange}
-									startIcon={pendingTx && <CircularProgress color="secondary" thickness={2.5} size={20} />}
-								>
-									Change Network
-								</ChangeNetworkButton>
+								network && (
+									<ChangeNetworkButton
+										theme={theme}
+										onClick={handleNetworkChange}
+										startIcon={pendingTx && <CircularProgress color="secondary" thickness={2.5} size={20} />}
+									>
+										Change Network
+									</ChangeNetworkButton>
+								)
 							)}
 						</StyledSection>
 					</StatisticBox>

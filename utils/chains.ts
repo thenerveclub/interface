@@ -96,23 +96,24 @@ export const CHAINS: {
 	// 	graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal-goerli',
 	// 	coingeckoApiId: 'ethereum',
 	// },
-	// // Polygon
-	// 137: {
-	// 	urls: [`https://polygon-bor-rpc.publicnode.com`],
-	// 	url: `https://polygon-bor-rpc.publicnode.com`,
-	// 	publicUrl: 'https://polygon-bor-rpc.publicnode.com',
-	// 	infura: `https://polygon-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
-	// 	alchemy: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_KEY}`,
-	// 	urlName: 'polygon',
-	// 	name: 'Polygon Mainnet',
-	// 	nameToken: 'MATIC',
-	// 	nativeCurrency: MATIC,
-	// 	blockExplorerUrls: ['https://polygonscan.com/'],
-	// 	contract: '0x91596B44543016DDb5D410A51619D5552961a23b',
-	// 	blockTime: 10000,
-	// 	graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal',
-	// 	coingeckoApiId: 'matic-network',
-	// },
+	// Polygon
+	137: {
+		urls: [`https://polygon-bor-rpc.publicnode.com`],
+		url: `https://polygon-bor-rpc.publicnode.com`,
+		publicUrl: 'https://polygon-bor-rpc.publicnode.com',
+		infura: `https://polygon-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+		alchemy: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_KEY}`,
+		urlName: 'polygon',
+		name: 'Polygon',
+		nameToken: 'MATIC',
+		nativeCurrency: MATIC,
+		blockExplorerUrls: ['https://polygonscan.com/'],
+		contract: '0xE72b2d8bcda0Fd5cA49119deB98Ea042D9Ec5B5b',
+		blockTime: 10000,
+		graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal-polygon',
+		coingeckoApiId: 'matic-network',
+		logo: '/svg/chains/polygon.svg',
+	},
 	// Sepolia
 	11155111: {
 		urls: [`https://ethereum-sepolia-rpc.publicnode.com`],
@@ -129,7 +130,7 @@ export const CHAINS: {
 		blockTime: 10000,
 		graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal-sepolia',
 		coingeckoApiId: 'ethereum',
-		logo: '/public/svg/chains/ethereum.svg',
+		logo: '/svg/chains/ethereum.svg',
 	},
 };
 

@@ -110,7 +110,7 @@ const RedeemRecipient: React.FC<RedeemUserProps> = ({ dareData }) => {
 						Pending
 					</BuyButton>
 				) : (
-					<BuyButton theme={theme} onClick={redeem}>
+					<BuyButton theme={theme} onClick={redeem} disabled={pendingTx}>
 						Redeem Recipient
 					</BuyButton>
 				)

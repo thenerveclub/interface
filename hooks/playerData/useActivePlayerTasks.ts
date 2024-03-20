@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createTriggerSlice } from '../state/trigger/createTriggerSlice';
-import { CHAINS } from '../utils/chains';
+import { createTriggerSlice } from '../../state/trigger/createTriggerSlice';
+import { CHAINS } from '../../utils/chains';
 
 const useActivePlayerTasks = (checksumAddress: string) => {
 	const [activePlayerTasks, setActivePlayerTasks] = useState<{ [chainId: string]: any[] }>({});
@@ -35,6 +35,8 @@ const useActivePlayerTasks = (checksumAddress: string) => {
 		 description
 		 amount
 		 chainId
+		 latitude
+		 longitude
       }
     }
   `;
@@ -50,11 +52,9 @@ const useActivePlayerTasks = (checksumAddress: string) => {
 
 				const allData = await Promise.all(fetchPromises);
 				const combinedData = allData.reduce((acc, data) => ({ ...acc, ...data }), {});
-				console.log('combinedData', combinedData);
 				setActivePlayerTasks(combinedData);
 			} catch (error) {
 				console.log(error);
-				console.log('Error fetching TAD');
 			}
 		};
 
@@ -69,7 +69,6 @@ const useActivePlayerTasks = (checksumAddress: string) => {
 
 		// Refresh the data when the chainId or checksumAddress changes
 		dispatch(createTriggerSlice.actions.setCreateTrigger(false));
-		console.log('triggered');
 	}, [checksumAddress, triggered]);
 
 	return activePlayerTasks;

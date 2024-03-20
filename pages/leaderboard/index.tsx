@@ -4,8 +4,12 @@ import { useTheme } from '@mui/material/styles';
 import localFont from 'next/font/local';
 import Head from 'next/head';
 import { useState } from 'react';
-import DareLeaderboard from './boards/dare';
-import PlayerLeaderboard from './boards/player';
+import useTopContributors from '../../hooks/rankingData/useTopContributors';
+import useTopDares from '../../hooks/rankingData/useTopDares';
+import useTopEarners from '../../hooks/rankingData/useTopEarners';
+import TopContributors from './boards/topContributors';
+import TopDares from './boards/topDares';
+import TopEarners from './boards/topEarners';
 
 const TrueLies = localFont({ src: '../../public/fonts/TrueLies.woff2', display: 'swap' });
 
@@ -15,9 +19,7 @@ const StyledBox = styled(Box)`
 	justify-content: center;
 	align-items: center;
 	text-align: center;
-	width: 90%;
-	min-width: 1400px;
-	max-width: 1400px;
+	width: 100%;
 	// height: 85vh;
 	margin: 5rem auto 0 auto;
 	background-color: transparent;
@@ -38,7 +40,8 @@ const Title = styled(Typography)<{ theme: any }>`
 	text-transform: none;
 	font-size: 5rem;
 	cursor: default;
-	margin-bottom: 2.5rem;
+	margin: 2.5rem auto 5rem auto;
+	width: 100%;
 
 	a {
 		color: ${({ theme }) => theme.palette.text.primary};
@@ -46,80 +49,33 @@ const Title = styled(Typography)<{ theme: any }>`
 	}
 
 	@media (max-width: 680px) {
-		font-size: 2rem;
+		font-size: 3rem;
 	}
 `;
 
 const StyledDiv = styled.div`
 	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
+	justify-content: center;
 	align-items: center;
 	text-transform: none;
 	font-size: 1rem;
 	cursor: default;
-	margin-bottom: 2.5rem;
-	gap: 1rem;
+	margin: 0 auto 0 auto;
+	width: 100%;
 
 	@media (max-width: 680px) {
 		font-size: 1rem;
-	}
-`;
-
-const IOSSwitch = styled((props: SwitchProps) => <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />)<{ theme: any }>`
-	width: 42px;
-	height: 26px;
-	padding: 0;
-	& .MuiSwitch-switchBase {
-		padding: 0;
-		margin: 2px;
-		transition-duration: 300ms;
-		&.Mui-checked {
-			transform: translateX(16px);
-			color: #fff;
-			& + .MuiSwitch-track {
-				background-color: ${({ theme }) => theme.palette.success.main};
-				opacity: 1;
-				border: 0;
-			}
-			&.Mui-disabled + .MuiSwitch-track {
-				opacity: 0.5;
-			}
-		}
-		&.Mui-focusVisible .MuiSwitch-thumb {
-			color: #33cf4d;
-			border: 6px solid #fff;
-		}
-		&.Mui-disabled .MuiSwitch-thumb {
-			color: ${({ theme }) => theme.palette.secondary.main};
-		}
-		&.Mui-disabled + .MuiSwitch-track {
-			opacity: ${(props) => (props.theme.palette.mode === 'light' ? 0.7 : 0.3)};
-		}
-	}
-	& .MuiSwitch-thumb {
-		box-sizing: border-box;
-		width: 22px;
-		height: 22px;
-	}
-	& .MuiSwitch-track {
-		border-radius: 13px;
-		background-color: ${({ theme }) => theme.palette.secondary.main};
-		opacity: 1;
-		transition: ${(props) =>
-			props.theme.transitions.create(['background-color'], {
-				duration: 500,
-			})};
+		margin: 0 auto 0 auto;
 	}
 `;
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{ theme: any }>`
 	display: flex;
-	align-self: flex-end;
+	justify-content: center;
 	background-color: transparent;
 	height: 35px;
-	width: 150px;
-	margin: 0 0 1rem 4rem;
+	width: 400px;
+	margin: 0 auto 0 auto;
 	cursor: not-allowed;
 
 	& .MuiToggleButton-root {
@@ -133,7 +89,7 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{ theme: any }>`
 	@media (max-width: 680px) {
 		display: flex;
 		justify-content: center;
-		margin: 0 auto 1rem auto;
+		margin: 0 auto 0 auto;
 		// width: 100%;
 	}
 `;
@@ -158,10 +114,18 @@ const StyledToggleButton = styled(ToggleButton)<{ theme: any }>`
 export default function LeaderboardPage() {
 	const theme = useTheme();
 
-	// chnage ios switch if true show dare else show player
-	const [checked, setChecked] = useState(false);
-	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setChecked(event.target.checked);
+	// hooks
+	const { topEarners, topEarnersLoading, topEarnersError } = useTopEarners();
+	const { topContributors, topContributorsLoading, topContributorsError } = useTopContributors();
+	const { topDares, topDaresLoading, topDaresError } = useTopDares();
+
+	// State declaration
+	const [leaderboardType, setLeaderboardType] = useState('topEarners');
+
+	const handleToggleChange = (event, newType) => {
+		if (newType !== null) {
+			setLeaderboardType(newType);
+		}
 	};
 
 	return (
@@ -187,19 +151,25 @@ export default function LeaderboardPage() {
 					<a>Leaderboard</a>
 				</Title>
 				<StyledDiv>
-					Player
-					<IOSSwitch theme={theme} checked={checked} onChange={handleChange} name="checked" />
-					Dare
+					<>
+						<StyledToggleButtonGroup theme={theme} value={leaderboardType} exclusive onChange={handleToggleChange}>
+							<StyledToggleButton theme={theme} value="topEarners" disabled={leaderboardType === 'topEarners'}>
+								Earnings
+							</StyledToggleButton>
+							<StyledToggleButton theme={theme} value="topContributors" disabled={leaderboardType === 'topContributors'}>
+								Contributions
+							</StyledToggleButton>
+							<StyledToggleButton theme={theme} value="topDares" disabled={leaderboardType === 'topDares'}>
+								Dares
+							</StyledToggleButton>
+						</StyledToggleButtonGroup>
+					</>
 				</StyledDiv>
-				<StyledToggleButtonGroup theme={theme}>
-					<StyledToggleButton theme={theme} value={false}>
-						Player
-					</StyledToggleButton>
-					<StyledToggleButton theme={theme} value={true}>
-						<a>Dare</a>
-					</StyledToggleButton>
-				</StyledToggleButtonGroup>
-				{checked ? <DareLeaderboard /> : <PlayerLeaderboard />}
+				{leaderboardType === 'topEarners' && <TopEarners topEarners={topEarners} loading={topEarnersLoading} error={topEarnersError} />}
+				{leaderboardType === 'topContributors' && (
+					<TopContributors topContributors={topContributors} loading={topContributorsLoading} error={topContributorsError} />
+				)}
+				{leaderboardType === 'topDares' && <TopDares topDares={topDares} loading={topDaresLoading} error={topDaresError} />}
 			</StyledBox>
 		</>
 	);

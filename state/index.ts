@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
 import { accountSlice } from './account/accountSlice';
+import { ensSlice } from './account/ensSlice';
 import { availableChainsSlice, chainIdSlice } from './chainId/chainIdSlice';
 import { currencySlice } from './currency/currencySlice';
 import { currencyPriceSlice } from './currencyPrice/currencyPriceSlice';
@@ -23,6 +24,7 @@ export const store = configureStore({
 		chainId: chainIdSlice.reducer,
 		availableChains: availableChainsSlice.reducer,
 		account: accountSlice.reducer,
+		ens: ensSlice.reducer,
 		theme: themeSlice.reducer,
 		currency: currencySlice.reducer,
 		currencyPrice: currencyPriceSlice.reducer,

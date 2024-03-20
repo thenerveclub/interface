@@ -30,11 +30,11 @@ import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
-import useBalanceTracker from '../../hooks/useBalanceTracker';
-import { createTriggerSlice } from '../../state/trigger/createTriggerSlice';
-import { CHAINS, getAddChainParameters } from '../../utils/chains';
-import { metaMask } from '../../utils/connectors/metaMask';
+import NerveGlobalABI from '../../../constants/abi/nerveGlobal.json';
+import useBalanceTracker from '../../../hooks/useBalanceTracker';
+import { createTriggerSlice } from '../../../state/trigger/createTriggerSlice';
+import { CHAINS, getAddChainParameters } from '../../../utils/chains';
+import { metaMask } from '../../../utils/connectors/metaMask';
 
 const StyledModal = styled(Modal)`
 	.MuiModal-backdrop {
@@ -240,12 +240,7 @@ const StyledTextField = styled(TextField)<{ theme: any }>`
 	}
 `;
 
-interface CreateTaskProps {
-	recipientAddress: any;
-	recipientENS: any;
-}
-
-const CreateTask: React.FC<CreateTaskProps> = ({ recipientAddress, recipientENS }) => {
+// const CreateTask: React.FC<CreateTaskProps> = ({ recipientAddress, recipientENS }) => {
 	const theme = useTheme();
 	const router = useRouter();
 	const { provider } = useWeb3React();
@@ -314,6 +309,9 @@ const CreateTask: React.FC<CreateTaskProps> = ({ recipientAddress, recipientENS 
 	const handleOpen = () => setOpen(true);
 
 	const handleClose = () => {
+		// Prevent closing the modal if there's a pending transaction
+		if (pendingTx) return;
+
 		setIsClosing(true); // <-- Set closing status to true
 		// Wait for the animation to complete before closing the modal
 		setTimeout(() => {
@@ -341,7 +339,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ recipientAddress, recipientENS 
 	// Create Dare Function
 	async function onCreateTask() {
 		const signer = provider.getSigner();
-		const nerveGlobal = new ethers.Contract(CHAINS[chainId]?.contract, NerveGlobalABI, signer);
+		const nerveGlobal = new ethers.Contract(CHAINS[network]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
 			const tx = await nerveGlobal.create(recipientAddress, description, convertToSeconds(days, hours, minutes), '0', '0', {
@@ -427,7 +425,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({ recipientAddress, recipientENS 
 							onChange={handleInputChange}
 							endAdornment={
 								<InputAdornment position="end">
-									<a style={{ color: theme.palette.text.primary }}>{'MATIC'}</a>
+									<a style={{ color: theme.palette.text.primary }}>{CHAINS[]}</a>
 									<MaxButton theme={theme} onClick={setMaxValue}>
 										Max
 									</MaxButton>

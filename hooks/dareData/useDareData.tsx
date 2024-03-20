@@ -20,12 +20,12 @@ const useDareData = (network: string, taskId: string) => {
 	const proveTrigger = useSelector((state: { proveTrigger: boolean }) => state.proveTrigger);
 
 	useEffect(() => {
-		setIsLoading(true);
+		// setIsLoading(true);
 
 		if (!network || !taskId || (!network && !taskId)) {
 			// Handle the case where the chainIdUrl is not ready or not valid
 			setDareData([]);
-			setIsLoading(false);
+			// setIsLoading(false);
 			return;
 		}
 
@@ -85,7 +85,7 @@ const useDareData = (network: string, taskId: string) => {
 		dispatch(voteTriggerSlice.actions.setVoteTrigger(false));
 		dispatch(proveTriggerSlice.actions.setProveTrigger(false));
 
-		console.log('triggered new dare data fetch');
+		console.log('nowwww triggered new dare data fetch');
 	}, [network, taskId, claimTrigger, joinTrigger, redeemTrigger, voteTrigger, proveTrigger, dispatch]);
 
 	return { dareData, isLoading };

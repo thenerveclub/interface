@@ -5,14 +5,15 @@ import { useTheme } from '@mui/material/styles';
 import localFont from 'next/font/local';
 import Head from 'next/head';
 import router, { useRouter } from 'next/router';
+import GoogleMaps from 'public/svg/tech/googlemaps.svg';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import LoadingScreen from '../components/LoadingScreen';
 import SelectFilter from '../components/SelectFilter';
 import SelectSort from '../components/SelectSort';
 import useGlobalStats from '../hooks/globalStats/useGlobalStats';
+import useActivePlayerTasks from '../hooks/playerData/useActivePlayerTasks';
 import useTrendingDareList from '../hooks/searchData/trending/useTrendingDareList';
-import useActivePlayerTasks from '../hooks/useActivePlayerTasks';
 import { currencySlice } from '../state/currency/currencySlice';
 import { CHAINS, nameToChainId } from '../utils/chains';
 import EthereumLogo from '/public/svg/chains/ethereum.svg';
@@ -142,6 +143,38 @@ const TaskCard = styled(Box)<{ theme: any }>`
 	}
 `;
 
+const StyledInfo = styled.div<{ theme: any }>`
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	margin: 0 auto 0 auto;
+
+	@media (max-width: 750px) {
+	}
+`;
+
+const StyledMap = styled.div<{ theme: any }>`
+	display: flex;
+	justify-content: left;
+	align-items: center;
+	width: fit-content;
+	margin: 0 auto 0 0;
+	height: 35px;
+	color: rgba(255, 255, 255, 0.75);
+	font-size: 0.925rem;
+	background-color: rgba(134, 134, 139, 0.25);
+	border-radius: 12px;
+	padding: 0.5rem;
+	color: ${({ theme }) => theme.palette.text.primary};
+	cursor: default;
+
+	&:hover {
+		cursor: pointer;
+	}
+`;
+
 const StyledNetwork = styled.div<{ theme: any }>`
 	display: flex;
 	justify-content: right;
@@ -154,6 +187,8 @@ const StyledNetwork = styled.div<{ theme: any }>`
 	background-color: rgba(134, 134, 139, 0.25);
 	border-radius: 12px;
 	padding: 0.5rem;
+	color: ${({ theme }) => theme.palette.text.primary};
+	cursor: default;
 `;
 
 const TaskBoxSection = styled(Box)`
@@ -317,14 +352,15 @@ export default function IndexPage() {
 			137: PolygonLogo,
 		}[chainId];
 
-		return <LogoComponent style={{ display: 'flex', marginRight: '8px' }} width="18" height="18" alt="Logo" />;
+		return <LogoComponent style={{ display: 'flex', marginRight: '0.5rem' }} width="18" height="18" alt="Logo" />;
 	}
 
 	// Active Player Tasks
 	const trendingDareList = useTrendingDareList();
 
-	// Global Statistic
-	const { individualChains, allChains } = useGlobalStats(currencyPrice);
+	// Global Stats
+	const { globalStats, loading, error } = useGlobalStats();
+	const { allChains, individualChains } = globalStats || {};
 
 	// Toogle Button For Token Price
 	const handleToggle = (event, newCurrency) => {
@@ -420,6 +456,25 @@ export default function IndexPage() {
 	// 	};
 	// }, []);
 
+	function formatCrypto(value) {
+		return (Number(value) / 1e18).toLocaleString('en-US', {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 4,
+		});
+	}
+
+	function formatNumber(value) {
+		return (Number(value) / 1e18).toLocaleString('en-US', {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2,
+		});
+	}
+
+	// Function to handle map click
+	const handleMapClick = (latitude, longitude) => {
+		router.push(`/map?lat=${latitude}&lng=${longitude}`);
+	};
+
 	return (
 		<>
 			{isLoading ? (
@@ -478,10 +533,18 @@ export default function IndexPage() {
 							{filteredActiveTasks.map((tad) => (
 								<li style={{ listStyle: 'none' }} key={tad.id}>
 									<TaskCard theme={theme}>
-										<StyledNetwork theme={theme}>
-											{getChainLogoComponent(tad?.chainId)}
-											{CHAINS[tad.chainId].name}
-										</StyledNetwork>
+										<StyledInfo theme={theme}>
+											{tad?.latitude && tad?.longitude !== '0' && (
+												<StyledMap theme={theme} onClick={() => handleMapClick(tad.latitude, tad.longitude)}>
+													<GoogleMaps style={{ fill: theme.palette.text.primary, display: 'flex', fontSize: '20px', marginRight: '0.5rem' }} />
+													Google Map
+												</StyledMap>
+											)}
+											<StyledNetwork theme={theme}>
+												{getChainLogoComponent(tad?.chainId)}
+												{CHAINS[tad.chainId].name}
+											</StyledNetwork>
+										</StyledInfo>
 										<TaskBoxSection>
 											<p>{tad.description}</p>
 										</TaskBoxSection>
@@ -495,14 +558,18 @@ export default function IndexPage() {
 											</TaskBoxSectionOne>
 											<TaskBoxSectionTwo>
 												{currencyValue === false ? (
-													<p>{((tad?.amount / 1e18) * 1).toFixed(4)} ETH</p>
+													<p>
+														{formatCrypto(tad?.entranceAmount)} {CHAINS[tad?.chainId].nameToken}
+													</p>
 												) : (
-													<p>${((tad?.amount / 1e18) * currencyPrice[tad?.chainId]?.usd).toFixed(2)}</p>
+													<p>${formatNumber(tad?.entranceAmount * currencyPrice[CHAINS[tad?.chainId]?.nameToken?.toLowerCase()])}</p>
 												)}
 												{currencyValue === false ? (
-													<p>{((tad?.entranceAmount / 1e18) * 1).toFixed(4)} ETH</p>
+													<p>
+														{formatCrypto(tad?.amount)} {CHAINS[tad?.chainId].nameToken}
+													</p>
 												) : (
-													<p>${((tad?.entranceAmount / 1e18) * currencyPrice[tad?.chainId]?.usd).toFixed(2)}</p>
+													<p>${formatNumber(tad?.amount * currencyPrice[CHAINS[tad?.chainId]?.nameToken?.toLowerCase()])}</p>
 												)}
 											</TaskBoxSectionTwo>
 											<TaskButton onClick={() => router.push(`/dare/${tad.chainId}-` + tad.id)}>View Task</TaskButton>
