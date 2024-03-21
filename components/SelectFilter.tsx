@@ -16,8 +16,8 @@ const StyledSelect = styled(Select, {
 	border: 1px solid ${({ theme, open, focus }) => (open || focus ? theme.palette.warning.main : theme.palette.secondary.main)};
 	border-radius: ${({ theme, open }) =>
 		open ? `${theme.customShape.borderRadius} ${theme.customShape.borderRadius} 0px 0px` : theme.shape.borderRadius};
-	// min-height: 35px;
-	// height: 35px;
+	min-height: 35px;
+	height: 35px;
 	min-width: 150px;
 	max-width: 375px;
 	transition: all 0.5s ease-in-out;
@@ -51,6 +51,9 @@ const StyledSelect = styled(Select, {
 	}
 
 	@media (max-width: 960px) {
+		display: flex;
+		justify-content: center;
+		margin: 0.5rem auto 0 auto;
 		min-width: 175px;
 		max-width: 275px;
 

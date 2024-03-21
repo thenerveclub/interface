@@ -28,13 +28,30 @@ const StyledLayout = styled(Box)`
 	align-items: center;
 	text-align: center;
 	width: 90%;
-	max-width: 1280px;
 	height: auto;
 	margin: 2% auto;
 	background-color: transparent;
 
 	@media (max-width: 750px) {
-		width: 95%;
+		width: 100%;
+	}
+`;
+
+const StyledTitle = styled.h1<{ theme: any }>`
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	font-family: ${TrueLies.style.fontFamily};
+	text-transform: none;
+	font-size: 4rem;
+	cursor: default;
+	margin: 5rem auto 0 auto;
+	width: 100%;
+	font-weight: 100;
+
+	@media (max-width: 680px) {
+		font-size: 3rem;
 	}
 `;
 
@@ -42,25 +59,13 @@ const StyledGlobalStats = styled(Box)<{ theme: any }>`
 	display: flex;
 	flex-direction: row;
 	justify-content: space-evenly;
-	margin: 7.5rem auto 0 auto;
+	margin: 2.5rem auto 2.5rem auto;
 	width: 75%;
-
-	h1 {
-		margin: 0 auto 0 auto;
-		font-size: 2rem;
-		font-weight: 100;
-		font-family: ${TrueLies.style.fontFamily};
-		color: ${(props) => props.theme.palette.text.primary};
-	}
+	max-width: 1280px;
 
 	@media (max-width: 750px) {
-		flex-direction: column;
-		margin: 10rem auto 0 auto;
-
-		h1 {
-			font-size: 4rem;
-			color: ${(props) => props.theme.palette.text.primary};
-		}
+		flex-direction: row;
+		width: 95%;
 	}
 `;
 
@@ -81,22 +86,10 @@ const StyledGlobalStat = styled(Box)<{ theme: any }>`
 	}
 
 	@media (max-width: 750px) {
-	}
-`;
-
-const StyledTrending = styled(Box)`
-	display: flex;
-	margin: 7.5rem auto 0 auto;
-	width: 100%;
-
-	h2 {
-		text-align: left;
-		font-size: 2.25rem;
-	}
-
-	@media (max-width: 750px) {
-		justify-content: center;
-		margin: 5rem auto 0 auto;
+		h1 {
+			font-size: 1.125rem;
+			color: ${(props) => props.theme.palette.text.primary};
+		}
 	}
 `;
 
@@ -272,6 +265,15 @@ const TaskButton = styled(Button)`
 	}
 `;
 
+const StyledDivider = styled(Divider)<{ theme: any }>`
+	width: 100%;
+	backgroundcolor: ${({ theme }) => theme.palette.secondary.main};
+
+	@media (max-width: 750px) {
+		width: 90%;
+	}
+`;
+
 const ActiveFilterBox = styled(Box)`
 	display: flex;
 	flex-direction: row;
@@ -279,20 +281,22 @@ const ActiveFilterBox = styled(Box)`
 	align-items: center;
 	width: 100%;
 	height: 40px;
+	margin: 1rem auto 0 auto;
 
 	@media (max-width: 750px) {
 		flex-direction: column;
-		align-items: center;
+		height: auto;
 	}
 `;
 
 const ActiveTabRightSection = styled(Box)`
-	min-width: 100%;
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-end;
+	min-width: 100%;
 
 	@media (max-width: 750px) {
+		flex-direction: column;
 		justify-content: center;
 	}
 `;
@@ -310,6 +314,12 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{ theme: any }>`
 			border: 1px solid ${({ theme }) => theme.palette.warning.main};
 			border-left: 1px solid ${({ theme }) => theme.palette.warning.main};
 		}
+	}
+
+	@media (max-width: 750px) {
+		display: flex;
+		justify-content: center;
+		margin: 0.5rem auto 0 auto;
 	}
 `;
 
@@ -497,6 +507,7 @@ export default function IndexPage() {
 						<meta name="twitter:image" content="https://dapp.nerveglobal.com/favicon.ico" />
 					</Head>
 					<StyledLayout>
+						<StyledTitle theme={theme}>Global Stats</StyledTitle>
 						<StyledGlobalStats theme={theme}>
 							<StyledGlobalStat theme={theme}>
 								<h1>${allChains?.earnings}</h1>
@@ -511,7 +522,7 @@ export default function IndexPage() {
 								<h1>Users</h1>
 							</StyledGlobalStat>
 						</StyledGlobalStats>
-						<Divider style={{ width: '100%', backgroundColor: theme.palette.secondary.main }} />
+						<StyledDivider theme={theme} />
 						<ActiveFilterBox>
 							{/* <ActiveTabLeftSection></ActiveTabLeftSection> */}
 							<ActiveTabRightSection>

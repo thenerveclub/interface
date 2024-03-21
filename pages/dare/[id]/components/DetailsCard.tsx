@@ -193,7 +193,7 @@ const DetailsCard: React.FC<DetailsCardProps> = ({ dareData, player }) => {
 
 					<div>
 						<p>Total Participants</p>
-						<p>{dareData[0]?.task.participants}</p>
+						<p style={{ textDecoration: 'none' }}>{dareData[0]?.task.participants}</p>
 					</div>
 				</StyledPlayerRow>
 				<StyledRow theme={theme}>

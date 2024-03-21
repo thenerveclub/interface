@@ -72,7 +72,7 @@ const ActiveFilterBox = styled(Box)`
 
 	@media (max-width: 750px) {
 		flex-direction: column;
-		align-items: center;
+		height: auto;
 	}
 `;
 
@@ -81,6 +81,18 @@ const ActiveTabLeftSection = styled(Box)`
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-start;
+`;
+
+const ActiveTabRightSection = styled(Box)`
+	min-width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+
+	@media (max-width: 750px) {
+		flex-direction: column;
+		justify-content: center;
+	}
 `;
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{ theme: any }>`
@@ -96,6 +108,12 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{ theme: any }>`
 			border: 1px solid ${({ theme }) => theme.palette.warning.main};
 			border-left: 1px solid ${({ theme }) => theme.palette.warning.main};
 		}
+	}
+
+	@media (max-width: 750px) {
+		display: flex;
+		justify-content: center;
+		margin: 0.5rem auto 0 auto;
 	}
 `;
 
@@ -113,17 +131,6 @@ const StyledToggleButton = styled(ToggleButton)<{ theme: any }>`
 		color: ${({ theme }) => theme.palette.text.primary};
 		background-color: transparent;
 		border: 1px solid ${({ theme }) => theme.palette.secondary.main};
-	}
-`;
-
-const ActiveTabRightSection = styled(Box)`
-	min-width: 100%;
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-end;
-
-	@media (max-width: 750px) {
-		justify-content: center;
 	}
 `;
 
