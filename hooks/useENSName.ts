@@ -12,7 +12,8 @@ function useENSName(input) {
 	// Redux
 	const customRPCValue = useSelector((state: { customRPC: string }) => state.customRPC);
 
-	const providerUrl = customRPCValue ? 'https://ethereum-rpc.publicnode.com' : process.env.NEXT_PUBLIC_RPC_URL;
+	// const providerUrl = customRPCValue ? 'https://ethereum-rpc.publicnode.com' : process.env.NEXT_PUBLIC_RPC_URL;
+	const providerUrl = 'https://ethereum-rpc.publicnode.com';
 
 	useEffect(() => {
 		if (!input) {
