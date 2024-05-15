@@ -286,8 +286,11 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 	};
 
 	const handleListPlayerItemClick = (playerId, playerAddress) => {
-		if (playerId === '') router.push(`/player/${playerAddress}`);
-		router.push(`/player/${playerId}`);
+		if (playerId === '') {
+			router.push(`/player/${playerAddress}`);
+		} else {
+			router.push(`/player/${playerId}`);
+		}
 		setSearchValue('');
 		setListVisible(false);
 		addToSearchHistory({ type: 'player', id: playerId, address: playerAddress }); // Update to store an object with type and id
