@@ -51,7 +51,12 @@ const usePlayerDataSearchList = (keyWord: string) => {
 				if (isEthereumAddress) {
 					// Handle response from resolvers query
 					if (data.data.resolvers.length === 0) {
-						setPlayerSearchList([]);
+						setPlayerSearchList([
+							{
+								name: '',
+								resolver: { addr: { id: searchKeyword } },
+							},
+						]);
 					} else {
 						const domains = data.data.resolvers.map((resolver) => ({
 							name: resolver.domain.name,

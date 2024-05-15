@@ -286,6 +286,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 	};
 
 	const handleListPlayerItemClick = (playerId, playerAddress) => {
+		if (playerId === '') router.push(`/player/${playerAddress}`);
 		router.push(`/player/${playerId}`);
 		setSearchValue('');
 		setListVisible(false);
