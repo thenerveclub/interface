@@ -40,11 +40,14 @@ const usePlayerDataSearchList = (keyWord: string) => {
 			}
 
 			try {
-				const fetchPlayerData = await fetch('https://api.thegraph.com/subgraphs/name/ensdomains/ens', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ query: query }),
-				});
+				const fetchPlayerData = await fetch(
+					`https://gateway-arbitrum.network.thegraph.com/api/${process.env.NEXT_PUBLIC_THEGRAPH_ENS_API}/subgraphs/id/5XqPmWe6gjyrJtFn9cLy237i4cWw2j9HcUJEXsP5qGtH`,
+					{
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ query: query }),
+					}
+				);
 
 				const data = await fetchPlayerData.json();
 
