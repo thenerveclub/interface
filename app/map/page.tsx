@@ -40,6 +40,7 @@ export default function IndexPage() {
 
 	// Combine pathname and searchParams
 	const fullPath = `${pathname}?${searchParams.toString()}`;
+	console.log('Current URL:', fullPath);
 
 	// Set default location values if necessary
 	const defaultLat = 20; // Example default latitude
