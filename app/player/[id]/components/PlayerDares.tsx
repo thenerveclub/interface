@@ -3,7 +3,7 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { Box, Button, Skeleton, Tab, Tabs, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import router from 'next/router';
-import GoogleMaps from 'public/svg/tech/googlemaps.svg';
+import GoogleMaps from '/public/svg/tech/googlemaps.svg';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SelectFilter from '../../../../components/SelectFilter';
@@ -414,7 +414,7 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 		const filterBySelectedChains = (tasks, selectedChains) => {
 			return tasks.filter((task) => {
 				const taskChainIdNum = Number(task.chainId); // Convert to number
-				return selectedChains.includes(taskChainIdNum);
+				return selectedChains?.includes(taskChainIdNum);
 			});
 		};
 

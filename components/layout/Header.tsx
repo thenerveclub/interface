@@ -13,8 +13,8 @@ import { AppBar, Button } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import localFont from 'next/font/local';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { use, useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import SearchBar from '../SearchBar';
 import SelectChain from '../SelectChain';
@@ -356,8 +356,8 @@ const CloseButton = styled.button<{ theme: any }>`
 export default function Header() {
 	const theme = useTheme();
 	const router = useRouter();
-	const isMap = router.pathname.includes('/map');
-	const network = router.query.network as string;
+	const isMap = router.pathname?.includes('/map');
+	const network = router.query?.network as string;
 	const headerRef = useRef(null);
 
 	// Redux

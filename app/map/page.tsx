@@ -1,8 +1,10 @@
+'use client';
+
 import styled from '@emotion/styled';
 import { Box } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Map from '../../components/GoogleMap';
 
@@ -29,7 +31,15 @@ const StyledLayout = styled(Box)`
 export default function IndexPage() {
 	const theme = useTheme();
 	const router = useRouter();
-	const { lat, lng } = router.query;
+	const pathname = usePathname();
+	const searchParams = useSearchParams();
+
+	// Extract lat and lng from searchParams
+	const lat = searchParams.get('lat');
+	const lng = searchParams.get('lng');
+
+	// Combine pathname and searchParams
+	const fullPath = `${pathname}?${searchParams.toString()}`;
 
 	// Set default location values if necessary
 	const defaultLat = 20; // Example default latitude

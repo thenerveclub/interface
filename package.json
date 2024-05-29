@@ -26,7 +26,8 @@
 		"build": "next build",
 		"export": "next build && next export",
 		"start": "next start",
-		"analyze": "ANALYZE=true next dev"
+		"analyze": "ANALYZE=true next dev",
+		"lint": "next lint"
 	},
 	"dependencies": {
 		"@coinbase/wallet-sdk": "^3.3.0",
@@ -43,7 +44,7 @@
 		"@mui/x-charts": "^6.18.1",
 		"@next/bundle-analyzer": "^13.2.3",
 		"@reduxjs/toolkit": "^1.9.2",
-		"@svgr/webpack": "^6.5.1",
+		"@svgr/webpack": "^8.1.0",
 		"@walletconnect/ethereum-provider": "1.7.1",
 		"@web3-react/coinbase-wallet": "^8.2.3",
 		"@web3-react/core": "^8.2.3",
@@ -52,10 +53,10 @@
 		"@web3-react/walletconnect-v2": "^8.5.1",
 		"eslint-config-next": "^13.0.0",
 		"ethers": "^5.7.2",
-		"next": "^13.1.6",
+		"next": "^14.2.3",
 		"notistack": "^2.0.8",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1",
 		"react-redux": "^8.0.5",
 		"redux": "^4.2.1",
 		"redux-logger": "^3.0.6"

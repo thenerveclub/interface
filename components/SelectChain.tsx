@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { WarningAmber } from '@mui/icons-material';
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getAddChainParameters } from '../utils/chains';
@@ -127,7 +127,7 @@ export default function SelectChain() {
 	const testnetsValue = useSelector((state: { testnets: boolean }) => state.testnets);
 
 	// Network Check
-	const isNetworkAvailable = availableChains.includes(chainId);
+	const isNetworkAvailable = availableChains?.includes(chainId);
 	const [chain, setChain] = useState(chainId);
 	// Update chain state variable whenever chainId changes
 	useEffect(() => {

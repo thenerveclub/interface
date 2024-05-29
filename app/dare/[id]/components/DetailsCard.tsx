@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Box, Divider, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { CHAINS } from '../../../../utils/chains';
 

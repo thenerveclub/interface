@@ -1,7 +1,9 @@
+'use client';
+
 import styled from '@emotion/styled';
 import { Box, Divider, Grid, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import LoadingScreen from '../../../components/LoadingScreen';
 import Claim from '../../../components/modal/claim';
@@ -104,10 +106,10 @@ const StyledTimerAndShare = styled(Box)`
 	}
 `;
 
-export default function TaskPage() {
+export default function TaskPage({ params }: { params: { id: string } }) {
 	const theme = useTheme();
 	const router = useRouter();
-	const id = router.query.id as string;
+	const id = params.id;
 
 	// split id to get chainId before "-" and task id after "-"
 	const network = id?.split('-')[0];
@@ -162,66 +164,69 @@ export default function TaskPage() {
 	// console.log('playerClaimed ', playerClaimed);
 
 	return (
-		<>
-			{isLoading ? (
-				<LoadingScreen />
-			) : (
-				<StyledBox>
-					<StyledGridBox>
-						<StyledLeftSection>
-							<DescriptionCard dareData={dareData} />
-							<DetailsCard dareData={dareData} player={player} />
+		<div>
+			<h1>Index Page</h1>
+		</div>
+		// <>
+		// 	{isLoading ? (
+		// 		<LoadingScreen />
+		// 	) : (
+		// 		<StyledBox>
+		// 			<StyledGridBox>
+		// 				<StyledLeftSection>
+		// 					<DescriptionCard dareData={dareData} />
+		// 					<DetailsCard dareData={dareData} player={player} />
 
-							{/* <Chart dareData={dareData} /> */}
-						</StyledLeftSection>
-						<StyledRightSection>
-							<StyledTimerAndShare>
-								<TimerCard dareData={dareData} />
-								<ShareCard dareData={dareData} player={player} />
-							</StyledTimerAndShare>
-							{account ? (
-								finished || timeover ? (
-									isPlayer ? (
-										voteIsTrue && !playerClaimed ? (
-											<Claim dareData={dareData} />
-										) : (
-											<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-												<p>{playerClaimed ? 'You have claimed your win' : 'You has lost the dare'}</p>
-											</div>
-										)
-									) : hasJoined && !voteIsTrue && !hasClaimed ? (
-										<Redeem dareData={dareData} />
-									) : (
-										<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-											<p>{hasClaimed ? 'You have claimed your stake' : 'Player has won the dare'}</p>
-										</div>
-									)
-								) : isPlayer ? (
-									!proven ? (
-										<ProveDare dareData={dareData} />
-									) : (
-										voteIsTrue && playerClaimed && <Redeem dareData={dareData} />
-									)
-								) : !hasJoined ? (
-									<JoinDare dareData={dareData} />
-								) : !hasVoted ? (
-									<VoteTask dareData={dareData} />
-								) : (
-									<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-										<p>{userVote === true ? 'You voted true' : 'Yout voted false'}</p>
-									</div>
-								)
-							) : (
-								<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-									<Connect />
-								</div>
-							)}
-							{proof && <ProofCard dareData={dareData} />}
-						</StyledRightSection>
-					</StyledGridBox>
-					<ActivityTable dareData={dareData} />
-				</StyledBox>
-			)}
-		</>
+		// 					{/* <Chart dareData={dareData} /> */}
+		// 				</StyledLeftSection>
+		// 				<StyledRightSection>
+		// 					<StyledTimerAndShare>
+		// 						<TimerCard dareData={dareData} />
+		// 						<ShareCard dareData={dareData} player={player} />
+		// 					</StyledTimerAndShare>
+		// 					{account ? (
+		// 						finished || timeover ? (
+		// 							isPlayer ? (
+		// 								voteIsTrue && !playerClaimed ? (
+		// 									<Claim dareData={dareData} />
+		// 								) : (
+		// 									<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+		// 										<p>{playerClaimed ? 'You have claimed your win' : 'You has lost the dare'}</p>
+		// 									</div>
+		// 								)
+		// 							) : hasJoined && !voteIsTrue && !hasClaimed ? (
+		// 								<Redeem dareData={dareData} />
+		// 							) : (
+		// 								<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+		// 									<p>{hasClaimed ? 'You have claimed your stake' : 'Player has won the dare'}</p>
+		// 								</div>
+		// 							)
+		// 						) : isPlayer ? (
+		// 							!proven ? (
+		// 								<ProveDare dareData={dareData} />
+		// 							) : (
+		// 								voteIsTrue && playerClaimed && <Redeem dareData={dareData} />
+		// 							)
+		// 						) : !hasJoined ? (
+		// 							<JoinDare dareData={dareData} />
+		// 						) : !hasVoted ? (
+		// 							<VoteTask dareData={dareData} />
+		// 						) : (
+		// 							<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+		// 								<p>{userVote === true ? 'You voted true' : 'Yout voted false'}</p>
+		// 							</div>
+		// 						)
+		// 					) : (
+		// 						<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+		// 							<Connect />
+		// 						</div>
+		// 					)}
+		// 					{proof && <ProofCard dareData={dareData} />}
+		// 				</StyledRightSection>
+		// 			</StyledGridBox>
+		// 			<ActivityTable dareData={dareData} />
+		// 		</StyledBox>
+		// 	)}
+		// </>
 	);
 }

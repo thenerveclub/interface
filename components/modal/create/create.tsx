@@ -26,7 +26,7 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';

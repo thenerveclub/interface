@@ -1,3 +1,5 @@
+'use client';
+
 import styled from '@emotion/styled';
 import { Box, Switch, SwitchProps, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';

@@ -1,11 +1,12 @@
+'use client';
+
 import styled from '@emotion/styled';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { Box, Button, Divider, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import localFont from 'next/font/local';
 import Head from 'next/head';
-import router, { useRouter } from 'next/router';
-import GoogleMaps from 'public/svg/tech/googlemaps.svg';
+import router, { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import LoadingScreen from '../components/LoadingScreen';
@@ -18,6 +19,7 @@ import { currencySlice } from '../state/currency/currencySlice';
 import { CHAINS, nameToChainId } from '../utils/chains';
 import EthereumLogo from '/public/svg/chains/ethereum.svg';
 import PolygonLogo from '/public/svg/chains/polygon.svg';
+import GoogleMaps from '/public/svg/tech/googlemaps.svg';
 
 const TrueLies = localFont({ src: '../public/fonts/TrueLies.woff2', display: 'swap' });
 
@@ -411,7 +413,7 @@ export default function IndexPage() {
 		const filterBySelectedChains = (tasks, selectedChains) => {
 			return tasks.filter((task) => {
 				const taskChainIdNum = Number(task.chainId); // Convert to number
-				return selectedChains.includes(taskChainIdNum);
+				return selectedChains?.includes(taskChainIdNum);
 			});
 		};
 

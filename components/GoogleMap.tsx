@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { Box, useMediaQuery } from '@mui/material';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import useMapData from '../hooks/mapData/useMapData';

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Button } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import Identicon from '../../Identicon';

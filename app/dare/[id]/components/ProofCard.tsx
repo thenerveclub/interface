@@ -58,22 +58,22 @@ const ProofCard: React.FC<ProofCardProps> = ({ dareData }) => {
 	function getEmbedContent(url) {
 		if (!url) return null;
 
-		if (url.includes('twitch')) {
+		if (url?.includes('twitch')) {
 			const clipId = url.split('/').pop();
 			const embedUrl = `https://clips.twitch.tv/embed?clip=${clipId}&parent=app.nerveglobal.com&parent=localhost`;
 			return <iframe src={embedUrl} height="100%" width="100%" allowFullScreen={true} frameBorder="0" scrolling="no" title="Twitch Clip"></iframe>;
-		} else if (url.includes('youtube')) {
+		} else if (url?.includes('youtube')) {
 			const videoId = url.split('v=')[1].split('&')[0];
 			const embedUrl = `https://www.youtube.com/embed/${videoId}`;
 			return <iframe src={embedUrl} height="100%" width="100%" allowFullScreen={true} frameBorder="0" title="YouTube Video"></iframe>;
-		} else if (url.includes('instagram')) {
+		} else if (url?.includes('instagram')) {
 			// Instagram embedding is more complex; showing a simple link for now
 			return (
 				<a href={url} target="_blank" rel="noopener noreferrer">
 					View on Instagram
 				</a>
 			);
-		} else if (url.includes('tiktok')) {
+		} else if (url?.includes('tiktok')) {
 			// TikTok embedding is more complex; showing a simple link for now
 			return (
 				<a href={url} target="_blank" rel="noopener noreferrer">

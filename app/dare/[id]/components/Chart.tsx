@@ -3,7 +3,7 @@ import { Palette } from '@mui/icons-material';
 import { Box, Divider } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 
 const StyledVotingBox = styled(Box)<{ theme: any }>`

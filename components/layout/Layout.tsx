@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { CssBaseline, useMediaQuery } from '@mui/material/';
 import { ThemeProvider } from '@mui/material/styles';
-import { useRouter } from 'next/router';
+import { usePathname, useRouter } from 'next/navigation';
 import React, { ReactNode, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Footer from './Footer';
@@ -43,8 +43,9 @@ const Layout = ({ children = 'This is the default title' }: Props) => {
 
 	// Router
 	const router = useRouter();
-	const is404 = router.pathname === '/404';
-	const isMap = router.pathname.includes('/map');
+	const pathname = usePathname();
+	const is404 = pathname === '/404';
+	const isMap = pathname?.includes('/map');
 
 	// Dynamic height
 	const [dynamicHeight, setDynamicHeight] = useState(0); // Initialize to 0 or a default height

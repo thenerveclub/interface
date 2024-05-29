@@ -146,7 +146,7 @@ export default function SelectFilter() {
 					if (chainInfo && chainInfo.name && chainInfo.logo) {
 						return (
 							<MenuItemStyled key={chainId} theme={theme} onClick={() => dispatch(filterSlice.actions.toggleFilterItem(Number(chainId)))}>
-								<Checkbox checked={filter.includes(Number(chainId))} style={{ backgroundColor: 'transparent', color: theme.palette.text.primary }} />
+								<Checkbox checked={filter?.includes(Number(chainId))} style={{ backgroundColor: 'transparent', color: theme.palette.text.primary }} />
 								<img src={chainInfo.logo} style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt={`${chainInfo.name} Logo`} />
 								{chainInfo.name}
 							</MenuItemStyled>

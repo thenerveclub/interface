@@ -7,7 +7,7 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { Button, ClickAwayListener, IconButton, InputBase, List, Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import local from 'next/font/local';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import useTrendingDareList from '../hooks/searchData/trending/useTrendingDareList';
 import useTrendingPlayerList from '../hooks/searchData/trending/useTrendingPlayerList';

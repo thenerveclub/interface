@@ -4,7 +4,7 @@ import { useTheme } from '@mui/material/styles';
 import localFont from 'next/font/local';
 import Head from 'next/head';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 const TrueLies = localFont({ src: '../public/fonts/TrueLies.woff2', display: 'swap' });
 

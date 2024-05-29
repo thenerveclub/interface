@@ -6,7 +6,7 @@ import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, ToggleBu
 import { useTheme } from '@mui/material/styles';
 import localFont from 'next/font/local';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import LoadingScreen from '../../../components/LoadingScreen';

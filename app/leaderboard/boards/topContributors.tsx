@@ -6,9 +6,10 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import LoadingScreen from '../../../components/LoadingScreen';
+import usePlayerRankingData from '../../../hooks/rankingData/useTopEarners';
 import { CHAINS } from '../../../utils/chains';
 
 const StyledBox = styled(Box)`
@@ -56,6 +57,7 @@ const StyledButton = styled(Button)<{ theme: any }>`
 	background-color: transparent;
 	text-transform: none;
 	width: 100%;
+	cursor: default;
 
 	@media (max-width: 680px) {
 		font-size: 1rem;
@@ -106,13 +108,13 @@ const StyledTableContainer = styled(Box)<{ theme: any }>`
 	}
 `;
 
-interface TopEarnerProps {
-	topEarners: any;
+interface TopContributorsProps {
+	topContributors: any;
 	loading: any;
 	error: any;
 }
 
-const TopEarners: React.FC<TopEarnerProps> = ({ topEarners, loading, error }) => {
+const TopContributors: React.FC<TopContributorsProps> = ({ topContributors, loading, error }) => {
 	const theme = useTheme();
 	const router = useRouter();
 
@@ -120,7 +122,7 @@ const TopEarners: React.FC<TopEarnerProps> = ({ topEarners, loading, error }) =>
 
 	// Player Ranking Data
 	const [order, setOrder] = useState('desc');
-	const [orderBy, setOrderBy] = useState('rankedByEarned');
+	const [orderBy, setOrderBy] = useState('rankedBySpent');
 
 	const createSortHandler = (property) => (event) => {
 		const isAsc = orderBy === property && order === 'desc';
@@ -131,9 +133,9 @@ const TopEarners: React.FC<TopEarnerProps> = ({ topEarners, loading, error }) =>
 	// Determine which ranking list to use based on orderBy
 	let sortedData = [];
 
-	if (topEarners) {
+	if (topContributors) {
 		// Determine which ranking list to use based on orderBy
-		sortedData = topEarners[orderBy] ? [...topEarners[orderBy]] : [];
+		sortedData = topContributors[orderBy] ? [...topContributors[orderBy]] : [];
 
 		// If order is ascending, reverse the sorted data
 		if (order === 'asc') {
@@ -200,26 +202,10 @@ const TopEarners: React.FC<TopEarnerProps> = ({ topEarners, loading, error }) =>
 									<TableRow>
 										<TableCell>#</TableCell>
 										<TableCell>Address</TableCell>
-										<TableCell>
-											<StyledButton theme={theme}>
-												Earnings
-												{/* {orderBy === 'rankedByEarned' ? (
-													order === 'asc' ? (
-														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
-													) : (
-														<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
-													)
-												) : order === 'asc' ? (
-													<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
-												) : (
-													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-												)} */}
-											</StyledButton>
-										</TableCell>
 										{/* <TableCell>
-											<StyledButton theme={theme} onClick={createSortHandler('rankedBySpent')}>
-												Contributions
-												{orderBy === 'rankedBySpent' ? (
+											<StyledButton theme={theme} onClick={createSortHandler('rankedByEarned')}>
+												Earnings
+												{orderBy === 'rankedByEarned' ? (
 													order === 'asc' ? (
 														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
 													) : (
@@ -232,6 +218,22 @@ const TopEarners: React.FC<TopEarnerProps> = ({ topEarners, loading, error }) =>
 												)}
 											</StyledButton>
 										</TableCell> */}
+										<TableCell>
+											<StyledButton theme={theme}>
+												Contributions
+												{/* {orderBy === 'rankedBySpent' ? (
+													order === 'asc' ? (
+														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
+													) : (
+														<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
+													)
+												) : order === 'asc' ? (
+													<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
+												) : (
+													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
+												)} */}
+											</StyledButton>
+										</TableCell>
 									</TableRow>
 								</TableHead>
 								<TableBody>
@@ -257,12 +259,12 @@ const TopEarners: React.FC<TopEarnerProps> = ({ topEarners, loading, error }) =>
 														<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
 													</a>
 												</TableCell>
-												<TableCell style={{ textAlign: 'right' }}>
-													<a>${row.earned}</a>
-												</TableCell>
 												{/* <TableCell style={{ textAlign: 'right' }}>
-													<a>${row.spent}</a>
+													<a>${row.earned}</a>
 												</TableCell> */}
+												<TableCell style={{ textAlign: 'right' }}>
+													<a>${row.spent}</a>
+												</TableCell>
 											</StyledTableRow>
 										))
 									) : (
@@ -283,4 +285,4 @@ const TopEarners: React.FC<TopEarnerProps> = ({ topEarners, loading, error }) =>
 	);
 };
 
-export default TopEarners;
+export default TopContributors;

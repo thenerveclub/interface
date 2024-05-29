@@ -1,3 +1,5 @@
+'use client';
+
 import { Web3ReactProvider } from '@web3-react/core';
 import { SnackbarProvider } from 'notistack';
 import { useEffect } from 'react';
@@ -93,7 +95,7 @@ function Updaters() {
 	);
 }
 
-export default function MyApp({ Component, pageProps }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
 	useEffect(() => {
 		const connectorsToConnect = [metaMask, walletConnectV2, coinbaseWallet];
 		connectorsToConnect.forEach(async (connector) => {
@@ -106,15 +108,17 @@ export default function MyApp({ Component, pageProps }) {
 	}, []);
 
 	return (
-		<Provider store={store}>
-			<Web3ReactProvider connectors={connectors}>
-				<Updaters />
-				<Layout>
-					<SnackbarProvider maxSnack={3}>
-						<Component {...pageProps} />
-					</SnackbarProvider>
-				</Layout>
-			</Web3ReactProvider>
-		</Provider>
+		<html lang="en">
+			<body>
+				<Provider store={store}>
+					<Web3ReactProvider connectors={connectors}>
+						<Updaters />
+						<Layout>
+							<SnackbarProvider maxSnack={3}>{children}</SnackbarProvider>
+						</Layout>
+					</Web3ReactProvider>
+				</Provider>
+			</body>
+		</html>
 	);
 }

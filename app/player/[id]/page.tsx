@@ -1,8 +1,10 @@
+"use client"
+
 import styled from '@emotion/styled';
 import { ContentCopy, OpenInNew } from '@mui/icons-material';
 import { Box, Fade, SpeedDial, SpeedDialIcon, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { useRouter } from 'next/router';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import LoadingScreen from '../../../components/LoadingScreen';
@@ -94,12 +96,13 @@ const CreateTaskBox = styled(Box)`
 	}
 `;
 
-export default function PlayerPage() {
+export default function PlayerPage({ params }: { params: { id: string } }) {
 	const theme = useTheme();
 	const router = useRouter();
+	const pathname = usePathname();
 
 	// Usernames
-	const id = router.query.id as string;
+	const id = params.id;
 
 	// console.log('id', id);
 
@@ -126,57 +129,60 @@ export default function PlayerPage() {
 	}
 
 	return (
-		<>
-			{isLoading ? (
-				<LoadingScreen />
-			) : (
-				<StyledBox>
-					<StyledSection>
-						<StyledLeftSectionBox>
-							<PlayerBox>
-								<p>{ensName ? ensName : address ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}` : null}</p>
-							</PlayerBox>
-							<AddressBox>
-								<p>
-									({address?.substring(0, 6)}...{address?.substring(address?.length - 4)})
-								</p>
-								<Tooltip
-									title={copied ? 'Copied!' : 'Copy Address'}
-									placement="bottom"
-									disableInteractive
-									enterTouchDelay={100}
-									TransitionComponent={Fade}
-									TransitionProps={{ timeout: 600 }}
-								>
-									<p onClick={handleCopyAddress} style={{ cursor: 'pointer' }}>
-										<ContentCopy style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
-									</p>
-								</Tooltip>
-								<Tooltip
-									title="View On Explorer"
-									placement="bottom"
-									disableInteractive
-									enterTouchDelay={100}
-									TransitionComponent={Fade}
-									TransitionProps={{ timeout: 600 }}
-								>
-									<a href={`https://etherscan.io/address/${address}#multichain-portfolio`} target="_blank" style={{ cursor: 'pointer' }}>
-										<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
-									</a>
-								</Tooltip>
-							</AddressBox>
-							<PlayerStatistics playerData={playerData} checksumAddress={address} />
-						</StyledLeftSectionBox>
-					</StyledSection>
-					<PlayerDares recipientAddress={address} recipientENS={ensName} error={error} />
+		<div>
+			<h1>Index Page</h1>
+		</div>
+		// <>
+		// 	{isLoading ? (
+		// 		<LoadingScreen />
+		// 	) : (
+		// 		<StyledBox>
+		// 			<StyledSection>
+		// 				<StyledLeftSectionBox>
+		// 					<PlayerBox>
+		// 						<p>{ensName ? ensName : address ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}` : null}</p>
+		// 					</PlayerBox>
+		// 					<AddressBox>
+		// 						<p>
+		// 							({address?.substring(0, 6)}...{address?.substring(address?.length - 4)})
+		// 						</p>
+		// 						<Tooltip
+		// 							title={copied ? 'Copied!' : 'Copy Address'}
+		// 							placement="bottom"
+		// 							disableInteractive
+		// 							enterTouchDelay={100}
+		// 							TransitionComponent={Fade}
+		// 							TransitionProps={{ timeout: 600 }}
+		// 						>
+		// 							<p onClick={handleCopyAddress} style={{ cursor: 'pointer' }}>
+		// 								<ContentCopy style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
+		// 							</p>
+		// 						</Tooltip>
+		// 						<Tooltip
+		// 							title="View On Explorer"
+		// 							placement="bottom"
+		// 							disableInteractive
+		// 							enterTouchDelay={100}
+		// 							TransitionComponent={Fade}
+		// 							TransitionProps={{ timeout: 600 }}
+		// 						>
+		// 							<a href={`https://etherscan.io/address/${address}#multichain-portfolio`} target="_blank" style={{ cursor: 'pointer' }}>
+		// 								<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
+		// 							</a>
+		// 						</Tooltip>
+		// 					</AddressBox>
+		// 					<PlayerStatistics playerData={playerData} checksumAddress={address} />
+		// 				</StyledLeftSectionBox>
+		// 			</StyledSection>
+		// 			<PlayerDares recipientAddress={address} recipientENS={ensName} error={error} />
 
-					{!error && (
-						<CreateTaskBox>
-							{account && checksumAccount !== address && <CreateAtPlayer recipientAddress={address} recipientENS={ensName} />}
-						</CreateTaskBox>
-					)}
-				</StyledBox>
-			)}
-		</>
+		// 			{!error && (
+		// 				<CreateTaskBox>
+		// 					{account && checksumAccount !== address && <CreateAtPlayer recipientAddress={address} recipientENS={ensName} />}
+		// 				</CreateTaskBox>
+		// 			)}
+		// 		</StyledBox>
+		// 	)}
+		// </>
 	);
 }

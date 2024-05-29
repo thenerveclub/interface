@@ -1,11 +1,13 @@
+'use client';
+
 import styled from '@emotion/styled';
 import { Share } from '@mui/icons-material';
 import { Box, Divider } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { useRouter } from 'next/router';
-import Telegram from 'public/svg/socials/telegram.svg';
-import WhatsApp from 'public/svg/socials/whatsapp.svg';
-import XSVG from 'public/svg/socials/x.svg';
+import { useRouter } from 'next/navigation';
+import Telegram from '/public/svg/socials/telegram.svg';
+import WhatsApp from '/public/svg/socials/whatsapp.svg';
+import XSVG from '/public/svg/socials/x.svg';
 
 const TaskCard = styled(Box)<{ theme: any }>`
 	display: flex;
