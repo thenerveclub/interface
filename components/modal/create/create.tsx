@@ -240,7 +240,11 @@ const StyledTextField = styled(TextField)<{ theme: any }>`
 	}
 `;
 
-// const CreateTask: React.FC<CreateTaskProps> = ({ recipientAddress, recipientENS }) => {
+interface CreateTaskProps {
+	recipientENS: string;
+}
+
+const CreateTask: React.FC<CreateTaskProps> = ({ recipientENS }) => {
 	const theme = useTheme();
 	const router = useRouter();
 	const { provider } = useWeb3React();
@@ -336,6 +340,8 @@ const StyledTextField = styled(TextField)<{ theme: any }>`
 		});
 	}
 
+	const recipientAddress = '0x';
+
 	// Create Dare Function
 	async function onCreateTask() {
 		const signer = provider.getSigner();
@@ -425,7 +431,7 @@ const StyledTextField = styled(TextField)<{ theme: any }>`
 							onChange={handleInputChange}
 							endAdornment={
 								<InputAdornment position="end">
-									<a style={{ color: theme.palette.text.primary }}>{CHAINS[]}</a>
+									<a style={{ color: theme.palette.text.primary }}>{CHAINS[network]}</a>
 									<MaxButton theme={theme} onClick={setMaxValue}>
 										Max
 									</MaxButton>

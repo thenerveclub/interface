@@ -86,7 +86,7 @@ export default function Page() {
 					<h1>Sorry</h1>
 				</Link>
 				<Text>
-					<a>We couldn't find that page.</a>
+					<a>We couldn&apos;t find that page.</a>
 				</Text>
 			</StyledBox>
 		</>

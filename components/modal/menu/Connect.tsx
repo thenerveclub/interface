@@ -144,7 +144,7 @@ function ConnectModal() {
 							cursor: 'default',
 						}}
 					>
-						By connecting a wallet, you agree to Nerve Global's{' '}
+						By connecting a wallet, you agree to Nerve Global&apos;s
 						<a
 							target="_blank"
 							rel="noreferrer"
