@@ -1,10 +1,10 @@
+'use client';
+
 import styled from '@emotion/styled';
 import { Box, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import localFont from 'next/font/local';
-import Head from 'next/head';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
 const TrueLies = localFont({ src: '../public/fonts/TrueLies.woff2', display: 'swap' });
 
@@ -22,7 +22,6 @@ const StyledBox = styled(Box)<{ theme: any }>`
 
 	h1 {
 		color: ${(props) => props.theme.palette.text.primary};
-		font-family: ${TrueLies.style.fontFamily};
 		font-size: 5rem;
 		font-weight: 500;
 		cursor: pointer;
@@ -58,29 +57,11 @@ const Text = styled(Typography)`
 	}
 `;
 
-export default function Page() {
+export default function NotFound() {
 	const theme = useTheme();
-	const router = useRouter();
-	const network = router.query.network as string;
 
 	return (
-		<>
-			<Head>
-				<meta name="viewport" content="width=device-width, initial-scale=1" />
-				<meta name="robots" content="noindex" />
-				<title>404 Not Found | Nerve Gloabl</title>
-				<meta property="og:title" content="404 Not Found | Nerve Gloabl" key="title" />
-				<meta property="og:site_name" content="404 Not Found | Nerve Gloabl" />
-				<meta property="og:description" content="404 Not Found | Nerve Gloabl" />
-				<meta property="og:image" content="https://app.nerveglobal.com/favicon.ico" />
-				<meta property="og:url" content="https://app.nerveglobal.com/" />
-				<meta property="og:type" content="website" />
-				<meta name="twitter:card" content="summary_large_image" />
-				<meta name="twitter:site" content="@nerveglobal_" />
-				<meta name="twitter:title" content="404 Not Found | Nerve Gloabl" />
-				<meta name="twitter:description" content="404 Not Found | Nerve Gloabl" />
-				<meta name="twitter:image" content="https://app.nerveglobal.com/favicon.ico" />
-			</Head>
+		<div>
 			<StyledBox theme={theme}>
 				<Link href={`/`} passHref style={{ textDecoration: 'none' }}>
 					<h1>Sorry</h1>
@@ -89,6 +70,6 @@ export default function Page() {
 					<a>We couldn&apos;t find that page.</a>
 				</Text>
 			</StyledBox>
-		</>
+		</div>
 	);
 }

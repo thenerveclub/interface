@@ -374,6 +374,9 @@ export default function IndexPage() {
 	const { globalStats, loading, error } = useGlobalStats();
 	const { allChains, individualChains } = globalStats || {};
 
+	console.log('allChains', allChains);
+	console.log('globalStats', globalStats, loading, error);
+
 	// Toogle Button For Token Price
 	const handleToggle = (event, newCurrency) => {
 		// update currencyValue in redux

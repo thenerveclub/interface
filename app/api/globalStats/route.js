@@ -1,13 +1,13 @@
+import { NextResponse } from 'next/server';
 import fetch from 'node-fetch';
-import { CHAINS } from '../../utils/chains'; // Assuming this path is correct
+import { CHAINS } from '../../../utils/chains'; // Adjust the path as needed
 
 let cachedGlobalStats;
 let lastGlobalStatsFetchTime;
 
-// Function to fetch currency prices
 const fetchCurrencyPrices = async () => {
 	try {
-		const response = await fetch('https://canary.nerveglobal.com/api/tokenPriceData'); // Update with the correct URL/path
+		const response = await fetch('https://canary.nerveglobal.com/api/tokenPriceData');
 		if (!response.ok) throw new Error('Failed to fetch currency prices');
 		return response.json();
 	} catch (error) {
@@ -16,7 +16,6 @@ const fetchCurrencyPrices = async () => {
 	}
 };
 
-// Function to format balance
 const formatBalance = (value) => {
 	return (Number(value) / 1e18).toLocaleString('en-US', {
 		minimumFractionDigits: 2,
@@ -24,7 +23,6 @@ const formatBalance = (value) => {
 	});
 };
 
-// Function to fetch global stats from a specific chain
 const fetchStatsFromChain = async (chainId, chainData) => {
 	const query = `
     {
@@ -51,7 +49,6 @@ const fetchStatsFromChain = async (chainId, chainData) => {
 	}
 };
 
-// Main function to aggregate global stats
 const fetchGlobalStats = async () => {
 	const currencyPrice = await fetchCurrencyPrices();
 	if (!currencyPrice) {
@@ -62,7 +59,6 @@ const fetchGlobalStats = async () => {
 	const allData = await Promise.all(fetchPromises);
 	const combinedData = allData.reduce((acc, data) => ({ ...acc, ...data }), {});
 
-	// Aggregating stats for all chains with conversion to USD
 	const allChainsStats = Object.entries(combinedData).reduce(
 		(acc, [chainId, chainStatsArray]) => {
 			const chainCurrency = CHAINS[chainId]?.nameToken?.toLowerCase();
@@ -95,15 +91,7 @@ const fetchGlobalStats = async () => {
 	};
 };
 
-export default async function handler(req, res) {
-	// // Check the referer header
-	// const referer = req.headers.referer;
-
-	// // Allow requests only from your domain
-	// if (!referer || !referer.includes('nerveglobal.com')) {
-	// 	return res.status(403).json({ message: 'Access denied' });
-	// }
-
+export async function GET() {
 	if (!cachedGlobalStats || new Date().getTime() - lastGlobalStatsFetchTime > 1 * 60 * 60 * 1000) {
 		try {
 			const globalStatsData = await fetchGlobalStats();
@@ -111,18 +99,15 @@ export default async function handler(req, res) {
 				cachedGlobalStats = globalStatsData;
 				lastGlobalStatsFetchTime = new Date().getTime();
 			}
-			res.status(200).json(cachedGlobalStats || { error: 'Failed to fetch global stats' });
-			return;
+			return NextResponse.json(cachedGlobalStats || { error: 'Failed to fetch global stats' });
 		} catch (error) {
 			console.error('Failed to fetch global stats:', error);
 			if (cachedGlobalStats) {
-				res.status(200).json(cachedGlobalStats);
-				return;
+				return NextResponse.json(cachedGlobalStats);
 			}
-			res.status(500).json({ error: 'Failed to fetch global stats' });
-			return;
+			return NextResponse.error();
 		}
 	}
 
-	res.status(200).json(cachedGlobalStats);
+	return NextResponse.json(cachedGlobalStats);
 }
