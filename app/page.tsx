@@ -159,7 +159,8 @@ const StyledMap = styled.div<{ theme: any }>`
 	height: 35px;
 	color: rgba(255, 255, 255, 0.75);
 	font-size: 0.925rem;
-	background-color: rgba(134, 134, 139, 0.25);
+	// background-color: rgba(134, 134, 139, 0.25);
+	background-color: rgba(255, 127.5, 0, 1);
 	border-radius: 12px;
 	padding: 0.5rem;
 	color: ${({ theme }) => theme.palette.text.primary};
@@ -193,6 +194,7 @@ const TaskBoxSection = styled(Box)`
 	margin: 0 auto 0 auto;
 	height: 100%;
 	flex-grow: 1;
+	cursor: default;
 
 	p {
 		font-size: 1rem;
@@ -374,9 +376,6 @@ export default function IndexPage() {
 	const { globalStats, loading, error } = useGlobalStats();
 	const { allChains, individualChains } = globalStats || {};
 
-	console.log('allChains', allChains);
-	console.log('globalStats', globalStats, loading, error);
-
 	// Toogle Button For Token Price
 	const handleToggle = (event, newCurrency) => {
 		// update currencyValue in redux
@@ -424,6 +423,8 @@ export default function IndexPage() {
 		const combinedActiveTasks = combineTasks(trendingDareList);
 		const sortedActiveTasks = sortTasks(combinedActiveTasks, sort);
 		const filteredActiveTasks = filterBySelectedChains(sortedActiveTasks, filter);
+
+		// console.log('trendingDareList', trendingDareList);
 
 		// Update the state with the filtered and sorted tasks
 		setFilteredActiveTasks(filteredActiveTasks);
@@ -552,7 +553,9 @@ export default function IndexPage() {
 										<StyledInfo theme={theme}>
 											{tad?.latitude && tad?.longitude !== '0' && (
 												<StyledMap theme={theme} onClick={() => handleMapClick(tad.latitude, tad.longitude)}>
-													<GoogleMaps style={{ fill: theme.palette.text.primary, display: 'flex', fontSize: '20px', marginRight: '0.5rem' }} />
+													<GoogleMaps
+														style={{ fill: theme.palette.text.primary, display: 'flex', marginRight: '0.5rem', width: '24px', height: '24px' }}
+													/>
 													Google Map
 												</StyledMap>
 											)}
@@ -569,7 +572,7 @@ export default function IndexPage() {
 												<p>#{tad.id}</p>
 												<p>
 													{tad.participants}{' '}
-													<PeopleAltIcon style={{ display: 'felx', fontSize: '18px', fill: 'white', height: '100%', marginLeft: '0.5rem' }} />
+													<PeopleAltIcon style={{ display: 'flex', fontSize: '18px', fill: 'white', height: '100%', marginLeft: '0.5rem' }} />
 												</p>
 											</TaskBoxSectionOne>
 											<TaskBoxSectionTwo>

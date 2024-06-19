@@ -32,7 +32,15 @@ const useTrendingDareList = () => {
 						method: 'POST',
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify({ query: QueryForTrendingDareList }),
-					}).then((response) => response.json().then((data) => ({ [chainId]: data.data.tasks })));
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							if (!data.data) {
+								throw new Error(`No data found for chainId ${chainId}`);
+							}
+							const filteredTasks = data.data.tasks.filter((task) => task.chainId === chainId);
+							return { [chainId]: filteredTasks };
+						});
 				});
 
 				const allData = await Promise.all(fetchPromises);
