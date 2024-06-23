@@ -42,5 +42,5 @@ export const store = configureStore({
 		voteTrigger: voteTriggerSlice.reducer,
 	},
 	// Redux middleware for logging actions and state changes in the console
-	middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
+	// middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
 });

@@ -64,7 +64,9 @@ const StyledTable = styled(Table)<{ theme: any }>`
 	height: 100%;
 
 	@media (max-width: 600px) {
-		font-size: 3rem;
+		width: 100%;
+		min-width: 100vw;
+		max-width: 100vw;
 	}
 `;
 
@@ -78,9 +80,10 @@ const StyledButton = styled(Button)<{ theme: any }>`
 	text-transform: none;
 	width: 100%;
 	cursor: default;
+	font-size: 3rem;
 
 	@media (max-width: 600px) {
-		font-size: 3rem;
+		font-size: 1rem;
 	}
 `;
 
@@ -156,6 +159,23 @@ const StyledArrowCircleUpOutlinedIcon = styled(ArrowCircleUpOutlinedIcon)<{ them
 const StyledTableContainer = styled(Box)<{ theme: any }>`
 	// height: 100vh;
 	overflow-y: auto;
+`;
+
+const StyledTableCellTitle = styled(TableCell)<{ theme: any }>`
+	font-size: 1.5rem;
+	font-weight: 600;
+	color: ${({ theme }) => theme.palette.text.primary};
+
+	@media (max-width: 600px) {
+		font-size: 1rem;
+	}
+`;
+
+// Define a styled component for the Entry Amount cell
+const StyledTableCellHiddenOnMobile = styled(StyledTableCellTitle)`
+	@media (max-width: 768px) {
+		display: none;
+	}
 `;
 
 interface TopDaresProps {
@@ -269,12 +289,13 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 							<StyledTable stickyHeader theme={theme}>
 								<TableHead>
 									<TableRow>
-										<TableCell>#</TableCell>
-										<TableCell>Description</TableCell>
-										<TableCell>
-											<StyledButton theme={theme}>
-												Entry Amount
-												{/* {orderBy === 'entranceAmount' ? (
+										<StyledTableCellTitle theme={theme}>#</StyledTableCellTitle>
+										<StyledTableCellTitle theme={theme}>Description</StyledTableCellTitle>
+										<StyledTableCellHiddenOnMobile theme={theme}>
+											<StyledTableCellTitle theme={theme}>
+												<StyledButton theme={theme}>
+													Entry Amount
+													{/* {orderBy === 'entranceAmount' ? (
 													order === 'asc' ? (
 														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
 													) : (
@@ -285,10 +306,11 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 												) : (
 													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
 												)} */}
-											</StyledButton>
-										</TableCell>
+												</StyledButton>
+											</StyledTableCellTitle>
+										</StyledTableCellHiddenOnMobile>
 
-										<TableCell>
+										<StyledTableCellTitle theme={theme}>
 											<StyledButton theme={theme}>
 												Total Amount
 												{/* {orderBy === 'amount' ? (
@@ -303,9 +325,9 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
 												)} */}
 											</StyledButton>
-										</TableCell>
+										</StyledTableCellTitle>
 
-										<TableCell>
+										<StyledTableCellTitle theme={theme}>
 											<StyledButton theme={theme}>
 												Participants
 												{/* {orderBy === 'participants' ? (
@@ -320,12 +342,13 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
 												)} */}
 											</StyledButton>
-										</TableCell>
+										</StyledTableCellTitle>
 
-										<TableCell>
-											<StyledButton theme={theme}>
-												Voters
-												{/* {orderBy === 'voters' ? (
+										<StyledTableCellHiddenOnMobile theme={theme}>
+											<StyledTableCellTitle theme={theme}>
+												<StyledButton theme={theme}>
+													Voters
+													{/* {orderBy === 'voters' ? (
 													order === 'asc' ? (
 														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
 													) : (
@@ -336,13 +359,13 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 												) : (
 													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
 												)} */}
-											</StyledButton>
-										</TableCell>
+												</StyledButton>
+											</StyledTableCellTitle>
 
-										<TableCell>
-											<StyledButton theme={theme}>
-												Voting
-												{/* {orderBy === 'voting' ? (
+											<StyledTableCellTitle theme={theme}>
+												<StyledButton theme={theme}>
+													Voting
+													{/* {orderBy === 'voting' ? (
 													order === 'asc' ? (
 														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
 													) : (
@@ -353,8 +376,9 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 												) : (
 													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
 												)} */}
-											</StyledButton>
-										</TableCell>
+												</StyledButton>
+											</StyledTableCellTitle>
+										</StyledTableCellHiddenOnMobile>
 									</TableRow>
 								</TableHead>
 								<TableBody>
@@ -367,17 +391,19 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 														{row.description.length > 75 ? row.description.substring(0, 75) + '...' : row.description}
 													</a>
 												</TableCell>
-												<TableCell style={{ textAlign: 'right' }}>
-													{currencyValue === false ? (
-														<a style={{ cursor: 'pointer' }}>
-															{formatNumber(row.entranceAmount)} {CHAINS[row.chainId]?.nameToken}
-														</a>
-													) : (
-														<a style={{ cursor: 'pointer' }}>
-															${formatNumber(row.entranceAmount * currencyPrice[CHAINS[row.chainId]?.nameToken.toLowerCase()])}
-														</a>
-													)}
-												</TableCell>
+												<StyledTableCellHiddenOnMobile theme={theme}>
+													<TableCell style={{ textAlign: 'right' }}>
+														{currencyValue === false ? (
+															<a style={{ cursor: 'pointer' }}>
+																{formatNumber(row.entranceAmount)} {CHAINS[row.chainId]?.nameToken}
+															</a>
+														) : (
+															<a style={{ cursor: 'pointer' }}>
+																${formatNumber(row.entranceAmount * currencyPrice[CHAINS[row.chainId]?.nameToken.toLowerCase()])}
+															</a>
+														)}
+													</TableCell>
+												</StyledTableCellHiddenOnMobile>
 												<TableCell style={{ textAlign: 'right' }}>
 													{currencyValue === false ? (
 														<a style={{ cursor: 'pointer' }}>
@@ -390,8 +416,10 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 													)}
 												</TableCell>
 												<TableCell style={{ textAlign: 'right' }}>{row.participants}</TableCell>
-												<TableCell style={{ textAlign: 'right' }}>{Number(row.positiveVotes) + Number(row.negativeVotes)}</TableCell>
-												<TableCell style={{ textAlign: 'right' }}>{calculatePositivePercentage(row.positiveVotes, row.negativeVotes)}</TableCell>
+												<StyledTableCellHiddenOnMobile theme={theme}>
+													<TableCell style={{ textAlign: 'right' }}>{Number(row.positiveVotes) + Number(row.negativeVotes)}</TableCell>
+													<TableCell style={{ textAlign: 'right' }}>{calculatePositivePercentage(row.positiveVotes, row.negativeVotes)}</TableCell>
+												</StyledTableCellHiddenOnMobile>
 											</StyledTableRow>
 										))
 									) : (

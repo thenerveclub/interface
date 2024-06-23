@@ -5,7 +5,7 @@ export const useCompletedPlayerTasks = (checksumAddress: string) => {
 	const [completedPlayerTasks, setCompletedPlayerTasks] = useState<{ [chainId: string]: any[] }>({});
 	const timestamp = Math.floor(Date.now() / 1000);
 
-	console.log('completedPlayerTasks', timestamp, checksumAddress);
+	// console.log('completedPlayerTasks', timestamp, checksumAddress);
 
 	useEffect(() => {
 		if (!checksumAddress) {
@@ -52,13 +52,19 @@ export const useCompletedPlayerTasks = (checksumAddress: string) => {
 						method: 'POST',
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify({ query: QueryForCompletedTasks }),
-					}).then((response) => response.json().then((data) => ({ [chainId]: data.data.tasks })));
+					})
+						.then((response) => response.json())
+						.then((data) => {
+							if (!data.data) {
+								throw new Error(`No data found for chainId ${chainId}`);
+							}
+							const filteredTasks = data.data.tasks.filter((task) => task.chainId === chainId);
+							return { [chainId]: filteredTasks };
+						});
 				});
 
 				const allData = await Promise.all(fetchPromises);
 				const combinedData = allData.reduce((acc, data) => ({ ...acc, ...data }), {});
-				console.log('combinedData', combinedData);
-				console.log('completedPlayerTasks', timestamp, checksumAddress);
 				setCompletedPlayerTasks(combinedData);
 			} catch (error) {
 				console.error(error);

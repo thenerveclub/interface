@@ -3,7 +3,6 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { Box, Button, Skeleton, Tab, Tabs, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import router from 'next/router';
-import GoogleMaps from '/public/svg/tech/googlemaps.svg';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SelectFilter from '../../../../components/SelectFilter';
@@ -16,6 +15,7 @@ import { currencySlice } from '../../../../state/currency/currencySlice';
 import { CHAINS } from '../../../../utils/chains';
 import EthereumLogo from '/public/svg/chains/ethereum.svg';
 import PolygonLogo from '/public/svg/chains/polygon.svg';
+import GoogleMaps from '/public/svg/tech/googlemaps.svg';
 
 const ActiveBox = styled(Box)`
 	display: flex;
@@ -487,7 +487,7 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 				</ActiveFilterBox>
 				<ActiveTabSection>
 					{filteredActiveTasks.map((tad) => (
-						<li style={{ listStyle: 'none' }} key={tad.id}>
+						<li style={{ listStyle: 'none' }} key={`${tad.chainId}-${tad.id}`}>
 							<TaskCard theme={theme}>
 								<StyledInfo theme={theme}>
 									{tad?.latitude && tad?.longitude !== '0' && (
@@ -562,7 +562,7 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 				</ActiveFilterBox>
 				<ActiveTabSection>
 					{filteredCompletedTasks.map((tad) => (
-						<li style={{ listStyle: 'none' }} key={tad.id}>
+						<li style={{ listStyle: 'none' }} key={`${tad.chainId}-${tad.id}`}>
 							<TaskCard theme={theme}>
 								<StyledNetwork theme={theme}>
 									{getChainLogoComponent(tad?.chainId)}

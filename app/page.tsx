@@ -548,7 +548,7 @@ export default function IndexPage() {
 						</ActiveFilterBox>
 						<ActiveTabSection>
 							{filteredActiveTasks.map((tad) => (
-								<li style={{ listStyle: 'none' }} key={tad.id}>
+								<li style={{ listStyle: 'none' }} key={`${tad.chainId}-${tad.id}`}>
 									<TaskCard theme={theme}>
 										<StyledInfo theme={theme}>
 											{tad?.latitude && tad?.longitude !== '0' && (

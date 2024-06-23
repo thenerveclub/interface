@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import styled from '@emotion/styled';
 import { ContentCopy, OpenInNew } from '@mui/icons-material';
@@ -129,60 +129,57 @@ export default function PlayerPage({ params }: { params: { id: string } }) {
 	}
 
 	return (
-		<div>
-			<h1>Index Page</h1>
-		</div>
-		// <>
-		// 	{isLoading ? (
-		// 		<LoadingScreen />
-		// 	) : (
-		// 		<StyledBox>
-		// 			<StyledSection>
-		// 				<StyledLeftSectionBox>
-		// 					<PlayerBox>
-		// 						<p>{ensName ? ensName : address ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}` : null}</p>
-		// 					</PlayerBox>
-		// 					<AddressBox>
-		// 						<p>
-		// 							({address?.substring(0, 6)}...{address?.substring(address?.length - 4)})
-		// 						</p>
-		// 						<Tooltip
-		// 							title={copied ? 'Copied!' : 'Copy Address'}
-		// 							placement="bottom"
-		// 							disableInteractive
-		// 							enterTouchDelay={100}
-		// 							TransitionComponent={Fade}
-		// 							TransitionProps={{ timeout: 600 }}
-		// 						>
-		// 							<p onClick={handleCopyAddress} style={{ cursor: 'pointer' }}>
-		// 								<ContentCopy style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
-		// 							</p>
-		// 						</Tooltip>
-		// 						<Tooltip
-		// 							title="View On Explorer"
-		// 							placement="bottom"
-		// 							disableInteractive
-		// 							enterTouchDelay={100}
-		// 							TransitionComponent={Fade}
-		// 							TransitionProps={{ timeout: 600 }}
-		// 						>
-		// 							<a href={`https://etherscan.io/address/${address}#multichain-portfolio`} target="_blank" style={{ cursor: 'pointer' }}>
-		// 								<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
-		// 							</a>
-		// 						</Tooltip>
-		// 					</AddressBox>
-		// 					<PlayerStatistics playerData={playerData} checksumAddress={address} />
-		// 				</StyledLeftSectionBox>
-		// 			</StyledSection>
-		// 			<PlayerDares recipientAddress={address} recipientENS={ensName} error={error} />
+		<>
+			{isLoading ? (
+				<LoadingScreen />
+			) : (
+				<StyledBox>
+					<StyledSection>
+						<StyledLeftSectionBox>
+							<PlayerBox>
+								<p>{ensName ? ensName : address ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}` : null}</p>
+							</PlayerBox>
+							<AddressBox>
+								<p>
+									({address?.substring(0, 6)}...{address?.substring(address?.length - 4)})
+								</p>
+								<Tooltip
+									title={copied ? 'Copied!' : 'Copy Address'}
+									placement="bottom"
+									disableInteractive
+									enterTouchDelay={100}
+									TransitionComponent={Fade}
+									TransitionProps={{ timeout: 600 }}
+								>
+									<p onClick={handleCopyAddress} style={{ cursor: 'pointer' }}>
+										<ContentCopy style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
+									</p>
+								</Tooltip>
+								<Tooltip
+									title="View On Explorer"
+									placement="bottom"
+									disableInteractive
+									enterTouchDelay={100}
+									TransitionComponent={Fade}
+									TransitionProps={{ timeout: 600 }}
+								>
+									<a href={`https://etherscan.io/address/${address}#multichain-portfolio`} target="_blank" style={{ cursor: 'pointer' }}>
+										<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
+									</a>
+								</Tooltip>
+							</AddressBox>
+							<PlayerStatistics playerData={playerData} checksumAddress={address} />
+						</StyledLeftSectionBox>
+					</StyledSection>
+					<PlayerDares recipientAddress={address} recipientENS={ensName} error={error} />
 
-		// 			{!error && (
-		// 				<CreateTaskBox>
-		// 					{account && checksumAccount !== address && <CreateAtPlayer recipientAddress={address} recipientENS={ensName} />}
-		// 				</CreateTaskBox>
-		// 			)}
-		// 		</StyledBox>
-		// 	)}
-		// </>
+					{!error && (
+						<CreateTaskBox>
+							{account && checksumAccount !== address && <CreateAtPlayer recipientAddress={address} recipientENS={ensName} />}
+						</CreateTaskBox>
+					)}
+				</StyledBox>
+			)}
+		</>
 	);
 }

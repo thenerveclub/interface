@@ -1,5 +1,6 @@
+import { NextResponse } from 'next/server';
 import fetch from 'node-fetch';
-import { CHAINS } from '../../utils/chains'; // Assuming this path is correct
+import { CHAINS } from '../../../utils/chains';
 
 let cachedGlobalStats;
 let lastGlobalStatsFetchTime;
@@ -25,7 +26,7 @@ const formatBalance = (value) => {
 };
 
 // Function to fetch global stats from a specific chain
-const fetchStatsFromChain = async (chainId, chainData, orderBy) => {
+const fetchStatsFromChain = async (chainId, chainData) => {
 	const query = `
 	{
 		userStats(first: 100, orderBy: spent, orderDirection: desc) {
@@ -50,9 +51,8 @@ const fetchStatsFromChain = async (chainId, chainData, orderBy) => {
 	}
 };
 
-// Main function to aggregate global stats
 // Function to fetch and sort player ranking based on a criterion
-const fetchAndAggregateData = async (orderBy) => {
+const fetchAndAggregateData = async () => {
 	const currencyPrice = await fetchCurrencyPrices();
 	if (!currencyPrice) {
 		return null;
@@ -93,15 +93,7 @@ const fetchAndAggregateData = async (orderBy) => {
 	return top100;
 };
 
-export default async function handler(req, res) {
-	// // Check the referer header
-	// const referer = req.headers.referer;
-
-	// // Allow requests only from your domain
-	// if (!referer || !referer.includes('nerveglobal.com')) {
-	// 	return res.status(403).json({ message: 'Access denied' });
-	// }
-
+export async function GET() {
 	if (!cachedGlobalStats || new Date().getTime() - lastGlobalStatsFetchTime > 1 * 60 * 60 * 1000) {
 		try {
 			const aggregatedData = await fetchAndAggregateData();
@@ -110,18 +102,15 @@ export default async function handler(req, res) {
 				cachedGlobalStats = { rankedBySpent: aggregatedData };
 				lastGlobalStatsFetchTime = new Date().getTime();
 			}
-			res.status(200).json(cachedGlobalStats || { error: 'Failed to fetch top contributors' });
-			return;
+			return NextResponse.json(cachedGlobalStats || { error: 'Failed to fetch top contributors' });
 		} catch (error) {
 			console.error('Failed to fetch top contributors:', error);
 			if (cachedGlobalStats) {
-				res.status(200).json(cachedGlobalStats);
-				return;
+				return NextResponse.json(cachedGlobalStats);
 			}
-			res.status(500).json({ error: 'Failed to fetch top contributors' });
-			return;
+			return NextResponse.json({ error: 'Failed to fetch top contributors' }, { status: 500 });
 		}
 	}
 
-	res.status(200).json(cachedGlobalStats);
+	return NextResponse.json(cachedGlobalStats);
 }
