@@ -18,7 +18,7 @@ const StyledBox = styled(Box)`
 	justify-content: center;
 	align-items: center;
 	text-align: center;
-	width: 90%;
+	width: 100%;
 	min-width: 1400px;
 	max-width: 1400px;
 	// height: 85vh;
@@ -101,6 +101,7 @@ const StyledArrowCircleUpOutlinedIcon = styled(ArrowCircleUpOutlinedIcon)<{ them
 const StyledTableContainer = styled(Box)<{ theme: any }>`
 	// height: 100vh;
 	overflow-y: auto;
+	width: 100%;
 
 	@media (max-width: 680px) {
 		width: 100vw;

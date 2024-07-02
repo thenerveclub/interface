@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { Box, Button, Skeleton, Tab, Tabs, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import Link from 'next/link';
 import router from 'next/router';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -528,7 +529,9 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 											<p>${formatNumber(tad?.amount * currencyPrice[CHAINS[tad?.chainId]?.nameToken?.toLowerCase()])}</p>
 										)}
 									</TaskBoxSectionTwo>
-									<TaskButton onClick={() => router.push(`/dare/${tad.chainId}-` + tad.id)}>View Task</TaskButton>
+									<TaskButton>
+										<Link href={`/dare/${tad.chainId}-${tad.id}`}>View Task</Link>
+									</TaskButton>
 								</BottomContainer>
 							</TaskCard>
 						</li>

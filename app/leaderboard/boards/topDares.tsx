@@ -21,7 +21,7 @@ const StyledBox = styled(Box)`
 	justify-content: center;
 	align-items: center;
 	text-align: center;
-	width: 90%;
+	width: 100%;
 	min-width: 1400px;
 	max-width: 1400px;
 	// height: 85vh;
@@ -59,13 +59,15 @@ const Title = styled(Typography)<{ theme: any }>`
 
 const StyledTable = styled(Table)<{ theme: any }>`
 	width: 100%;
-	min-width: 1200px;
+	min-width: 750px;
 	max-width: 1400px;
 	height: 100%;
+	// table-layout: fixed;
 
-	@media (max-width: 600px) {
-		width: 100%;
-		min-width: 100vw;
+	@media (max-width: 680px) {
+		// font-size: 1rem;
+		width: 100vw;
+		min-width: 0;
 		max-width: 100vw;
 	}
 `;
@@ -80,7 +82,7 @@ const StyledButton = styled(Button)<{ theme: any }>`
 	text-transform: none;
 	width: 100%;
 	cursor: default;
-	font-size: 3rem;
+	font-size: 1rem;
 
 	@media (max-width: 600px) {
 		font-size: 1rem;
@@ -159,10 +161,16 @@ const StyledArrowCircleUpOutlinedIcon = styled(ArrowCircleUpOutlinedIcon)<{ them
 const StyledTableContainer = styled(Box)<{ theme: any }>`
 	// height: 100vh;
 	overflow-y: auto;
+	width: 100%;
+
+	@media (max-width: 680px) {
+		width: 100vw;
+		overflow: scroll;
+	}
 `;
 
 const StyledTableCellTitle = styled(TableCell)<{ theme: any }>`
-	font-size: 1.5rem;
+	font-size: 1rem;
 	font-weight: 600;
 	color: ${({ theme }) => theme.palette.text.primary};
 

@@ -47,7 +47,7 @@ const fetchStatsFromChain = async (chainId, chainData) => {
 		return { [chainId]: data.data.userStats };
 	} catch (error) {
 		console.error(`Error fetching stats for chain ${chainId}:`, error);
-		return null;
+		return { [chainId]: [] };
 	}
 };
 
@@ -60,24 +60,24 @@ const fetchAndAggregateData = async () => {
 
 	const fetchPromises = Object.entries(CHAINS).map(([chainId, chainData]) => fetchStatsFromChain(chainId, chainData));
 
-	const allData = (await Promise.all(fetchPromises)).reduce((acc, current) => {
-		const chainId = Object.keys(current)[0];
-		acc[chainId] = current[chainId];
-		return acc;
-	}, {});
+	const allData = await Promise.all(fetchPromises);
 
 	const userData = {};
-	Object.entries(allData).forEach(([chainId, users]) => {
-		users.forEach((user) => {
-			const { id, earned } = user;
-			const tokenName = CHAINS[chainId].nameToken.toLowerCase();
-			const rate = currencyPrice[tokenName] || 1;
+	allData.forEach((chainData) => {
+		if (chainData) {
+			const chainId = Object.keys(chainData)[0];
+			const users = chainData[chainId];
+			users.forEach((user) => {
+				const { id, earned } = user;
+				const tokenName = CHAINS[chainId].nameToken.toLowerCase();
+				const rate = currencyPrice[tokenName] || 1;
 
-			if (!userData[id]) {
-				userData[id] = { earned: 0 };
-			}
-			userData[id].earned += Number(earned) * rate;
-		});
+				if (!userData[id]) {
+					userData[id] = { earned: 0 };
+				}
+				userData[id].earned += Number(earned) * rate;
+			});
+		}
 	});
 
 	const combinedData = Object.entries(userData).map(([id, data]) => ({
@@ -87,10 +87,7 @@ const fetchAndAggregateData = async () => {
 
 	combinedData.sort((a, b) => parseFloat(b.earned) - parseFloat(a.earned));
 
-	// Slice to get top 100
-	const top100 = combinedData.slice(0, 100);
-
-	return top100;
+	return combinedData;
 };
 
 export async function GET() {

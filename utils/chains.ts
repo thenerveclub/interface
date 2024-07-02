@@ -130,7 +130,7 @@ export const CHAINS: {
 		contract: '0x2abB51B241c7363651cb51C76AE989Bd0458DA6B',
 		blockTime: 10000,
 		// graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal-sepolia',
-		graphApi: `https://gateway-arbitrum.network.thegraph.com/api/${process.env.NEXT_PUBLIC_THEGRAPH_SEPOLIA_API}/subgraphs/id/Gt9HY9zEVhZ8ntBYXdPMPVXUtdrUD2JX3hP6oikfwCRV`,
+		graphApi: `https://gateway-arbitrum.network.thegraph.com/api/${process.env.NEXT_PUBLIC_THEGRAPH_SEPOLIA_API}/subgraphs/id/xmhZV7Uvmkp28CEdpiuFw7Gz4AdhU3vRGQPXkCTo16w`,
 		coingeckoApiId: 'ethereum',
 		logo: '/svg/chains/ethereum.svg',
 	},
