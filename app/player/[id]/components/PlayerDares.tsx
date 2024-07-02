@@ -85,14 +85,23 @@ const ActiveTabLeftSection = styled(Box)`
 `;
 
 const ActiveTabRightSection = styled(Box)`
-	min-width: 100%;
+	// min-width: 100%;
 	display: flex;
 	flex-direction: row;
-	justify-content: flex-end;
+	justify-content: center;
+	// gap: 1rem;
+	margin: 0 0 0 auto;
+
+	// & > :not(:last-child) {
+	// 	margin-right: 1rem;
+	// }
 
 	@media (max-width: 750px) {
-		flex-direction: column;
+		min-width: auto;
+		flex-direction: row;
 		justify-content: center;
+		margin: 0 auto 0 auto;
+		gap: 0.5rem;
 	}
 `;
 
@@ -469,14 +478,14 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 						<SelectFilter />
 						<SelectSort />
 
-						<StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
+						{/* <StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
 							<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
 								ETH
 							</StyledToggleButton>
 							<StyledToggleButton theme={theme} disabled={currencyValue === true} value={true}>
 								<a>USD</a>
 							</StyledToggleButton>
-						</StyledToggleButtonGroup>
+						</StyledToggleButtonGroup> */}
 						{!error && (
 							<CreateTaskBox>
 								{account && account.toLowerCase() !== recipientAddress && (
@@ -546,14 +555,14 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 						<SelectFilter />
 						<SelectSort />
 
-						<StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
+						{/* <StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
 							<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
 								ETH
 							</StyledToggleButton>
 							<StyledToggleButton theme={theme} disabled={currencyValue === true} value={true}>
 								<a>USD</a>
 							</StyledToggleButton>
-						</StyledToggleButtonGroup>
+						</StyledToggleButtonGroup> */}
 						{!error && (
 							<CreateTaskBox>
 								{account && account.toLowerCase() !== recipientAddress && (

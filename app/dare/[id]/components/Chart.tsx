@@ -121,10 +121,10 @@ const Chart: React.FC<ChartProps> = ({ dareData }) => {
 									{ label: 'Not voted', value: nonVoters, color: theme.palette.error.contrastText },
 								],
 								arcLabel: (params) => params.label ?? '',
-								innerRadius: 12,
+								innerRadius: 8,
 								outerRadius: 90,
 								paddingAngle: 3,
-								cornerRadius: 12,
+								cornerRadius: 8,
 								// dataIndex
 							},
 						]}

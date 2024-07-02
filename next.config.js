@@ -80,6 +80,16 @@ const nextConfig = {
 	// 		},
 	// 	];
 	// },
+	images: {
+		remotePatterns: [
+			{
+				protocol: 'https',
+				hostname: 'euc.li',
+				port: '',
+				pathname: '/**',
+			},
+		],
+	},
 };
 
 module.exports = withBundleAnalyzer(nextConfig);

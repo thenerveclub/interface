@@ -536,14 +536,14 @@ export default function IndexPage() {
 								<SelectFilter />
 								<SelectSort />
 
-								<StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
+								{/* <StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
 									<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
 										ETH
 									</StyledToggleButton>
 									<StyledToggleButton theme={theme} disabled={currencyValue === true} value={true}>
 										<a>USD</a>
 									</StyledToggleButton>
-								</StyledToggleButtonGroup>
+								</StyledToggleButtonGroup> */}
 							</ActiveTabRightSection>
 						</ActiveFilterBox>
 						<ActiveTabSection>

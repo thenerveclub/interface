@@ -82,10 +82,10 @@ export const lightTheme = createTheme({
 		fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif',
 	},
 	shape: {
-		borderRadius: 12,
+		borderRadius: 8,
 	},
 	customShape: {
-		borderRadius: '12px', // custom property with units
+		borderRadius: '8px', // custom property with units
 	},
 });
 
@@ -178,9 +178,9 @@ export const darkTheme = createTheme({
 		fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif',
 	},
 	shape: {
-		borderRadius: 12,
+		borderRadius: 8,
 	},
 	customShape: {
-		borderRadius: '12px', // custom property with units
+		borderRadius: '8px', // custom property with units
 	},
 });
