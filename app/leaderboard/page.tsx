@@ -42,13 +42,13 @@ const Title = styled(Typography)<{ theme: any }>`
 	text-transform: none;
 	font-size: 5rem;
 	cursor: default;
-	margin: 2.5rem auto 5rem auto;
+	margin: 2.5rem auto 0 auto;
 	width: 100%;
+	color: ${({ theme }) => theme.palette.text.primary};
+	text-decoration: none;
 
-	a {
-		color: ${({ theme }) => theme.palette.text.primary};
-		text-decoration: none;
-	}
+	// stretch the characters of the title
+	// letter-spacing: 1rem;
 
 	@media (max-width: 680px) {
 		font-size: 3rem;
@@ -62,12 +62,12 @@ const StyledDiv = styled.div`
 	text-transform: none;
 	font-size: 1rem;
 	cursor: default;
-	margin: 0 auto 0 auto;
+	margin: 2.5rem auto 3.5rem auto;
 	width: 100%;
 
 	@media (max-width: 680px) {
 		font-size: 1rem;
-		margin: 0 auto 0 auto;
+		margin: 1.5 auto 2.5 auto;
 	}
 `;
 
@@ -83,8 +83,10 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{ theme: any }>`
 	& .MuiToggleButton-root {
 		&:hover {
 			background-color: transparent;
-			border: 1px solid ${({ theme }) => theme.palette.warning.main};
+			border-top: 1px solid ${({ theme }) => theme.palette.warning.main};
+			border-bottom: 1px solid ${({ theme }) => theme.palette.warning.main};
 			border-left: 1px solid ${({ theme }) => theme.palette.warning.main};
+			border-right: 1px solid ${({ theme }) => theme.palette.warning.main};
 		}
 	}
 
@@ -93,6 +95,7 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{ theme: any }>`
 		justify-content: center;
 		margin: 0 auto 0 auto;
 		// width: 100%;
+		max-width: 90%;
 	}
 `;
 
@@ -102,14 +105,17 @@ const StyledToggleButton = styled(ToggleButton)<{ theme: any }>`
 	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
 	border-radius: ${({ theme }) => theme.customShape.borderRadius};
 	cursor: pointer;
-	// font-size: 1rem;
+	font-size: 0.875rem;
 	font-weight: 500;
 	width: 150px;
 
 	&.Mui-selected {
 		color: ${({ theme }) => theme.palette.text.primary};
 		background-color: transparent;
-		border: 1px solid ${({ theme }) => theme.palette.secondary.main};
+		border-top: 1px solid ${({ theme }) => theme.palette.text.primary};
+		border-bottom: 1px solid ${({ theme }) => theme.palette.text.primary};
+		border-left: 1px solid ${({ theme }) => theme.palette.text.primary} !important;
+		border-right: 1px solid ${({ theme }) => theme.palette.text.primary};
 	}
 `;
 
@@ -149,23 +155,19 @@ export default function LeaderboardPage() {
 				<meta name="twitter:image" content="https://app.nerveglobal.com/favicon.ico" />
 			</Head>
 			<StyledBox>
-				<Title theme={theme}>
-					<a>Leaderboard</a>
-				</Title>
+				<Title theme={theme}>Leaderboard</Title>
 				<StyledDiv>
-					<>
-						<StyledToggleButtonGroup theme={theme} value={leaderboardType} exclusive onChange={handleToggleChange}>
-							<StyledToggleButton theme={theme} value="topEarners" disabled={leaderboardType === 'topEarners'}>
-								Earnings
-							</StyledToggleButton>
-							<StyledToggleButton theme={theme} value="topContributors" disabled={leaderboardType === 'topContributors'}>
-								Contributions
-							</StyledToggleButton>
-							<StyledToggleButton theme={theme} value="topDares" disabled={leaderboardType === 'topDares'}>
-								Dares
-							</StyledToggleButton>
-						</StyledToggleButtonGroup>
-					</>
+					<StyledToggleButtonGroup theme={theme} value={leaderboardType} exclusive onChange={handleToggleChange}>
+						<StyledToggleButton theme={theme} value="topEarners" disabled={leaderboardType === 'topEarners'}>
+							Earnings
+						</StyledToggleButton>
+						<StyledToggleButton theme={theme} value="topContributors" disabled={leaderboardType === 'topContributors'}>
+							Contributions
+						</StyledToggleButton>
+						<StyledToggleButton theme={theme} value="topDares" disabled={leaderboardType === 'topDares'}>
+							Dares
+						</StyledToggleButton>
+					</StyledToggleButtonGroup>
 				</StyledDiv>
 				{leaderboardType === 'topEarners' && <TopEarners topEarners={topEarners} loading={topEarnersLoading} error={topEarnersError} />}
 				{leaderboardType === 'topContributors' && (

@@ -25,8 +25,14 @@ const StyledBox = styled(Box)`
 	min-width: 1400px;
 	max-width: 1400px;
 	// height: 85vh;
-	margin: 2.5rem auto 5rem auto;
+	margin: 0 auto 5rem auto;
 	background-color: transparent;
+
+	@media (max-width: 1025px) {
+		width: 95%;
+		min-width: 100vw;
+		max-width: 100vw;
+	}
 
 	@media (max-width: 680px) {
 		width: 95%;
@@ -62,13 +68,11 @@ const StyledTable = styled(Table)<{ theme: any }>`
 	min-width: 750px;
 	max-width: 1400px;
 	height: 100%;
-	// table-layout: fixed;
 
 	@media (max-width: 680px) {
-		// font-size: 1rem;
-		width: 100vw;
+		width: 100%;
 		min-width: 0;
-		max-width: 100vw;
+		max-width: 100%;
 	}
 `;
 
@@ -159,30 +163,50 @@ const StyledArrowCircleUpOutlinedIcon = styled(ArrowCircleUpOutlinedIcon)<{ them
 `;
 
 const StyledTableContainer = styled(Box)<{ theme: any }>`
-	// height: 100vh;
-	overflow-y: auto;
 	width: 100%;
+	display: flex;
+	justify-content: center;
+
+	@media (max-width: 1025px) {
+		width: 95%;
+	}
 
 	@media (max-width: 680px) {
-		width: 100vw;
-		overflow: scroll;
+		width: 95%;
 	}
 `;
 
 const StyledTableCellTitle = styled(TableCell)<{ theme: any }>`
-	font-size: 1rem;
-	font-weight: 600;
+	font-size: 0.875rem;
+	// font-weight: 600;
 	color: ${({ theme }) => theme.palette.text.primary};
 
 	@media (max-width: 600px) {
-		font-size: 1rem;
+		font-size: 0.875rem;
 	}
 `;
 
-// Define a styled component for the Entry Amount cell
-const StyledTableCellHiddenOnMobile = styled(StyledTableCellTitle)`
-	@media (max-width: 768px) {
-		display: none;
+const StyledTableHead = styled(TableHead)`
+	@media (max-width: 600px) {
+		th:nth-child(3),  /* Entry Amount */
+		th:nth-child(5),  /* Participants */
+    th:nth-child(6),  /* Voters */
+    th:nth-child(7) {
+			/* Voting */
+			display: none;
+		}
+	}
+`;
+
+const StyledTableBody = styled(TableBody)`
+	@media (max-width: 600px) {
+		td:nth-child(3),  /* Entry Amount */
+    td:nth-child(5),  /* Participants */
+    td:nth-child(6),  /* Voters */
+    td:nth-child(7) {
+			/* Voting */
+			display: none;
+		}
 	}
 `;
 
@@ -295,15 +319,18 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 						</StyledToggleButtonGroup> */}
 						<StyledTableContainer theme={theme}>
 							<StyledTable stickyHeader theme={theme}>
-								<TableHead>
+								<StyledTableHead theme={theme}>
 									<TableRow>
-										<StyledTableCellTitle theme={theme}>#</StyledTableCellTitle>
-										<StyledTableCellTitle theme={theme}>Description</StyledTableCellTitle>
-										<StyledTableCellHiddenOnMobile theme={theme}>
-											<StyledTableCellTitle theme={theme}>
-												<StyledButton theme={theme}>
-													Entry Amount
-													{/* {orderBy === 'entranceAmount' ? (
+										<StyledTableCellTitle theme={theme} style={{ width: '2.5%', textAlign: 'left' }}>
+											#
+										</StyledTableCellTitle>
+										<StyledTableCellTitle theme={theme} style={{ width: '47.5%', textAlign: 'left' }}>
+											Description
+										</StyledTableCellTitle>
+										<StyledTableCellTitle theme={theme} style={{ width: '10%', textAlign: 'left' }}>
+											<StyledButton theme={theme} style={{ fontSize: '0.875rem' }}>
+												Entry Amount
+												{/* {orderBy === 'entranceAmount' ? (
 													order === 'asc' ? (
 														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
 													) : (
@@ -314,12 +341,11 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 												) : (
 													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
 												)} */}
-												</StyledButton>
-											</StyledTableCellTitle>
-										</StyledTableCellHiddenOnMobile>
+											</StyledButton>
+										</StyledTableCellTitle>
 
-										<StyledTableCellTitle theme={theme}>
-											<StyledButton theme={theme}>
+										<StyledTableCellTitle theme={theme} style={{ width: '10%', textAlign: 'left' }}>
+											<StyledButton theme={theme} style={{ fontSize: '0.875rem' }}>
 												Total Amount
 												{/* {orderBy === 'amount' ? (
 													order === 'asc' ? (
@@ -335,8 +361,8 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 											</StyledButton>
 										</StyledTableCellTitle>
 
-										<StyledTableCellTitle theme={theme}>
-											<StyledButton theme={theme}>
+										<StyledTableCellTitle theme={theme} style={{ width: '10%', textAlign: 'left' }}>
+											<StyledButton theme={theme} style={{ fontSize: '0.875rem' }}>
 												Participants
 												{/* {orderBy === 'participants' ? (
 													order === 'asc' ? (
@@ -352,11 +378,10 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 											</StyledButton>
 										</StyledTableCellTitle>
 
-										<StyledTableCellHiddenOnMobile theme={theme}>
-											<StyledTableCellTitle theme={theme}>
-												<StyledButton theme={theme}>
-													Voters
-													{/* {orderBy === 'voters' ? (
+										<StyledTableCellTitle theme={theme} style={{ width: '10%', textAlign: 'left' }}>
+											<StyledButton theme={theme} style={{ fontSize: '0.875rem' }}>
+												Voters
+												{/* {orderBy === 'voters' ? (
 													order === 'asc' ? (
 														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
 													) : (
@@ -367,13 +392,13 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 												) : (
 													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
 												)} */}
-												</StyledButton>
-											</StyledTableCellTitle>
+											</StyledButton>
+										</StyledTableCellTitle>
 
-											<StyledTableCellTitle theme={theme}>
-												<StyledButton theme={theme}>
-													Voting
-													{/* {orderBy === 'voting' ? (
+										<StyledTableCellTitle theme={theme} style={{ width: '10%', textAlign: 'left' }}>
+											<StyledButton theme={theme} style={{ fontSize: '0.875rem' }}>
+												Voting
+												{/* {orderBy === 'voting' ? (
 													order === 'asc' ? (
 														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
 													) : (
@@ -384,35 +409,32 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 												) : (
 													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
 												)} */}
-												</StyledButton>
-											</StyledTableCellTitle>
-										</StyledTableCellHiddenOnMobile>
+											</StyledButton>
+										</StyledTableCellTitle>
 									</TableRow>
-								</TableHead>
-								<TableBody>
+								</StyledTableHead>
+								<StyledTableBody>
 									{topDares.length > 0 ? (
 										topDares.map((row, index) => (
 											<StyledTableRow theme={theme} key={index} onClick={handleDare(row.chainId, row.id)}>
-												<TableCell>{index + 1}</TableCell>
-												<TableCell>
+												<TableCell style={{ width: '2.5%', textAlign: 'left' }}>{index + 1}</TableCell>
+												<TableCell style={{ width: '47.5%', textAlign: 'left' }}>
 													<a style={{ cursor: 'pointer' }}>
 														{row.description.length > 75 ? row.description.substring(0, 75) + '...' : row.description}
 													</a>
 												</TableCell>
-												<StyledTableCellHiddenOnMobile theme={theme}>
-													<TableCell style={{ textAlign: 'right' }}>
-														{currencyValue === false ? (
-															<a style={{ cursor: 'pointer' }}>
-																{formatNumber(row.entranceAmount)} {CHAINS[row.chainId]?.nameToken}
-															</a>
-														) : (
-															<a style={{ cursor: 'pointer' }}>
-																${formatNumber(row.entranceAmount * currencyPrice[CHAINS[row.chainId]?.nameToken.toLowerCase()])}
-															</a>
-														)}
-													</TableCell>
-												</StyledTableCellHiddenOnMobile>
-												<TableCell style={{ textAlign: 'right' }}>
+												<TableCell style={{ width: '10%', textAlign: 'right' }}>
+													{currencyValue === false ? (
+														<a style={{ cursor: 'pointer' }}>
+															{formatNumber(row.entranceAmount)} {CHAINS[row.chainId]?.nameToken}
+														</a>
+													) : (
+														<a style={{ cursor: 'pointer' }}>
+															${formatNumber(row.entranceAmount * currencyPrice[CHAINS[row.chainId]?.nameToken.toLowerCase()])}
+														</a>
+													)}
+												</TableCell>
+												<TableCell style={{ width: '10%', textAlign: 'right' }}>
 													{currencyValue === false ? (
 														<a style={{ cursor: 'pointer' }}>
 															{formatNumber(row.amount)} {CHAINS[row.chainId]?.nameToken}
@@ -423,11 +445,11 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 														</a>
 													)}
 												</TableCell>
-												<TableCell style={{ textAlign: 'right' }}>{row.participants}</TableCell>
-												<StyledTableCellHiddenOnMobile theme={theme}>
-													<TableCell style={{ textAlign: 'right' }}>{Number(row.positiveVotes) + Number(row.negativeVotes)}</TableCell>
-													<TableCell style={{ textAlign: 'right' }}>{calculatePositivePercentage(row.positiveVotes, row.negativeVotes)}</TableCell>
-												</StyledTableCellHiddenOnMobile>
+												<TableCell style={{ width: '10%', textAlign: 'right' }}>{row.participants}</TableCell>
+												<TableCell style={{ width: '10%', textAlign: 'right' }}>{Number(row.positiveVotes) + Number(row.negativeVotes)}</TableCell>
+												<TableCell style={{ width: '10%', textAlign: 'right' }}>
+													{calculatePositivePercentage(row.positiveVotes, row.negativeVotes)}
+												</TableCell>
 											</StyledTableRow>
 										))
 									) : (
@@ -437,7 +459,7 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 											</TableCell>
 										</StyledTableRow>
 									)}
-								</TableBody>
+								</StyledTableBody>
 							</StyledTable>
 						</StyledTableContainer>
 						{/* <StyledArrowCircleUpOutlinedIcon theme={theme} onClick={handleScrollToTop} /> */}

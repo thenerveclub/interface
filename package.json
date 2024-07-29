@@ -22,7 +22,7 @@
 		"typescript"
 	],
 	"scripts": {
-		"dev": "next dev -p 3003",
+		"dev": "next dev -p 3009",
 		"build": "next build",
 		"export": "next build && next export",
 		"start": "next start",

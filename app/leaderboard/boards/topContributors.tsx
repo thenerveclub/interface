@@ -22,13 +22,18 @@ const StyledBox = styled(Box)`
 	min-width: 1400px;
 	max-width: 1400px;
 	// height: 85vh;
-	margin: 2.5rem auto 5rem auto;
+	margin: 0 auto 5rem auto;
 	background-color: transparent;
 
-	@media (max-width: 680px) {
-		width: 100vw;
+	@media (max-width: 1025px) {
+		width: 95%;
+		min-width: 100vw;
+		max-width: 100vw;
+	}
 
-		min-width: 0;
+	@media (max-width: 680px) {
+		width: 95%;
+		min-width: 100vw;
 		max-width: 100vw;
 	}
 `;
@@ -38,13 +43,11 @@ const StyledTable = styled(Table)<{ theme: any }>`
 	min-width: 750px;
 	max-width: 1400px;
 	height: 100%;
-	// table-layout: fixed;
 
 	@media (max-width: 680px) {
-		// font-size: 1rem;
-		width: 100vw;
+		width: 100%;
 		min-width: 0;
-		max-width: 100vw;
+		max-width: 100%;
 	}
 `;
 
@@ -99,13 +102,16 @@ const StyledArrowCircleUpOutlinedIcon = styled(ArrowCircleUpOutlinedIcon)<{ them
 `;
 
 const StyledTableContainer = styled(Box)<{ theme: any }>`
-	// height: 100vh;
-	overflow-y: auto;
 	width: 100%;
+	display: flex;
+	justify-content: center;
+
+	@media (max-width: 1025px) {
+		width: 95%;
+	}
 
 	@media (max-width: 680px) {
-		width: 100vw;
-		overflow: scroll;
+		width: 95%;
 	}
 `;
 
@@ -201,8 +207,8 @@ const TopContributors: React.FC<TopContributorsProps> = ({ topContributors, load
 							<StyledTable stickyHeader theme={theme}>
 								<TableHead>
 									<TableRow>
-										<TableCell>#</TableCell>
-										<TableCell>Address</TableCell>
+										<TableCell style={{ width: '2.5%', textAlign: 'left' }}>#</TableCell>
+										<TableCell style={{ width: '50%', textAlign: 'left' }}>Address</TableCell>
 										{/* <TableCell>
 											<StyledButton theme={theme} onClick={createSortHandler('rankedByEarned')}>
 												Earnings
@@ -219,8 +225,8 @@ const TopContributors: React.FC<TopContributorsProps> = ({ topContributors, load
 												)}
 											</StyledButton>
 										</TableCell> */}
-										<TableCell>
-											<StyledButton theme={theme}>
+										<TableCell style={{ width: '47.5%', textAlign: 'right' }}>
+											<StyledButton theme={theme} style={{ fontSize: '0.875rem' }}>
 												Contributions
 												{/* {orderBy === 'rankedBySpent' ? (
 													order === 'asc' ? (
@@ -242,8 +248,8 @@ const TopContributors: React.FC<TopContributorsProps> = ({ topContributors, load
 										sortedData.map((row, index) => (
 											<StyledTableRow theme={theme} key={index}>
 												{/* <TableCell>{numberToOrdinal(index + 1)}</TableCell> */}
-												<TableCell>{index + 1}</TableCell>
-												<TableCell>
+												<TableCell style={{ width: '2.5%', textAlign: 'left' }}>{index + 1}</TableCell>
+												<TableCell style={{ width: '50%', textAlign: 'left' }}>
 													<a
 														style={{
 															cursor: 'pointer',
@@ -256,14 +262,14 @@ const TopContributors: React.FC<TopContributorsProps> = ({ topContributors, load
 														href={CHAINS[137]?.blockExplorerUrls[0] + 'address/' + row.id}
 														target="_blank"
 													>
-														{`${row.id.slice(0, 6)}...${row.id.slice(-4)}`}
+														<span>{window.innerWidth < 680 ? `${row.id.slice(0, 6)}...${row.id.slice(-4)}` : row.id}</span>
 														<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
 													</a>
 												</TableCell>
 												{/* <TableCell style={{ textAlign: 'right' }}>
 													<a>${row.earned}</a>
 												</TableCell> */}
-												<TableCell style={{ textAlign: 'right' }}>
+												<TableCell style={{ width: '47.5%', textAlign: 'right' }}>
 													<a>${row.spent}</a>
 												</TableCell>
 											</StyledTableRow>

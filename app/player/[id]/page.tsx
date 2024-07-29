@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import LoadingScreen from '../../../components/LoadingScreen';
 import CreateAtPlayer from '../../../components/modal/create/createAtPlayer';
 import usePlayerData from '../../../hooks/playerData/usePlayerData';
+import useENSAvatar from '../../../hooks/useENSAvatar';
 import useENSName from '../../../hooks/useENSName';
 import PlayerDares from './components/PlayerDares';
 import PlayerStatistics from './components/PlayerStatistics';
@@ -66,7 +67,7 @@ const StyledLeftSectionBox = styled(Box)`
 // 	}
 // `;
 
-const PlayerBox = styled(Box)<{ imageUrl: string }>`
+const PlayerBox = styled(Box)<{ imageurl: string }>`
 	position: relative;
 	display: flex;
 	flex-direction: row;
@@ -95,7 +96,7 @@ const PlayerBox = styled(Box)<{ imageUrl: string }>`
 		left: 0;
 		width: 100%;
 		height: 100%;
-		background-image: ${({ imageUrl }) => `url(${imageUrl})`};
+		background-image: ${({ imageurl }) => `url(${imageurl})`};
 		background-size: cover;
 		background-position: center;
 		filter: blur(20px);
@@ -161,6 +162,10 @@ export default function PlayerPage({ params }: { params: { id: string } }) {
 
 	const { ensName, address, error } = useENSName(id?.toLowerCase());
 
+	// Get the ensAvatar
+	const { ensAvatar, avatarError, avatarLoading } = useENSAvatar(ensName);
+	console.log('ensAvatar', ensAvatar, 'avatarError', avatarError, 'avatarLoading', avatarLoading);
+
 	const { playerData, isLoading } = usePlayerData(address, currencyPrice);
 
 	// Copy Address To Clipboard && Tooltip
@@ -182,7 +187,7 @@ export default function PlayerPage({ params }: { params: { id: string } }) {
 				<StyledBox>
 					<StyledSection>
 						<StyledLeftSectionBox>
-							<PlayerBox imageUrl={`https://euc.li/${ensName}`}>
+							<PlayerBox imageurl={`https://euc.li/${ensName}`}>
 								{ensName && <Image src={`https://euc.li/${ensName}`} alt="ENS Avatar" width={100} height={100} />}
 								<p>{ensName ? ensName : address ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}` : null}</p>
 							</PlayerBox>
