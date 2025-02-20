@@ -5,6 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import Link from 'next/link';
 import router from 'next/router';
 import { useEffect, useState } from 'react';
+import { SiEthereum, SiGooglemaps, SiPolygon } from 'react-icons/si';
 import { useDispatch, useSelector } from 'react-redux';
 import SelectFilter from '../../../../components/SelectFilter';
 import SelectSort from '../../../../components/SelectSort';
@@ -14,9 +15,6 @@ import useActivePlayerTasks from '../../../../hooks/playerData/useActivePlayerTa
 import useCompletedPlayerTasks from '../../../../hooks/playerData/useCompletedPlayerTasks';
 import { currencySlice } from '../../../../state/currency/currencySlice';
 import { CHAINS } from '../../../../utils/chains';
-import EthereumLogo from '/public/svg/chains/ethereum.svg';
-import PolygonLogo from '/public/svg/chains/polygon.svg';
-import GoogleMaps from '/public/svg/tech/googlemaps.svg';
 
 const ActiveBox = styled(Box)`
 	display: flex;
@@ -354,9 +352,9 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 		if (!chainId) return null;
 
 		const LogoComponent = {
-			1: EthereumLogo,
-			11155111: EthereumLogo,
-			137: PolygonLogo,
+			1: <SiEthereum size={32} color="#627EEA" />,
+			11155111: <SiEthereum size={32} color="#627EEA" />,
+			137: <SiPolygon size={32} color="#627EEA" />,
 		}[chainId];
 
 		return <LogoComponent style={{ display: 'flex', marginRight: '8px' }} width="18" height="18" alt="Logo" />;
@@ -502,7 +500,7 @@ const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientEN
 								<StyledInfo theme={theme}>
 									{tad?.latitude && tad?.longitude !== '0' && (
 										<StyledMap theme={theme} onClick={() => handleMapClick(tad.latitude, tad.longitude)}>
-											<GoogleMaps style={{ fill: theme.palette.text.primary, display: 'flex', fontSize: '20px', marginRight: '0.5rem' }} />
+											<SiGooglemaps style={{ fill: theme.palette.text.primary, display: 'flex', fontSize: '20px', marginRight: '0.5rem' }} />
 											Google Map
 										</StyledMap>
 									)}

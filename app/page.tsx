@@ -1,351 +1,20 @@
 'use client';
 
-import styled from '@emotion/styled';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import { Box, Button, Divider, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import localFont from 'next/font/local';
 import Head from 'next/head';
 import router, { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { SiEthereum, SiGooglemaps, SiPolygon } from 'react-icons/si';
 import { useDispatch, useSelector } from 'react-redux';
 import LoadingScreen from '../components/LoadingScreen';
 import SelectFilter from '../components/SelectFilter';
 import SelectSort from '../components/SelectSort';
 import useGlobalStats from '../hooks/globalStats/useGlobalStats';
-import useActivePlayerTasks from '../hooks/playerData/useActivePlayerTasks';
 import useTrendingDareList from '../hooks/searchData/trending/useTrendingDareList';
 import { currencySlice } from '../state/currency/currencySlice';
-import { CHAINS, nameToChainId } from '../utils/chains';
-import EthereumLogo from '/public/svg/chains/ethereum.svg';
-import PolygonLogo from '/public/svg/chains/polygon.svg';
-import GoogleMaps from '/public/svg/tech/googlemaps.svg';
-
-const TrueLies = localFont({ src: '../public/fonts/TrueLies.woff2', display: 'swap' });
-
-const StyledLayout = styled(Box)`
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	text-align: center;
-	width: 90%;
-	height: auto;
-	margin: 2% auto;
-	background-color: transparent;
-
-	@media (max-width: 750px) {
-		width: 100%;
-	}
-`;
-
-const StyledTitle = styled.h1<{ theme: any }>`
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
-	font-family: ${TrueLies.style.fontFamily};
-	text-transform: none;
-	font-size: 4rem;
-	cursor: default;
-	margin: 5rem auto 0 auto;
-	width: 100%;
-	font-weight: 100;
-
-	@media (max-width: 680px) {
-		font-size: 3rem;
-	}
-`;
-
-const StyledGlobalStats = styled(Box)<{ theme: any }>`
-	display: flex;
-	flex-direction: row;
-	justify-content: space-evenly;
-	margin: 2.5rem auto 2.5rem auto;
-	width: 75%;
-	max-width: 1280px;
-
-	@media (max-width: 750px) {
-		flex-direction: row;
-		width: 95%;
-	}
-`;
-
-const StyledGlobalStat = styled(Box)<{ theme: any }>`
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	margin: 0 auto 0 auto;
-	width: 100%;
-
-	h1 {
-		margin: 0 auto 0 auto;
-		font-size: 2rem;
-		font-weight: 100;
-		font-family: ${TrueLies.style.fontFamily};
-		color: ${(props) => props.theme.palette.text.primary};
-	}
-
-	@media (max-width: 750px) {
-		h1 {
-			font-size: 1.125rem;
-			color: ${(props) => props.theme.palette.text.primary};
-		}
-	}
-`;
-
-const ActiveTabSection = styled(Box)`
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	align-items: center;
-	justify-content: space-evenly;
-	margin: 1rem auto 5rem auto;
-	gap: 2rem;
-	min-width: 100%;
-
-	@media (max-width: 750px) {
-		flex-direction: column;
-		margin: 1rem auto 5rem auto;
-		width: 100%;
-	}
-`;
-
-const TaskCard = styled(Box)<{ theme: any }>`
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	align-items: center;
-	margin: 0 auto 0 auto;
-	min-width: 450px;
-	max-width: 450px;
-	min-height: 300px;
-	max-height: 300px;
-	background-color: ${({ theme }) => theme.palette.background.default};
-	border: 0.5px solid ${({ theme }) => theme.palette.secondary.main};
-	border-radius: ${({ theme }) => theme.customShape.borderRadius};
-	padding: 1rem;
-
-	@media (max-width: 750px) {
-		min-width: 350px;
-		max-width: 350px;
-	}
-
-	@media (max-width: 680px) {
-		min-width: 90vw;
-		max-width: 90vw;
-	}
-`;
-
-const StyledInfo = styled.div<{ theme: any }>`
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: center;
-	width: 100%;
-	margin: 0 auto 0 auto;
-
-	@media (max-width: 750px) {
-	}
-`;
-
-const StyledMap = styled.div<{ theme: any }>`
-	display: flex;
-	justify-content: left;
-	align-items: center;
-	width: fit-content;
-	margin: 0 auto 0 0;
-	height: 35px;
-	color: rgba(255, 255, 255, 0.75);
-	font-size: 0.925rem;
-	// background-color: rgba(134, 134, 139, 0.25);
-	background-color: rgba(255, 127.5, 0, 1);
-	border-radius: 12px;
-	padding: 0.5rem;
-	color: ${({ theme }) => theme.palette.text.primary};
-	cursor: default;
-
-	&:hover {
-		cursor: pointer;
-	}
-`;
-
-const StyledNetwork = styled.div<{ theme: any }>`
-	display: flex;
-	justify-content: right;
-	align-items: center;
-	width: fit-content;
-	margin: 0 0 0 auto;
-	height: 35px;
-	color: rgba(255, 255, 255, 0.75);
-	font-size: 0.925rem;
-	background-color: rgba(134, 134, 139, 0.25);
-	border-radius: 12px;
-	padding: 0.5rem;
-	color: ${({ theme }) => theme.palette.text.primary};
-	cursor: default;
-`;
-
-const TaskBoxSection = styled(Box)`
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin: 0 auto 0 auto;
-	height: 100%;
-	flex-grow: 1;
-	cursor: default;
-
-	p {
-		font-size: 1rem;
-		text-align: center;
-	}
-
-	@media (max-width: 750px) {
-	}
-`;
-
-const TaskBoxSectionOne = styled(Box)`
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	height: 25px;
-	width: 100%;
-	margin: 0 auto 0 auto;
-	padding: 0;
-
-	p {
-		display: flex;
-		height: 25px;
-		font-size: 1rem;
-		cursor: default;
-		margin: 0;
-	}
-
-	@media (max-width: 750px) {
-	}
-`;
-
-const TaskBoxSectionTwo = styled(Box)`
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	height: 25px;
-	width: 100%;
-	margin: 0 auto 0 auto;
-	padding: 0;
-
-	p {
-		display: flex;
-		height: 25px;
-		font-size: 1rem;
-		cursor: default;
-		margin: 0;
-	}
-
-	@media (max-width: 750px) {
-	}
-`;
-
-const BottomContainer = styled.div`
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	width: 100%;
-	margin: 0 auto 0 auto;
-`;
-
-const TaskButton = styled(Button)`
-	color: #fff;
-	width: 100%;
-	font-size: 16px;
-	margin: 0.5rem auto 0 auto;
-	text-transform: none;
-	background-color: rgba(255, 127.5, 0, 1);
-
-	&:hover {
-		background-color: rgba(255, 127.5, 0, 1);
-	}
-`;
-
-const StyledDivider = styled(Divider)<{ theme: any }>`
-	width: 100%;
-	backgroundcolor: ${({ theme }) => theme.palette.secondary.main};
-
-	@media (max-width: 750px) {
-		width: 90%;
-	}
-`;
-
-const ActiveFilterBox = styled(Box)`
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
-	width: 100%;
-	height: 40px;
-	margin: 1rem auto 0 auto;
-
-	@media (max-width: 750px) {
-		flex-direction: column;
-		height: auto;
-	}
-`;
-
-const ActiveTabRightSection = styled(Box)`
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-end;
-	min-width: 100%;
-
-	@media (max-width: 750px) {
-		flex-direction: column;
-		justify-content: center;
-	}
-`;
-
-const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{ theme: any }>`
-	background-color: transparent;
-	height: 35px;
-	width: 150px;
-	margin-left: 1rem;
-	cursor: not-allowed;
-
-	& .MuiToggleButton-root {
-		&:hover {
-			background-color: transparent;
-			border: 1px solid ${({ theme }) => theme.palette.warning.main};
-			border-left: 1px solid ${({ theme }) => theme.palette.warning.main};
-		}
-	}
-
-	@media (max-width: 750px) {
-		display: flex;
-		justify-content: center;
-		margin: 0.5rem auto 0 auto;
-	}
-`;
-
-const StyledToggleButton = styled(ToggleButton)<{ theme: any }>`
-	color: ${({ theme }) => theme.palette.secondary.main};
-	background-color: transparent;
-	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
-	border-radius: ${({ theme }) => theme.customShape.borderRadius};
-	cursor: pointer;
-	// font-size: 1rem;
-	font-weight: 500;
-	width: 150px;
-
-	&.Mui-selected {
-		color: ${({ theme }) => theme.palette.text.primary};
-		background-color: transparent;
-		border: 1px solid ${({ theme }) => theme.palette.secondary.main};
-	}
-`;
+import { CHAINS } from '../utils/chains';
 
 export default function IndexPage() {
-	const theme = useTheme();
 	const router = useRouter();
 	const isLoading = false;
 
@@ -361,9 +30,9 @@ export default function IndexPage() {
 		if (!chainId) return null;
 
 		const LogoComponent = {
-			1: EthereumLogo,
-			11155111: EthereumLogo,
-			137: PolygonLogo,
+			1: <SiEthereum size={32} color="#627EEA" />,
+			11155111: <SiEthereum size={32} color="#627EEA" />,
+			137: <SiPolygon size={32} color="#627EEA" />,
 		}[chainId];
 
 		return <LogoComponent style={{ display: 'flex', marginRight: '0.5rem' }} width="18" height="18" alt="Logo" />;
@@ -373,8 +42,8 @@ export default function IndexPage() {
 	const trendingDareList = useTrendingDareList();
 
 	// Global Stats
-	const { globalStats, loading, error } = useGlobalStats();
-	const { allChains, individualChains } = globalStats || {};
+	const { globalStats } = useGlobalStats();
+	const { allChains } = globalStats || {};
 
 	// Toogle Button For Token Price
 	const handleToggle = (event, newCurrency) => {
@@ -512,92 +181,104 @@ export default function IndexPage() {
 						<meta name="twitter:description" content="Nerve Global Dapp." />
 						<meta name="twitter:image" content="https://dapp.nerveglobal.com/favicon.ico" />
 					</Head>
-					<StyledLayout>
-						<StyledTitle theme={theme}>Global Stats</StyledTitle>
-						<StyledGlobalStats theme={theme}>
-							<StyledGlobalStat theme={theme}>
-								<h1>${allChains?.earnings}</h1>
-								<h1>Earnings</h1>
-							</StyledGlobalStat>
-							<StyledGlobalStat theme={theme}>
-								<h1>{allChains?.count}</h1>
-								<h1>Tasks</h1>
-							</StyledGlobalStat>
-							<StyledGlobalStat theme={theme}>
-								<h1>{allChains?.users}</h1>
-								<h1>Users</h1>
-							</StyledGlobalStat>
-						</StyledGlobalStats>
-						<StyledDivider theme={theme} />
-						<ActiveFilterBox>
+					<div className="flex flex-col bg-background items-center justify-center text-center w-[90%] mx-auto my-8">
+						<h1 className="flex items-center justify-center">Global Stats</h1>
+						<div className="flex flex-col lg:flex-row justify-evenly gap-8 mx-auto my-10 max-w-5xl">
+							<div className="flex flex-col items-center w-full text-xl">
+								<h1 className="text-[2rem] font-['TrueLies'] font-thin">${allChains?.earnings}</h1>
+								<h1 className="text-[2rem] font-['TrueLies'] font-thin">Earnings</h1>
+							</div>
+							<div className="flex flex-col items-center w-full text-xl">
+								<h1 className="text-[2rem] font-['TrueLies'] font-thin">{allChains?.count}</h1>
+								<h1 className="text-[2rem] font-['TrueLies'] font-thin">Tasks</h1>
+							</div>
+							<div className="flex flex-col items-center w-full text-xl">
+								<h1 className="text-[2rem] font-['TrueLies'] font-thin">{allChains?.users}</h1>
+								<h1 className="text-[2rem] font-['TrueLies'] font-thin">Users</h1>
+							</div>
+						</div>
+						<hr className="w-full border border-secondary" />
+						<div className="flex flex-col lg:flex-row items-center justify-center w-full h-10 my-4 gap-4">
 							{/* <ActiveTabLeftSection></ActiveTabLeftSection> */}
-							<ActiveTabRightSection>
+							<div className="flex flex-col lg:flex-row justify-end w-full">
 								{/* // Filter StyledSection */}
 								<SelectFilter />
 								<SelectSort />
-
-								{/* <StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
-									<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
-										ETH
-									</StyledToggleButton>
-									<StyledToggleButton theme={theme} disabled={currencyValue === true} value={true}>
-										<a>USD</a>
-									</StyledToggleButton>
-								</StyledToggleButtonGroup> */}
-							</ActiveTabRightSection>
-						</ActiveFilterBox>
-						<ActiveTabSection>
+								{/* <div className="flex items-center justify-center">
+									<ToggleButtonGroup
+										className="h-9 w-40 cursor-not-allowed"
+										value={currencyValue}
+										exclusive
+										onChange={handleToggle}
+									>
+										<ToggleButton className="text-secondary border-secondary font-medium" disabled={currencyValue === false} value={false}>
+											ETH
+										</ToggleButton>
+										<ToggleButton className="text-secondary border-secondary font-medium" disabled={currencyValue === true} value={true}>
+											USD
+										</ToggleButton>
+									</ToggleButtonGroup>
+								</div> */}
+							</div>
+						</div>
+						<div className="flex flex-wrap items-center justify-evenly gap-8 my-10 w-full">
 							{filteredActiveTasks.map((tad) => (
-								<li style={{ listStyle: 'none' }} key={`${tad.chainId}-${tad.id}`}>
-									<TaskCard theme={theme}>
-										<StyledInfo theme={theme}>
+								<li key={`${tad.chainId}-${tad.id}`} className="list-none">
+									<div className="flex flex-col justify-between items-center mx-auto min-w-[450px] max-w-[450px] min-h-[300px] max-h-[300px] bg-background border border-secondary rounded-lg p-4">
+										<div className="flex justify-between w-full">
 											{tad?.latitude && tad?.longitude !== '0' && (
-												<StyledMap theme={theme} onClick={() => handleMapClick(tad.latitude, tad.longitude)}>
-													<GoogleMaps
-														style={{ fill: theme.palette.text.primary, display: 'flex', marginRight: '0.5rem', width: '24px', height: '24px' }}
-													/>
+												<div
+													onClick={() => handleMapClick(tad.latitude, tad.longitude)}
+													className="flex justify-start items-center w-fit text-primary bg-secondary rounded-lg px-4 py-2 cursor-pointer"
+												>
+													<SiGooglemaps className="w-6 h-6 fill-current mr-2" />
 													Google Map
-												</StyledMap>
+												</div>
 											)}
-											<StyledNetwork theme={theme}>
+											<div className="flex items-center w-fit justify-end text-primary bg-secondary rounded-lg px-4 py-2">
 												{getChainLogoComponent(tad?.chainId)}
-												{CHAINS[tad.chainId].name}
-											</StyledNetwork>
-										</StyledInfo>
-										<TaskBoxSection>
+												{CHAINS[tad?.chainId]?.name}
+											</div>
+										</div>
+										<div className="flex flex-col justify-center text-center flex-grow">
 											<p>{tad.description}</p>
-										</TaskBoxSection>
-										<BottomContainer>
-											<TaskBoxSectionOne>
+										</div>
+										<div className="flex flex-col justify-center items-center w-full">
+											<div className="flex justify-between w-full h-6">
 												<p>#{tad.id}</p>
-												<p>
-													{tad.participants}{' '}
-													<PeopleAltIcon style={{ display: 'flex', fontSize: '18px', fill: 'white', height: '100%', marginLeft: '0.5rem' }} />
+												<p className="flex items-center">
+													{tad.participants}
+													<PeopleAltIcon className="ml-2 text-white text-lg" />
 												</p>
-											</TaskBoxSectionOne>
-											<TaskBoxSectionTwo>
+											</div>
+											<div className="flex justify-between w-full h-6">
 												{currencyValue === false ? (
 													<p>
-														{formatCrypto(tad?.entranceAmount)} {CHAINS[tad?.chainId].nameToken}
+														{formatCrypto(tad?.entranceAmount)} {CHAINS[tad?.chainId]?.nameToken}
 													</p>
 												) : (
 													<p>${formatNumber(tad?.entranceAmount * currencyPrice[CHAINS[tad?.chainId]?.nameToken?.toLowerCase()])}</p>
 												)}
 												{currencyValue === false ? (
 													<p>
-														{formatCrypto(tad?.amount)} {CHAINS[tad?.chainId].nameToken}
+														{formatCrypto(tad?.amount)} {CHAINS[tad?.chainId]?.nameToken}
 													</p>
 												) : (
 													<p>${formatNumber(tad?.amount * currencyPrice[CHAINS[tad?.chainId]?.nameToken?.toLowerCase()])}</p>
 												)}
-											</TaskBoxSectionTwo>
-											<TaskButton onClick={() => router.push(`/dare/${tad.chainId}-` + tad.id)}>View Task</TaskButton>
-										</BottomContainer>
-									</TaskCard>
+											</div>
+											<button
+												onClick={() => router.push(`/dare/${tad.chainId}-${tad.id}`)}
+												className="bg-secondary text-white py-2 px-4 rounded-lg mt-2 hover:bg-secondary"
+											>
+												View Task
+											</button>
+										</div>
+									</div>
 								</li>
 							))}
-						</ActiveTabSection>
-					</StyledLayout>
+						</div>
+					</div>
 				</>
 			)}
 		</>

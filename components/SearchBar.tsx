@@ -9,14 +9,13 @@ import { useTheme } from '@mui/material/styles';
 import local from 'next/font/local';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { SiEthereum, SiPolygon } from 'react-icons/si';
 import useTrendingDareList from '../hooks/searchData/trending/useTrendingDareList';
 import useTrendingPlayerList from '../hooks/searchData/trending/useTrendingPlayerList';
 import useDareDataSearchList from '../hooks/searchData/useDareDataSearchList';
 import usePlayerDataSearchList from '../hooks/searchData/usePlayerDataSearchList';
 import { nameToChainId } from '../utils/chains';
 import SearchBarMobile from './SearchBarMobile';
-import EthereumLogo from '/public/svg/chains/ethereum.svg';
-import PolygonLogo from '/public/svg/chains/polygon.svg';
 
 const SearchBarContainer = styled(Paper)<{ theme: any }>`
 	display: flex;
@@ -171,7 +170,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 	const [searchValueQuery, setSearchValueQuery] = useState('');
 	const typingTimeoutRef = useRef(null);
 	const playerSearchList = usePlayerDataSearchList(searchValueQuery);
-	const trendingPlayersList = useTrendingPlayerList(chainIdUrl);
+	const { trendingPlayerList, trendingPlayerListLoading, trendingPlayerListError } = useTrendingPlayerList();
 	const trendingDareList = useTrendingDareList(chainIdUrl);
 	const dareSearchList = useDareDataSearchList(chainIdUrl, searchValueQuery);
 	const [isListVisible, setListVisible] = useState(false);
@@ -358,17 +357,23 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 																<span>
 																	{formatNumber(item.amount)}{' '}
 																	{chainIdUrl === 137 ? (
-																		<PolygonLogo
+																		<SiPolygon
 																			style={{
 																				display: 'inline-block',
 																				verticalAlign: 'middle',
 																			}}
 																			width="16"
 																			height="16"
-																			alt="Logo"
 																		/>
 																	) : (
-																		<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+																		<SiEthereum
+																			style={{
+																				display: 'flex',
+																				marginRight: '8px',
+																			}}
+																			width="22"
+																			height="22"
+																		/>
 																	)}
 																</span>
 															</div>
@@ -386,16 +391,16 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 										<TrendingUpIcon style={{ marginRight: '0.5rem', color: theme.palette.secondary.main }} />
 										Trending Players
 									</SearchResultTitle>
-									{trendingPlayersList.length > 0 ? (
-										trendingPlayersList.map((trendingPlayer) => (
+									{trendingPlayerList.length > 0 ? (
+										trendingPlayerList.map((trendingPlayer) => (
 											<SearchResultItemStyled
 												theme={theme}
 												key={trendingPlayer.id}
 												onClick={() => handleListPlayerItemClick(trendingPlayer.userName, trendingPlayer.id)}
 											>
 												<div className="item-top">
-													<span className="player-name">{trendingPlayer.userName}</span>
-													{/* <span className="player-number">{player.someNumber}</span> */}
+													<span className="player-name">{trendingPlayer.ensName}</span>
+													{/* <span className="player-number">{trendingPlayer.earned}</span> */}
 												</div>
 												<div className="item-bottom">
 													<a>{trendingPlayer.id}</a>
@@ -427,17 +432,23 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 													<span>
 														{formatNumber(trendingDare.amount)}{' '}
 														{chainIdUrl === 137 ? (
-															<PolygonLogo
+															<SiPolygon
 																style={{
 																	display: 'inline-block',
 																	verticalAlign: 'middle',
 																}}
 																width="16"
 																height="16"
-																alt="Logo"
 															/>
 														) : (
-															<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+															<SiEthereum
+																style={{
+																	display: 'flex',
+																	marginRight: '8px',
+																}}
+																width="22"
+																height="22"
+															/>
 														)}
 													</span>
 												</div>
@@ -492,17 +503,23 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 												<span>
 													{formatNumber(dare.amount)}{' '}
 													{chainIdUrl === 137 ? (
-														<PolygonLogo
+														<SiPolygon
 															style={{
 																display: 'inline-block',
 																verticalAlign: 'middle',
 															}}
 															width="16"
 															height="16"
-															alt="Logo"
 														/>
 													) : (
-														<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+														<SiEthereum
+															style={{
+																display: 'flex',
+																marginRight: '8px',
+															}}
+															width="22"
+															height="22"
+														/>
 													)}
 												</span>
 											</div>

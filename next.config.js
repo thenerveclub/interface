@@ -12,16 +12,16 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 const nextConfig = {
 	reactStrictMode: true,
-	transpilePackages: ['@mui/x-charts'],
+	// transpilePackages: ['@mui/x-charts'],
 
-	modularizeImports: {
-		'@mui/material': {
-			transform: '@mui/material/{{member}}',
-		},
-		'@mui/icons-material': {
-			transform: '@mui/icons-material/{{member}}',
-		},
-	},
+	// modularizeImports: {
+	// 	'@mui/material': {
+	// 		transform: '@mui/material/{{member}}',
+	// 	},
+	// 	'@mui/icons-material': {
+	// 		transform: '@mui/icons-material/{{member}}',
+	// 	},
+	// },
 
 	webpack(config, { isServer }) {
 		// Add the next-bundle-analyzer plugin for client builds
@@ -37,26 +37,32 @@ const nextConfig = {
 		config.resolve.fallback = { fs: false, net: false, tls: false };
 		config.externals.push('pino-pretty', 'lokijs', 'encoding');
 
-		const fileLoaderRule = config.module.rules.find((rule) => rule.test?.test?.('.svg'));
+		// Find the existing file loader rule that handles SVGs
+		// const fileLoaderRule = config.module.rules.find((rule) => rule.test && rule.test.test('.svg'));
 
+		const fileLoaderRule = config.module.rules.find((rule) => rule.test instanceof RegExp && rule.test.test('.svg'));
+
+		// Ensure we exclude SVGs from the default file loader
+		if (fileLoaderRule) {
+			fileLoaderRule.exclude = /\.svg$/i;
+		}
+
+		// Add new rules for handling SVGs
 		config.module.rules.push(
-			// Reapply the existing rule, but only for svg imports ending in ?url
+			// Allow importing SVGs as URLs when using ?url
 			{
-				...fileLoaderRule,
 				test: /\.svg$/i,
+				type: 'asset/resource',
 				resourceQuery: /url/, // *.svg?url
 			},
 			// Convert all other *.svg imports to React components
 			{
 				test: /\.svg$/i,
-				issuer: fileLoaderRule.issuer,
-				resourceQuery: { not: [...fileLoaderRule.resourceQuery.not, /url/] }, // exclude if *.svg?url
+				issuer: /\.[jt]sx?$/, // Ensure it's used inside JS/TS files
+				resourceQuery: { not: [/url/] }, // Exclude ?url imports
 				use: ['@svgr/webpack'],
 			}
 		);
-
-		// Modify the file loader rule to ignore *.svg, since we have it handled now.
-		fileLoaderRule.exclude = /\.svg$/i;
 
 		return config;
 	},
@@ -67,9 +73,6 @@ const nextConfig = {
 	},
 	typescript: {
 		ignoreBuildErrors: true,
-	},
-	experimental: {
-		missingSuspenseWithCSRBailout: false,
 	},
 	// async redirects() {
 	// 	return [

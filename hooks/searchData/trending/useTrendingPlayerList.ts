@@ -1,45 +1,32 @@
 import { useEffect, useState } from 'react';
-import { CHAINS } from '../../../utils/chains';
 
-const useTrendingPlayerList = (chainIdUrl: number) => {
-	const [trendingPlayerList, setTrendingPlayerList] = useState<any[]>([]);
+const useTrendingPlayerList = () => {
+	const [trendingPlayerList, setTrendingPlayers] = useState(null);
+	const [trendingPlayerListLoading, setTrendingPlayersLoading] = useState(true);
+	const [trendingPlayerListError, setTrendingPlayersError] = useState(null);
 
 	useEffect(() => {
-		if (!chainIdUrl) {
-			// Handle the case where the chainIdUrl is not ready or not valid
-			setTrendingPlayerList([]);
-			return;
-		}
-
-		const getTrendingPlayerList = async () => {
-			const QueryForTrendingPlayers = `
-			{
-				userDashStats(first: 3, orderBy: earned, orderDirection: desc) {
-				  userName
-				  earned
-				  id
-				}
-			 }
-      `;
-
+		const fetchPlayerRanking = async () => {
 			try {
-				const fetchPlayerData = await fetch(CHAINS[chainIdUrl]?.graphApi, {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ query: QueryForTrendingPlayers }),
-				});
-
-				const data = await fetchPlayerData.json();
-				setTrendingPlayerList(data.data.userDashStats);
-			} catch (error) {
-				console.error(error);
+				const response = await fetch('/api/topEarners');
+				if (!response.ok) throw new Error('Network response was not ok');
+				const data = await response.json();
+				console.log('data', data);
+				// Get only the top3 players from the list as new const
+				const slicedData = data?.rankedByEarned.slice(0, 3);
+				console.log('slicedData', slicedData);
+				setTrendingPlayers(slicedData);
+			} catch (e) {
+				setTrendingPlayersLoading(e.message);
+			} finally {
+				setTrendingPlayersError(false);
 			}
 		};
 
-		getTrendingPlayerList();
-	}, [chainIdUrl]);
+		fetchPlayerRanking();
+	}, []);
 
-	return trendingPlayerList;
+	return { trendingPlayerList, trendingPlayerListLoading, trendingPlayerListError };
 };
 
 export default useTrendingPlayerList;

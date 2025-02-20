@@ -1,82 +1,58 @@
-import styled from '@emotion/styled';
-import { CssBaseline, useMediaQuery } from '@mui/material/';
-import { ThemeProvider } from '@mui/material/styles';
-import { usePathname, useRouter } from 'next/navigation';
+'use client';
+
+import { usePathname } from 'next/navigation';
 import React, { ReactNode, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Footer from './Footer';
 import Header from './Header';
-import { darkTheme, lightTheme } from './styles';
 
 type Props = {
 	children?: ReactNode;
-	title?: string;
 };
 
-const Main = styled.div<{ is404: boolean; dynamicHeight: number | string }>`
-	line-height: 1.381002381;
-	font-weight: 600;
-	letter-spacing: 0.011em;
-	// font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-	min-height: calc(100vh - ${({ is404 }) => (is404 ? '248px' : '248px')});
-	// min-height: ${(props) => props.dynamicHeight}px; // Use dynamic height
-
-	@media (max-width: 768px) {
-		// margin: 4 auto 0 auto;
-	}
-`;
-
-const Layout = ({ children = 'This is the default title' }: Props) => {
-	// Access the Redux store's theme state
-	const { currentTheme, prefersSystemSetting } = useSelector((state: any) => state.theme);
-
-	// Determine if the user's system prefers dark mode
-	const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-
-	// Determine which theme to use
-	let appliedTheme;
-	if (prefersSystemSetting) {
-		appliedTheme = prefersDarkMode ? darkTheme : lightTheme;
-	} else {
-		appliedTheme = currentTheme === 'light' ? lightTheme : darkTheme;
-	}
-
-	// Router
-	const router = useRouter();
+const Layout = ({ children }: Props) => {
 	const pathname = usePathname();
 	const is404 = pathname === '/404';
-	const isMap = pathname?.includes('/map');
 
-	// Dynamic height
-	const [dynamicHeight, setDynamicHeight] = useState(0); // Initialize to 0 or a default height
+	// Redux state for theme
+	const { currentTheme, prefersSystemSetting } = useSelector((state: any) => state.theme);
 
+	// Dynamic height handling for responsive layouts
+	const [dynamicHeight, setDynamicHeight] = useState<number>(0);
+
+	// Handle dynamic height and window resizing
 	useEffect(() => {
-		// Update the height once the component mounts
-		setDynamicHeight(window.innerHeight);
-
-		const adjustHeight = () => {
-			setDynamicHeight(window.innerHeight);
-		};
-
-		window.addEventListener('resize', adjustHeight);
-
-		// Cleanup
-		return () => {
-			window.removeEventListener('resize', adjustHeight);
-		};
+		const updateHeight = () => setDynamicHeight(window.innerHeight);
+		updateHeight();
+		window.addEventListener('resize', updateHeight);
+		return () => window.removeEventListener('resize', updateHeight);
 	}, []);
 
+	// Manage theme (light/dark/system)
+	useEffect(() => {
+		const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+		if (prefersSystemSetting) {
+			// Use system preference for dark mode
+			document.documentElement.classList.toggle('dark', prefersDark);
+		} else {
+			// Use user preference for dark/light mode
+			if (currentTheme === 'dark') {
+				document.documentElement.classList.add('dark');
+			} else {
+				document.documentElement.classList.remove('dark');
+			}
+		}
+	}, [currentTheme, prefersSystemSetting]);
+
 	return (
-		<>
-			<ThemeProvider theme={appliedTheme}>
-				<CssBaseline />
-				<Header />
-				<Main is404={is404} dynamicHeight={dynamicHeight || '100vh'}>
-					{children}
-				</Main>
-				{/* {!isMap && <Footer />} */}
-			</ThemeProvider>
-		</>
+		<div className="min-h-screen bg-background text-text flex flex-col">
+			<Header />
+			<main className={`flex-grow ${is404 ? 'justify-center' : ''}`} style={{ minHeight: dynamicHeight }}>
+				{children}
+			</main>
+			{!pathname.includes('/map') && <Footer />}
+		</div>
 	);
 };
 

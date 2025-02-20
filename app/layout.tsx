@@ -2,7 +2,7 @@
 
 import { Web3ReactProvider } from '@web3-react/core';
 import { SnackbarProvider } from 'notistack';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { Provider, useDispatch } from 'react-redux';
 import Layout from '../components/layout/Layout';
 import Account from '../state/account/accountUpdater';
@@ -19,6 +19,9 @@ import { coinbaseWallet } from '../utils/connectors/coinbaseWallet';
 import { metaMask } from '../utils/connectors/metaMask';
 import { walletConnectV2 } from '../utils/connectors/walletConnectV2';
 import { getName } from '../utils/connectorsNameAndLogo';
+
+// CSS
+import '../styles/globals.css';
 
 function Updaters() {
 	const dispatch = useDispatch();
@@ -108,14 +111,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 	}, []);
 
 	return (
-		<html lang="en">
+		<html lang="en" className="min-h-full bg-background">
 			<body>
 				<Provider store={store}>
 					<Web3ReactProvider connectors={connectors}>
 						<Updaters />
-						<Layout>
-							<SnackbarProvider maxSnack={3}>{children}</SnackbarProvider>
-						</Layout>
+						<Suspense fallback={<div>Loading...</div>}>
+							<Layout>
+								<SnackbarProvider maxSnack={3}>{children}</SnackbarProvider>
+							</Layout>
+						</Suspense>
 					</Web3ReactProvider>
 				</Provider>
 			</body>

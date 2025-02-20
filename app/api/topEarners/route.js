@@ -1,6 +1,10 @@
+import { ethers } from 'ethers';
 import { NextResponse } from 'next/server';
 import fetch from 'node-fetch';
 import { CHAINS } from '../../../utils/chains';
+
+const providerUrl = 'https://ethereum-rpc.publicnode.com';
+const provider = new ethers.providers.StaticJsonRpcProvider(providerUrl);
 
 let cachedGlobalStats;
 let lastGlobalStatsFetchTime;
@@ -83,7 +87,39 @@ const fetchAndAggregateData = async () => {
 	const combinedData = Object.entries(userData).map(([id, data]) => ({
 		id,
 		earned: formatBalance(data.earned),
+		ensName: null,
+		ensAvatar: null,
 	}));
+
+	// Resolve ENS names for Ethereum addresses
+	await Promise.all(
+		combinedData.map(async (user) => {
+			try {
+				const ensName = await provider.lookupAddress(user.id);
+				if (ensName) {
+					user.ensName = ensName;
+					// try getting the ens Avatar if available
+					try {
+						const avatar = await provider.getAvatar(ensName);
+						if (avatar) {
+							const response = await fetch(`/api/fetchAvatar?url=${encodeURIComponent(avatar)}`);
+							if (!response.ok) {
+								const errorData = await response.json();
+								throw new Error(errorData.error || 'Failed to fetch avatar from proxy');
+							}
+							const blob = await response.blob();
+							const url = URL.createObjectURL(blob);
+							user.ensAvatar = url;
+						}
+					} catch (error) {
+						console.error(`Error fetching ENS avatar for address ${user.id}:`, error);
+					}
+				}
+			} catch (error) {
+				console.error(`Error resolving ENS for address ${user.id}:`, error);
+			}
+		})
+	);
 
 	combinedData.sort((a, b) => parseFloat(b.earned) - parseFloat(a.earned));
 

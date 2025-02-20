@@ -9,13 +9,12 @@ import { useTheme } from '@mui/material/styles';
 import local from 'next/font/local';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { SiEthereum, SiPolygon } from 'react-icons/si';
 import useTrendingDareList from '../hooks/searchData/trending/useTrendingDareList';
 import useTrendingPlayerList from '../hooks/searchData/trending/useTrendingPlayerList';
 import useDareDataSearchList from '../hooks/searchData/useDareDataSearchList';
 import usePlayerDataSearchList from '../hooks/searchData/usePlayerDataSearchList';
 import { nameToChainId } from '../utils/chains';
-import EthereumLogo from '/public/svg/chains/ethereum.svg';
-import PolygonLogo from '/public/svg/chains/polygon.svg';
 
 // Define the keyframes for the slide-down animation
 const slideDown = keyframes`
@@ -418,17 +417,23 @@ const SearchBarMobile: React.FC<SearchBarProps> = ({ network }) => {
 																<span>
 																	{formatNumber(item.amount)}{' '}
 																	{chainIdUrl === 137 ? (
-																		<PolygonLogo
+																		<SiPolygon
 																			style={{
 																				display: 'inline-block',
 																				verticalAlign: 'middle',
 																			}}
 																			width="16"
 																			height="16"
-																			alt="Logo"
 																		/>
 																	) : (
-																		<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+																		<SiEthereum
+																			style={{
+																				display: 'flex',
+																				marginRight: '8px',
+																			}}
+																			width="22"
+																			height="22"
+																		/>
 																	)}
 																</span>
 															</div>
@@ -493,17 +498,23 @@ const SearchBarMobile: React.FC<SearchBarProps> = ({ network }) => {
 													<span>
 														{formatNumber(trendingDare.amount)}{' '}
 														{chainIdUrl === 137 ? (
-															<PolygonLogo
+															<SiPolygon
 																style={{
 																	display: 'inline-block',
 																	verticalAlign: 'middle',
 																}}
 																width="16"
 																height="16"
-																alt="Logo"
 															/>
 														) : (
-															<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+															<SiEthereum
+																style={{
+																	display: 'flex',
+																	marginRight: '8px',
+																}}
+																width="22"
+																height="22"
+															/>
 														)}
 													</span>
 												</div>
@@ -564,17 +575,23 @@ const SearchBarMobile: React.FC<SearchBarProps> = ({ network }) => {
 												<span>
 													{formatNumber(dare.amount)}{' '}
 													{chainIdUrl === 137 ? (
-														<PolygonLogo
+														<SiPolygon
 															style={{
 																display: 'inline-block',
 																verticalAlign: 'middle',
 															}}
 															width="16"
 															height="16"
-															alt="Logo"
 														/>
 													) : (
-														<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+														<SiEthereum
+															style={{
+																display: 'flex',
+																marginRight: '8px',
+															}}
+															width="22"
+															height="22"
+														/>
 													)}
 												</span>
 											</div>

@@ -1,145 +1,39 @@
-import styled from '@emotion/styled';
-import { useTheme } from '@mui/material/styles';
-import Discord from '/public/svg/socials/discord.svg';
-import Instagram from '/public/svg/socials/instagram.svg';
-import TikTok from '/public/svg/socials/tiktok.svg';
-import Twitter from '/public/svg/socials/twitter.svg';
+'use client';
 
-const StyledFooter = styled.footer`
-	width: auto;
-	height: 40px;
-	display: flex;
-	flex: 1;
-	margin: 5rem auto 0.5rem auto;
-	justify-content: space-between;
-	padding: 0 50px 0 50px;
-
-	@media (max-width: 1155px) {
-		display: block;
-	}
-
-	@media (max-width: 960px) {
-		padding: 1rem;
-	}
-`;
-
-const LeftItem = styled.div`
-	flex: 1;
-	text-align: left;
-`;
-
-const CenterItem = styled.div`
-	flex: 1;
-	text-align: center;
-
-	// Gap between social icons
-	& > *:not(:last-child) {
-		margin-right: 1rem;
-	}
-`;
-
-const RightItem = styled.div`
-	flex: 1;
-	text-align: right;
-`;
-
-const StyledTwitter = styled(Twitter)<{ theme: any }>`
-	path {
-		fill: ${({ theme }) => theme.palette.secondary.main};
-		transition: fill 0.5s ease-in-out; // Add transition for fill color
-	}
-
-	cursor: pointer;
-	width: 1.125rem;
-	height: 1.125rem;
-	transition: all 0.5s ease-in-out;
-
-	&:hover {
-		// transform: rotate(-10deg);
-		path {
-			fill: ${({ theme }) => theme.palette.secondary.contrastText};
-		}
-	}
-`;
-
-const StyledInstagram = styled(Instagram)<{ theme: any }>`
-	path {
-		fill: ${({ theme }) => theme.palette.secondary.main};
-		transition: fill 0.5s ease-in-out; // Add transition for fill color
-	}
-
-	cursor: pointer;
-	width: 1.125rem;
-	height: 1.125rem;
-	transition: all 0.5s ease-in-out;
-
-	&:hover {
-		// transform: rotate(-10deg);
-		path {
-			fill: ${({ theme }) => theme.palette.secondary.contrastText};
-		}
-	}
-`;
-
-const StyledTikTok = styled(TikTok)<{ theme: any }>`
-	path {
-		fill: ${({ theme }) => theme.palette.secondary.main};
-		transition: fill 0.5s ease-in-out; // Add transition for fill color
-	}
-
-	cursor: pointer;
-	width: 1.125rem;
-	height: 1.125rem;
-	transition: all 0.5s ease-in-out;
-
-	&:hover {
-		// transform: rotate(-10deg);
-		path {
-			fill: ${({ theme }) => theme.palette.secondary.contrastText};
-		}
-	}
-`;
-
-const StyledDiscord = styled(Discord)<{ theme: any }>`
-	path {
-		fill: ${({ theme }) => theme.palette.secondary.main};
-		transition: fill 0.5s ease-in-out; // Add transition for fill color
-	}
-
-	cursor: pointer;
-	width: 1.125rem;
-	height: 1.125rem;
-	transition: all 0.5s ease-in-out;
-
-	&:hover {
-		// transform: rotate(-10deg);
-		path {
-			fill: ${({ theme }) => theme.palette.secondary.contrastText};
-		}
-	}
-`;
+import React from 'react';
+import { FaDiscord, FaInstagram, FaTiktok, FaXTwitter } from 'react-icons/fa6';
 
 export default function Footer() {
-	const theme = useTheme();
-
 	return (
-		<StyledFooter>
-			<LeftItem></LeftItem>
-			<CenterItem>
-				<a target="_blank" rel="noreferrer" href="https://twitter.com/nerveglobal_">
-					<StyledTwitter theme={theme} />
-				</a>
-				<a target="_blank" rel="noreferrer" href="https://www.instagram.com/nerveglobal">
-					<StyledInstagram theme={theme} />
-				</a>
-				<a target="_blank" rel="noreferrer" href="https://www.tiktok.com/@nerveglobal">
-					<StyledTikTok theme={theme} />
-				</a>
-				<a target="_blank" rel="noreferrer" href="https://discord.gg/Xuh5enTNB6">
-					<StyledDiscord theme={theme} />
-				</a>
-			</CenterItem>
-			<RightItem></RightItem>
-		</StyledFooter>
+		<footer className="w-full py-8 bg-background text-text border-t border-gray-200 dark:border-gray-700">
+			<div className="container mx-auto flex flex-col items-center space-y-6 sm:flex-row sm:justify-between sm:space-y-0">
+				{/* Left Section (Optional for future use) */}
+				<div className="flex-1 text-left hidden sm:block"></div>
+
+				{/* Social Links */}
+				<div className="flex space-x-6">
+					<a target="_blank" rel="noreferrer" href="https://twitter.com/nerveglobal_" className="group">
+						<FaXTwitter className="w-6 h-6 fill-primary transition-transform group-hover:scale-110 group-hover:fill-secondary" />
+					</a>
+					<a target="_blank" rel="noreferrer" href="https://www.instagram.com/nerveglobal" className="group">
+						<FaInstagram className="w-6 h-6 fill-primary transition-transform group-hover:scale-110 group-hover:fill-secondary" />
+					</a>
+					<a target="_blank" rel="noreferrer" href="https://www.tiktok.com/@nerveglobal" className="group">
+						<FaTiktok className="w-6 h-6 fill-primary transition-transform group-hover:scale-110 group-hover:fill-secondary" />
+					</a>
+					<a target="_blank" rel="noreferrer" href="https://discord.gg/Xuh5enTNB6" className="group">
+						<FaDiscord className="w-6 h-6 fill-primary transition-transform group-hover:scale-110 group-hover:fill-secondary" />
+					</a>
+				</div>
+
+				{/* Right Section (Optional for future use) */}
+				<div className="flex-1 text-right hidden sm:block"></div>
+			</div>
+
+			{/* Bottom Section */}
+			<div className="mt-8 text-[0.725rem] text-gray-500 dark:text-gray-400 text-center">
+				© {new Date().getFullYear()} Nerve Global. All rights reserved.
+			</div>
+		</footer>
 	);
 }

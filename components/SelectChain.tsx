@@ -4,11 +4,10 @@ import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { SiEthereum, SiPolygon } from 'react-icons/si';
 import { useSelector } from 'react-redux';
 import { getAddChainParameters } from '../utils/chains';
 import { metaMask } from '../utils/connectors/metaMask';
-import EthereumLogo from '/public/svg/chains/ethereum.svg';
-import PolygonLogo from '/public/svg/chains/polygon.svg';
 
 const StyledSelect = styled(Select, {
 	shouldForwardProp: (prop) => prop !== 'focus' && prop !== 'open', // add this line
@@ -210,13 +209,13 @@ export default function SelectChain() {
 			>
 				<SearchResultTitle theme={theme}>Mainnet</SearchResultTitle>
 				<MenuItemStyled theme={theme} value={'polygon'} disabled={network === 'polygon'}>
-					<PolygonLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+					<SiPolygon style={{ display: 'flex', marginRight: '8px' }} />
 					<a>Polygon</a>
 				</MenuItemStyled>
 				{testnetsValue && <SearchResultTitle theme={theme}>Testnet</SearchResultTitle>}
 				{testnetsValue && (
 					<MenuItemStyled theme={theme} value={'goerli'} disabled={network === 'goerli'}>
-						<EthereumLogo style={{ display: 'flex', marginRight: '8px' }} width="22" height="22" alt="Logo" />
+						<SiEthereum style={{ display: 'flex', marginRight: '8px' }} />
 						<a>Goerli</a>
 					</MenuItemStyled>
 				)}

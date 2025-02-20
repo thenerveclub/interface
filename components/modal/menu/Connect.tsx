@@ -1,173 +1,58 @@
-import { keyframes } from '@emotion/react';
-import styled from '@emotion/styled';
-import { Box, Button, CircularProgress, Modal, Typography } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import * as React from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import React, { useState } from 'react';
 import CoinbaseWalletConnect from '../../connectorButtons/CoinbaseWalletConnect';
 import MetaMaskConnect from '../../connectorButtons/MetaMaskConnect';
 import { WalletConnect } from '../../connectorButtons/WalletConnect';
 
-const StyledModal = styled(Modal)`
-	.MuiModal-backdrop {
-		backdrop-filter: blur(5px);
-	}
-`;
+const ConnectModal = () => {
+	const [open, setOpen] = useState(false);
 
-// Define the keyframes for the slide-down animation
-const slideDown = keyframes`
-  0% {
-    transform: translate(-50%, -50%);
-  }
-  100% {
-    transform: translate(-50%, 125%);
-  }
-`;
-
-// Define the keyframes for the slide-up animation
-const slideUp = keyframes`
-  0% {
-    transform: translate(-50%, 125%);
-  }
-  100% {
-    transform: translate(-50%, -50%);
-  }
-`;
-
-const ConnectButton = styled(Button)<{ theme: any }>`
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	color: ${({ theme }) => theme.palette.text.primary};
-	font-size: 16px;
-	text-transform: none;
-	font-weight: 500;
-	min-height: 40px;
-	height: 40px;
-	background-color: transparent;
-	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
-	border-radius: ${({ theme }) => theme.shape.borderRadius};
-	width: 150px;
-	transition: all 0.5s ease-in-out;
-
-	&:hover {
-		color: ${({ theme }) => theme.palette.text.primary};
-		border: 1px solid ${({ theme }) => theme.palette.warning.main};
-	}
-
-	@media (max-width: 1280px) {
-		width: 100px;
-	}
-`;
-
-const ConnectBox = styled(Box)<{ theme: any }>`
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	margin: 0 auto 0 auto;
-	justify-content: center;
-	align-items: center;
-	padding: 3rem 1rem;
-	height: auto;
-	width: 350px;
-	background-color: ${({ theme }) => theme.palette.background.default};
-	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
-	border-radius: ${({ theme }) => theme.customShape.borderRadius};
-
-	animation: ${slideUp} 0.5s ease-in-out forwards;
-
-	&.closing {
-		animation: ${slideDown} 0.5s ease-in-out forwards;
-	}
-`;
-
-function ConnectModal() {
-	const theme = useTheme();
-	const [open, setOpen] = React.useState(false);
-	const [isClosing, setIsClosing] = React.useState(false); // <-- New state to track closing status
 	const handleOpen = () => setOpen(true);
-
-	const handleClose = () => {
-		setIsClosing(true); // <-- Set closing status to true
-		// Wait for the animation to complete before closing the modal
-		setTimeout(() => {
-			setOpen(false);
-			setIsClosing(false); // <-- Reset closing status for the next cycle
-		}, 500); // <-- Length of the slide-down animation
-	};
+	const handleClose = () => setOpen(false);
 
 	return (
-		<div>
-			{/* {!open ? (
-				<ConnectButton theme={theme} fullWidth={true} onClick={handleOpen}>
-					Connect
-				</ConnectButton>
-			) : (
-				<ConnectButton
-					theme={theme}
-					fullWidth={true}
-					sx={{ my: 2, color: theme.palette.text.primary, fontSize: '12px' }}
-					startIcon={<CircularProgress color="info" thickness={2.5} size={18} />}
-				>
-					Connecting
-				</ConnectButton>
-			)} */}
-
-			<ConnectButton theme={theme} fullWidth={true} onClick={handleOpen}>
+		<div className="flex justify-center items-center">
+			<button
+				className="px-6 py-2 border border-gray-500 text-white bg-transparent rounded-md transition duration-300 hover:border-yellow-500"
+				onClick={handleOpen}
+			>
 				Connect
-			</ConnectButton>
+			</button>
 
-			<StyledModal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
-				<ConnectBox theme={theme} className={isClosing ? 'closing' : ''}>
-					{' '}
-					<Typography
-						style={{ fontWeight: 'bold', margin: '0.0 auto 1.75rem auto', cursor: 'default' }}
-						align="center"
-						color={theme.palette.text.primary}
-						id="modal-modal-title"
-						variant="h6"
-						component="h2"
-					>
-						Connect a wallet
-					</Typography>
-					<MetaMaskConnect />
-					<CoinbaseWalletConnect />
-					<WalletConnect />
-					<Typography
-						id="modal-modal-description"
-						sx={{
-							fontSize: '12px',
-							margin: '0.75rem auto 0 auto',
-							textAlign: 'center',
-							padding: '1rem',
-							color: theme.palette.text.secondary,
-							cursor: 'default',
-						}}
-					>
-						By connecting a wallet, you agree to Nerve Global&apos;s
-						<a
-							target="_blank"
-							rel="noreferrer"
-							href={'https://www.nerveglobal.com/disclaimer'}
-							style={{ color: theme.palette.text.primary, fontWeight: 'bold' }}
+			<AnimatePresence>
+				{open && (
+					<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+						<motion.div
+							initial={{ opacity: 0, y: 50 }}
+							animate={{ opacity: 1, y: 0 }}
+							exit={{ opacity: 0, y: 50 }}
+							transition={{ duration: 0.4 }}
+							className="bg-gray-900 text-white p-6 rounded-lg w-96 shadow-xl relative"
 						>
-							Terms of Service
-						</a>{' '}
-						and acknowledge that you have read and understand the{' '}
-						<a
-							target="_blank"
-							rel="noreferrer"
-							href={'https://www.nerveglobal.com/disclaimer'}
-							style={{ color: theme.palette.text.primary, fontWeight: 'bold' }}
-						>
-							Disclaimer
-						</a>
-						{'.'}
-					</Typography>
-				</ConnectBox>
-			</StyledModal>
+							<h2 className="text-xl font-semibold text-center mb-4">Connect a wallet</h2>
+							<MetaMaskConnect />
+							<CoinbaseWalletConnect />
+							<WalletConnect />
+							<p className="text-xs text-gray-400 text-center mt-4">
+								By connecting a wallet, you agree to Nerve Global&apos;s
+								<a href="https://www.nerveglobal.com/disclaimer" target="_blank" rel="noopener noreferrer" className="text-white font-bold">
+									Terms of Service
+								</a>
+								and acknowledge that you have read and understand the
+								<a href="https://www.nerveglobal.com/disclaimer" target="_blank" rel="noopener noreferrer" className="text-white font-bold">
+									Disclaimer
+								</a>
+								.
+							</p>
+							<button className="absolute top-4 right-4 text-gray-400 hover:text-white transition" onClick={handleClose}>
+								&times;
+							</button>
+						</motion.div>
+					</div>
+				)}
+			</AnimatePresence>
 		</div>
 	);
-}
+};
 
 export default ConnectModal;

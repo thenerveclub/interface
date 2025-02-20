@@ -2,14 +2,17 @@
 
 import styled from '@emotion/styled';
 import { ContentCopy, OpenInNew } from '@mui/icons-material';
-import { Box, Fade, SpeedDial, SpeedDialIcon, Tooltip } from '@mui/material';
+import { Box, Button, Fade, SpeedDial, SpeedDialIcon, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
+import QRCode from 'qrcode.react'; // Added QR code library import
 import { useEffect, useState } from 'react';
+import QRCodeComponent from 'react-qr-code';
 import { useSelector } from 'react-redux';
 import LoadingScreen from '../../../components/LoadingScreen';
 import CreateAtPlayer from '../../../components/modal/create/createAtPlayer';
+import QRCodeModal from '../../../components/modal/QRCodeModal';
 import usePlayerData from '../../../hooks/playerData/usePlayerData';
 import useENSAvatar from '../../../hooks/useENSAvatar';
 import useENSName from '../../../hooks/useENSName';
@@ -78,7 +81,7 @@ const PlayerBox = styled(Box)<{ imageurl: string }>`
 	p {
 		font-size: 30px;
 		cursor: default;
-		margin: 0;
+		margin: 0 0 0 1rem;
 		z-index: 1;
 	}
 
@@ -143,6 +146,19 @@ const CreateTaskBox = styled(Box)`
 	}
 `;
 
+const QRCodeContainer = styled(Box)<{ theme: any }>`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 2rem;
+
+	canvas {
+		border: 5px solid ${({ theme }) => theme.palette.primary.main};
+		border-radius: 12px;
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+	}
+`; // Styled component for QR code
+
 export default function PlayerPage({ params }: { params: { id: string } }) {
 	const theme = useTheme();
 	const router = useRouter();
@@ -159,6 +175,11 @@ export default function PlayerPage({ params }: { params: { id: string } }) {
 
 	// Address Checksumed And Lowercased
 	const checksumAccount = account?.toLowerCase();
+
+	const [qrModalOpen, setQrModalOpen] = useState(false); // State to control modal
+
+	// Dynamic QR Code URL
+	const qrCodeUrl = `http://localhost:3003/player/${id}`;
 
 	const { ensName, address, error } = useENSName(id?.toLowerCase());
 
@@ -191,6 +212,10 @@ export default function PlayerPage({ params }: { params: { id: string } }) {
 								{ensName && <Image src={`https://euc.li/${ensName}`} alt="ENS Avatar" width={100} height={100} />}
 								<p>{ensName ? ensName : address ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}` : null}</p>
 							</PlayerBox>
+							{/* QR Code Section */}
+							<Button variant="contained" color="primary" style={{ marginTop: '1rem' }} onClick={() => setQrModalOpen(true)}>
+								Show QR Code
+							</Button>
 							<AddressBox>
 								<p>
 									({address?.substring(0, 6)}...{address?.substring(address?.length - 4)})
@@ -230,6 +255,7 @@ export default function PlayerPage({ params }: { params: { id: string } }) {
 							{account && checksumAccount !== address && <CreateAtPlayer recipientAddress={address} recipientENS={ensName} />}
 						</CreateTaskBox>
 					)}
+					<QRCodeModal open={qrModalOpen} handleClose={() => setQrModalOpen(false)} qrCodeUrl={qrCodeUrl} />
 				</StyledBox>
 			)}
 		</>

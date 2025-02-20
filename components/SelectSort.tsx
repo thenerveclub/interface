@@ -1,181 +1,114 @@
-import styled from '@emotion/styled';
-import SwapVertIcon from '@mui/icons-material/SwapVert';
-import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sortSlice } from '../state/sort/sortSlice';
 
-const StyledSelect = styled(Select, {
-	shouldForwardProp: (prop) => prop !== 'focus' && prop !== 'open', // add this line
-})<{ theme: any; open: any; focus: any }>`
-	color: ${({ theme }) => theme.palette.text.primary};
-	font-weight: 500;
-	background-color: ${({ theme, focus }) => (focus ? theme.palette.background.default : 'transparent')};
-	border: 1px solid ${({ theme, open, focus }) => (open || focus ? theme.palette.warning.main : theme.palette.secondary.main)};
-	border-radius: ${({ theme, open }) =>
-		open ? `${theme.customShape.borderRadius} ${theme.customShape.borderRadius} 0px 0px` : theme.shape.borderRadius};
-	min-height: 35px;
-	height: 35px;
-	min-width: 225px;
-	max-width: 375px;
-	transition: all 0.5s ease-in-out;
-	margin-left: 1rem;
-	cursor: pointer;
-
-	&:hover {
-		border: 1px solid ${({ theme }) => theme.palette.warning.main};
-	}
-
-	& .MuiOutlinedInput-notchedOutline {
-		border: none;
-	}
-
-	& .MuiSelect-select {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		align-content: center;
-		vertical-align: middle;
-		text-align: center;
-	}
-
-	& .MuiSelect-icon {
-		color: ${({ theme }) => theme.palette.text.primary};
-	}
-
-	& .MuiPaper-root {
-		min-width: 225px;
-		max-width: 375px;
-	}
-
-	@media (max-width: 960px) {
-		display: flex;
-		justify-content: center;
-		margin: 0 auto 0 auto;
-		min-width: 175px;
-		max-width: 275px;
-
-		& .MuiPaper-root {
-			min-width: 175px;
-			max-width: 275px;
-		}
-	}
-`;
-
-const MenuItemStyled = styled(MenuItem)<{ theme: any }>`
-	color: ${({ theme }) => theme.palette.text.primary};
-	background-color: rgba(38, 38, 56, 1);
-	vertical-align: middle;
-	width: 100%;
-	// font-size: 1rem;
-	margin: 0 auto 0 auto;
-	padding: 0.5rem;
-	cursor: pointer;
-
-	& a:last-of-type {
-		margin-left: 0.5rem;
-	}
-
-	&:focus {
-		background-color: rgba(38, 38, 56, 1);
-	}
-`;
-
-const SearchResultTitle = styled.div<{ theme: any }>`
-	font-size: 0.75rem;
-	color: ${({ theme }) => theme.palette.secondary.main};
-	background-color: transparent;
-	padding: 0.5rem;
-	font-weight: bold;
-	text-align: left;
-	border-top-left-radius: 15px;
-	border-top-right-radius: 15px;
-`;
-
 export default function SelectSort() {
-	const theme = useTheme();
-	// Redux
 	const dispatch = useDispatch();
 	const sort = useSelector((state: { sort: number }) => state.sort);
 
-	const handleChange = (event: SelectChangeEvent) => {
-		dispatch(sortSlice.actions.updateSort(event.target.value));
-	};
-
-	// State
 	const [menuOpen, setMenuOpen] = useState(false);
-	const [isFocused, setIsFocused] = useState(false);
 
-	const handleOpen = () => {
-		setMenuOpen(true);
-		setIsFocused(true);
+	const handleChange = (value: number) => {
+		dispatch(sortSlice.actions.updateSort(value)); // Update the sort in Redux
+		setMenuOpen(false); // Close the menu
 	};
 
-	const handleClose = () => {
-		setMenuOpen(false);
-		setIsFocused(false);
+	const toggleMenu = () => {
+		setMenuOpen((prev) => !prev);
+	};
+
+	const getOptionClasses = (isSelected: boolean) =>
+		`flex items-center justify-between px-4 py-3 rounded-lg transition-all ${
+			isSelected ? 'bg-primary text-white cursor-not-allowed' : 'hover:bg-gray-100 text-gray-700'
+		}`;
+
+	const getSortLabel = (sort: number) => {
+		switch (sort) {
+			case 1:
+				return 'Stake: Low to High';
+			case 2:
+				return 'Stake: High to Low';
+			case 3:
+				return 'Participants: Low to High';
+			case 4:
+				return 'Participants: High to Low';
+			case 5:
+				return 'Entry Amount: Low to High';
+			case 6:
+				return 'Entry Amount: High to Low';
+			default:
+				return 'Select an Option';
+		}
 	};
 
 	return (
-		<>
-			<StyledSelect
-				open={menuOpen}
-				onOpen={handleOpen}
-				onClose={handleClose}
-				theme={theme}
-				variant="outlined"
-				value={sort}
-				onChange={handleChange}
-				focus={isFocused}
-				MenuProps={{
-					PaperProps: {
-						sx: {
-							backgroundColor: theme.palette.background.default,
-							outline: `1px solid ${theme.palette.warning.main}`,
-							borderRadius: 0,
-							// minWidth: '225px',
-							// maxWidth: '375px',
-							padding: '0px',
-							margin: '0 auto 0 auto',
-							'& .MuiMenuItem-root': {
-								backgroundColor: theme.palette.background.default,
-							},
-							'& .MuiMenuItem-root:hover': {
-								backgroundColor: theme.palette.warning.main,
-							},
-						},
-					},
-				}}
+		<div className="relative inline-block w-full max-w-sm">
+			{/* Select Button */}
+			<button
+				onClick={toggleMenu}
+				className={`flex justify-between items-center w-full px-5 py-3 bg-white text-gray-800 border rounded-lg shadow-lg transition-all focus:outline-none ${
+					menuOpen ? 'border-primary ring-2 ring-primary' : 'border-gray-300'
+				}`}
 			>
-				<SearchResultTitle theme={theme}>Stake</SearchResultTitle>
-				<MenuItemStyled theme={theme} value={1} disabled={sort === 1 ? true : false}>
-					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.text.primary, transform: 'scaleY(-1)' }} />
-					<a>{sort === 1 ? 'Stake: Low to High' : 'Low to High'}</a>
-				</MenuItemStyled>
-				<MenuItemStyled theme={theme} value={2} disabled={sort === 2 ? true : false}>
-					{/* <SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.text.primary }} /> */}
-					<a>{sort === 2 ? 'Stake: High to Low' : 'High to Low'}</a>
-				</MenuItemStyled>
-				<SearchResultTitle theme={theme}>Participants</SearchResultTitle>
-				<MenuItemStyled theme={theme} value={3} disabled={sort === 3 ? true : false}>
-					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.text.primary, transform: 'scaleY(-1)' }} />
-					<a>{sort === 3 ? 'Participants: Low to High' : 'Low to High'}</a>
-				</MenuItemStyled>
-				<MenuItemStyled theme={theme} value={4} disabled={sort === 4 ? true : false}>
-					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.text.primary }} />
-					<a>{sort === 4 ? 'Participants: High to Low' : 'High to Low'}</a>
-				</MenuItemStyled>
-				<SearchResultTitle theme={theme}>Entry Amount</SearchResultTitle>
-				<MenuItemStyled theme={theme} value={5} disabled={sort === 5 ? true : false}>
-					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.text.primary, transform: 'scaleY(-1)' }} />
-					<a>{sort === 5 ? 'Entry Amount: Low to High' : 'Low to High'}</a>
-				</MenuItemStyled>
-				<MenuItemStyled theme={theme} value={6} disabled={sort === 6 ? true : false}>
-					<SwapVertIcon style={{ marginRight: '0.5rem', color: theme.palette.text.primary }} />
-					<a>{sort === 6 ? 'Entry Amount: High to Low' : 'High to Low'}</a>
-				</MenuItemStyled>
-			</StyledSelect>
-		</>
+				{/* Selected Option */}
+				<span className="text-sm font-medium">{getSortLabel(sort)}</span>
+				<svg
+					className={`w-5 h-5 transform transition-transform ${menuOpen ? 'rotate-180' : 'rotate-0'}`}
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 20 20"
+					fill="currentColor"
+				>
+					<path
+						fillRule="evenodd"
+						d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+						clipRule="evenodd"
+					/>
+				</svg>
+			</button>
+
+			{/* Dropdown Menu */}
+			{menuOpen && (
+				<div className="absolute z-20 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-xl">
+					{/* Stake Section */}
+					<div className="px-4 py-2 text-sm font-semibold text-gray-600 bg-gray-50 rounded-t-lg">Stake</div>
+					<div className="space-y-2">
+						<button onClick={() => handleChange(1)} disabled={sort === 1} className={getOptionClasses(sort === 1)}>
+							<span>Stake: Low to High</span>
+							{sort === 1 && <span className="text-xs italic">Selected</span>}
+						</button>
+						<button onClick={() => handleChange(2)} disabled={sort === 2} className={getOptionClasses(sort === 2)}>
+							<span>Stake: High to Low</span>
+							{sort === 2 && <span className="text-xs italic">Selected</span>}
+						</button>
+					</div>
+
+					{/* Participants Section */}
+					<div className="px-4 py-2 mt-2 text-sm font-semibold text-gray-600 bg-gray-50">Participants</div>
+					<div className="space-y-2">
+						<button onClick={() => handleChange(3)} disabled={sort === 3} className={getOptionClasses(sort === 3)}>
+							<span>Participants: Low to High</span>
+							{sort === 3 && <span className="text-xs italic">Selected</span>}
+						</button>
+						<button onClick={() => handleChange(4)} disabled={sort === 4} className={getOptionClasses(sort === 4)}>
+							<span>Participants: High to Low</span>
+							{sort === 4 && <span className="text-xs italic">Selected</span>}
+						</button>
+					</div>
+
+					{/* Entry Amount Section */}
+					<div className="px-4 py-2 mt-2 text-sm font-semibold text-gray-600 bg-gray-50">Entry Amount</div>
+					<div className="space-y-2">
+						<button onClick={() => handleChange(5)} disabled={sort === 5} className={getOptionClasses(sort === 5)}>
+							<span>Entry Amount: Low to High</span>
+							{sort === 5 && <span className="text-xs italic">Selected</span>}
+						</button>
+						<button onClick={() => handleChange(6)} disabled={sort === 6} className={getOptionClasses(sort === 6)}>
+							<span>Entry Amount: High to Low</span>
+							{sort === 6 && <span className="text-xs italic">Selected</span>}
+						</button>
+					</div>
+				</div>
+			)}
+		</div>
 	);
 }
