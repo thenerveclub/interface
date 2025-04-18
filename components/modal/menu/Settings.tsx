@@ -85,15 +85,21 @@ export default function SettingsModal() {
 	return (
 		<>
 			{/* Open Button */}
-			<button onClick={handleModalToggle} className="p-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-md transition">
-				⚙️ Preferences
+			<button
+				onClick={handleModalToggle}
+				className="bg-transparent hover:text-secondary dark:bg-transparent dark:hover:text-secondary rounded-md transition"
+			>
+				Settings
 			</button>
 
 			{/* Modal */}
 			{open && (
 				<div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50">
-					<div className="bg-background rounded-lg shadow-lg p-6 w-96">
-						<h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white text-center">Preferences</h2>
+					<div className="bg-background rounded-lg shadow-lg p-6 w-96 border border-secondary">
+						<h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white text-center">Settings</h2>
+
+						{/* Divider */}
+						<hr className="w-full border-t border-secondary" />
 
 						{/* Theme Toggle Buttons */}
 						<div className="mb-6">
@@ -126,6 +132,9 @@ export default function SettingsModal() {
 							</div>
 						</div>
 
+						{/* Divider */}
+						<hr className="w-full border-t border-secondary" />
+
 						{/* Testnets Toggle */}
 						<div className="mb-6">
 							<h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Show Testnets</h3>
@@ -135,6 +144,9 @@ export default function SettingsModal() {
 							</label>
 						</div>
 
+						{/* Divider */}
+						<hr className="w-full border-t border-secondary" />
+
 						{/* Currency Toggle */}
 						<div className="mb-6">
 							<h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Show Currency</h3>
@@ -143,6 +155,9 @@ export default function SettingsModal() {
 								<span className="text-gray-800 dark:text-gray-200">Enable Currency</span>
 							</label>
 						</div>
+
+						{/* Divider */}
+						<hr className="w-full border-t border-secondary" />
 
 						{/* RPC Selector */}
 						<div className="mb-6">

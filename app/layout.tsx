@@ -21,7 +21,7 @@ import { walletConnectV2 } from '../utils/connectors/walletConnectV2';
 import { getName } from '../utils/connectorsNameAndLogo';
 
 // CSS
-import '../styles/globals.css';
+import './globals.css';
 
 function Updaters() {
 	const dispatch = useDispatch();

@@ -181,23 +181,34 @@ export default function IndexPage() {
 						<meta name="twitter:description" content="Nerve Global Dapp." />
 						<meta name="twitter:image" content="https://dapp.nerveglobal.com/favicon.ico" />
 					</Head>
-					<div className="flex flex-col bg-background items-center justify-center text-center w-[90%] mx-auto my-8">
-						<h1 className="flex items-center justify-center">Global Stats</h1>
-						<div className="flex flex-col lg:flex-row justify-evenly gap-8 mx-auto my-10 max-w-5xl">
-							<div className="flex flex-col items-center w-full text-xl">
-								<h1 className="text-[2rem] font-['TrueLies'] font-thin">${allChains?.earnings}</h1>
-								<h1 className="text-[2rem] font-['TrueLies'] font-thin">Earnings</h1>
-							</div>
-							<div className="flex flex-col items-center w-full text-xl">
-								<h1 className="text-[2rem] font-['TrueLies'] font-thin">{allChains?.count}</h1>
-								<h1 className="text-[2rem] font-['TrueLies'] font-thin">Tasks</h1>
-							</div>
-							<div className="flex flex-col items-center w-full text-xl">
-								<h1 className="text-[2rem] font-['TrueLies'] font-thin">{allChains?.users}</h1>
-								<h1 className="text-[2rem] font-['TrueLies'] font-thin">Users</h1>
+
+					{/* Landing Section */}
+					<div className="flex flex-col h-screen md:flex-row items-center justify-center text-center w-[90%] mx-auto -mt-10">
+						<div className="flex flex-col items-center md:items-start justify-center text-center w-[90%] mx-auto my-8">
+							<div className="text-center text-6xl 2xl:text-9xl font-bold text-black dark:text-white">DARE.</div>
+							<div className="text-center text-6xl 2xl:text-9xl font-bold text-black dark:text-white">PROVE.</div>
+							<div className="text-center text-6xl 2xl:text-9xl font-bold text-accent">GET PAID.</div>
+						</div>
+						<div className="flex flex-col items-center md:items-end justify-center text-center w-[90%] mx-auto my-8">
+							<div className="flex flex-col lg:flex-row justify-evenly gap-8 mx-auto my-10 max-w-5xl">
+								<div className="flex flex-col items-center w-full text-xl">
+									<h1 className="text-[2rem]">${allChains?.earnings}</h1>
+									<h1 className="text-[2rem]">All Time Earnings</h1>
+								</div>
+								{/* <div className="flex flex-col items-center w-full text-xl">
+									<h1 className="text-[2rem]">{allChains?.count}</h1>
+									<h1 className="text-[2rem]">Tasks</h1>
+								</div> */}
+								<div className="flex flex-col items-center w-full text-xl">
+									<h1 className="text-[2rem]">{allChains?.users}</h1>
+									<h1 className="text-[2rem]">All Time Users</h1>
+								</div>
 							</div>
 						</div>
-						<hr className="w-full border border-secondary" />
+					</div>
+
+					<div className="flex flex-col bg-background items-center justify-center text-center w-[90%] mx-auto my-8">
+						<hr className="w-full border-t border-secondary" />
 						<div className="flex flex-col lg:flex-row items-center justify-center w-full h-10 my-4 gap-4">
 							{/* <ActiveTabLeftSection></ActiveTabLeftSection> */}
 							<div className="flex flex-col lg:flex-row justify-end w-full">

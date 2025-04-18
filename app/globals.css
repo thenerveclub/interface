@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+	font-family: 'True Lies';
+	src: url('/fonts/TrueLies/TrueLies-Regular.woff2') format('woff2'), url('/fonts/TrueLies/TrueLies-Regular.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* Set global default font */
+@layer base {
+	html {
+		@apply font-sans;
+	}
+}
+
 /* Default Theme Variables */
 :root {
 	--color-primary: #0f172a; /* Dark Navy (Primary in light mode) */
@@ -17,14 +32,30 @@
 
 .dark {
 	--color-primary: #f9fafb; /* Light Gray (Primary in dark mode) */
-	--color-secondary: #60a5fa; /* Softer Blue */
+	--color-secondary: #4b4b4b; /* Softer Blue */
 	--color-background: #000000; /* Dark Navy Background */
 	--color-backgroundReverse: #ffffff;
 	--color-text: #e5e7eb; /* Light Gray Text */
-	--color-accent: #a78bfa; /* Softer Purple */
+	--color-accent: #9333ea; /* Softer Purple */
 	--color-muted: #9ca3af; /* Muted Text (Gray) */
 	--color-gradient-start: #9333ea; /* Gradient Start (Purple) */
 	--color-gradient-end: #2563eb; /* Gradient End (Blue) */
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--background: #000000;
+		--foreground: #171717;
+	}
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	color: var(--foreground);
+	background: var(--background);
 }
 
 /* Tailwind Helper Classes */

@@ -16,6 +16,7 @@ module.exports = {
 			lg: '1024px', // Large screens
 			xl: '1280px', // Extra large screens
 			'2xl': '1536px', // Ultra large screens
+			'3xl': '1920px', // Ultra large screens
 		},
 		extend: {
 			colors: {
@@ -28,29 +29,7 @@ module.exports = {
 				muted: 'var(--color-muted)', // Muted/gray text
 			},
 			fontFamily: {
-				sans: ['Inter', 'sans-serif'], // Clean, modern font
-				display: ['Manrope', 'sans-serif'], // Bold, display font
-				mono: ['Fira Code', 'monospace'], // Monospace font for accents/code
-			},
-			spacing: {
-				18: '4.5rem',
-				72: '18rem',
-				96: '24rem',
-				128: '32rem',
-				144: '36rem', // Extra-large spacings
-			},
-			borderRadius: {
-				xl: '1rem',
-				'2xl': '1.5rem',
-				'3xl': '2rem', // Smooth modern borders
-			},
-			boxShadow: {
-				soft: '0 4px 8px rgba(0, 0, 0, 0.1)', // Subtle shadows
-				hard: '0 8px 16px rgba(0, 0, 0, 0.2)', // Key UI shadows
-			},
-			gradientColorStops: {
-				'framer-start': 'var(--color-gradient-start)', // Gradient start
-				'framer-end': 'var(--color-gradient-end)', // Gradient end
+				trueLies: ['"True Lies"', 'sans-serif'],
 			},
 		},
 	},

@@ -12,13 +12,13 @@ export default function Footer() {
 
 				{/* Social Links */}
 				<div className="flex space-x-6">
-					<a target="_blank" rel="noreferrer" href="https://twitter.com/nerveglobal_" className="group">
+					<a target="_blank" rel="noreferrer" href="https://twitter.com/thenerveclub" className="group">
 						<FaXTwitter className="w-6 h-6 fill-primary transition-transform group-hover:scale-110 group-hover:fill-secondary" />
 					</a>
-					<a target="_blank" rel="noreferrer" href="https://www.instagram.com/nerveglobal" className="group">
+					<a target="_blank" rel="noreferrer" href="https://www.instagram.com/thenerveclub" className="group">
 						<FaInstagram className="w-6 h-6 fill-primary transition-transform group-hover:scale-110 group-hover:fill-secondary" />
 					</a>
-					<a target="_blank" rel="noreferrer" href="https://www.tiktok.com/@nerveglobal" className="group">
+					<a target="_blank" rel="noreferrer" href="https://www.tiktok.com/@thenerveclub" className="group">
 						<FaTiktok className="w-6 h-6 fill-primary transition-transform group-hover:scale-110 group-hover:fill-secondary" />
 					</a>
 					<a target="_blank" rel="noreferrer" href="https://discord.gg/Xuh5enTNB6" className="group">

@@ -92,14 +92,7 @@ export default function Header() {
 					<div className="flex justify-between items-center w-[95%]">
 						<div className="flex items-center space-x-4">
 							<Link href="/" passHref>
-								<h1 className="font-bold text-2xl text-white cursor-pointer">Nerve</h1>
-							</Link>
-							{/* <SelectLeaderboard /> */}
-							<Link href="/leaderboard" passHref>
-								<h3 className="text-lg text-white cursor-pointer">Leaderboard</h3>
-							</Link>
-							<Link href="/map" passHref>
-								<h3 className="text-lg text-white cursor-pointer">Map</h3>
+								<h1 className="font-bold text-2xl 3xl:text-4xl cursor-pointer text-accent">THE NERVE CLUB</h1>
 							</Link>
 						</div>
 						<div className="flex-grow flex justify-center">
@@ -107,8 +100,14 @@ export default function Header() {
 						</div>
 						<div className="flex items-center space-x-4">
 							{/* {account && <SelectChain />} */}
-							{account ? <AccountModal account={account} ens={ens} network={network} /> : <Connect />}
+							<Link href="/leaderboard" passHref>
+								<h3 className="text-lg 3xl:text-2xl text-black dark:text-white cursor-pointer">Leaderboard</h3>
+							</Link>
+							<Link href="/map" passHref>
+								<h3 className="text-lg 3xl:text-2xl text-black dark:text-white cursor-pointer">Map</h3>
+							</Link>
 							<Setting />
+							{account ? <AccountModal account={account} ens={ens} network={network} /> : <Connect />}
 						</div>
 					</div>
 				</motion.div>
@@ -118,14 +117,14 @@ export default function Header() {
 						<div className="flex items-center">
 							{!isMap && (
 								<Link href="/" passHref>
-									<h1 className="font-bold text-2xl text-white cursor-pointer">Nerve</h1>
+									<h1 className="font-bold text-2xl text-accent cursor-pointer">THE NERVE CLUB</h1>
 								</Link>
 							)}
 						</div>
 						<div className="flex items-center space-x-4">
 							{/* {account && <SelectChain />} */}
-							{!account && <Connect />}
 							<Setting />
+							{!account && <Connect />}
 						</div>
 					</motion.div>
 					<motion.div className="fixed bottom-4 left-0 right-0 flex justify-evenly bg-black py-2">
