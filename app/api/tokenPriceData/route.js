@@ -26,7 +26,7 @@ const fetchETHPrice = async () => {
 
 const fetchMATICPrice = async () => {
 	try {
-		const tokenId = 3890; // MATIC ID
+		const tokenId = 28321; // POL ID
 		const response = await fetch(`${cmcBaseUrl}/quotes/latest?id=${tokenId}`, { headers: cmcHeaders });
 		const data = await response.json();
 		if (!data || !data.data || !data.data[tokenId]) {
@@ -45,6 +45,7 @@ export async function GET() {
 		try {
 			const responseETH = await fetchETHPrice();
 			const responseMATIC = await fetchMATICPrice();
+
 			if (responseETH !== null && responseMATIC !== null) {
 				cachedData = {
 					lastFetched: new Date().toISOString(),
@@ -52,14 +53,22 @@ export async function GET() {
 					matic: responseMATIC,
 				};
 				lastFetchTime = new Date().getTime();
+			} else {
+				console.warn('One or both prices are null. Skipping cache update.');
 			}
 		} catch (error) {
-			console.error('Failed to fetch CoinMarketCap data:', error);
+			console.error('Error while fetching data:', error);
 			if (cachedData) {
 				return NextResponse.json(cachedData);
 			}
-			return NextResponse.error();
+			return NextResponse.json({ error: 'Failed to fetch data and no cache available' });
 		}
 	}
+
+	if (!cachedData) {
+		console.warn('No cached data available');
+		return NextResponse.json({ error: 'No data available' });
+	}
+
 	return NextResponse.json(cachedData);
 }
