@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+	font-family: 'True Lies';
+	src: url('/fonts/TrueLies/TrueLies-Regular.woff2') format('woff2'), url('/fonts/TrueLies/TrueLies-Regular.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* Set global default font */
+@layer base {
+	html {
+		@apply font-sans;
+	}
+}
+
+/* Default Theme Variables */
+:root {
+	--color-primary: #0f172a; /* Dark Navy (Primary in light mode) */
+	--color-secondary: #2563eb; /* Bright Blue */
+	--color-background: #f9fafb; /* Light Gray */
+	--color-backgroundReverse: #000000; /* Light Gray */
+	--color-text: #111827; /* Dark Gray */
+	--color-accent: #9333ea; /* Purple Accent */
+	--color-muted: #6b7280; /* Muted Text (Gray) */
+	--color-gradient-start: #2563eb; /* Gradient Start (Blue) */
+	--color-gradient-end: #9333ea; /* Gradient End (Purple) */
+}
+
+.dark {
+	--color-primary: #f9fafb; /* Light Gray (Primary in dark mode) */
+	--color-secondary: #4b4b4b; /* Softer Blue */
+	--color-background: #000000; /* Dark Navy Background */
+	--color-backgroundReverse: #ffffff;
+	--color-text: #e5e7eb; /* Light Gray Text */
+	--color-accent: #9333ea; /* Softer Purple */
+	--color-muted: #9ca3af; /* Muted Text (Gray) */
+	--color-gradient-start: #9333ea; /* Gradient Start (Purple) */
+	--color-gradient-end: #2563eb; /* Gradient End (Blue) */
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--background: #000000;
+		--foreground: #171717;
+	}
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	color: var(--foreground);
+	background: var(--background);
+}
+
+/* Tailwind Helper Classes */
+.bg-primary {
+	background-color: var(--color-primary);
+}
+.text-primary {
+	color: var(--color-primary);
+}
+
+.bg-secondary {
+	background-color: var(--color-secondary);
+}
+.text-secondary {
+	color: var(--color-secondary);
+}
+
+.bg-accent {
+	background-color: var(--color-accent);
+}
+.text-accent {
+	color: var(--color-accent);
+}
+
+.bg-background {
+	background-color: var(--color-background);
+}
+.bg-backgroundReverse {
+	background-color: var(--color-backgroundReverse);
+}
+.text-text {
+	color: var(--color-text);
+}
+
+.bg-gradient {
+	background-image: linear-gradient(to right, var(--color-gradient-start), var(--color-gradient-end));
+}

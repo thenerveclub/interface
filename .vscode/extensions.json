@@ -1,0 +1,25 @@
+{
+	"recommendations": [
+		"aaron-bond.better-comments",
+		"ms-vscode.azure-repos",
+		"formulahendry.auto-rename-tag",
+		"ms-vscode-remote.remote-containers",
+		"ms-azuretools.vscode-docker",
+		"dbaeumer.vscode-eslint",
+		"github.copilot",
+		"github.remotehub",
+		"eamodio.gitlens",
+		"graphql.vscode-graphql-execution",
+		"graphql.vscode-graphql",
+		"graphql.vscode-graphql-syntax",
+		"htmlhint.vscode-htmlhint",
+		"stxr.iconfont-preview",
+		"ms-vscode.vscode-typescript-next",
+		"mulu-github.jsflowchart",
+		"esbenp.prettier-vscode",
+		"ms-vscode.remote-repositories",
+		"juanblanco.solidity",
+		"vscode-icons-team.vscode-icons",
+		"redhat.vscode-yaml"
+	]
+}

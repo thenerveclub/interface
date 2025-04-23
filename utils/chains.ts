@@ -20,6 +20,11 @@ const CELO: AddEthereumChainParameter['nativeCurrency'] = {
 
 interface BasicChainInformation {
 	urls: string[];
+	url?: string;
+	publicUrl: string;
+	infura: string;
+	alchemy: string;
+	urlName: string;
 	name: string;
 	nameToken: string;
 	blockExplorerUrls: string[];
@@ -27,6 +32,7 @@ interface BasicChainInformation {
 	blockTime?: number;
 	graphApi?: string;
 	coingeckoApiId?: string;
+	logo?: string;
 }
 
 interface ExtendedChainInformation extends BasicChainInformation {
@@ -36,7 +42,7 @@ interface ExtendedChainInformation extends BasicChainInformation {
 function isExtendedChainInformation(
 	chainInformation: BasicChainInformation | ExtendedChainInformation
 ): chainInformation is ExtendedChainInformation {
-	return !!(chainInformation as ExtendedChainInformation).nativeCurrency;
+	return !!(chainInformation as ExtendedChainInformation)?.nativeCurrency;
 }
 
 export function getAddChainParameters(chainId: number): AddEthereumChainParameter | number {
@@ -58,119 +64,92 @@ export const CHAINS: {
 	[x: string]: any;
 	[chainId: number]: BasicChainInformation | ExtendedChainInformation;
 } = {
+	// // Ethereum
 	// 1: {
-	// 	urls: `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
-	// 	name: 'Mainnet',
+	// 	urls: [`https://ethereum-rpc.publicnode.com`],
+	// 	url: `https://ethereum-rpc.publicnode.com`,
+	// 	publicUrl: 'https://ethereum-rpc.publicnode.com',
+	// 	infura: `https://infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+	// 	alchemy: `https://infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+	// 	urlName: 'ethereum',
+	// 	name: 'ETH',
+	// 	nameToken: 'ETH',
+	// 	blockExplorerUrls: ['https://etherscan.io/'],
 	// 	contract: '',
 	// 	blockTime: 10000,
 	// 	graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal',
 	// 	coingeckoApiId: 'ethereum',
 	// },
-	// 3: {
-	//   urls: [process.env.infuraKey ? `https://ropsten.infura.io/v3/${process.env.infuraKey}` : ''].filter(
-	//     (url) => url !== ''
-	//   ),
-	//   name: 'Ropsten',
-	// },
-	// 4: {
-	//   urls: [process.env.infuraKey ? `https://rinkeby.infura.io/v3/${process.env.infuraKey}` : ''].filter(
-	//     (url) => url !== ''
-	//   ),
-	//   name: 'Rinkeby',
-	// },
-	// Goerli
-	5: {
-		urls: [`https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`],
-		name: 'Görli',
-		nameToken: 'GoerliETH',
-		blockExplorerUrls: ['https://goerli.etherscan.io/'],
-		contract: '0xd0d83FFcF0102E5cea570e565d8f5dFA2086C39C',
-		blockTime: 10000,
-		graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal-goerli',
-		coingeckoApiId: 'goerli-eth',
-	},
-	// 42: {
-	//   urls: [process.env.infuraKey ? `https://kovan.infura.io/v3/${process.env.infuraKey}` : ''].filter(
-	//     (url) => url !== ''
-	//   ),
-	//   name: 'Kovan',
-	// },
-	// // Optimism
-	// 10: {
-	//   urls: [
-	//     process.env.infuraKey ? `https://optimism-mainnet.infura.io/v3/${process.env.infuraKey}` : '',
-	//     'https://mainnet.optimism.io',
-	//   ].filter((url) => url !== ''),
-	//   name: 'Optimism',
-	//   nativeCurrency: ETH,
-	//   blockExplorerUrls: ['https://optimistic.etherscan.io'],
-	// },
-	// 69: {
-	//   urls: [
-	//     process.env.infuraKey ? `https://optimism-kovan.infura.io/v3/${process.env.infuraKey}` : '',
-	//     'https://kovan.optimism.io',
-	//   ].filter((url) => url !== ''),
-	//   name: 'Optimism Kovan',
-	//   nativeCurrency: ETH,
-	//   blockExplorerUrls: ['https://kovan-optimistic.etherscan.io'],
-	// },
-	// Arbitrum
-	// 42161: {
-	// 	urls: `https://arbitrum-mainnet.infura.io/v3/${process.env.infuraKey}`,
-	// 	name: 'Arbitrum One',
-	// 	nativeCurrency: ETH,
-	// 	blockExplorerUrls: ['https://arbiscan.io'],
-	// 	contract: '0x91596B44543016DDb5D410A51619D5552961a23b',
+	// // Goerli
+	// 5: {
+	// 	urls: [`https://ethereum-goerli-rpc.publicnode.com`],
+	// 	url: `https://ethereum-goerli-rpc.publicnode.com`,
+	// 	publicUrl: 'https://ethereum-goerli-rpc.publicnode.com',
+	// 	infura: `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+	// 	alchemy: `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+	// 	urlName: 'goerli',
+	// 	name: 'Görli',
+	// 	nameToken: 'ETH',
+	// 	blockExplorerUrls: ['https://goerli.etherscan.io/'],
+	// 	contract: '0xd0d83FFcF0102E5cea570e565d8f5dFA2086C39C',
 	// 	blockTime: 10000,
-	// 	graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal',
-	// },
-	// 421611: {
-	//   urls: [
-	//     process.env.infuraKey ? `https://arbitrum-rinkeby.infura.io/v3/${process.env.infuraKey}` : '',
-	//     'https://rinkeby.arbitrum.io/rpc',
-	//   ].filter((url) => url !== ''),
-	//   name: 'Arbitrum Testnet',
-	//   nativeCurrency: ETH,
-	//   blockExplorerUrls: ['https://testnet.arbiscan.io'],
+	// 	graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal-goerli',
+	// 	coingeckoApiId: 'ethereum',
 	// },
 	// Polygon
 	137: {
-		urls: [`https://polygon-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`],
-		name: 'Polygon Mainnet',
+		urls: [`https://polygon-bor-rpc.publicnode.com`],
+		url: `https://polygon-bor-rpc.publicnode.com`,
+		publicUrl: 'https://polygon-bor-rpc.publicnode.com',
+		infura: `https://polygon-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+		alchemy: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_KEY}`,
+		urlName: 'polygon',
+		name: 'Polygon',
 		nameToken: 'MATIC',
 		nativeCurrency: MATIC,
 		blockExplorerUrls: ['https://polygonscan.com/'],
-		contract: '0x91596B44543016DDb5D410A51619D5552961a23b',
+		contract: '0xE72b2d8bcda0Fd5cA49119deB98Ea042D9Ec5B5b',
 		blockTime: 10000,
-		graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal',
+		// graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal-polygon',
+		graphApi: `https://gateway-arbitrum.network.thegraph.com/api/${process.env.NEXT_PUBLIC_THEGRAPH_POLYGON_API}/subgraphs/id/Gt9HY9zEVhZ8ntBYXdPMPVXUtdrUD2JX3hP6oikfwCRV`,
 		coingeckoApiId: 'matic-network',
+		logo: '/svg/chains/polygon.svg',
 	},
-	// 80001: {
-	// 	urls: [`https://matic-mumbai.chainstacklabs.com`],
-	// 	name: 'Polygon Mumbai',
-	// 	nativeCurrency: MATIC,
-	// 	blockExplorerUrls: ['https://mumbai.polygonscan.com'],
-	// },
-	// // Celo
-	// 42220: {
-	//   urls: ['https://forno.celo.org'],
-	//   name: 'Celo',
-	//   nativeCurrency: CELO,
-	//   blockExplorerUrls: ['https://explorer.celo.org'],
-	// },
-	// 44787: {
-	//   urls: ['https://alfajores-forno.celo-testnet.org'],
-	//   name: 'Celo Alfajores',
-	//   nativeCurrency: CELO,
-	//   blockExplorerUrls: ['https://alfajores-blockscout.celo-testnet.org'],
-	// },
+	// Sepolia
+	11155111: {
+		urls: [`https://ethereum-sepolia-rpc.publicnode.com`],
+		url: `https://ethereum-sepolia-rpc.publicnode.com`,
+		publicUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
+		infura: `https://sepolia.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+		alchemy: `https://sepolia.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+		urlName: 'sepolia',
+		name: 'Sepolia',
+		nameToken: 'ETH',
+		nativeCurrency: ETH,
+		blockExplorerUrls: ['https://sepolia.etherscan.io/'],
+		contract: '0x2abB51B241c7363651cb51C76AE989Bd0458DA6B',
+		blockTime: 10000,
+		// graphApi: 'https://api.thegraph.com/subgraphs/name/nerveglobal/nerveglobal-sepolia',
+		graphApi: `https://gateway-arbitrum.network.thegraph.com/api/${process.env.NEXT_PUBLIC_THEGRAPH_SEPOLIA_API}/subgraphs/id/xmhZV7Uvmkp28CEdpiuFw7Gz4AdhU3vRGQPXkCTo16w`,
+		coingeckoApiId: 'ethereum',
+		logo: '/svg/chains/ethereum.svg',
+	},
 };
 
-export const URLS: { [chainId: number]: string } = Object.keys(CHAINS).reduce<{ [chainId: number]: string }>((accumulator, chainId) => {
-	const validURLs: string = CHAINS[Number(chainId)].urls;
+// Create a reverse mapping from urlName to chainId
+export const nameToChainId = Object.keys(CHAINS).reduce((accumulator, key) => {
+	const chain = CHAINS[key];
+	if (chain && chain.urlName) {
+		accumulator[chain.urlName] = Number(key);
+	}
+	return accumulator;
+}, {});
 
-	if (validURLs.length) {
-		accumulator[Number(chainId)] = validURLs;
+export const URLS: { [chainId: number]: string } = Object.keys(CHAINS).reduce<{ [chainId: number]: string }>((accumulator, chainId) => {
+	const urls: string[] = CHAINS[Number(chainId)].urls;
+
+	if (urls && urls.length) {
+		accumulator[Number(chainId)] = urls[0];
 	}
 
 	return accumulator;

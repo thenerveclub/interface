@@ -1,14 +1,13 @@
 {
-	"name": "NerveGloballll",
+	"name": "nerveglobal",
 	"description": "Nerve Global DApp Interface",
-	"version": "1.0.1",
+	"version": "1.1.1",
 	"license": "GPL-3.0-or-later",
 	"engines": {
 		"npm": "please-use-yarn",
 		"node": ">=18.x",
 		"yarn": ">=1.22.17"
 	},
-	"homepage": "https://github.com/nerveglobal/interface#readme",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/nerveglobal/interface.git"
@@ -16,16 +15,20 @@
 	"bugs": {
 		"url": "https://github.com/nerveglobal/interface/issues"
 	},
+	"homepage": "http://www.app.nerveglobal.com",
 	"keywords": [
 		"react",
 		"nerve",
 		"typescript"
 	],
 	"scripts": {
-		"dev": "next dev",
+		"dev": "next dev -p 3003 --turbopack",
 		"build": "next build",
+		"export": "next build && next export",
 		"start": "next start",
-		"analyze": "ANALYZE=true next dev"
+		"analyze": "ANALYZE=true next dev",
+		"lint": "next lint",
+		"tailwind": "tailwindcss -i ./styles/globals.css -o ./styles/output.css --watch"
 	},
 	"dependencies": {
 		"@coinbase/wallet-sdk": "^3.3.0",
@@ -38,21 +41,31 @@
 		"@metamask/jazzicon": "^2.0.0",
 		"@mui/icons-material": "^5.10.9",
 		"@mui/material": "^5.10.12",
+		"@mui/styles": "^5.13.7",
+		"@mui/x-charts": "^6.18.1",
 		"@next/bundle-analyzer": "^13.2.3",
 		"@reduxjs/toolkit": "^1.9.2",
-		"@svgr/webpack": "^6.5.1",
+		"@svgr/webpack": "^8.1.0",
+		"@tailwindcss/aspect-ratio": "^0.4.2",
+		"@tailwindcss/container-queries": "^0.1.1",
+		"@tailwindcss/forms": "^0.5.10",
+		"@tailwindcss/typography": "^0.5.16",
 		"@walletconnect/ethereum-provider": "1.7.1",
-		"@web3-react/coinbase-wallet": "8.0.34-beta.0",
-		"@web3-react/core": "8.0.35-beta.0",
-		"@web3-react/metamask": "8.0.28-beta.0",
-		"@web3-react/types": "8.0.20-beta.0",
-		"@web3-react/walletconnect": "^8.0.37-beta.0",
+		"@web3-react/coinbase-wallet": "^8.2.3",
+		"@web3-react/core": "^8.2.3",
+		"@web3-react/metamask": "^8.2.4",
+		"@web3-react/types": "^8.2.3",
+		"@web3-react/walletconnect-v2": "^8.5.1",
 		"eslint-config-next": "^13.0.0",
 		"ethers": "^5.7.2",
-		"next": "^13.1.6",
+		"framer-motion": "^12.0.5",
+		"next": "^15.1.6",
 		"notistack": "^2.0.8",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0",
+		"qrcode.react": "^4.2.0",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0",
+		"react-icons": "^5.4.0",
+		"react-qr-code": "^2.0.15",
 		"react-redux": "^8.0.5",
 		"redux": "^4.2.1",
 		"redux-logger": "^3.0.6"
@@ -60,6 +73,10 @@
 	"devDependencies": {
 		"@types/node": "18.7.9",
 		"@types/react": "18.0.17",
-		"typescript": "4.7.4"
+		"autoprefixer": "^10.4.20",
+		"eslint": "^8",
+		"postcss": "^8.5.1",
+		"tailwindcss": "^3.4.1",
+		"typescript": "^5"
 	}
 }

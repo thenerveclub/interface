@@ -1,0 +1,100 @@
+{
+	"redhat.telemetry.enabled": true,
+	"javascript.updateImportsOnFileMove.enabled": "always",
+	"workbench.iconTheme": "vscode-icons",
+	"editor.formatOnSave": true,
+	"prettier.endOfLine": "auto",
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"prettier.singleQuote": true,
+	"prettier.useTabs": true,
+	"editor.fontSize": 12,
+	"editor.mouseWheelZoom": true,
+	"editor.wordWrap": "wordWrapColumn",
+	"editor.wrappingIndent": "same",
+	"editor.wordWrapColumn": 150,
+	"explorer.confirmDragAndDrop": false,
+	"files.autoSave": "afterDelay",
+	"files.autoSaveDelay": 1000,
+	"editor.suggestSelection": "recentlyUsed",
+	"editor.trimAutoWhitespace": true,
+	"git.enableSmartCommit": true,
+	"editor.multiCursorModifier": "ctrlCmd",
+	"files.exclude": {
+		// "**/.git": true,
+		// "**/node_modules": true
+	},
+	"javascript.suggest.autoImports": false,
+	"editor.codeActionsOnSave": {
+		"source.fixAll": "explicit",
+		"source.sortImports": "explicit"
+	},
+	"settingsSync.ignoredSettings": [],
+	"[css]": {
+		"editor.suggest.insertMode": "replace"
+	},
+	"editor.tabSize": 3,
+	"editor.minimap.size": "fit",
+	"terminal.integrated.cursorBlinking": true,
+	"terminal.integrated.fontSize": 10,
+	"terminal.integrated.defaultProfile.windows": "Git Bash",
+	"prettier.printWidth": 150,
+	"html.format.wrapLineLength": 0,
+	"eslint.alwaysShowStatus": true,
+	"terminal.integrated.env.windows": {},
+	"debug.console.wordWrap": false,
+	"better-comments.highlightPlainText": true,
+	"better-comments.tags": [
+		{
+			"tag": "!",
+			"color": "#FF2D00",
+			"strikethrough": false,
+			"underline": false,
+			"backgroundColor": "transparent",
+			"bold": false,
+			"italic": false
+		},
+		{
+			"tag": "?",
+			"color": "#3498DB",
+			"strikethrough": false,
+			"underline": false,
+			"backgroundColor": "transparent",
+			"bold": false,
+			"italic": false
+		},
+		{
+			"tag": "//",
+			"color": "#474747",
+			"strikethrough": true,
+			"underline": false,
+			"backgroundColor": "transparent",
+			"bold": false,
+			"italic": false
+		},
+		{
+			"tag": "todo",
+			"color": "#FF8C00",
+			"strikethrough": false,
+			"underline": false,
+			"backgroundColor": "transparent",
+			"bold": false,
+			"italic": false
+		},
+		{
+			"tag": "*",
+			"color": "#98C379",
+			"strikethrough": false,
+			"underline": false,
+			"backgroundColor": "transparent",
+			"bold": false,
+			"italic": false
+		}
+	],
+	"typescript.updateImportsOnFileMove.enabled": "always",
+	"editor.unicodeHighlight.invisibleCharacters": false,
+	"editor.inlineSuggest.enabled": true,
+	"vsicons.dontShowNewVersionMessage": true,
+	"terminal.integrated.defaultProfile.osx": "zsh",
+	"terminal.integrated.automationProfile.linux": {},
+	"window.zoomLevel": -1
+}
