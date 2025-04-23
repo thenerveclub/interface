@@ -25,7 +25,6 @@ export default function IndexPage() {
 	const sort = useSelector((state: { sort: number }) => state.sort);
 	const filter = useSelector((state: { filter: number[] }) => state.filter);
 
-	// console.log('filter', selectedChains);
 	function getChainLogoComponent(chainId) {
 		if (!chainId) return null;
 
@@ -44,6 +43,8 @@ export default function IndexPage() {
 	// Global Stats
 	const { globalStats } = useGlobalStats();
 	const { allChains } = globalStats || {};
+
+	console.log('allChains', allChains);
 
 	// Toogle Button For Token Price
 	const handleToggle = (event, newCurrency) => {
@@ -93,53 +94,9 @@ export default function IndexPage() {
 		const sortedActiveTasks = sortTasks(combinedActiveTasks, sort);
 		const filteredActiveTasks = filterBySelectedChains(sortedActiveTasks, filter);
 
-		// console.log('trendingDareList', trendingDareList);
-
 		// Update the state with the filtered and sorted tasks
 		setFilteredActiveTasks(filteredActiveTasks);
 	}, [sort, trendingDareList, filter]); // Include 'selectedChains' in the dependencies array
-
-	// console.log('filteredActiveTasks', filteredActiveTasks);
-
-	// Function to send a notification
-	// const sendNotification = () => {
-	// 	// Check if the Notification API is supported
-	// 	if (!('Notification' in window)) {
-	// 		alert('This browser does not support desktop notification');
-	// 	} else if (Notification.permission === 'granted') {
-	// 		// If permission was already granted
-	// 		new Notification('Nerve Global Dapp Notification', {
-	// 			body: 'Check out the latest dares and players!',
-	// 			icon: 'https://canary.nerveglobal.com/favicon.ico',
-	// 		});
-	// 	} else if (Notification.permission !== 'denied') {
-	// 		// Request permission from the user
-	// 		Notification.requestPermission().then(function (permission) {
-	// 			if (permission === 'granted') {
-	// 				new Notification('Nerve Global Dapp Notification', {
-	// 					body: 'Check out the latest dares and players!',
-	// 					icon: 'https://dapp.nerveglobal.com/favicon.ico',
-	// 				});
-	// 			}
-	// 		});
-	// 	}
-	// };
-
-	// // Use useEffect to handle visibility change
-	// useEffect(() => {
-	// 	const handleVisibilityChange = () => {
-	// 		if (document.visibilityState === 'hidden') {
-	// 			sendNotification();
-	// 		}
-	// 	};
-
-	// 	document.addEventListener('visibilitychange', handleVisibilityChange);
-
-	// 	// Clean up the event listener when the component unmounts
-	// 	return () => {
-	// 		document.removeEventListener('visibilitychange', handleVisibilityChange);
-	// 	};
-	// }, []);
 
 	function formatCrypto(value) {
 		return (Number(value) / 1e18).toLocaleString('en-US', {
@@ -184,11 +141,21 @@ export default function IndexPage() {
 
 					{/* Landing Section */}
 					<div className="flex flex-col h-screen md:flex-row items-center justify-center text-center w-[90%] mx-auto -mt-10">
-						<div className="flex flex-col items-center md:items-start justify-center text-center w-[90%] mx-auto my-8">
-							<div className="text-center text-6xl 2xl:text-9xl font-bold text-black dark:text-white">DARE.</div>
-							<div className="text-center text-6xl 2xl:text-9xl font-bold text-black dark:text-white">PROVE.</div>
-							<div className="text-center text-6xl 2xl:text-9xl font-bold text-accent">GET PAID.</div>
-							<div className="flex flex-row justify-start w-full gap-32 mt-24">
+						<div className="relative flex flex-col items-center md:items-start justify-center text-center w-[90%] mx-auto my-8">
+							{/* Image behind text on mobile only */}
+							<div className="absolute inset-0 md:hidden opacity-25 z-0">
+								<img src="/logo.png" alt="The Nerve Club Logo" className="w-full h-full object-contain" />
+							</div>
+
+							{/* Foreground text */}
+							<div className="z-10">
+								<div className="text-center md:text-left text-6xl 2xl:text-9xl font-bold text-black dark:text-white">DARE.</div>
+								<div className="text-center md:text-left text-6xl 2xl:text-9xl font-bold text-black dark:text-white">PROVE.</div>
+								<div className="text-center md:text-left text-6xl 2xl:text-9xl font-bold text-accent">GET PAID.</div>
+							</div>
+
+							{/* Stats Section */}
+							<div className="flex flex-row justify-start w-full gap-32 mt-24 z-10">
 								<div className="flex flex-col items-start w-auto gap-2">
 									<h1 className="text-[2rem] font-thin">TOTAL USERS</h1>
 									<h1 className="text-[2rem] font-normal">{allChains?.users}</h1>
@@ -199,6 +166,7 @@ export default function IndexPage() {
 								</div>
 							</div>
 						</div>
+
 						<div className="hidden md:flex flex-col items-center md:items-end justify-center text-center w-[90%] mx-auto my-8">
 							<img src="/logo.png" alt="The Nerve Club Logo" className="w-full h-full" />
 						</div>
