@@ -7,7 +7,7 @@ let lastGlobalStatsFetchTime;
 
 const fetchCurrencyPrices = async () => {
 	try {
-		const response = await fetch('https://canary.nerveglobal.com/api/tokenPriceData');
+		const response = await fetch('https://app.nerve.club/api/tokenPriceData');
 		if (!response.ok) throw new Error('Failed to fetch currency prices');
 		return response.json();
 	} catch (error) {
