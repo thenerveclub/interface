@@ -188,22 +188,19 @@ export default function IndexPage() {
 							<div className="text-center text-6xl 2xl:text-9xl font-bold text-black dark:text-white">DARE.</div>
 							<div className="text-center text-6xl 2xl:text-9xl font-bold text-black dark:text-white">PROVE.</div>
 							<div className="text-center text-6xl 2xl:text-9xl font-bold text-accent">GET PAID.</div>
-						</div>
-						<div className="flex flex-col items-center md:items-end justify-center text-center w-[90%] mx-auto my-8">
-							<div className="flex flex-col lg:flex-row justify-evenly gap-8 mx-auto my-10 max-w-5xl">
-								<div className="flex flex-col items-center w-full text-xl">
-									<h1 className="text-[2rem]">${allChains?.earnings}</h1>
-									<h1 className="text-[2rem]">All Time Earnings</h1>
+							<div className="flex flex-row justify-start w-full gap-32 mt-24">
+								<div className="flex flex-col items-start w-auto gap-2">
+									<h1 className="text-[2rem] font-thin">TOTAL USERS</h1>
+									<h1 className="text-[2rem] font-normal">{allChains?.users}</h1>
 								</div>
-								{/* <div className="flex flex-col items-center w-full text-xl">
-									<h1 className="text-[2rem]">{allChains?.count}</h1>
-									<h1 className="text-[2rem]">Tasks</h1>
-								</div> */}
-								<div className="flex flex-col items-center w-full text-xl">
-									<h1 className="text-[2rem]">{allChains?.users}</h1>
-									<h1 className="text-[2rem]">All Time Users</h1>
+								<div className="flex flex-col items-start w-auto gap-0">
+									<h1 className="text-[2rem] font-thin">TOTAL EARNINGS</h1>
+									<h1 className="text-[2rem] font-normal">${allChains?.earnings}</h1>
 								</div>
 							</div>
+						</div>
+						<div className="hidden md:flex flex-col items-center md:items-end justify-center text-center w-[90%] mx-auto my-8">
+							<img src="/logo.png" alt="The Nerve Club Logo" className="w-full h-full" />
 						</div>
 					</div>
 
