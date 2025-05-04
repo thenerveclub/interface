@@ -26,9 +26,10 @@ export default function SelectFilter() {
 				className="flex justify-between items-center w-full px-5 py-3 bg-transparent text-black dark:text-white border rounded-lg shadow-lg transition-all focus:outline-none"
 			>
 				<div className="flex items-center text-sm font-medium">
-					<FilterAltIcon className="text-black dark:text-white mr-2" />
+					<FilterAltIcon fontSize="small" className="text-black dark:text-white mr-2" />
 					<span>Filter Chains</span>
 				</div>
+
 				<svg
 					className={`w-5 h-5 transform transition-transform ${menuOpen ? 'rotate-180' : 'rotate-0'}`}
 					xmlns="http://www.w3.org/2000/svg"
@@ -57,7 +58,7 @@ export default function SelectFilter() {
 								className="w-full flex items-center px-4 py-3 text-sm font-medium transition-all"
 							>
 								<input type="checkbox" checked={isSelected} readOnly className="mr-3" />
-								<img src={chainInfo.logo} alt={`${chainInfo.name} Logo`} className="w-5 h-5 mr-3" />
+								<img src={chainInfo.logo} alt={`${chainInfo.name} Logo`} className="w-5 h-5 mr-3 text-white dark:text-white fill-white" />
 								{chainInfo.name}
 							</button>
 						);
