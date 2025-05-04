@@ -42,14 +42,16 @@ export default function SelectSort() {
 	};
 
 	return (
-		<div className="relative inline-block w-[250px] h-[50px] max-w-sm z-20">
+		<div className="relative inline-block size-fit md:w-[250px] h-[50px] max-w-sm z-20">
 			{/* Select Button */}
 			<button
 				onClick={toggleMenu}
-				className="flex justify-between items-center w-full px-5 py-3 bg-transparent text-black dark:text-white border rounded-lg shadow-lg transition-all focus:outline-none"
+				className={`flex justify-between items-center w-full px-5 py-3 bg-transparent text-black dark:text-white border rounded-lg shadow-lg transition-all focus:outline-none hover:border-accent hover:text-accent dark:hover:border-accent dark:hover:text-accent ${
+					menuOpen ? 'border-accent text-accent dark:border-accent dark:text-accent' : ''
+				}`}
 			>
 				{/* Selected Option */}
-				<span className="text-sm font-medium text-black dark:text-white backdrop-blur-lg bg-black/50">{getSortLabel(sort)}</span>
+				<span className="text-sm font-medium">{getSortLabel(sort)}</span>
 				<svg
 					className={`w-5 h-5 transform transition-transform ${menuOpen ? 'rotate-180' : 'rotate-0'}`}
 					xmlns="http://www.w3.org/2000/svg"
@@ -75,7 +77,7 @@ export default function SelectSort() {
 							disabled={sort === 1}
 							className={`w-full flex justify-between mx-auto ${getOptionClasses(sort === 1)}`}
 						>
-							<span>Stake: Low to High</span>
+							<span>Low to High</span>
 							{sort === 1 && <span className="text-xs italic text-black dark:text-white mr-2">Selected</span>}
 						</button>
 						<button
@@ -83,7 +85,7 @@ export default function SelectSort() {
 							disabled={sort === 2}
 							className={`w-full flex justify-between mx-auto ${getOptionClasses(sort === 2)}`}
 						>
-							<span>Stake: High to Low</span>
+							<span>High to Low</span>
 							{sort === 2 && <span className="text-xs italic text-black dark:text-white mr-2">Selected</span>}
 						</button>
 					</div>
@@ -96,7 +98,7 @@ export default function SelectSort() {
 							disabled={sort === 3}
 							className={`w-full flex justify-between mx-auto ${getOptionClasses(sort === 3)}`}
 						>
-							<span>Participants: Low to High</span>
+							<span>Low to High</span>
 							{sort === 3 && <span className="text-xs italic text-black dark:text-white mr-2">Selected</span>}
 						</button>
 
@@ -105,7 +107,7 @@ export default function SelectSort() {
 							disabled={sort === 4}
 							className={`w-full flex justify-between mx-auto ${getOptionClasses(sort === 4)}`}
 						>
-							<span>Participants: High to Low</span>
+							<span>High to Low</span>
 							{sort === 4 && <span className="text-xs italic text-black dark:text-white mr-2">Selected</span>}
 						</button>
 					</div>
@@ -118,7 +120,7 @@ export default function SelectSort() {
 							disabled={sort === 5}
 							className={`w-full flex justify-between mx-auto ${getOptionClasses(sort === 5)}`}
 						>
-							<span>Entry Amount: Low to High</span>
+							<span>Low to High</span>
 							{sort === 5 && <span className="text-xs italic text-black dark:text-white mr-2">Selected</span>}
 						</button>
 						<button
@@ -126,7 +128,7 @@ export default function SelectSort() {
 							disabled={sort === 6}
 							className={`w-full flex justify-between mx-auto ${getOptionClasses(sort === 6)}`}
 						>
-							<span>Entry Amount: High to Low</span>
+							<span>High to Low</span>
 							{sort === 6 && <span className="text-xs italic text-black dark:text-white mr-2">Selected</span>}
 						</button>
 					</div>

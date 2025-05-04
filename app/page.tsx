@@ -177,7 +177,7 @@ export default function IndexPage() {
 						<hr className="w-full border-t border-secondary" />
 						<div className="flex flex-col lg:flex-row items-center justify-center w-full h-10 my-4 gap-4">
 							{/* <ActiveTabLeftSection></ActiveTabLeftSection> */}
-							<div className="flex flex-col lg:flex-row justify-end w-full gap-2">
+							<div className="flex flex-row justify-between md:justify-end w-full gap-2">
 								{/* // Filter StyledSection */}
 								<SelectFilter />
 								<SelectSort />

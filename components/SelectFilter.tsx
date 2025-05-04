@@ -19,15 +19,17 @@ export default function SelectFilter() {
 	};
 
 	return (
-		<div className="relative inline-block w-[250px] h-[50px] max-w-sm z-20">
+		<div className="relative inline-block size-fit md:w-[250px] h-[50px] max-w-sm z-20">
 			{/* Select Button */}
 			<button
 				onClick={toggleMenu}
-				className="flex justify-between items-center w-full px-5 py-3 bg-transparent text-black dark:text-white border rounded-lg shadow-lg transition-all focus:outline-none"
+				className={`flex justify-between items-center w-full px-5 py-3 bg-transparent text-black dark:text-white border rounded-lg shadow-lg transition-all focus:outline-none hover:border-accent hover:text-accent dark:hover:border-accent dark:hover:text-accent ${
+					menuOpen ? 'border-accent text-accent dark:border-accent dark:text-accent' : ''
+				}`}
 			>
 				<div className="flex items-center text-sm font-medium">
-					<FilterAltIcon fontSize="small" className="text-black dark:text-white mr-2" />
-					<span>Filter Chains</span>
+					<FilterAltIcon fontSize="small" className="mr-2 md:mr-0" />
+					<span className="hidden md:block">Filter Chains</span>
 				</div>
 
 				<svg
@@ -59,7 +61,7 @@ export default function SelectFilter() {
 							>
 								<input type="checkbox" checked={isSelected} readOnly className="mr-3" />
 								<img src={chainInfo.logo} alt={`${chainInfo.name} Logo`} className="w-5 h-5 mr-3 text-white dark:text-white fill-white" />
-								{chainInfo.name}
+								<span className="hidden md:block">{chainInfo.name}</span>
 							</button>
 						);
 					})}
