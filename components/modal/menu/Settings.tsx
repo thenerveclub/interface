@@ -80,21 +80,30 @@ export default function SettingsModal() {
 
 	// Modal visibility
 	const [open, setOpen] = useState(false);
-	const handleModalToggle = () => setOpen(!open);
+	const handleModalToggle = () => {
+		const newState = !open;
+		setOpen(newState);
+
+		if (newState) {
+			document.body.style.overflow = 'hidden';
+		} else {
+			document.body.style.overflow = '';
+		}
+	};
 
 	return (
 		<>
 			{/* Open Button */}
 			<button
 				onClick={handleModalToggle}
-				className="bg-transparent hover:text-secondary dark:bg-transparent dark:hover:text-secondary rounded-md transition"
+				className="py-1 bg-transparent text-[#999999] dark:text-[#999999] hover:text-accent dark:hover:text-accent transition text-sm 3xl:text-lg"
 			>
 				Settings
 			</button>
 
 			{/* Modal */}
 			{open && (
-				<div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50">
+				<div className="fixed inset-0 overflow-hidden backdrop-blur-lg bg-black/50 flex items-center justify-center z-50 max-h-screen">
 					<div className="bg-background rounded-lg shadow-lg p-6 w-96 border border-secondary">
 						<h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white text-center">Settings</h2>
 
@@ -189,7 +198,7 @@ export default function SettingsModal() {
 
 						{/* Close Button */}
 						<div className="text-center">
-							<button onClick={handleModalToggle} className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition">
+							<button onClick={handleModalToggle} className="px-4 py-2 bg-accent text-white rounded-md transition">
 								Close
 							</button>
 						</div>

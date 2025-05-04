@@ -24,7 +24,7 @@
 	--color-background: #f9fafb; /* Light Gray */
 	--color-backgroundReverse: #000000; /* Light Gray */
 	--color-text: #111827; /* Dark Gray */
-	--color-accent: #9333ea; /* Purple Accent */
+	--color-accent: #ff0000; /* Purple Accent */
 	--color-muted: #6b7280; /* Muted Text (Gray) */
 	--color-gradient-start: #2563eb; /* Gradient Start (Blue) */
 	--color-gradient-end: #9333ea; /* Gradient End (Purple) */
@@ -36,7 +36,7 @@
 	--color-background: #000000; /* Dark Navy Background */
 	--color-backgroundReverse: #ffffff;
 	--color-text: #e5e7eb; /* Light Gray Text */
-	--color-accent: #9333ea; /* Softer Purple */
+	--color-accent: #ff0000; /* Softer Purple */
 	--color-muted: #9ca3af; /* Muted Text (Gray) */
 	--color-gradient-start: #9333ea; /* Gradient Start (Purple) */
 	--color-gradient-end: #2563eb; /* Gradient End (Blue) */

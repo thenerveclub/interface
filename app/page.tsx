@@ -152,6 +152,7 @@ export default function IndexPage() {
 								<div className="text-center md:text-left text-6xl 2xl:text-9xl font-bold text-black dark:text-white">DARE.</div>
 								<div className="text-center md:text-left text-6xl 2xl:text-9xl font-bold text-black dark:text-white">PROVE.</div>
 								<div className="text-center md:text-left text-6xl 2xl:text-9xl font-bold text-accent">GET PAID.</div>
+								{/* <div className="text-center md:text-left text-6xl 2xl:text-9xl font-bold text-[#FF0033]">GET PAID.</div> */}
 							</div>
 
 							{/* Stats Section */}

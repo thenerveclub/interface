@@ -58,8 +58,10 @@ export default function Header() {
 			>
 				<div className="flex justify-between items-center w-[95%]">
 					<div className="flex items-center space-x-4">
-						<Link href="/" passHref>
-							<h1 className="font-normal text-2xl 3xl:text-4xl cursor-pointer text-black dark:text-white">THE NERVE CLUB</h1>
+						<Link className="cursor-pointer" href="/" passHref>
+							<h1 className="font-normal text-2xl 3xl:text-4xl cursor-pointer text-black dark:text-white hover:text-accent dark:hover:text-accent transition">
+								THE NERVE CLUB
+							</h1>
 						</Link>
 					</div>
 					{/* <div className="flex-grow flex justify-center">
@@ -68,10 +70,14 @@ export default function Header() {
 					<div className="flex items-center space-x-4">
 						{/* {account && <SelectChain />} */}
 						<Link href="/leaderboard" passHref>
-							<h3 className="text-lg 3xl:text-2xl text-black dark:text-white cursor-pointer">Leaderboard</h3>
+							<h3 className="py-1 bg-transparent text-[#999999] dark:text-[#999999] hover:text-accent dark:hover:text-accent transition text-sm 3xl:text-lg">
+								Leaderboard
+							</h3>
 						</Link>
 						<Link href="/map" passHref>
-							<h3 className="text-lg 3xl:text-2xl text-black dark:text-white cursor-pointer">Map</h3>
+							<h3 className="py-1 bg-transparent text-[#999999] dark:text-[#999999] hover:text-accent dark:hover:text-accent transition text-sm 3xl:text-lg">
+								Map
+							</h3>
 						</Link>
 						<Setting />
 						{account ? <AccountModal account={account} ens={ens} network={network} /> : <Connect />}

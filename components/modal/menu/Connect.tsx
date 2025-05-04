@@ -7,13 +7,26 @@ import { WalletConnect } from '../../connectorButtons/WalletConnect';
 const ConnectModal = () => {
 	const [open, setOpen] = useState(false);
 
-	const handleOpen = () => setOpen(true);
-	const handleClose = () => setOpen(false);
+	const handleOpen = () => {
+		const newState = !open;
+		setOpen(newState);
+
+		if (newState) {
+			document.body.style.overflow = 'hidden';
+		} else {
+			document.body.style.overflow = '';
+		}
+	};
+
+	const handleClose = () => {
+		setOpen(false);
+		document.body.style.overflow = '';
+	};
 
 	return (
 		<div className="flex justify-center items-center">
 			<button
-				className="px-6 py-2 border border-gray-500 text-white bg-transparent rounded-md transition duration-300 hover:border-yellow-500"
+				className="border border-gray-500 bg-transparent rounded-md transition duration-300 hover:border-accent px-4 py-2 bg-transparent text-[#999999] dark:text-[#999999] hover:text-accent dark:hover:text-accent transition text-sm 3xl:text-lg"
 				onClick={handleOpen}
 			>
 				Connect
@@ -21,7 +34,7 @@ const ConnectModal = () => {
 
 			<AnimatePresence>
 				{open && (
-					<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+					<div className="fixed inset-0 overflow-hidden backdrop-blur-lg bg-black/50 flex items-center justify-center z-50 max-h-screen">
 						<motion.div
 							initial={{ opacity: 0, y: 50 }}
 							animate={{ opacity: 1, y: 0 }}
