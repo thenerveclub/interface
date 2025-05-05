@@ -103,7 +103,7 @@ export default function Header() {
 					{!account && <Connect />}
 				</div> */}
 			</motion.div>
-			<motion.div className="flex md:hidden fixed bottom-0 left-0 right-0 justify-evenly bg-black py-2 z-50">
+			<motion.div className="flex md:hidden fixed bottom-0 left-0 right-0 justify-evenly bg-black py-4 z-50 border-t border-secondary">
 				<Link href="/" passHref>
 					<button className="text-white">
 						<HomeIcon />
