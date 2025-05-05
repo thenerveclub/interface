@@ -56,7 +56,7 @@ export default function Header() {
 					isScrolled ? 'backdrop-blur-lg bg-black/50' : 'bg-transparent'
 				}`}
 			>
-				<div className="flex justify-between items-center w-[95%]">
+				<div className="flex justify-center md:justify-between items-center w-[95%]">
 					<div className="flex items-center space-x-4">
 						<Link className="cursor-pointer" href="/" passHref>
 							<h1 className="font-normal text-2xl 3xl:text-4xl cursor-pointer text-black dark:text-white hover:text-accent dark:hover:text-accent transition">
@@ -67,7 +67,7 @@ export default function Header() {
 					{/* <div className="flex-grow flex justify-center">
 							<SearchBar network={network} />
 						</div> */}
-					<div className="flex items-center space-x-4">
+					<div className="hidden md:flex items-center space-x-4">
 						{/* {account && <SelectChain />} */}
 						<Link href="/leaderboard" passHref>
 							<h3 className="py-1 bg-transparent text-[#999999] dark:text-[#999999] hover:text-accent dark:hover:text-accent transition text-sm 3xl:text-lg">
@@ -87,24 +87,23 @@ export default function Header() {
 
 			<motion.div
 				ref={headerRef}
-				className={`flex md:hidden fixed top-0 left-0 right-0 h-16 bg-black z-50 items-center justify-between px-4 ${
+				className={`flex md:hidden fixed top-0 left-0 right-0 h-16 bg-black z-50 items-center justify-center m-0 p-0 ${
 					isScrolled ? 'backdrop-blur-lg bg-black/50' : 'bg-transparent'
 				}`}
 			>
 				<div className="flex items-center">
 					{!isMap && (
 						<Link href="/" passHref>
-							<h1 className="font-bold text-2xl text-black dark:text-white cursor-pointer">THE NERVE CLUB</h1>
+							<h1 className="font-bold text-2xl text-black dark:text-white cursor-pointer m-0 p-0">THE NERVE CLUB</h1>
 						</Link>
 					)}
 				</div>
-				<div className="flex items-center space-x-4">
-					{/* {account && <SelectChain />} */}
+				{/* <div className="flex items-center space-x-4">
 					<Setting />
 					{!account && <Connect />}
-				</div>
+				</div> */}
 			</motion.div>
-			<motion.div className="flex md:hidden fixed bottom-4 left-0 right-0 justify-evenly bg-black py-2 z-50">
+			<motion.div className="flex md:hidden fixed bottom-0 left-0 right-0 justify-evenly bg-black py-2 z-50">
 				<Link href="/" passHref>
 					<button className="text-white">
 						<HomeIcon />

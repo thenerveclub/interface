@@ -1,80 +1,33 @@
-import styled from '@emotion/styled';
-import { Button } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+'use client';
+
 import { useRouter } from 'next/navigation';
-import * as React from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
 import Identicon from '../../Identicon';
 
-const ConnectButton = styled(Button)<{ theme: any }>`
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	color: ${({ theme }) => theme.palette.text.primary};
-	font-size: 16px;
-	text-transform: none;
-	font-weight: 500;
-	min-height: 40px;
-	height: 40px;
-	// width: fit-content;
-	max-width: 300px;
-	background-color: transparent;
-	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
-	border-radius: ${({ theme }) => theme.shape.borderRadius};
-	cursor: pointer;
-
-	&:hover {
-		border: 1px solid ${({ theme }) => theme.palette.warning.main};
-	}
-
-	@media (max-width: 1024px) {
-		border: none;
-		width: object-fit;
-		margin: 0 auto 0 auto;
-		padding: 0;
-
-		&:hover {
-			border: none;
-		}
-	}
-`;
-
-const StyledDiv = styled.div`
-	display: flex;
-	width: fit-content;
-	height: 100vh;
-	max-width: 100%;
-	max-height: 100%;
-	border: none;
-	background-color: transparent;
-	margin-left: 0.5rem;
-
-	@media (max-width: 1024px) {
-		display: none;
-		visibility: hidden;
-	}
-`;
-
 interface AccountModalProps {
-	account: any;
-	ens: any;
+	account: string | null;
+	ens: string | null;
 	network: any;
 }
 
-const AccountModal: React.FC<AccountModalProps> = ({ account, ens, network }) => {
-	const theme = useTheme();
+const AccountModal: React.FC<AccountModalProps> = ({ account, ens }) => {
 	const router = useRouter();
 
+	console.log('ens', ens);
+	console.log('account', account);
+
+	const formattedAddress = account === null ? '-' : account ? `${account.substring(0, 6)}...${account.substring(account.length - 4)}` : '';
+
 	return (
-		<>
-			<ConnectButton theme={theme} onClick={() => router.push(`/player/${account}`)}>
-				<Identicon />
-				<StyledDiv>
-					{/* {account === null ? '-' : account ? `${account.substring(0, 6)}...${account.substring(account.length - 4)}` : ''} */}
-					{ens ? ens : account === null ? '-' : account ? `${account.substring(0, 6)}...${account.substring(account.length - 4)}` : ''}
-				</StyledDiv>
-			</ConnectButton>
-		</>
+		<button
+			onClick={() => router.push(`/player/${account}`)}
+			className="flex items-center justify-center gap-2 border border-secondary text-xs text-white dark:text-white px-4 py-2 rounded-md transition hover:border-accent hover:text-accent dark:hover:text-accent focus:outline-none"
+		>
+			<Identicon />
+
+			{/* ENS or short address shown only on large screens */}
+			<span className="hidden lg:flex">{formattedAddress}</span>
+		</button>
 	);
 };
 

@@ -157,11 +157,11 @@ export default function IndexPage() {
 
 							{/* Stats Section */}
 							<div className="flex flex-row justify-start w-full gap-32 mt-24 z-10">
-								<div className="flex flex-col items-start w-auto gap-2">
+								<div className="flex flex-col items-start text-start w-auto gap-0">
 									<h1 className="text-[2rem] font-thin">TOTAL USERS</h1>
 									<h1 className="text-[2rem] font-normal">{allChains?.users}</h1>
 								</div>
-								<div className="flex flex-col items-start w-auto gap-0">
+								<div className="flex flex-col items-start text-start w-auto gap-0">
 									<h1 className="text-[2rem] font-thin">TOTAL EARNINGS</h1>
 									<h1 className="text-[2rem] font-normal">${allChains?.earnings}</h1>
 								</div>
