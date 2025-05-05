@@ -21,7 +21,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ account, ens }) => {
 	return (
 		<button
 			onClick={() => router.push(`/player/${account}`)}
-			className="flex items-center justify-center gap-2 border border-secondary text-xs text-white dark:text-white px-4 py-2 rounded-md transition hover:border-accent hover:text-accent dark:hover:text-accent focus:outline-none"
+			className="flex items-center justify-center gap-2 border border-accent text-xs text-accent dark:text-accent px-4 py-2 rounded-md transition focus:outline-none"
 		>
 			<Identicon />
 

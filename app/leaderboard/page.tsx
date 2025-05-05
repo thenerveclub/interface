@@ -7,7 +7,7 @@ import useTopDares from '../../hooks/rankingData/useTopDares';
 import useTopEarners from '../../hooks/rankingData/useTopEarners';
 // import TopContributors from './boards/topContributors';
 // import TopDares from './boards/topDares';
-// import TopEarners from './boards/topEarners';
+import TopEarners from './boards/topEarners';
 
 export default function LeaderboardPage() {
 	// Hooks for data fetching
@@ -41,14 +41,20 @@ export default function LeaderboardPage() {
 				<meta name="twitter:description" content="Ranking | Nerve Global" />
 				<meta name="twitter:image" content="https://app.nerveglobal.com/favicon.ico" />
 			</Head>
-			<div className="flex flex-col items-center w-full px-4 mt-20">
-				<h1 className="text-5xl font-extrabold text-center mb-10 text-white">Leaderboard</h1>
-				<div className="flex justify-center items-center space-x-4 mb-10">
-					{/* Toggle Buttons */}
+			<div className="flex flex-col items-center w-full mt-32">
+				{/* Foreground text */}
+				<div className="z-10">
+					<div className="text-center text-4xl md:text-6xl 2xl:text-9xl font-bold text-black dark:text-white">LEADERBOARD</div>
+				</div>
+
+				{/* Leaderboard Buttons */}
+				<div className="flex justify-center items-center space-x-4 mt-10 mb-10">
 					<button
 						onClick={() => handleToggleChange('topEarners')}
 						className={`px-4 py-2 rounded-md text-sm font-medium border ${
-							leaderboardType === 'topEarners' ? 'bg-white text-black border-white' : 'bg-transparent text-white border-gray-400'
+							leaderboardType === 'topEarners'
+								? 'bg-accent text-white border-accent'
+								: 'bg-transparent text-gray-400 dark:text-gray-400 border-gray-400 hover:border-accent hover:text-accent dark:hover:text-accent'
 						}`}
 					>
 						Earnings
@@ -56,7 +62,9 @@ export default function LeaderboardPage() {
 					<button
 						onClick={() => handleToggleChange('topContributors')}
 						className={`px-4 py-2 rounded-md text-sm font-medium border ${
-							leaderboardType === 'topContributors' ? 'bg-white text-black border-white' : 'bg-transparent text-white border-gray-400'
+							leaderboardType === 'topContributors'
+								? 'bg-accent text-white border-accent'
+								: 'bg-transparent text-gray-400 dark:text-gray-400 border-gray-400 hover:border-accent hover:text-accent dark:hover:text-accent'
 						}`}
 					>
 						Contributions
@@ -64,18 +72,22 @@ export default function LeaderboardPage() {
 					<button
 						onClick={() => handleToggleChange('topDares')}
 						className={`px-4 py-2 rounded-md text-sm font-medium border ${
-							leaderboardType === 'topDares' ? 'bg-white text-black border-white' : 'bg-transparent text-white border-gray-400'
+							leaderboardType === 'topDares'
+								? 'bg-accent text-white border-accent'
+								: 'bg-transparent text-gray-400 dark:text-gray-400 border-gray-400 hover:border-accent hover:text-accent dark:hover:text-accent'
 						}`}
 					>
 						Dares
 					</button>
 				</div>
 				{/* Leaderboard Content */}
-				{/* {leaderboardType === 'topEarners' && <TopEarners topEarners={topEarners} loading={topEarnersLoading} error={topEarnersError} />}
-				{leaderboardType === 'topContributors' && (
+				<div className="w-full">
+					{leaderboardType === 'topEarners' && <TopEarners topEarners={topEarners} loading={topEarnersLoading} error={topEarnersError} />}
+					{/* {leaderboardType === 'topContributors' && (
 					<TopContributors topContributors={topContributors} loading={topContributorsLoading} error={topContributorsError} />
-				)}
-				{leaderboardType === 'topDares' && <TopDares topDares={topDares} loading={topDaresLoading} error={topDaresError} />} */}
+				)} */}
+					{/* {leaderboardType === 'topDares' && <TopDares topDares={topDares} loading={topDaresLoading} error={topDaresError} />} */}
+				</div>
 			</div>
 		</>
 	);

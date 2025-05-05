@@ -31,6 +31,16 @@ module.exports = {
 			fontFamily: {
 				trueLies: ['"True Lies"', 'sans-serif'],
 			},
+			animation: {
+				pulse: 'pulse 2s infinite',
+			},
+			keyframes: {
+				pulse: {
+					'0%': { transform: 'scale(1)', color: '#d97706' },
+					'50%': { transform: 'scale(1.1)', color: '#ffffff' },
+					'100%': { transform: 'scale(1)', color: '#d97706' },
+				},
+			},
 		},
 	},
 	plugins: [
