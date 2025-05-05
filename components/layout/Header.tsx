@@ -98,12 +98,12 @@ export default function Header() {
 						</Link>
 					)}
 				</div>
-				{/* <div className="flex items-center space-x-4">
+				<div className="flex items-center space-x-4">
 					<Setting />
 					{!account && <Connect />}
-				</div> */}
+				</div>
 			</motion.div>
-			<motion.div className="flex md:hidden fixed bottom-0 left-0 right-0 justify-evenly bg-black py-4 z-50 border-t border-secondary">
+			<motion.div className="flex md:hidden fixed bottom-0 left-0 right-0 justify-evenly bg-black py-4 z-50 border-t border-b border-secondary">
 				<Link href="/" passHref>
 					<button className="text-white">
 						<HomeIcon />

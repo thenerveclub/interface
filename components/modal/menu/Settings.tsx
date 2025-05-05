@@ -104,36 +104,42 @@ export default function SettingsModal() {
 
 			{/* Modal */}
 			<PortalModal isOpen={open}>
-				<div className="bg-background rounded-lg shadow-lg p-6 w-96 border border-secondary max-h-[90vh] overflow-y-auto">
+				<div className="bg-background rounded-lg shadow-lg p-6 w-full md:w-96 md:border md:border-secondary h-screen md:h-auto justify-center items-center m-auto md:max-h-[90vh] overflow-hidden md:overflow-y-auto flex flex-col">
 					<h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white text-center">Settings</h2>
 
 					{/* Divider */}
 					<hr className="w-full border-t border-secondary" />
 
 					{/* Theme Toggle Buttons */}
-					<div className="mb-6">
+					<div className="mt-6 mb-6 flex flex-col items-center justify-center">
 						<h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Theme</h3>
-						<div className="flex items-center justify-between">
+						<div className="flex items-center justify-between gap-2">
 							<button
 								onClick={handleUseSystemSetting}
-								className={`px-4 py-2 rounded-md ${
-									currentTheme === 'system' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white'
+								className={`px-4 py-2 rounded-md text-sm font-medium border ${
+									currentTheme === 'system'
+										? 'bg-accent text-white border-accent'
+										: 'bg-transparent text-gray-400 dark:text-gray-400 border-gray-400 hover:border-accent hover:text-accent dark:hover:text-accent'
 								} transition`}
 							>
 								System
 							</button>
 							<button
 								onClick={handleSetLightTheme}
-								className={`px-4 py-2 rounded-md ${
-									currentTheme === 'light' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white'
+								className={`px-4 py-2 rounded-md text-sm font-medium border ${
+									currentTheme === 'light'
+										? 'bg-accent text-white border-accent'
+										: 'bg-transparent text-gray-400 dark:text-gray-400 border-gray-400 hover:border-accent hover:text-accent dark:hover:text-accent'
 								} transition`}
 							>
 								Light
 							</button>
 							<button
 								onClick={handleSetDarkTheme}
-								className={`px-4 py-2 rounded-md ${
-									currentTheme === 'dark' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white'
+								className={`px-4 py-2 rounded-md text-sm font-medium border ${
+									currentTheme === 'dark'
+										? 'bg-accent text-white border-accent'
+										: 'bg-transparent text-gray-400 dark:text-gray-400 border-gray-400 hover:border-accent hover:text-accent dark:hover:text-accent'
 								} transition`}
 							>
 								Dark
@@ -145,7 +151,7 @@ export default function SettingsModal() {
 					<hr className="w-full border-t border-secondary" />
 
 					{/* Testnets Toggle */}
-					<div className="mb-6">
+					<div className="mt-6 mb-6 flex flex-col items-center justify-center">
 						<h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Show Testnets</h3>
 						<label className="flex items-center gap-2">
 							<input type="checkbox" checked={showTestnets} onChange={handleChangeTestnets} className="toggle-input" />
@@ -157,7 +163,7 @@ export default function SettingsModal() {
 					<hr className="w-full border-t border-secondary" />
 
 					{/* Currency Toggle */}
-					<div className="mb-6">
+					<div className="mt-6 mb-6 flex flex-col items-center justify-center">
 						<h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Show Currency</h3>
 						<label className="flex items-center gap-2">
 							<input type="checkbox" checked={showCurrency} onChange={handleChangeCurrency} className="toggle-input" />
@@ -169,12 +175,12 @@ export default function SettingsModal() {
 					<hr className="w-full border-t border-secondary" />
 
 					{/* RPC Selector */}
-					<div className="mb-6">
+					<div className="mt-6 mb-6 flex flex-col items-center justify-center">
 						<h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">RPC Endpoint</h3>
 						<select
 							value={rpcValue}
 							onChange={(e) => dispatch(rpcSlice.actions.updateRPC(e.target.value))}
-							className="bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white rounded-md px-3 py-2"
+							className="bg-transparent text-gray-400 dark:text-gray-400 border-gray-400 hover:border-accent hover:text-accent dark:hover:text-accent rounded-md px-3 py-2 focus:outline-none focus:ring-0 focus:border-accent"
 						>
 							<option value="infura">Infura</option>
 							<option value="alchemy">Alchemy</option>
@@ -186,10 +192,10 @@ export default function SettingsModal() {
 									type="text"
 									value={customRpcUrl}
 									onChange={handleCustomRpcChange}
-									className="w-full px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-md text-gray-900 dark:text-white"
+									className="w-full px-3 py-2 bg-transparent text-gray-400 dark:text-gray-400 border-gray-400 hover:border-accent hover:text-accent dark:hover:text-accent rounded-md focus:outline-none focus:ring-0 focus:border-accent"
 									placeholder="Enter custom RPC URL"
 								/>
-								<button onClick={handleApplyCustomRpc} className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">
+								<button onClick={handleApplyCustomRpc} className="mt-2 px-4 py-2 bg-accent text-white rounded-md hover:bg-accent/80 transition">
 									Apply
 								</button>
 							</div>
