@@ -3,13 +3,16 @@
 import HomeIcon from '@mui/icons-material/Home';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import PersonIcon from '@mui/icons-material/Person';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { IoIosContact } from 'react-icons/io';
 import { useSelector } from 'react-redux';
 // import SearchBar from '../SearchBar';
+import { IoIosCellular } from 'react-icons/io';
+import { IoSearch, IoSkullSharp, IoStatsChart, IoStatsChartSharp } from 'react-icons/io5';
+import { SiOsano } from 'react-icons/si';
 import SelectLeaderboard from '../SelectLeaderboard';
 import AccountModal from '../modal/menu/Account';
 import Connect from '../modal/menu/Connect';
@@ -98,39 +101,41 @@ export default function Header() {
 						</Link>
 					)}
 				</div>
-				<div className="flex items-center space-x-4">
+				{/* <div className="flex items-center space-x-4">
 					<Setting />
 					{!account && <Connect />}
-				</div>
+				</div> */}
 			</motion.div>
 			<motion.div className="flex md:hidden fixed bottom-0 left-0 right-0 justify-evenly bg-black py-4 z-50 border-t border-b border-secondary">
 				<Link href="/" passHref>
-					<button className="text-white">
-						<HomeIcon />
+					<button className="flex items-center justify-center text-white w-8 h-8">
+						<SiOsano size={20} />
 					</button>
 				</Link>
 				<Link href="/map" passHref>
-					<button className="text-white">
-						<LocationOnIcon />
+					<button className="flex items-center justify-center text-white w-8 h-8">
+						<IoIosCellular size={20} className="font-black" />
 					</button>
 				</Link>
+
 				{/* <SearchBar network={network} /> */}
 				<Link href="/leaderboard" passHref>
-					<button className="text-white">
-						<LeaderboardIcon />
+					<button className="flex items-center justify-center text-black dark:text-white w-8 h-8">
+						<IoStatsChartSharp size={20} />
 					</button>
 				</Link>
 				{account ? (
 					<Link href={`/player/${account}`} passHref>
-						<button className="text-white">
+						<button className="flex items-center justify-center text-white w-8 h-8">
 							<AccountModal account={account} ens={ens} network={network} />
 						</button>
 					</Link>
 				) : (
-					<button className="text-white">
-						<PersonIcon />
+					<button className="flex items-center justify-center text-white w-8 h-8">
+						<IoIosContact size={20} />
 					</button>
 				)}
+				<Setting />
 			</motion.div>
 		</>
 	);

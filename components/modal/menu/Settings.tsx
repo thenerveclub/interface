@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { IoIosMenu } from 'react-icons/io';
 import { useDispatch, useSelector } from 'react-redux';
 import { currencySlice } from '../../../state/currency/currencySlice';
 import { customRPCSlice } from '../../../state/customRPC/customRPCSlice';
@@ -99,7 +100,10 @@ export default function SettingsModal() {
 				onClick={handleModalToggle}
 				className="py-1 bg-transparent text-[#999999] dark:text-[#999999] hover:text-accent dark:hover:text-accent transition text-sm 3xl:text-lg"
 			>
-				Settings
+				<span className="hidden md:flex">Settings</span>
+				<div className="flex md:hidden items-center justify-center">
+					<IoIosMenu size={20} className="text-black dark:text-white" />
+				</div>
 			</button>
 
 			{/* Modal */}
