@@ -10,6 +10,8 @@ import { useEffect, useRef, useState } from 'react';
 import { IoIosContact } from 'react-icons/io';
 import { useSelector } from 'react-redux';
 // import SearchBar from '../SearchBar';
+import { BiMapPin, BiSolidMapPin } from 'react-icons/bi';
+import { BsLightningCharge, BsLightningChargeFill } from 'react-icons/bs';
 import { IoIosCellular } from 'react-icons/io';
 import { IoSearch, IoSkullSharp, IoStatsChart, IoStatsChartSharp } from 'react-icons/io5';
 import { SiOsano } from 'react-icons/si';
@@ -108,30 +110,37 @@ export default function Header() {
 			</motion.div>
 			<motion.div className="flex md:hidden fixed bottom-0 left-0 right-0 justify-evenly bg-black py-4 z-50 border-t border-b border-secondary">
 				<Link href="/" passHref>
-					<button className="flex items-center justify-center text-white w-8 h-8">
-						<SiOsano size={20} />
+					<button className={`flex items-center justify-center ${pathname === '/' ? 'text-accent' : 'text-black dark:text-white'} w-8 h-8`}>
+						<BsLightningCharge size={20} />
+						<BsLightningChargeFill size={20} />
 					</button>
 				</Link>
 				<Link href="/map" passHref>
-					<button className="flex items-center justify-center text-white w-8 h-8">
-						<IoIosCellular size={20} className="font-black" />
+					<button className={`flex items-center justify-center ${pathname === '/map' ? 'text-accent' : 'text-black dark:text-white'} w-8 h-8`}>
+						<BiSolidMapPin size={22} />
 					</button>
 				</Link>
 
 				{/* <SearchBar network={network} /> */}
 				<Link href="/leaderboard" passHref>
-					<button className="flex items-center justify-center text-black dark:text-white w-8 h-8">
+					<button
+						className={`flex items-center justify-center ${pathname === '/leaderboard' ? 'text-accent' : 'text-black dark:text-white'} w-8 h-8`}
+					>
 						<IoStatsChartSharp size={20} />
 					</button>
 				</Link>
 				{account ? (
 					<Link href={`/player/${account}`} passHref>
-						<button className="flex items-center justify-center text-white w-8 h-8">
+						<button
+							className={`flex items-center justify-center ${
+								pathname === `/player/${account}` ? 'text-accent' : 'text-black dark:text-white'
+							} w-8 h-8`}
+						>
 							<AccountModal account={account} ens={ens} network={network} />
 						</button>
 					</Link>
 				) : (
-					<button className="flex items-center justify-center text-white w-8 h-8">
+					<button className={`flex items-center justify-center ${pathname === '/connect' ? 'text-accent' : 'text-black dark:text-white'} w-8 h-8`}>
 						<IoIosContact size={20} />
 					</button>
 				)}
