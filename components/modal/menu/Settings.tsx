@@ -109,10 +109,7 @@ export default function SettingsModal() {
 			{/* Modal */}
 			<PortalModal isOpen={open}>
 				<div className="bg-background rounded-lg shadow-lg p-6 w-full md:w-96 md:border md:border-secondary h-screen md:h-auto justify-center items-center m-auto md:max-h-[90vh] overflow-hidden md:overflow-y-auto flex flex-col">
-					<h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white text-center">Settings</h2>
-
-					{/* Divider */}
-					<hr className="w-full border-t border-secondary" />
+					<h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white text-center">Settings</h2>
 
 					{/* Theme Toggle Buttons */}
 					<div className="mt-6 mb-6 flex flex-col items-center justify-center">
@@ -152,7 +149,7 @@ export default function SettingsModal() {
 					</div>
 
 					{/* Divider */}
-					<hr className="w-full border-t border-secondary" />
+					{/* <hr className="w-full border-t border-secondary" /> */}
 
 					{/* Testnets Toggle */}
 					<div className="mt-6 mb-6 flex flex-col items-center justify-center">
@@ -164,7 +161,7 @@ export default function SettingsModal() {
 					</div>
 
 					{/* Divider */}
-					<hr className="w-full border-t border-secondary" />
+					{/* <hr className="w-full border-t border-secondary" /> */}
 
 					{/* Currency Toggle */}
 					<div className="mt-6 mb-6 flex flex-col items-center justify-center">
@@ -176,7 +173,7 @@ export default function SettingsModal() {
 					</div>
 
 					{/* Divider */}
-					<hr className="w-full border-t border-secondary" />
+					{/* <hr className="w-full border-t border-secondary" /> */}
 
 					{/* RPC Selector */}
 					<div className="mt-6 mb-6 flex flex-col items-center justify-center">

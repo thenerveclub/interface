@@ -1,24 +1,18 @@
 'use client';
 
-import HomeIcon from '@mui/icons-material/Home';
-import LeaderboardIcon from '@mui/icons-material/Leaderboard';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { BiSolidMapPin } from 'react-icons/bi';
+import { BsLightningChargeFill } from 'react-icons/bs';
 import { IoIosContact } from 'react-icons/io';
+import { IoStatsChartSharp } from 'react-icons/io5';
 import { useSelector } from 'react-redux';
-// import SearchBar from '../SearchBar';
-import { BiMapPin, BiSolidMapPin } from 'react-icons/bi';
-import { BsLightningCharge, BsLightningChargeFill } from 'react-icons/bs';
-import { IoIosCellular } from 'react-icons/io';
-import { IoSearch, IoSkullSharp, IoStatsChart, IoStatsChartSharp } from 'react-icons/io5';
-import { SiOsano } from 'react-icons/si';
-import SelectLeaderboard from '../SelectLeaderboard';
 import AccountModal from '../modal/menu/Account';
 import Connect from '../modal/menu/Connect';
 import Setting from '../modal/menu/Settings';
+import SearchBar from '../SearchBar';
 
 export default function Header() {
 	const pathname = usePathname();
@@ -69,10 +63,11 @@ export default function Header() {
 							</h1>
 						</Link>
 					</div>
-					{/* <div className="flex-grow flex justify-center">
-							<SearchBar network={network} />
-						</div> */}
+
 					<div className="hidden md:flex items-center space-x-4">
+						<div className="flex-grow flex justify-center">
+							<SearchBar network={network} />
+						</div>
 						{/* {account && <SelectChain />} */}
 						<Link href="/leaderboard" passHref>
 							<h3 className="py-1 bg-transparent text-[#999999] dark:text-[#999999] hover:text-accent dark:hover:text-accent transition text-sm 3xl:text-lg">
@@ -108,10 +103,9 @@ export default function Header() {
 					{!account && <Connect />}
 				</div> */}
 			</motion.div>
-			<motion.div className="flex md:hidden fixed bottom-0 left-0 right-0 justify-evenly bg-black py-4 z-50 border-t border-b border-secondary">
+			<motion.div className="flex md:hidden fixed bottom-0 left-0 right-0 justify-evenly bg-black py-4 z-50 border-t border-b border-secondary items-center">
 				<Link href="/" passHref>
 					<button className={`flex items-center justify-center ${pathname === '/' ? 'text-accent' : 'text-black dark:text-white'} w-8 h-8`}>
-						<BsLightningCharge size={20} />
 						<BsLightningChargeFill size={20} />
 					</button>
 				</Link>
@@ -120,8 +114,7 @@ export default function Header() {
 						<BiSolidMapPin size={22} />
 					</button>
 				</Link>
-
-				{/* <SearchBar network={network} /> */}
+				<SearchBar network={network} />
 				<Link href="/leaderboard" passHref>
 					<button
 						className={`flex items-center justify-center ${pathname === '/leaderboard' ? 'text-accent' : 'text-black dark:text-white'} w-8 h-8`}
@@ -144,7 +137,7 @@ export default function Header() {
 						<IoIosContact size={20} />
 					</button>
 				)}
-				<Setting />
+				{/* <Setting /> */}
 			</motion.div>
 		</>
 	);

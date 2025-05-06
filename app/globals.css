@@ -20,7 +20,7 @@
 /* Default Theme Variables */
 :root {
 	--color-primary: #0f172a; /* Dark Navy (Primary in light mode) */
-	--color-secondary: #2563eb; /* Bright Blue */
+	--color-secondary: #4b4b4b; /* Bright Blue */
 	--color-background: #f9fafb; /* Light Gray */
 	--color-backgroundReverse: #000000; /* Light Gray */
 	--color-text: #111827; /* Dark Gray */
