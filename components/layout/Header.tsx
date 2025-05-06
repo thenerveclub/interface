@@ -103,7 +103,7 @@ export default function Header() {
 					{!account && <Connect />}
 				</div> */}
 			</motion.div>
-			<motion.div className="flex md:hidden fixed bottom-0 left-0 right-0 justify-evenly bg-black py-4 z-50 border-t border-b border-secondary items-center">
+			<motion.div className="flex md:hidden fixed bottom-0 left-0 right-0 justify-evenly dark:bg-black bg-white py-4 z-50 border-t border-b border-secondary items-center">
 				<Link href="/" passHref>
 					<button className={`flex items-center justify-center ${pathname === '/' ? 'text-accent' : 'text-black dark:text-white'} w-8 h-8`}>
 						<BsLightningChargeFill size={20} />
@@ -137,7 +137,7 @@ export default function Header() {
 						<IoIosContact size={20} />
 					</button>
 				)}
-				{/* <Setting /> */}
+				<Setting />
 			</motion.div>
 		</>
 	);
