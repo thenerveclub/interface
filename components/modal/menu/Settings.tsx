@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { IoIosMenu } from 'react-icons/io';
+import { IoSettingsSharp } from 'react-icons/io5';
 import { useDispatch, useSelector } from 'react-redux';
 import { currencySlice } from '../../../state/currency/currencySlice';
 import { customRPCSlice } from '../../../state/customRPC/customRPCSlice';
@@ -102,7 +102,7 @@ export default function SettingsModal() {
 			>
 				<span className="hidden md:flex">Settings</span>
 				<div className="flex md:hidden items-center justify-center">
-					<IoIosMenu size={20} className="text-black dark:text-white" />
+					<IoSettingsSharp size={24} className="text-black dark:text-white" />
 				</div>
 			</button>
 
@@ -148,36 +148,35 @@ export default function SettingsModal() {
 						</div>
 					</div>
 
-					{/* Divider */}
-					{/* <hr className="w-full border-t border-secondary" /> */}
-
 					{/* Testnets Toggle */}
 					<div className="mt-6 mb-6 flex flex-col items-center justify-center">
-						<h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Show Testnets</h3>
+						<h3 className="text-lg font-semibold mb-2 text-black dark:text-white">Show Testnets</h3>
 						<label className="flex items-center gap-2">
-							<input type="checkbox" checked={showTestnets} onChange={handleChangeTestnets} className="toggle-input" />
-							<span className="text-gray-800 dark:text-gray-200">Enable Testnets</span>
+							<input type="checkbox" checked={showTestnets} onChange={handleChangeTestnets} className="sr-only peer" />
+							<div className="relative w-11 h-6 bg-gray-400 rounded-full peer-checked:bg-accent">
+								<span
+									className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white transition-all ${showTestnets ? 'translate-x-[20px]' : ''}`}
+								/>
+							</div>
 						</label>
 					</div>
-
-					{/* Divider */}
-					{/* <hr className="w-full border-t border-secondary" /> */}
 
 					{/* Currency Toggle */}
 					<div className="mt-6 mb-6 flex flex-col items-center justify-center">
-						<h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Show Currency</h3>
+						<h3 className="text-lg font-semibold mb-2 text-black dark:text-white">Show Currency</h3>
 						<label className="flex items-center gap-2">
-							<input type="checkbox" checked={showCurrency} onChange={handleChangeCurrency} className="toggle-input" />
-							<span className="text-gray-800 dark:text-gray-200">Enable Currency</span>
+							<input type="checkbox" checked={showCurrency} onChange={handleChangeCurrency} className="sr-only peer" />
+							<div className="relative w-11 h-6 bg-gray-400 rounded-full peer-checked:bg-accent">
+								<span
+									className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white transition-all ${showCurrency ? 'translate-x-[20px]' : ''}`}
+								/>
+							</div>
 						</label>
 					</div>
 
-					{/* Divider */}
-					{/* <hr className="w-full border-t border-secondary" /> */}
-
 					{/* RPC Selector */}
 					<div className="mt-6 mb-6 flex flex-col items-center justify-center">
-						<h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">RPC Endpoint</h3>
+						<h3 className="text-lg font-semibold mb-2 text-black dark:text-white">RPC Endpoint</h3>
 						<select
 							value={rpcValue}
 							onChange={(e) => dispatch(rpcSlice.actions.updateRPC(e.target.value))}
@@ -204,7 +203,7 @@ export default function SettingsModal() {
 					</div>
 
 					{/* Close Button */}
-					<div className="text-center">
+					<div className="absolute bottom-5 mb-10 left-0 right-0 flex justify-center">
 						<button onClick={handleModalToggle} className="px-4 py-2 bg-accent text-white rounded-md transition">
 							Close
 						</button>

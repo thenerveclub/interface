@@ -1,9 +1,8 @@
 'use client';
 
-import { CloseOutlined } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { IoSearch } from 'react-icons/io5';
+import { IoSearchSharp } from 'react-icons/io5';
 import { SiEthereum, SiPolygon } from 'react-icons/si';
 import useTrendingDareList from '../hooks/searchData/trending/useTrendingDareList';
 import useTrendingPlayerList from '../hooks/searchData/trending/useTrendingPlayerList';
@@ -74,7 +73,7 @@ const SearchBarMobile: React.FC<SearchBarMobileProps> = ({ network }) => {
 	return (
 		<div className="flex lg:hidden">
 			<button onClick={() => setIsOpen(true)} className="p-2 text-white">
-				<IoSearch size={24} />
+				<IoSearchSharp size={24} />
 			</button>
 
 			{isOpen && (
@@ -87,9 +86,9 @@ const SearchBarMobile: React.FC<SearchBarMobileProps> = ({ network }) => {
 							placeholder="Search players and dares..."
 							className="w-full p-2 rounded border border-secondary text-black"
 						/>
-						<button onClick={() => setIsOpen(false)} className="ml-2 text-white">
+						{/* <button onClick={() => setIsOpen(false)} className="ml-2 text-white">
 							<CloseOutlined />
-						</button>
+						</button> */}
 					</div>
 
 					{searchValue.trim() === '' && searchHistory.length > 0 && (
@@ -115,7 +114,7 @@ const SearchBarMobile: React.FC<SearchBarMobileProps> = ({ network }) => {
 						</div>
 					)}
 
-					<div className="space-y-4">
+					<div className="space-y-4 flex-grow">
 						{playerSearchList.length > 0 && (
 							<div>
 								<div className="text-sm font-semibold text-secondary mb-2">Players</div>
@@ -193,6 +192,12 @@ const SearchBarMobile: React.FC<SearchBarMobileProps> = ({ network }) => {
 								)}
 							</>
 						)}
+					</div>
+					{/* Close Button */}
+					<div className="text-center mb-10">
+						<button onClick={() => setIsOpen(false)} className="px-4 py-2 bg-accent text-white rounded-md transition">
+							Close
+						</button>
 					</div>
 				</div>
 			)}

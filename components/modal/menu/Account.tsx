@@ -12,10 +12,6 @@ interface AccountModalProps {
 
 const AccountModal: React.FC<AccountModalProps> = ({ account, ens }) => {
 	const router = useRouter();
-
-	console.log('ens', ens);
-	console.log('account', account);
-
 	const formattedAddress = account === null ? '-' : account ? `${account.substring(0, 6)}...${account.substring(account.length - 4)}` : '';
 
 	return (

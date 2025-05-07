@@ -91,17 +91,16 @@ export default function Header() {
 					isScrolled ? 'backdrop-blur-lg bg-black/50' : 'bg-transparent'
 				}`}
 			>
-				<div className="flex items-center">
+				<div className="flex items-center justify-between w-full">
 					{!isMap && (
 						<Link href="/" passHref>
-							<h1 className="font-bold text-2xl text-black dark:text-white cursor-pointer m-0 p-0">THE NERVE CLUB</h1>
+							<h1 className="font-bold text-2xl text-black dark:text-white ml-4">THE NERVE CLUB</h1>
 						</Link>
 					)}
 				</div>
-				{/* <div className="flex items-center space-x-4">
+				<div className="flex items-center mr-4">
 					<Setting />
-					{!account && <Connect />}
-				</div> */}
+				</div>
 			</motion.div>
 			<motion.div className="flex md:hidden fixed bottom-0 left-0 right-0 justify-evenly dark:bg-black bg-white py-4 z-50 border-t border-b border-secondary items-center">
 				<Link href="/" passHref>
@@ -111,7 +110,7 @@ export default function Header() {
 				</Link>
 				<Link href="/map" passHref>
 					<button className={`flex items-center justify-center ${pathname === '/map' ? 'text-accent' : 'text-black dark:text-white'} w-8 h-8`}>
-						<BiSolidMapPin size={22} />
+						<BiSolidMapPin size={24} />
 					</button>
 				</Link>
 				<SearchBar network={network} />
@@ -134,10 +133,9 @@ export default function Header() {
 					</Link>
 				) : (
 					<button className={`flex items-center justify-center ${pathname === '/connect' ? 'text-accent' : 'text-black dark:text-white'} w-8 h-8`}>
-						<IoIosContact size={20} />
+						<Connect />
 					</button>
 				)}
-				<Setting />
 			</motion.div>
 		</>
 	);

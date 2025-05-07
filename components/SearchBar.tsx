@@ -3,7 +3,6 @@
 import { ClickAwayListener } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { IoSearch } from 'react-icons/io5';
 import { SiEthereum, SiPolygon } from 'react-icons/si';
 import useTrendingDareList from '../hooks/searchData/trending/useTrendingDareList';
 import useTrendingPlayerList from '../hooks/searchData/trending/useTrendingPlayerList';
@@ -11,6 +10,7 @@ import useDareDataSearchList from '../hooks/searchData/useDareDataSearchList';
 import usePlayerDataSearchList from '../hooks/searchData/usePlayerDataSearchList';
 import { nameToChainId } from '../utils/chains';
 import SearchBarMobile from './SearchBarMobile';
+
 
 interface SearchBarProps {
 	network: string;
@@ -82,7 +82,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 					onSubmit={(e) => e.preventDefault()}
 					className="hidden lg:flex relative w-full max-w-lg items-center border border-secondary rounded-md px-3 py-2 text-sm focus-within:border-accent transition-all bg-transparent"
 				>
-					{/* <IoSearch className="text-white mr-2" size={20} /> */}
 					<span>Search</span>
 					<input
 						type="text"
