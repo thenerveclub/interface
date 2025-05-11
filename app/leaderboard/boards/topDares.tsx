@@ -15,7 +15,7 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 	const currencyValue = useSelector((state: any) => state.currency);
 	const currencyPrice = useSelector((state: any) => state.currencyPrice);
 
-	const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+	const [order, setOrder] = useState<'asc' | 'desc'>('desc');
 	const [orderBy, setOrderBy] = useState<string>('amount');
 
 	const createSortHandler = (property: string) => () => {
@@ -42,32 +42,46 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 	};
 
 	// Sort data based on selected property
+	const getValue = (row: any) => {
+		if (orderBy === 'voters') {
+			return Number(row.positiveVotes) + Number(row.negativeVotes);
+		}
+
+		if (orderBy === 'voting') {
+			const pos = Number(row.positiveVotes);
+			const neg = Number(row.negativeVotes);
+			const total = pos + neg;
+
+			// Case 1: No votes at all – neutral
+			if (total === 0) return 1000;
+
+			// Case 2: Only negative votes – lowest
+			if (pos === 0 && neg > 0) return -1;
+
+			// Case 3: Calculate actual positive percentage
+			return (pos / total) * 100;
+		}
+
+		let base = Number(row[orderBy] || 0);
+		if (currencyValue === true && (orderBy === 'amount' || orderBy === 'entranceAmount')) {
+			const token = CHAINS[row.chainId]?.nameToken?.toLowerCase();
+			const price = currencyPrice[token] || 0;
+			base *= price;
+		}
+		return base;
+	};
+
 	const sortedData = [...topDares].sort((a, b) => {
-		const getValue = (row: any) => {
-			if (orderBy === 'voters') {
-				return Number(row.positiveVotes) + Number(row.negativeVotes);
-			}
-
-			let base = Number(row[orderBy] || 0);
-			if (currencyValue === true && (orderBy === 'amount' || orderBy === 'entranceAmount')) {
-				const token = CHAINS[row.chainId]?.nameToken?.toLowerCase();
-				const price = currencyPrice[token] || 0;
-				base *= price;
-			}
-			return base;
-		};
-
 		const aVal = getValue(a);
 		const bVal = getValue(b);
-
 		return order === 'asc' ? aVal - bVal : bVal - aVal;
 	});
 
 	return (
 		<div className="w-full">
-			<div className="w-full max-w-[1400px] mx-auto">
+			<div className="w-full max-w-[1400px] mb-32 mx-auto">
 				<table className="w-full table-auto border-collapse">
-					<thead className="bg-zinc-900 border-b border-secondary text-left text-sm font-semibold text-white sticky top-0 z-10">
+					<thead className="bg-zinc-200 dark:bg-zinc-900 border-b border-accent text-left text-sm 3xl:text-xl font-semibold text-black dark:text-white sticky top-0 z-10">
 						<tr>
 							<th className="px-4 py-3 w-[2.5%]">#</th>
 							<th className="px-4 py-3 w-[47.5%]">Description</th>
@@ -78,7 +92,8 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 								Entry Amount
 							</th>
 							<th onClick={createSortHandler('amount')} className="px-4 py-3 text-right cursor-pointer hover:text-accent transition">
-								Total Amount
+								<span className="block sm:hidden">Total</span>
+								<span className="hidden sm:block">Total Amount</span>
 							</th>
 							<th
 								onClick={createSortHandler('participants')}
@@ -100,16 +115,17 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 							</th>
 						</tr>
 					</thead>
-					<tbody className="text-sm text-black dark:text-white">
+					<tbody className="group text-sm 3xl:text-xl text-black dark:text-white">
 						{sortedData.length > 0 ? (
 							sortedData.map((row: any, index: number) => (
-								<tr key={index} className="even:bg-zinc-900 hover:text-accent transition-all">
+								<tr key={index} className="even:bg-zinc-200 dark:even:bg-zinc-900 hover:text-accent transition-all">
 									<td className="px-4 py-3">{index + 1}</td>
-									<td className="px-4 py-3">
+									<td className="px-4 py-3 max-w-[250px] sm:max-w-[600px] md:max-w-[750px] truncate">
 										<Link href={`/dare/${row.chainId}-${row.id}`} className="truncate hover:underline cursor-pointer">
 											{row.description.length > 75 ? row.description.slice(0, 75) + '...' : row.description}
 										</Link>
 									</td>
+
 									<td className="px-4 py-3 text-right hidden sm:table-cell">
 										{currencyValue === false ? (
 											<>

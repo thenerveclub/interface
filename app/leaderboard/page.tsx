@@ -27,14 +27,14 @@ export default function LeaderboardPage() {
 			<div className="flex flex-col items-center w-full mt-32">
 				{/* Foreground text */}
 				<div className="z-10">
-					<div className="text-center text-4xl md:text-6xl 2xl:text-9xl font-bold text-black dark:text-white">LEADERBOARD</div>
+					<div className="text-center text-4xl md:text-6xl 3xl:text-9xl font-bold text-black dark:text-white">LEADERBOARD</div>
 				</div>
 
 				{/* Leaderboard Buttons */}
 				<div className="flex justify-center items-center space-x-4 mt-10 mb-10">
 					<button
 						onClick={() => handleToggleChange('topEarners')}
-						className={`px-4 py-2 rounded-md text-sm font-medium border ${
+						className={`px-4 py-2 rounded-md text-sm 3xl:text-2xl font-medium border ${
 							leaderboardType === 'topEarners'
 								? 'bg-accent text-white border-accent'
 								: 'bg-transparent text-gray-400 dark:text-gray-400 border-gray-400 hover:border-accent hover:text-accent dark:hover:text-accent'
@@ -44,7 +44,7 @@ export default function LeaderboardPage() {
 					</button>
 					<button
 						onClick={() => handleToggleChange('topContributors')}
-						className={`px-4 py-2 rounded-md text-sm font-medium border ${
+						className={`px-4 py-2 rounded-md text-sm 3xl:text-2xl font-medium border ${
 							leaderboardType === 'topContributors'
 								? 'bg-accent text-white border-accent'
 								: 'bg-transparent text-gray-400 dark:text-gray-400 border-gray-400 hover:border-accent hover:text-accent dark:hover:text-accent'
@@ -54,7 +54,7 @@ export default function LeaderboardPage() {
 					</button>
 					<button
 						onClick={() => handleToggleChange('topDares')}
-						className={`px-4 py-2 rounded-md text-sm font-medium border ${
+						className={`px-4 py-2 rounded-md text-sm 3xl:text-2xl font-medium border ${
 							leaderboardType === 'topDares'
 								? 'bg-accent text-white border-accent'
 								: 'bg-transparent text-gray-400 dark:text-gray-400 border-gray-400 hover:border-accent hover:text-accent dark:hover:text-accent'
