@@ -5,8 +5,8 @@ import { useState } from 'react';
 import useTopContributors from '../../hooks/rankingData/useTopContributors';
 import useTopDares from '../../hooks/rankingData/useTopDares';
 import useTopEarners from '../../hooks/rankingData/useTopEarners';
-// import TopContributors from './boards/topContributors';
-// import TopDares from './boards/topDares';
+import TopContributors from './boards/topContributors';
+import TopDares from './boards/topDares';
 import TopEarners from './boards/topEarners';
 
 export default function LeaderboardPage() {
@@ -83,10 +83,10 @@ export default function LeaderboardPage() {
 				{/* Leaderboard Content */}
 				<div className="w-full">
 					{leaderboardType === 'topEarners' && <TopEarners topEarners={topEarners} loading={topEarnersLoading} error={topEarnersError} />}
-					{/* {leaderboardType === 'topContributors' && (
-					<TopContributors topContributors={topContributors} loading={topContributorsLoading} error={topContributorsError} />
-				)} */}
-					{/* {leaderboardType === 'topDares' && <TopDares topDares={topDares} loading={topDaresLoading} error={topDaresError} />} */}
+					{leaderboardType === 'topContributors' && (
+						<TopContributors topContributors={topContributors} loading={topContributorsLoading} error={topContributorsError} />
+					)}
+					{leaderboardType === 'topDares' && <TopDares topDares={topDares} loading={topDaresLoading} error={topDaresError} />}
 				</div>
 			</div>
 		</>

@@ -1,119 +1,10 @@
-import styled from '@emotion/styled';
-import { OpenInNew } from '@mui/icons-material';
-import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+'use client';
+
 import Head from 'next/head';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import LoadingScreen from '../../../components/LoadingScreen';
-import usePlayerRankingData from '../../../hooks/rankingData/useTopEarners';
 import { CHAINS } from '../../../utils/chains';
-
-const StyledBox = styled(Box)`
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	text-align: center;
-	width: 100%;
-	min-width: 1400px;
-	max-width: 1400px;
-	// height: 85vh;
-	margin: 0 auto 5rem auto;
-	background-color: transparent;
-
-	@media (max-width: 1025px) {
-		width: 95%;
-		min-width: 100vw;
-		max-width: 100vw;
-	}
-
-	@media (max-width: 680px) {
-		width: 95%;
-		min-width: 100vw;
-		max-width: 100vw;
-	}
-`;
-
-const StyledTable = styled(Table)<{ theme: any }>`
-	width: 100%;
-	min-width: 750px;
-	max-width: 1400px;
-	height: 100%;
-
-	@media (max-width: 680px) {
-		width: 100%;
-		min-width: 0;
-		max-width: 100%;
-	}
-`;
-
-const StyledButton = styled(Button)<{ theme: any }>`
-	display: flex-end;
-	flex-direction: row;
-	justify-content: right;
-	align-items: right;
-	color: ${({ theme }) => theme.palette.text.primary};
-	background-color: transparent;
-	text-transform: none;
-	width: 100%;
-	cursor: default;
-
-	@media (max-width: 680px) {
-		font-size: 1rem;
-	}
-`;
-
-const StyledTableRow = styled(TableRow)<{ theme: any }>`
-	transition: transform 0.3s, box-shadow 0.3s;
-
-	&:nth-of-type(odd) {
-		background-color: ${({ theme }) => theme.palette.background.default};
-		// filter: blur(2px);
-	}
-
-	&:hover {
-		// background-color: ${({ theme }) => theme.palette.primary.dark};
-		// transform: scale(1.02);
-		// box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-	}
-`;
-
-const StyledArrowCircleUpOutlinedIcon = styled(ArrowCircleUpOutlinedIcon)<{ theme: any }>`
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin: 3rem auto 0 auto;
-	// position: fixed;
-	// bottom: 1rem;
-	// right: 1rem;
-	cursor: pointer;
-	font-size: 2rem;
-	color: ${({ theme }) => theme.palette.secondary.main};
-	transition: all 0.5s ease-in-out;
-
-	&:hover {
-		transform: scale(1.1);
-		color: ${({ theme }) => theme.palette.text.primary};
-	}
-`;
-
-const StyledTableContainer = styled(Box)<{ theme: any }>`
-	width: 100%;
-	display: flex;
-	justify-content: center;
-
-	@media (max-width: 1025px) {
-		width: 95%;
-	}
-
-	@media (max-width: 680px) {
-		width: 95%;
-	}
-`;
 
 interface TopContributorsProps {
 	topContributors: any;
@@ -122,52 +13,35 @@ interface TopContributorsProps {
 }
 
 const TopContributors: React.FC<TopContributorsProps> = ({ topContributors, loading, error }) => {
-	const theme = useTheme();
 	const router = useRouter();
-
-	// Redux
-
-	// Player Ranking Data
 	const [order, setOrder] = useState('desc');
 	const [orderBy, setOrderBy] = useState('rankedBySpent');
 
-	const createSortHandler = (property) => (event) => {
+	const createSortHandler = (property: string) => () => {
 		const isAsc = orderBy === property && order === 'desc';
 		setOrder(isAsc ? 'asc' : 'desc');
 		setOrderBy(property);
 	};
 
-	// Determine which ranking list to use based on orderBy
 	let sortedData = [];
 
 	if (topContributors) {
-		// Determine which ranking list to use based on orderBy
 		sortedData = topContributors[orderBy] ? [...topContributors[orderBy]] : [];
-
-		// If order is ascending, reverse the sorted data
 		if (order === 'asc') {
 			sortedData.reverse();
 		}
 	}
 
-	const handlePlayer = (playerId) => {
-		return () => {
-			router.push(`/player/${playerId}`);
-		};
+	const handlePlayer = (playerId: string) => () => {
+		router.push(`/player/${playerId}`);
 	};
 
 	const handleScrollToTop = () => {
-		window.scrollTo({
-			top: 0,
-			behavior: 'smooth',
-		});
+		window.scrollTo({ top: 0, behavior: 'smooth' });
 	};
 
-	// Define a function to convert numbers to their ordinal representation in JavaScript
-	function numberToOrdinal(n) {
-		if (10 <= n % 100 && n % 100 <= 20) {
-			return n + 'th';
-		}
+	const numberToOrdinal = (n: number) => {
+		if (10 <= n % 100 && n % 100 <= 20) return n + 'th';
 		switch (n % 10) {
 			case 1:
 				return n + 'st';
@@ -178,7 +52,7 @@ const TopContributors: React.FC<TopContributorsProps> = ({ topContributors, load
 			default:
 				return n + 'th';
 		}
-	}
+	};
 
 	return (
 		<>
@@ -202,90 +76,55 @@ const TopContributors: React.FC<TopContributorsProps> = ({ topContributors, load
 						<meta name="twitter:description" content="Ranking | Nerve Gloabl" />
 						<meta name="twitter:image" content="https://app.nerveglobal.com/favicon.ico" />
 					</Head>
-					<StyledBox>
-						<StyledTableContainer theme={theme}>
-							<StyledTable stickyHeader theme={theme}>
-								<TableHead>
-									<TableRow>
-										<TableCell style={{ width: '2.5%', textAlign: 'left' }}>#</TableCell>
-										<TableCell style={{ width: '50%', textAlign: 'left' }}>Address</TableCell>
-										{/* <TableCell>
-											<StyledButton theme={theme} onClick={createSortHandler('rankedByEarned')}>
-												Earnings
-												{orderBy === 'rankedByEarned' ? (
-													order === 'asc' ? (
-														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
-													) : (
-														<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
-													)
-												) : order === 'asc' ? (
-													<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
-												) : (
-													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-												)}
-											</StyledButton>
-										</TableCell> */}
-										<TableCell style={{ width: '47.5%', textAlign: 'right' }}>
-											<StyledButton theme={theme} style={{ fontSize: '0.875rem' }}>
+
+					<div className="flex flex-col items-center text-center w-full max-w-[1400px] px-4 md:px-8 mx-auto my-20">
+						<div className="w-full overflow-x-auto">
+							<table className="min-w-[750px] w-full text-left text-sm">
+								<thead className="sticky top-0 z-10 bg-zinc-900 border-b border-secondary text-white font-semibold">
+									<tr>
+										<th className="w-[5%] px-4 py-3">#</th>
+										<th className="w-[50%] px-4 py-3">Address</th>
+										<th className="w-[45%] px-4 py-3 text-right">
+											<button
+												onClick={createSortHandler('rankedBySpent')}
+												className="w-full flex justify-end items-center gap-1 text-white hover:text-accent text-sm"
+											>
 												Contributions
-												{/* {orderBy === 'rankedBySpent' ? (
-													order === 'asc' ? (
-														<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
-													) : (
-														<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
-													)
-												) : order === 'asc' ? (
-													<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
-												) : (
-													<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-												)} */}
-											</StyledButton>
-										</TableCell>
-									</TableRow>
-								</TableHead>
-								<TableBody>
+											</button>
+										</th>
+									</tr>
+								</thead>
+								<tbody className="text-white">
 									{sortedData.length > 0 ? (
 										sortedData.map((row, index) => (
-											<StyledTableRow theme={theme} key={index}>
-												{/* <TableCell>{numberToOrdinal(index + 1)}</TableCell> */}
-												<TableCell style={{ width: '2.5%', textAlign: 'left' }}>{index + 1}</TableCell>
-												<TableCell style={{ width: '50%', textAlign: 'left' }}>
+											<tr key={index} className="even:bg-zinc-800 hover:bg-zinc-700 transition-all">
+												<td className="px-4 py-3">{index + 1}</td>
+												<td className="px-4 py-3 whitespace-nowrap overflow-hidden text-ellipsis max-w-[250px]">
 													<a
-														style={{
-															cursor: 'pointer',
-															textDecoration: 'none',
-															color: theme.palette.text.primary,
-															display: 'inline-flex',
-															gap: '5px',
-															alignItems: 'center',
-														}}
-														href={CHAINS[137]?.blockExplorerUrls[0] + 'address/' + row.id}
+														href={`${CHAINS[137]?.blockExplorerUrls[0]}address/${row.id}`}
 														target="_blank"
+														rel="noopener noreferrer"
+														className="flex items-center gap-1 hover:text-accent truncate"
 													>
-														<span>{window.innerWidth < 680 ? `${row.id.slice(0, 6)}...${row.id.slice(-4)}` : row.id}</span>
-														<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
+														<span>
+															{typeof window !== 'undefined' && window.innerWidth < 680 ? `${row.id.slice(0, 6)}...${row.id.slice(-4)}` : row.id}
+														</span>
 													</a>
-												</TableCell>
-												{/* <TableCell style={{ textAlign: 'right' }}>
-													<a>${row.earned}</a>
-												</TableCell> */}
-												<TableCell style={{ width: '47.5%', textAlign: 'right' }}>
-													<a>${row.spent}</a>
-												</TableCell>
-											</StyledTableRow>
+												</td>
+												<td className="px-4 py-3 text-right">${row.spent}</td>
+											</tr>
 										))
 									) : (
-										<StyledTableRow theme={theme}>
-											<TableCell colSpan={7} style={{ textAlign: 'center' }}>
+										<tr>
+											<td colSpan={3} className="text-center py-6 text-gray-400">
 												No data available on this chain
-											</TableCell>
-										</StyledTableRow>
+											</td>
+										</tr>
 									)}
-								</TableBody>
-							</StyledTable>
-						</StyledTableContainer>
-						{/* <StyledArrowCircleUpOutlinedIcon theme={theme} onClick={handleScrollToTop} /> */}
-					</StyledBox>
+								</tbody>
+							</table>
+						</div>
+					</div>
 				</>
 			)}
 		</>
