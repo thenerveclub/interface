@@ -1,6 +1,5 @@
 'use client';
 
-import Head from 'next/head';
 import { useState } from 'react';
 import useTopContributors from '../../hooks/rankingData/useTopContributors';
 import useTopDares from '../../hooks/rankingData/useTopDares';
@@ -25,22 +24,6 @@ export default function LeaderboardPage() {
 
 	return (
 		<>
-			<Head>
-				<meta name="viewport" content="width=device-width, initial-scale=1" />
-				<meta name="robots" content="noindex" />
-				<title>Ranking | Nerve Global</title>
-				<meta property="og:title" content="Ranking | Nerve Global" key="title" />
-				<meta property="og:site_name" content="Ranking | Nerve Global" />
-				<meta property="og:description" content="Ranking | Nerve Global" />
-				<meta property="og:image" content="https://app.nerveglobal.com/favicon.ico" />
-				<meta property="og:url" content="https://app.nerveglobal.com/" />
-				<meta property="og:type" content="website" />
-				<meta name="twitter:card" content="summary_large_image" />
-				<meta name="twitter:site" content="@nerveglobal_" />
-				<meta name="twitter:title" content="Ranking | Nerve Global" />
-				<meta name="twitter:description" content="Ranking | Nerve Global" />
-				<meta name="twitter:image" content="https://app.nerveglobal.com/favicon.ico" />
-			</Head>
 			<div className="flex flex-col items-center w-full mt-32">
 				{/* Foreground text */}
 				<div className="z-10">
