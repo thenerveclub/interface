@@ -95,7 +95,7 @@ export default function SettingsModal() {
 
 	return (
 		<>
-			{/* Open Button */}
+			{/* Settings Button */}
 			<button
 				onClick={handleModalToggle}
 				className="py-1 bg-transparent text-[#999999] dark:text-[#999999] hover:text-accent dark:hover:text-accent transition text-sm 3xl:text-lg"

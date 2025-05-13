@@ -71,7 +71,7 @@ const SearchBarMobile: React.FC<SearchBarMobileProps> = ({ network }) => {
 		});
 
 	return (
-		<div className="flex lg:hidden">
+		<div className="flex md:hidden">
 			<button onClick={() => setIsOpen(true)} className="p-2 text-white">
 				<IoSearchSharp size={24} />
 			</button>

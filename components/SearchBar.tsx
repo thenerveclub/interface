@@ -1,6 +1,5 @@
 'use client';
 
-import { ClickAwayListener } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { SiEthereum, SiPolygon } from 'react-icons/si';
@@ -9,8 +8,8 @@ import useTrendingPlayerList from '../hooks/searchData/trending/useTrendingPlaye
 import useDareDataSearchList from '../hooks/searchData/useDareDataSearchList';
 import usePlayerDataSearchList from '../hooks/searchData/usePlayerDataSearchList';
 import { nameToChainId } from '../utils/chains';
+import PortalModal from './PortalModal';
 import SearchBarMobile from './SearchBarMobile';
-
 
 interface SearchBarProps {
 	network: string;
@@ -28,6 +27,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 	const dareSearchList = useDareDataSearchList(chainIdUrl, searchValueQuery);
 	const [isListVisible, setListVisible] = useState(false);
 	const [searchHistory, setSearchHistory] = useState<any[]>([]);
+	const [isOpen, setIsOpen] = useState(false);
 
 	useEffect(() => {
 		const savedHistory = localStorage.getItem('searchHistory');
@@ -60,6 +60,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 		setSearchValue('');
 		setListVisible(false);
 		addToSearchHistory({ type: 'player', id, address });
+		setIsOpen(false);
 	};
 
 	const handleListDareItemClick = (id: string, amount: string, participants: number) => {
@@ -67,6 +68,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 		setSearchValue('');
 		setListVisible(false);
 		addToSearchHistory({ type: 'dare', id, amount, participants });
+		setIsOpen(false);
 	};
 
 	const formatNumber = (value: string) =>
@@ -75,25 +77,45 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 			maximumFractionDigits: 2,
 		});
 
+	// Modal visibility
+	const [open, setOpen] = useState(false);
+	const handleModalToggle = () => {
+		const newState = !open;
+		setOpen(newState);
+
+		if (newState) {
+			document.body.style.overflow = 'hidden';
+		} else {
+			document.body.style.overflow = '';
+		}
+	};
+
 	return (
 		<>
-			<ClickAwayListener onClickAway={() => setListVisible(false)}>
-				<form
-					onSubmit={(e) => e.preventDefault()}
-					className="hidden lg:flex relative w-full max-w-lg items-center border border-secondary rounded-md px-3 py-2 text-sm focus-within:border-accent transition-all bg-transparent"
-				>
-					<span>Search</span>
+			{/* Search Button */}
+			<button
+				onClick={handleModalToggle}
+				className="hidden md:flex py-1 bg-transparent text-[#999999] dark:text-[#999999] hover:text-accent dark:hover:text-accent transition text-sm 3xl:text-lg"
+			>
+				Search
+			</button>
+
+			{/* Modal */}
+			<PortalModal isOpen={open}>
+				<div className="bg-background rounded-lg shadow-lg p-6 w-full md:w-1/2 md:border md:border-secondary h-screen md:h-auto justify-center items-center m-auto md:max-h-[90vh] overflow-hidden md:overflow-y-auto flex flex-col">
 					<input
 						type="text"
 						value={searchValue}
 						onChange={handleSearchChange}
 						onFocus={() => setListVisible(true)}
 						placeholder="Search players and dares..."
-						className="bg-transparent text-white placeholder-secondary w-full focus:outline-none"
+						autoFocus
+						className="w-full bg-transparent text-black dark:text-white placeholder-secondary text-lg px-4 py-3 rounded-md focus:outline-none focus:ring-0 focus:border-accent"
 					/>
 
+					{/* Dropdown List */}
 					{isListVisible && (
-						<div className="absolute top-full left-0 right-0 z-30 bg-background text-white rounded-b-md border border-accent max-h-[500px] overflow-y-auto shadow-lg">
+						<div className="mt-2 rounded-md bg-background text-black dark:text-white max-h-[400px] w-full">
 							{searchValue.trim() === '' && searchHistory.length > 0 && (
 								<div className="px-4 py-2 text-xs font-bold text-secondary flex justify-between items-center">
 									<span>Recent Searches</span>
@@ -168,8 +190,17 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 							)}
 						</div>
 					)}
-				</form>
-			</ClickAwayListener>
+				</div>
+
+				{/* Close Button */}
+				<div className="absolute bottom-5 mb-10 left-0 right-0 flex justify-center">
+					<button onClick={handleModalToggle} className="px-4 py-2 bg-accent text-white rounded-md transition">
+						Close
+					</button>
+				</div>
+			</PortalModal>
+
+			{/* Mobile Version */}
 			<SearchBarMobile network={network} />
 		</>
 	);
