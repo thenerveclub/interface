@@ -125,29 +125,29 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 							<th className="px-4 py-3 w-[47.5%]">Description</th>
 							<th
 								onClick={createSortHandler('entranceAmount')}
-								className="px-4 py-3 text-right hidden sm:table-cell cursor-pointer hover:text-accent transition"
+								className="px-4 py-3 text-right hidden lg:table-cell cursor-pointer hover:text-accent transition"
 							>
 								Entry Amount
 							</th>
 							<th onClick={createSortHandler('amount')} className="px-4 py-3 text-right cursor-pointer hover:text-accent transition">
-								<span className="block sm:hidden">Total</span>
-								<span className="hidden sm:block">Total Amount</span>
+								<span className="block lg:hidden">Total</span>
+								<span className="hidden lg:block">Total Amount</span>
 							</th>
 							<th
 								onClick={createSortHandler('participants')}
-								className="px-4 py-3 text-right hidden sm:table-cell cursor-pointer hover:text-accent transition"
+								className="px-4 py-3 text-right hidden lg:table-cell cursor-pointer hover:text-accent transition"
 							>
 								Participants
 							</th>
 							<th
 								onClick={createSortHandler('voters')}
-								className="px-4 py-3 text-right hidden sm:table-cell cursor-pointer hover:text-accent transition"
+								className="px-4 py-3 text-right hidden lg:table-cell cursor-pointer hover:text-accent transition"
 							>
 								Voters
 							</th>
 							<th
 								onClick={createSortHandler('voting')}
-								className="px-4 py-3 text-right hidden sm:table-cell cursor-pointer hover:text-accent transition"
+								className="px-4 py-3 text-right hidden lg:table-cell cursor-pointer hover:text-accent transition"
 							>
 								Voting
 							</th>
@@ -163,7 +163,7 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 											{row.description.length > 75 ? row.description.slice(0, 75) + '...' : row.description}
 										</Link>
 									</td>
-									<td className="px-4 py-3 text-right hidden sm:table-cell">
+									<td className="px-4 py-3 text-right hidden lg:table-cell">
 										{currencyValue === false ? (
 											<>
 												{formatNumber(row.entranceAmount)} {CHAINS[row.chainId]?.nameToken}
@@ -181,9 +181,9 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 											<>${formatNumber(row.amount * currencyPrice[CHAINS[row.chainId]?.nameToken.toLowerCase()])}</>
 										)}
 									</td>
-									<td className="px-4 py-3 text-right hidden sm:table-cell">{row.participants}</td>
-									<td className="px-4 py-3 text-right hidden sm:table-cell">{Number(row.positiveVotes) + Number(row.negativeVotes)}</td>
-									<td className="px-4 py-3 text-right hidden sm:table-cell">{calculatePositivePercentage(row.positiveVotes, row.negativeVotes)}</td>
+									<td className="px-4 py-3 text-right hidden lg:table-cell">{row.participants}</td>
+									<td className="px-4 py-3 text-right hidden lg:table-cell">{Number(row.positiveVotes) + Number(row.negativeVotes)}</td>
+									<td className="px-4 py-3 text-right hidden lg:table-cell">{calculatePositivePercentage(row.positiveVotes, row.negativeVotes)}</td>
 								</tr>
 							))
 						) : (

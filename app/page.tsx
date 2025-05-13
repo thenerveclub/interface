@@ -140,23 +140,23 @@ export default function IndexPage() {
 					</Head>
 
 					{/* Landing Section */}
-					<div className="flex flex-col h-screen md:flex-row items-center justify-center text-center w-[90%] mx-auto -mt-10">
-						<div className="relative flex flex-col items-center md:items-start justify-center text-center w-[90%] mx-auto my-8">
+					<div className="flex flex-col h-screen xl:flex-row items-center justify-center text-center w-[90%] mx-auto -mt-10">
+						<div className="relative flex flex-col items-center xl:items-start justify-center text-center w-[90%] mx-auto my-8">
 							{/* Image behind text on mobile only */}
-							<div className="absolute inset-0 md:hidden opacity-25 z-0">
+							<div className="absolute inset-0 xl:hidden opacity-25 z-0">
 								<img src="/logo.png" alt="The Nerve Club Logo" className="w-full h-full object-contain" />
 							</div>
 
 							{/* Foreground text */}
 							<div className="z-10">
-								<div className="text-center md:text-left text-6xl 2xl:text-9xl font-bold text-black dark:text-white">DARE.</div>
-								<div className="text-center md:text-left text-6xl 2xl:text-9xl font-bold text-black dark:text-white">PROVE.</div>
-								<div className="text-center md:text-left text-6xl 2xl:text-9xl font-bold text-accent">GET PAID.</div>
+								<div className="text-center xl:text-left text-6xl md:text-9xl font-bold text-black dark:text-white">DARE.</div>
+								<div className="text-center xl:text-left text-6xl md:text-9xl font-bold text-black dark:text-white">PROVE.</div>
+								<div className="text-center xl:text-left text-6xl md:text-9xl font-bold text-accent">GET PAID.</div>
 								{/* <div className="text-center md:text-left text-6xl 2xl:text-9xl font-bold text-[#FF0033]">GET PAID.</div> */}
 							</div>
 
 							{/* Stats Section */}
-							<div className="flex flex-row justify-start w-full gap-32 mt-24 z-10">
+							<div className="flex flex-row justify-center xl:justify-start w-full gap-32 mt-24 z-10">
 								<div className="flex flex-col items-start text-start w-auto gap-0">
 									<h1 className="text-[2rem] font-thin">TOTAL USERS</h1>
 									<h1 className="text-[2rem] font-normal">{allChains?.users}</h1>
@@ -168,7 +168,7 @@ export default function IndexPage() {
 							</div>
 						</div>
 
-						<div className="hidden md:flex flex-col items-center md:items-end justify-center text-center w-[90%] mx-auto my-8">
+						<div className="hidden xl:flex flex-col items-center xl:items-end justify-center text-center w-[90%] mx-auto my-8">
 							<img src="/logo.png" alt="The Nerve Club Logo" className="w-full h-full" />
 						</div>
 					</div>

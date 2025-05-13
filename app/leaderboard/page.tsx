@@ -64,7 +64,7 @@ export default function LeaderboardPage() {
 					</button>
 				</div>
 				{/* Leaderboard Content */}
-				<div className="w-full">
+				<div className="w-full md:w-[90%] xl:w-full">
 					{leaderboardType === 'topEarners' && <TopEarners topEarners={topEarners} loading={topEarnersLoading} error={topEarnersError} />}
 					{leaderboardType === 'topContributors' && (
 						<TopContributors topContributors={topContributors} loading={topContributorsLoading} error={topContributorsError} />

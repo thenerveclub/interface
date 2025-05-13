@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { IoSettingsSharp } from 'react-icons/io5';
+import { IoSettingsOutline } from 'react-icons/io5';
 import { useDispatch, useSelector } from 'react-redux';
 import { currencySlice } from '../../../state/currency/currencySlice';
 import { customRPCSlice } from '../../../state/customRPC/customRPCSlice';
@@ -102,14 +102,14 @@ export default function SettingsModal() {
 			>
 				<span className="hidden md:flex">Settings</span>
 				<div className="flex md:hidden items-center justify-center">
-					<IoSettingsSharp size={24} className="text-black dark:text-white" />
+					<IoSettingsOutline size={24} className="text-black dark:text-white" />
 				</div>
 			</button>
 
 			{/* Modal */}
 			<PortalModal isOpen={open}>
 				<div className="bg-background rounded-lg shadow-lg p-6 w-full md:w-96 md:border md:border-secondary h-screen md:h-auto justify-center items-center m-auto md:max-h-[90vh] overflow-hidden md:overflow-y-auto flex flex-col">
-					<h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white text-center">Settings</h2>
+					<h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white text-center -mt-24 md:-mt-0">Settings</h2>
 
 					{/* Theme Toggle Buttons */}
 					<div className="mt-6 mb-6 flex flex-col items-center justify-center">
