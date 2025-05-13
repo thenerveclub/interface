@@ -35,13 +35,12 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 		const pos = Number(positiveVotes);
 		const neg = Number(negativeVotes);
 		const total = pos + neg;
-		if (total === 0) return <span className="text-white">0.00%</span>;
+		if (total === 0) return <span className="text-white">—</span>;
 		const percentage = (pos / total) * 100;
 		const formatted = percentage.toFixed(2) + '%';
 		return <span className={percentage >= 50 ? 'text-green-500' : 'text-red-500'}>{formatted}</span>;
 	};
 
-	// Sort data based on selected property
 	const getValue = (row: any) => {
 		if (orderBy === 'voters') {
 			return Number(row.positiveVotes) + Number(row.negativeVotes);
@@ -51,15 +50,9 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 			const pos = Number(row.positiveVotes);
 			const neg = Number(row.negativeVotes);
 			const total = pos + neg;
-
-			// Case 1: No votes at all – neutral
-			if (total === 0) return 1000;
-
-			// Case 2: Only negative votes – lowest
-			if (pos === 0 && neg > 0) return -1;
-
-			// Case 3: Calculate actual positive percentage
-			return (pos / total) * 100;
+			if (total === 0) return { percentage: 0, totalVotes: 0, isNeutral: true };
+			const percentage = (pos / total) * 100;
+			return { percentage, totalVotes: total, isNeutral: false };
 		}
 
 		let base = Number(row[orderBy] || 0);
@@ -72,6 +65,51 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 	};
 
 	const sortedData = [...topDares].sort((a, b) => {
+		if (orderBy === 'voting') {
+			const aVal = getValue(a);
+			const bVal = getValue(b);
+
+			// Handle ascending vs descending
+			const direction = order === 'asc' ? -1 : 1;
+
+			// Case 1: Both neutral (0 votes)
+			if (aVal.isNeutral && bVal.isNeutral) {
+				return (Number(a.id) - Number(b.id)) * direction;
+			}
+
+			// Case 2: One is neutral, the other is not
+			if (aVal.isNeutral) return 1 * direction; // Neutral goes below in desc, above in asc
+			if (bVal.isNeutral) return -1 * direction;
+
+			// Case 3: Both have votes
+			const aPercentage = aVal.percentage;
+			const bPercentage = bVal.percentage;
+			const aTotalVotes = aVal.totalVotes;
+			const bTotalVotes = bVal.totalVotes;
+
+			// Determine if green (≥50%) or red (<50%)
+			const aIsGreen = aPercentage >= 50;
+			const bIsGreen = bPercentage >= 50;
+
+			// Case 4: One is green, the other is red
+			if (aIsGreen && !bIsGreen) return -1 * direction; // Green above red in desc
+			if (!aIsGreen && bIsGreen) return 1 * direction;
+
+			// Case 5: Both green or both red
+			if (aPercentage !== bPercentage) {
+				return (bPercentage - aPercentage) * direction; // Higher percentage first in desc
+			} else {
+				// If percentages are equal, use vote count as tie-breaker
+				if (aIsGreen) {
+					// Green: more votes is better
+					return (bTotalVotes - aTotalVotes) * direction;
+				} else {
+					// Red: fewer votes is better
+					return (aTotalVotes - bTotalVotes) * direction;
+				}
+			}
+		}
+
 		const aVal = getValue(a);
 		const bVal = getValue(b);
 		return order === 'asc' ? aVal - bVal : bVal - aVal;
@@ -108,7 +146,7 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 								Voters
 							</th>
 							<th
-								onClick={createSortHandler('positiveVotes')}
+								onClick={createSortHandler('voting')}
 								className="px-4 py-3 text-right hidden sm:table-cell cursor-pointer hover:text-accent transition"
 							>
 								Voting
@@ -125,7 +163,6 @@ const TopDares: React.FC<TopDaresProps> = ({ topDares, loading, error }) => {
 											{row.description.length > 75 ? row.description.slice(0, 75) + '...' : row.description}
 										</Link>
 									</td>
-
 									<td className="px-4 py-3 text-right hidden sm:table-cell">
 										{currencyValue === false ? (
 											<>
