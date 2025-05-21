@@ -200,10 +200,16 @@ export default function SettingsModal() {
 								</button>
 							</div>
 						)}
+						{/* Close Button */}
+						<div className="hidden md:flex mt-16 mb-0 justify-center">
+							<button onClick={handleModalToggle} className="px-4 py-2 bg-accent text-white rounded-md transition">
+								Close
+							</button>
+						</div>
 					</div>
 
 					{/* Close Button */}
-					<div className="absolute bottom-5 mb-10 left-0 right-0 flex justify-center">
+					<div className="absolute md:hidden bottom-5 mb-10 left-0 right-0 flex justify-center">
 						<button onClick={handleModalToggle} className="px-4 py-2 bg-accent text-white rounded-md transition">
 							Close
 						</button>

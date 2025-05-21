@@ -84,29 +84,30 @@ const SearchBarMobile: React.FC<SearchBarMobileProps> = ({ network }) => {
 							value={searchValue}
 							onChange={handleSearchChange}
 							placeholder="Search players and dares..."
-							className="w-full p-2 rounded border border-secondary text-black"
+							className="w-full p-2 rounded border text-black dark:text-white border-secondary placeholder-secondary focus:outline-none focus:ring-0 focus:border-accent border-gray-400"
 						/>
 						{/* <button onClick={() => setIsOpen(false)} className="ml-2 text-white">
 							<CloseOutlined />
 						</button> */}
 					</div>
 
+					{/* Search History */}
 					{searchValue.trim() === '' && searchHistory.length > 0 && (
-						<div className="mb-4">
-							<div className="text-sm font-semibold text-secondary flex justify-between mb-2">
+						<div className="mb-4 text-black dark:text-white">
+							<div className="text-md font-semibold flex justify-between mb-2">
 								<span>Recent Searches</span>
-								<button onClick={clearSearchHistory} className="text-error text-xs">
+								<button onClick={clearSearchHistory} className="hover:text-accent dark:hover:text-accent">
 									Clear
 								</button>
 							</div>
-							{searchHistory.map((item) => (
+							{searchHistory.map((item, index) => (
 								<div
 									key={item.id}
 									onClick={() => {
 										if (item.type === 'player') handleListPlayerItemClick(item.id, item.address);
 										else handleListDareItemClick(item.id, item.amount, item.participants);
 									}}
-									className="p-2 border-b border-secondary text-sm cursor-pointer"
+									className={`px-0 py-3 text-sm cursor-pointer ${index % 2 === 1 ? 'bg-zinc-200 dark:bg-zinc-900' : ''}`}
 								>
 									{item.id}
 								</div>
@@ -114,6 +115,7 @@ const SearchBarMobile: React.FC<SearchBarMobileProps> = ({ network }) => {
 						</div>
 					)}
 
+					{/* Player Search List */}
 					<div className="space-y-4 flex-grow">
 						{playerSearchList.length > 0 && (
 							<div>
@@ -131,6 +133,7 @@ const SearchBarMobile: React.FC<SearchBarMobileProps> = ({ network }) => {
 							</div>
 						)}
 
+						{/* Dare Search List */}
 						{dareSearchList.length > 0 && (
 							<div>
 								<div className="text-sm font-semibold text-secondary mb-2">Dares</div>
@@ -150,47 +153,54 @@ const SearchBarMobile: React.FC<SearchBarMobileProps> = ({ network }) => {
 							</div>
 						)}
 
+						{/* No players or dares found */}
 						{playerSearchList.length === 0 && dareSearchList.length === 0 && searchValue.trim() !== '' && (
-							<div className="text-sm text-center text-muted">No players or dares found.</div>
+							<div className="text-sm text-gray-400 dark:text-gray-400">No players or dares found.</div>
 						)}
 
+						{/* Trending Players */}
 						{searchValue.trim() === '' && (
-							<>
-								<div className="text-sm font-semibold text-secondary mb-2">Trending Players</div>
-								{trendingPlayersList.length > 0 ? (
-									trendingPlayersList.map((player) => (
-										<div
-											key={player.id}
-											onClick={() => handleListPlayerItemClick(player.userName, player.id)}
-											className="p-2 border-b border-secondary text-sm cursor-pointer"
-										>
-											<div>{player.userName}</div>
-											<div className="text-xs text-muted">{player.id}</div>
-										</div>
-									))
-								) : (
-									<div className="text-xs text-muted">No trending players found.</div>
-								)}
-
-								<div className="text-sm font-semibold text-secondary mb-2 mt-4">Trending Dares</div>
-								{trendingDareList.length > 0 ? (
-									trendingDareList.map((dare) => (
-										<div
-											key={dare.id}
-											onClick={() => handleListDareItemClick(dare.description, dare.amount, dare.participants)}
-											className="p-2 border-b border-secondary text-sm cursor-pointer"
-										>
-											<div>{dare.description.length > 25 ? `${dare.description.substring(0, 25)}...` : dare.description}</div>
-											<div className="text-xs text-muted">
-												{formatNumber(dare.amount)} {chainIdUrl === 137 ? <SiPolygon size={12} /> : <SiEthereum size={12} />} - {dare.participants}{' '}
-												participants
+							<div className="flex flex-col">
+								<div className="flex flex-col">
+									<div className="text-md font-semibold text-black dark:text-white mt-0 mb-2">Trending Players</div>
+									{trendingPlayersList.length > 0 ? (
+										trendingPlayersList.map((player) => (
+											<div
+												key={player.id}
+												onClick={() => handleListPlayerItemClick(player.userName, player.id)}
+												className="p-2 border-b border-secondary cursor-pointer"
+											>
+												<div>{player.userName}</div>
+												<div className="">{player.id}</div>
 											</div>
-										</div>
-									))
-								) : (
-									<div className="text-xs text-muted">No trending dares found.</div>
-								)}
-							</>
+										))
+									) : (
+										<div className="text-sm text-gray-400 dark:text-gray-400">No trending players found.</div>
+									)}
+								</div>
+
+								{/* Trending Dares */}
+								<div className="flex flex-col mt-8">
+									<div className="text-md font-semibold text-black dark:text-white mt-0 mb-2">Trending Dares</div>
+									{trendingDareList.length > 0 ? (
+										trendingDareList.map((dare) => (
+											<div
+												key={dare.id}
+												onClick={() => handleListDareItemClick(dare.description, dare.amount, dare.participants)}
+												className="p-2 border-b border-secondary text-sm cursor-pointer"
+											>
+												<div>{dare.description.length > 25 ? `${dare.description.substring(0, 25)}...` : dare.description}</div>
+												<div className="text-xs text-muted">
+													{formatNumber(dare.amount)} {chainIdUrl === 137 ? <SiPolygon size={12} /> : <SiEthereum size={12} />} - {dare.participants}{' '}
+													participants
+												</div>
+											</div>
+										))
+									) : (
+										<div className="text-sm text-gray-400 dark:text-gray-400">No trending dares found.</div>
+									)}
+								</div>
+							</div>
 						)}
 					</div>
 					{/* Close Button */}
