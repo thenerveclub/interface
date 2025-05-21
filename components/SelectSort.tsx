@@ -68,68 +68,80 @@ export default function SelectSort() {
 
 			{/* Dropdown Menu */}
 			{menuOpen && (
-				<div className="absolute z-20 w-full mt-2 backdrop-blur-lg bg-black/50 border border-gray-500 rounded-lg shadow-xl">
+				<div className="absolute z-20 w-full mt-2 bg-black border border-gray-400 rounded-lg">
 					{/* Stake Section */}
-					<div className="px-4 py-2 text-sm font-semibold backdrop-blur-lg bg-gray-500 text-black dark:text-white rounded-t-lg">Stake</div>
+					<div className="px-4 py-2 text-sm font-semibold bg-zinc-200 dark:bg-zinc-900 text-black dark:text-white rounded-t-lg">Stake</div>
 					<div className="space-y-2">
 						<button
 							onClick={() => handleChange(1)}
 							disabled={sort === 1}
-							className={`w-full flex justify-between mx-auto ${getOptionClasses(sort === 1)}`}
+							className={`w-full flex justify-between mx-auto text-gray-400 dark:text-gray-400 hover:text-accent dark:hover:text-accent hover:bg-transparent ${getOptionClasses(
+								sort === 1
+							)}`}
 						>
 							<span>Low to High</span>
-							{sort === 1 && <span className="text-xs italic text-black dark:text-white mr-2">Selected</span>}
+							{sort === 1 && <span className="text-xs italic text-accent mr-2">Selected</span>}
 						</button>
 						<button
 							onClick={() => handleChange(2)}
 							disabled={sort === 2}
-							className={`w-full flex justify-between mx-auto ${getOptionClasses(sort === 2)}`}
+							className={`w-full flex justify-between mx-auto text-gray-400 dark:text-gray-400 hover:text-accent dark:hover:text-accent hover:bg-transparent ${getOptionClasses(
+								sort === 2
+							)}`}
 						>
 							<span>High to Low</span>
-							{sort === 2 && <span className="text-xs italic text-black dark:text-white mr-2">Selected</span>}
+							{sort === 2 && <span className="text-xs italic text-accent mr-2">Selected</span>}
 						</button>
 					</div>
 
 					{/* Participants Section */}
-					<div className="px-4 py-2 mt-2 text-sm font-semibold backdrop-blur-lg bg-gray-500 text-black dark:text-white">Participants</div>
+					<div className="px-4 py-2 mt-2 text-sm font-semibold bg-zinc-200 dark:bg-zinc-900 text-black dark:text-white">Participants</div>
 					<div className="space-y-2">
 						<button
 							onClick={() => handleChange(3)}
 							disabled={sort === 3}
-							className={`w-full flex justify-between mx-auto ${getOptionClasses(sort === 3)}`}
+							className={`w-full flex justify-between mx-auto text-gray-400 dark:text-gray-400 hover:text-accent dark:hover:text-accent hover:bg-transparent ${getOptionClasses(
+								sort === 3
+							)}`}
 						>
 							<span>Low to High</span>
-							{sort === 3 && <span className="text-xs italic text-black dark:text-white mr-2">Selected</span>}
+							{sort === 3 && <span className="text-xs italic text-accent mr-2">Selected</span>}
 						</button>
 
 						<button
 							onClick={() => handleChange(4)}
 							disabled={sort === 4}
-							className={`w-full flex justify-between mx-auto ${getOptionClasses(sort === 4)}`}
+							className={`w-full flex justify-between mx-auto text-gray-400 dark:text-gray-400 hover:text-accent dark:hover:text-accent hover:bg-transparent ${getOptionClasses(
+								sort === 4
+							)}`}
 						>
 							<span>High to Low</span>
-							{sort === 4 && <span className="text-xs italic text-black dark:text-white mr-2">Selected</span>}
+							{sort === 4 && <span className="text-xs italic text-accent mr-2">Selected</span>}
 						</button>
 					</div>
 
 					{/* Entry Amount Section */}
-					<div className="px-4 py-2 mt-2 text-sm font-semibold backdrop-blur-lg bg-gray-500 text-black dark:text-white">Entry Amount</div>
+					<div className="px-4 py-2 mt-2 text-sm font-semibold bg-zinc-200 dark:bg-zinc-900 text-black dark:text-white">Entry Amount</div>
 					<div className="space-y-2">
 						<button
 							onClick={() => handleChange(5)}
 							disabled={sort === 5}
-							className={`w-full flex justify-between mx-auto ${getOptionClasses(sort === 5)}`}
+							className={`w-full flex justify-between mx-auto text-gray-400 dark:text-gray-400 hover:text-accent dark:hover:text-accent hover:bg-transparent ${getOptionClasses(
+								sort === 5
+							)}`}
 						>
 							<span>Low to High</span>
-							{sort === 5 && <span className="text-xs italic text-black dark:text-white mr-2">Selected</span>}
+							{sort === 5 && <span className="text-xs italic text-accent mr-2">Selected</span>}
 						</button>
 						<button
 							onClick={() => handleChange(6)}
 							disabled={sort === 6}
-							className={`w-full flex justify-between mx-auto ${getOptionClasses(sort === 6)}`}
+							className={`w-full flex justify-between mx-auto text-gray-400 dark:text-gray-400 hover:text-accent dark:hover:text-accent hover:bg-transparent ${getOptionClasses(
+								sort === 6
+							)}`}
 						>
 							<span>High to Low</span>
-							{sort === 6 && <span className="text-xs italic text-black dark:text-white mr-2">Selected</span>}
+							{sort === 6 && <span className="text-xs italic text-accent mr-2">Selected</span>}
 						</button>
 					</div>
 				</div>
