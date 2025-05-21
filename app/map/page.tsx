@@ -1,34 +1,19 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import Head from 'next/head';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
-
-// Web3 + Redux
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
+import { motion } from 'framer-motion';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useSnackbar } from 'notistack';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
-// Hooks & Utils
+import GoogleMap from '../../components/GoogleMap';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
 import usePlayerDataSearchList from '../../hooks/searchData/usePlayerDataSearchList';
 import useBalanceTracker from '../../hooks/useBalanceTracker';
 import { createTriggerSlice } from '../../state/trigger/createTriggerSlice';
 import { CHAINS, getAddChainParameters } from '../../utils/chains';
 import { metaMask } from '../../utils/connectors/metaMask';
-
-// Components
-import GoogleMap from '../../components/GoogleMap';
-
-// ------------------------------------------------------------------
-// MAIN PAGE
-// - Static left panel with "Create Task" (previously a modal).
-// - Right side: GoogleMap
-// - On map click => lat/lng is updated in the left panel states.
-// - All MUI replaced with Tailwind/Framer Motion.
-// ------------------------------------------------------------------
 
 export default function IndexPage() {
 	const router = useRouter();
@@ -82,10 +67,6 @@ export default function IndexPage() {
 		adjustHeight();
 		return () => window.removeEventListener('resize', adjustHeight);
 	}, []);
-
-	// ------------------------------------------------------------------
-	// The old "CreateMapDare" logic (converted to a static panel):
-	// ------------------------------------------------------------------
 
 	// Web3 + Redux states
 	const { account, provider } = useWeb3React();
@@ -228,54 +209,8 @@ export default function IndexPage() {
 		}
 	};
 
-	// Reverse geocoding
-	// async function reverseGeocode(lat: number, lng: number) {
-	// 	try {
-	// 		const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-	// 		if (!apiKey) {
-	// 			console.warn('No Google Maps API key found in NEXT_PUBLIC_GOOGLE_MAPS_API_KEY.');
-	// 			return;
-	// 		}
-
-	// 		const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
-	// 		const response = await fetch(url);
-	// 		console.log('response', response);
-	// 		const data = await response.json();
-	// 		console.log('data', data);
-	// 		if (data.status === 'OK' && data.results.length) {
-	// 			// The "formatted_address" is usually something like "Los Angeles, CA, USA"
-	// 			setReverseGeocoded(data.results[0].formatted_address);
-	// 		} else {
-	// 			setReverseGeocoded('');
-	// 		}
-	// 	} catch (err) {
-	// 		console.error('Reverse geocoding error:', err);
-	// 		setReverseGeocoded('');
-	// 	}
-	// }
-
-	// ------------------------------------------------------------------
-	// RENDER
-	// ------------------------------------------------------------------
 	return (
 		<>
-			<Head>
-				<meta name="viewport" content="width=device-width, initial-scale=1" />
-				<title>Nerve Global Dapp</title>
-
-				<meta property="og:title" content="Nerve Global Dapp" key="title" />
-				<meta property="og:site_name" content="Nerve Global Dapp" />
-				<meta property="og:description" content="Nerve Global Dapp." />
-				<meta property="og:image" content="https://dapp.nerveglobal.com/favicon.ico" />
-				<meta property="og:url" content="https://dapp.nerveglobal.com/" />
-				<meta property="og:type" content="website" />
-				<meta name="twitter:card" content="summary_large_image" />
-				<meta name="twitter:site" content="@nerveglobal_" />
-				<meta name="twitter:title" content="Nerve Global Dapp" />
-				<meta name="twitter:description" content="Nerve Global Dapp." />
-				<meta name="twitter:image" content="https://dapp.nerveglobal.com/favicon.ico" />
-			</Head>
-
 			{/* Fullscreen container => left panel + right map */}
 			<div className="w-screen h-screen flex bg-transparent">
 				{/* LEFT PANEL - replaced the old modal */}

@@ -68,7 +68,7 @@ export default function SelectSort() {
 
 			{/* Dropdown Menu */}
 			{menuOpen && (
-				<div className="absolute z-20 w-full mt-2 bg-black border border-gray-400 rounded-lg">
+				<div className="absolute z-20 w-full mt-2 bg-white dark:bg-black border border-gray-400 rounded-lg">
 					{/* Stake Section */}
 					<div className="px-4 py-2 text-sm font-semibold bg-zinc-200 dark:bg-zinc-900 text-black dark:text-white rounded-t-lg">Stake</div>
 					<div className="space-y-2">

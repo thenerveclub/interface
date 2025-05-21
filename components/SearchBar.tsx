@@ -95,7 +95,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 			{/* Search Button */}
 			<button
 				onClick={handleModalToggle}
-				className="hidden md:flex py-1 bg-transparent text-[#999999] dark:text-[#999999] hover:text-accent dark:hover:text-accent transition text-sm 3xl:text-lg"
+				className="hidden md:flex py-1 bg-transparent hover:text-accent dark:hover:text-accent transition text-sm 3xl:text-lg"
 			>
 				Search
 			</button>

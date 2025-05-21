@@ -96,10 +96,7 @@ export default function SettingsModal() {
 	return (
 		<>
 			{/* Settings Button */}
-			<button
-				onClick={handleModalToggle}
-				className="py-1 bg-transparent text-[#999999] dark:text-[#999999] hover:text-accent dark:hover:text-accent transition text-sm 3xl:text-lg"
-			>
+			<button onClick={handleModalToggle} className="py-1 bg-transparent hover:text-accent dark:hover:text-accent transition text-sm 3xl:text-lg">
 				<span className="hidden md:flex">Settings</span>
 				<div className="flex md:hidden items-center justify-center">
 					<IoSettingsOutline size={24} className="text-black dark:text-white" />

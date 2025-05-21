@@ -52,7 +52,7 @@ export default function Header() {
 			<motion.div
 				ref={headerRef}
 				className={`hidden md:flex flex-row justify-center items-center fixed top-0 left-0 right-0 h-16 bg-transparent shadow-none z-50 ${
-					isScrolled ? 'backdrop-blur-lg bg-black/50' : 'bg-transparent'
+					isScrolled || isMap ? 'backdrop-blur-lg bg-black/50' : 'bg-transparent'
 				}`}
 			>
 				<div className="flex justify-center md:justify-between items-center w-[95%]">
@@ -64,20 +64,16 @@ export default function Header() {
 						</Link>
 					</div>
 
-					<div className="hidden md:flex items-center space-x-4">
+					<div className={`hidden md:flex items-center space-x-4 ${isMap ? 'text-black dark:text-white' : 'text-gray-400 dark:text-gray-400'}`}>
 						<div className="flex-grow flex justify-center">
 							<SearchBar network={network} />
 						</div>
 						{/* {account && <SelectChain />} */}
 						<Link href="/leaderboard" passHref>
-							<h3 className="py-1 bg-transparent text-[#999999] dark:text-[#999999] hover:text-accent dark:hover:text-accent transition text-sm 3xl:text-lg">
-								Leaderboard
-							</h3>
+							<h3 className="py-1 bg-transparent hover:text-accent dark:hover:text-accent transition text-sm 3xl:text-lg">Leaderboard</h3>
 						</Link>
 						<Link href="/map" passHref>
-							<h3 className="py-1 bg-transparent text-[#999999] dark:text-[#999999] hover:text-accent dark:hover:text-accent transition text-sm 3xl:text-lg">
-								Map
-							</h3>
+							<h3 className="py-1 bg-transparent hover:text-accent dark:hover:text-accent transition text-sm 3xl:text-lg">Map</h3>
 						</Link>
 						<Setting />
 						{account ? <AccountModal account={account} ens={ens} network={network} /> : <Connect />}

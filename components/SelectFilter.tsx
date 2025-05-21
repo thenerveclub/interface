@@ -48,7 +48,7 @@ export default function SelectFilter() {
 
 			{/* Dropdown Menu */}
 			{menuOpen && (
-				<div className="absolute z-20 w-full mt-2 backdrop-blur-lg bg-black/50 border border-gray-500 rounded-lg shadow-xl">
+				<div className="absolute z-20 w-full mt-2 bg-white dark:bg-black border border-gray-400 rounded-lg">
 					{Object.entries(CHAINS).map(([chainId, chainInfo]) => {
 						if (!chainInfo?.name || !chainInfo.logo) return null;
 

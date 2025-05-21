@@ -29,7 +29,7 @@ const ConnectModal = () => {
 		<>
 			{/* Open Button */}
 			<button
-				className="hidden md:block border border-gray-500 rounded-md transition duration-300 hover:border-accent px-4 py-2 bg-transparent text-[#999999] dark:text-[#999999] hover:text-accent dark:hover:text-accent transition text-sm 3xl:text-lg"
+				className="hidden md:block border border-gray-400 rounded-md transition duration-300 hover:border-accent px-4 py-2 bg-transparent hover:text-accent dark:hover:text-accent transition text-sm 3xl:text-lg"
 				onClick={handleOpen}
 			>
 				Connect
