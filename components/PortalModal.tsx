@@ -3,7 +3,13 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-export default function PortalModal({ isOpen, children }: { isOpen: boolean; children: React.ReactNode }) {
+interface PortalModalProps {
+	isOpen: boolean;
+	children: React.ReactNode;
+	onClose?: () => void;
+}
+
+export default function PortalModal({ isOpen, children, onClose }: PortalModalProps) {
 	const [mounted, setMounted] = useState(false);
 
 	useEffect(() => {
@@ -21,7 +27,9 @@ export default function PortalModal({ isOpen, children }: { isOpen: boolean; chi
 	if (!isOpen || !mounted) return null;
 
 	return createPortal(
-		<div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-lg bg-black/50">{children}</div>,
+		<div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-lg bg-black/50" onClick={onClose}>
+			<div onClick={(e) => e.stopPropagation()}>{children}</div>
+		</div>,
 		document.body
 	);
 }

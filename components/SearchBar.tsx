@@ -101,8 +101,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 			</button>
 
 			{/* Modal */}
-			<PortalModal isOpen={open}>
-				<div className="bg-background rounded-lg shadow-lg p-6 w-full md:w-1/2 md:border md:border-secondary h-screen md:h-auto justify-center items-center m-auto md:max-h-[90vh] overflow-hidden md:overflow-y-auto flex flex-col">
+			<PortalModal isOpen={open} onClose={handleModalToggle}>
+				<div className="bg-background rounded-lg shadow-lg p-6 w-full md:w-[75vw] md:border md:border-secondary h-screen md:h-auto justify-center items-center m-auto md:max-h-[90vh] overflow-hidden md:overflow-y-auto flex flex-col">
 					<input
 						type="text"
 						value={searchValue}
@@ -243,19 +243,19 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 						</div>
 					)}
 					{/* Close Button */}
-					<div className="hidden md:flex mt-16 mb-0 justify-center">
+					{/* <div className="hidden md:flex mt-16 mb-0 justify-center">
 						<button onClick={handleModalToggle} className="px-4 py-2 bg-accent text-white rounded-md transition">
 							Close
 						</button>
-					</div>
+					</div> */}
 				</div>
 
 				{/* Close Button */}
-				<div className="absolute md:hidden bottom-5 mb-10 left-0 right-0 flex justify-center">
+				{/* <div className="absolute md:hidden bottom-5 mb-10 left-0 right-0 flex justify-center">
 					<button onClick={handleModalToggle} className="px-4 py-2 bg-accent text-white rounded-md transition">
 						Close
 					</button>
-				</div>
+				</div> */}
 			</PortalModal>
 
 			{/* Mobile Version */}
