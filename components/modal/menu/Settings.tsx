@@ -104,7 +104,7 @@ export default function SettingsModal() {
 			</button>
 
 			{/* Modal */}
-			<PortalModal isOpen={open}>
+			<PortalModal isOpen={open} onClose={handleModalToggle}>
 				<div className="bg-background rounded-lg shadow-lg p-6 w-full md:w-96 md:border md:border-secondary h-screen md:h-auto justify-center items-center m-auto md:max-h-[90vh] overflow-hidden md:overflow-y-auto flex flex-col">
 					<h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white text-center -mt-24 md:-mt-0">Settings</h2>
 
@@ -198,16 +198,16 @@ export default function SettingsModal() {
 							</div>
 						)}
 						{/* Close Button */}
-						<div className="hidden md:flex mt-16 mb-0 justify-center">
-							<button onClick={handleModalToggle} className="px-4 py-2 bg-accent text-white rounded-md transition">
+						{/* <div className="hidden md:flex mt-16 mb-0 justify-center">
+							<button onClick={handleModalToggle} className="px-4 py-2 bg-accent text-white rounded-md transition font-semibold">
 								Close
 							</button>
-						</div>
+						</div> */}
 					</div>
 
 					{/* Close Button */}
 					<div className="absolute md:hidden bottom-5 mb-10 left-0 right-0 flex justify-center">
-						<button onClick={handleModalToggle} className="px-4 py-2 bg-accent text-white rounded-md transition">
+						<button onClick={handleModalToggle} className="px-4 py-2 bg-accent text-white rounded-md transition font-semibold">
 							Close
 						</button>
 					</div>

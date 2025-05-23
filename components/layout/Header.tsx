@@ -64,7 +64,7 @@ export default function Header() {
 						</Link>
 					</div>
 
-					<div className={`hidden md:flex items-center space-x-4 ${isMap ? 'text-black dark:text-white' : 'text-gray-400 dark:text-gray-400'}`}>
+					<div className={`hidden md:flex items-center space-x-4 ${isMap ? 'text-black dark:text-white' : 'text-black dark:text-white'}`}>
 						<div className="flex-grow flex justify-center">
 							<SearchBar network={network} />
 						</div>
