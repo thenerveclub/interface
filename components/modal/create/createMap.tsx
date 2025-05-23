@@ -2,16 +2,14 @@
 
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import NerveGlobalABI from '../../../constants/abi/nerveGlobal.json';
 import usePlayerDataSearchList from '../../../hooks/searchData/usePlayerDataSearchList';
 import useBalanceTracker from '../../../hooks/useBalanceTracker';
 import { createTriggerSlice } from '../../../state/trigger/createTriggerSlice';
-import { CHAINS, getAddChainParameters } from '../../../utils/chains';
+import { CHAINS } from '../../../utils/chains';
 import { metaMask } from '../../../utils/connectors/metaMask';
-import Connect from '../menu/Connect';
 import ConnectModal from '../menu/ConnectModal';
 
 export default function CreateMapDare({ modalCoords, onClose }: { modalCoords: any; onClose: () => void }) {
@@ -86,12 +84,15 @@ export default function CreateMapDare({ modalCoords, onClose }: { modalCoords: a
 
 	return (
 		<div
-			className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-all duration-300 ${
+			className={`fixed inset-0 z-50 flex justify-center bg-black/50 backdrop-blur-sm transition-all duration-300 ${
 				showModal ? 'opacity-100' : 'opacity-0'
 			}`}
 			onClick={closeModal}
 		>
-			<div className="bg-white dark:bg-black p-6 w-[350px] rounded-2xl border border-secondary" onClick={(e) => e.stopPropagation()}>
+			<div
+				onClick={(e) => e.stopPropagation()}
+				className="bg-white dark:bg-black w-full h-screen md:max-h-[90vh] justify-center items-center m-auto md:w-[350px] p-6 rounded-none md:rounded-2xl border md:border-secondary flex flex-col justify-between overflow-y-auto"
+			>
 				<h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white text-center -mt-24 md:-mt-0">Create Task</h2>
 
 				<div className="mb-4">
@@ -226,6 +227,12 @@ export default function CreateMapDare({ modalCoords, onClose }: { modalCoords: a
 						<ConnectModal />
 					)}
 				</div>
+			</div>
+			{/* Close Button */}
+			<div className="absolute md:hidden bottom-5 mb-10 left-0 right-0 flex justify-center w-fit m-auto">
+				<button onClick={closeModal} className="px-4 py-2 bg-accent text-white rounded-md transition font-semibold">
+					Close
+				</button>
 			</div>
 		</div>
 	);
