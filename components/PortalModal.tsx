@@ -28,7 +28,7 @@ export default function PortalModal({ isOpen, children, onClose }: PortalModalPr
 
 	return createPortal(
 		<div
-			className={`fixed inset-0 z-50 flex justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
+			className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
 				isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
 			}`}
 			onClick={onClose}

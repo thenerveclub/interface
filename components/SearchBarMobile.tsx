@@ -72,19 +72,19 @@ const SearchBarMobile: React.FC<SearchBarMobileProps> = ({ network }) => {
 
 	return (
 		<div className="flex md:hidden">
-			<button onClick={() => setIsOpen(true)} className="p-2 text-white">
+			<button onClick={() => setIsOpen(true)} className="p-2 text-black dark:text-white">
 				<IoSearchSharp size={24} />
 			</button>
 
 			{isOpen && (
-				<div className="fixed inset-0 bg-background text-white z-50 p-4 overflow-y-auto flex flex-col">
+				<div className="fixed inset-0 bg-background z-50 p-4 overflow-y-auto flex flex-col">
 					<div className="flex justify-between items-center mb-4">
 						<input
 							type="text"
 							value={searchValue}
 							onChange={handleSearchChange}
 							placeholder="Search players and dares..."
-							className="w-full p-2 rounded border text-black dark:text-white border-secondary placeholder-secondary focus:outline-none focus:ring-0 focus:border-accent border-gray-400"
+							className="bg-transparent w-full p-2 rounded border text-black dark:text-white border-secondary placeholder-gray-400 dark:placeholder-gray-400 placeholder:text-md text-lg px-4 py-3 rounded-md focus:outline-none focus:ring-accent focus:border-transparent"
 						/>
 						{/* <button onClick={() => setIsOpen(false)} className="ml-2 text-white">
 							<CloseOutlined />
