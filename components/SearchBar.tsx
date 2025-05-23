@@ -102,7 +102,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 
 			{/* Modal */}
 			<PortalModal isOpen={open} onClose={handleModalToggle}>
-				<div className="bg-background rounded-lg shadow-lg p-6 w-full md:w-[75vw] md:border md:border-secondary h-screen md:h-auto justify-center items-center m-auto md:max-h-[90vh] overflow-hidden md:overflow-y-auto flex flex-col">
+				<div className="bg-background rounded-lg shadow-lg p-6 w-full md:w-[25vw] md:border md:border-secondary h-screen md:h-auto justify-center items-center m-auto md:max-h-[90vh] overflow-hidden md:overflow-y-auto flex flex-col">
+					<h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white text-center -mt-24 md:-mt-0">Search</h2>
 					<input
 						type="text"
 						value={searchValue}
@@ -110,14 +111,14 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 						onFocus={() => setListVisible(true)}
 						placeholder="Search players and dares..."
 						autoFocus
-						className="w-full bg-transparent text-black dark:text-white placeholder-secondary text-lg px-4 py-3 rounded-md focus:outline-none focus:ring-0 focus:border-accent border-gray-400"
+						className="w-full bg-transparent text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-400 placeholder:text-md text-lg px-4 py-3 rounded-md focus:outline-none focus:ring-0 focus:border-accent border-gray-400"
 					/>
 
 					{/* Dropdown List */}
 					{isListVisible && (
 						<div className="mt-2 rounded-md bg-background text-black dark:text-white max-h-[400px] w-full">
 							{searchValue.trim() === '' && searchHistory.length > 0 && (
-								<div className="px-4 py-2 text-md font-bold flex justify-between items-center">
+								<div className="px-4 py-3 text-md font-bold flex justify-between items-center">
 									<span>Recent Searches</span>
 									<button onClick={clearSearchHistory} type="button" className="hover:text-accent dark:hover:text-accent">
 										Clear
@@ -136,7 +137,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 											handleListDareItemClick(item.id, item.amount, item.participants);
 										}
 									}}
-									className={`group px-4 py-2 cursor-pointer transition text-sm 
+									className={`group px-4 py-3 cursor-pointer transition text-sm 
                 text-black dark:text-white 
                 ${index % 2 === 1 ? 'bg-zinc-200 dark:bg-zinc-900' : ''} 
                 hover:bg-secondary/20`}
@@ -161,12 +162,12 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 							{/* Player Search List */}
 							{(playerSearchList.length > 0 || dareSearchList.length > 0) && (
 								<>
-									{playerSearchList.length > 0 && <div className="px-4 py-2 text-xs font-bold text-secondary">Players</div>}
+									{playerSearchList.length > 0 && <div className="px-4 py-3 text-xs font-bold text-secondary">Players</div>}
 									{playerSearchList.map((player) => (
 										<div
 											key={player.id}
 											onClick={() => handleListPlayerItemClick(player.name, player.resolver?.addr?.id)}
-											className="px-4 py-2 cursor-pointer hover:bg-secondary/20 transition text-sm"
+											className="px-4 py-3 cursor-pointer hover:bg-secondary/20 transition text-sm"
 										>
 											<div>{player.name}</div>
 											<div className="text-xs text-muted">{player.resolver?.addr?.id}</div>
@@ -174,12 +175,12 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 									))}
 
 									{/* Dare Search List */}
-									{dareSearchList.length > 0 && <div className="px-4 py-2 text-xs font-bold text-secondary">Dares</div>}
+									{dareSearchList.length > 0 && <div className="px-4 py-3 text-xs font-bold text-secondary">Dares</div>}
 									{dareSearchList.map((dare) => (
 										<div
 											key={dare.id}
 											onClick={() => handleListDareItemClick(dare.description, dare.amount, dare.participants)}
-											className="px-4 py-2 cursor-pointer hover:bg-secondary/20 transition text-sm"
+											className="px-4 py-3 cursor-pointer hover:bg-secondary/20 transition text-sm"
 										>
 											<div>{dare.description.length > 25 ? `${dare.description.substring(0, 25)}...` : dare.description}</div>
 											<div className="text-xs text-muted">
@@ -193,12 +194,12 @@ const SearchBar: React.FC<SearchBarProps> = ({ network }) => {
 
 							{/* No players or dares found */}
 							{searchValue.trim() !== '' && playerSearchList.length === 0 && dareSearchList.length === 0 && (
-								<div className="px-4 py-2 text-xs text-muted text-center">No players or dares found.</div>
+								<div className="px-4 py-3 text-xs text-muted text-center">No players or dares found.</div>
 							)}
 
 							{/* Trending Players */}
 							{searchValue.trim() === '' && (
-								<div className="flex flex-col mt-8 px-4 py-2">
+								<div className="flex flex-col mt-8 px-4 py-3">
 									<div className="flex flex-col">
 										<div className="text-md font-semibold text-black dark:text-white mt-0 mb-2">Trending Players</div>
 										{trendingPlayersList.length > 0 ? (

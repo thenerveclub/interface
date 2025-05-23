@@ -34,7 +34,7 @@ export default function LeaderboardPage() {
 				<div className="flex justify-center items-center space-x-4 mt-10 mb-10">
 					<button
 						onClick={() => handleToggleChange('topEarners')}
-						className={`px-4 py-2 rounded-md text-sm 3xl:text-2xl font-medium border ${
+						className={`px-4 py-3 rounded-md text-sm 3xl:text-2xl font-medium border ${
 							leaderboardType === 'topEarners'
 								? 'bg-accent text-white border-accent'
 								: 'bg-transparent text-gray-400 dark:text-gray-400 border-gray-400 hover:border-accent hover:text-accent dark:hover:text-accent'
@@ -44,7 +44,7 @@ export default function LeaderboardPage() {
 					</button>
 					<button
 						onClick={() => handleToggleChange('topContributors')}
-						className={`px-4 py-2 rounded-md text-sm 3xl:text-2xl font-medium border ${
+						className={`px-4 py-3 rounded-md text-sm 3xl:text-2xl font-medium border ${
 							leaderboardType === 'topContributors'
 								? 'bg-accent text-white border-accent'
 								: 'bg-transparent text-gray-400 dark:text-gray-400 border-gray-400 hover:border-accent hover:text-accent dark:hover:text-accent'
@@ -54,7 +54,7 @@ export default function LeaderboardPage() {
 					</button>
 					<button
 						onClick={() => handleToggleChange('topDares')}
-						className={`px-4 py-2 rounded-md text-sm 3xl:text-2xl font-medium border ${
+						className={`px-4 py-3 rounded-md text-sm 3xl:text-2xl font-medium border ${
 							leaderboardType === 'topDares'
 								? 'bg-accent text-white border-accent'
 								: 'bg-transparent text-gray-400 dark:text-gray-400 border-gray-400 hover:border-accent hover:text-accent dark:hover:text-accent'

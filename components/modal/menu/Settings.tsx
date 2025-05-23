@@ -105,7 +105,7 @@ export default function SettingsModal() {
 
 			{/* Modal */}
 			<PortalModal isOpen={open} onClose={handleModalToggle}>
-				<div className="bg-background rounded-lg shadow-lg p-6 w-full md:w-96 md:border md:border-secondary h-screen md:h-auto justify-center items-center m-auto md:max-h-[90vh] overflow-hidden md:overflow-y-auto flex flex-col">
+				<div className="bg-background rounded-lg shadow-lg p-6 w-full md:w-[25vw] md:border md:border-secondary h-screen md:h-auto justify-center items-center m-auto md:max-h-[90vh] overflow-hidden md:overflow-y-auto flex flex-col">
 					<h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white text-center -mt-24 md:-mt-0">Settings</h2>
 
 					{/* Theme Toggle Buttons */}
@@ -114,7 +114,7 @@ export default function SettingsModal() {
 						<div className="flex items-center justify-between gap-2">
 							<button
 								onClick={handleUseSystemSetting}
-								className={`px-4 py-2 rounded-md text-sm font-medium border ${
+								className={`px-4 py-3 rounded-md text-sm font-medium border ${
 									currentTheme === 'system'
 										? 'bg-accent text-white border-accent'
 										: 'bg-transparent text-gray-400 dark:text-gray-400 border-gray-400 hover:border-accent hover:text-accent dark:hover:text-accent'
@@ -124,7 +124,7 @@ export default function SettingsModal() {
 							</button>
 							<button
 								onClick={handleSetLightTheme}
-								className={`px-4 py-2 rounded-md text-sm font-medium border ${
+								className={`px-4 py-3 rounded-md text-sm font-medium border ${
 									currentTheme === 'light'
 										? 'bg-accent text-white border-accent'
 										: 'bg-transparent text-gray-400 dark:text-gray-400 border-gray-400 hover:border-accent hover:text-accent dark:hover:text-accent'
@@ -134,7 +134,7 @@ export default function SettingsModal() {
 							</button>
 							<button
 								onClick={handleSetDarkTheme}
-								className={`px-4 py-2 rounded-md text-sm font-medium border ${
+								className={`px-4 py-3 rounded-md text-sm font-medium border ${
 									currentTheme === 'dark'
 										? 'bg-accent text-white border-accent'
 										: 'bg-transparent text-gray-400 dark:text-gray-400 border-gray-400 hover:border-accent hover:text-accent dark:hover:text-accent'
@@ -174,40 +174,75 @@ export default function SettingsModal() {
 					{/* RPC Selector */}
 					<div className="mt-6 mb-6 flex flex-col items-center justify-center">
 						<h3 className="text-lg font-semibold mb-2 text-black dark:text-white">RPC Endpoint</h3>
-						<select
-							value={rpcValue}
-							onChange={(e) => dispatch(rpcSlice.actions.updateRPC(e.target.value))}
-							className="bg-transparent text-gray-400 dark:text-gray-400 border-gray-400 hover:border-accent hover:text-accent dark:hover:text-accent rounded-md px-3 py-2 focus:outline-none focus:ring-0 focus:border-accent"
-						>
-							<option value="infura">Infura</option>
-							<option value="alchemy">Alchemy</option>
-							<option value="custom">Custom</option>
-						</select>
-						{rpcValue === 'custom' && (
-							<div className="mt-4">
+						<div className="relative w-full md:w-[250px] group z-10">
+							{/* Toggle Dropdown Button */}
+							<button
+								onClick={() => setMenuOpen(!menuOpen)}
+								className={`flex justify-between items-center w-full px-4 py-3 text-sm font-medium bg-transparent border rounded-lg shadow-lg transition-all hover:text-accent hover:border-accent dark:hover:text-accent dark:hover:border-accent ${
+									menuOpen
+										? 'border-accent text-accent dark:text-accent dark:border-accent'
+										: 'text-gray-400 dark:text-gray-400 border-gray-400 dark:border-gray-400'
+								}`}
+							>
+								<span>{rpcValue === 'infura' ? 'Infura' : rpcValue === 'alchemy' ? 'Alchemy' : rpcValue === 'custom' ? 'Custom' : 'Select RPC'}</span>
+								<svg
+									className={`w-5 h-5 transform transition-transform ${menuOpen ? 'rotate-180 text-accent' : 'rotate-0'}`}
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 20 20"
+									fill="currentColor"
+								>
+									<path
+										fillRule="evenodd"
+										d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+										clipRule="evenodd"
+									/>
+								</svg>
+							</button>
+
+							{/* Dropdown Menu */}
+							{menuOpen && (
+								<div className="absolute z-20 w-full mt-2 bg-white dark:bg-black border border-accent rounded-lg shadow-md text-black dark:text-white">
+									{['infura', 'alchemy', 'custom'].map((val) => (
+										<button
+											key={val}
+											onClick={() => {
+												dispatch(rpcSlice.actions.updateRPC(val));
+												setMenuOpen(false);
+											}}
+											className={`w-full text-left px-4 py-2 text-sm hover:bg-accent/10 hover:text-accent dark:hover:text-accent transition-all ${
+												rpcValue === val ? 'text-accent font-semibold' : ''
+											}`}
+										>
+											{val.charAt(0).toUpperCase() + val.slice(1)}
+										</button>
+									))}
+								</div>
+							)}
+
+							{/* Custom Input */}
+							<div className="mt-4 flex flex-col gap-2">
 								<input
 									type="text"
 									value={customRpcUrl}
 									onChange={handleCustomRpcChange}
-									className="w-full px-3 py-2 bg-transparent text-gray-400 dark:text-gray-400 border-gray-400 hover:border-accent hover:text-accent dark:hover:text-accent rounded-md focus:outline-none focus:ring-0 focus:border-accent"
+									className="w-full px-3 py-3 bg-transparent text-accent dark:text-accent border border-accent hover:border-accent hover:text-accent dark:hover:text-accent rounded-md focus:outline-none focus:ring-0 focus:border-accent disabled:opacity-50 disabled:cursor-not-allowed"
 									placeholder="Enter custom RPC URL"
+									disabled={rpcValue !== 'custom'}
 								/>
-								<button onClick={handleApplyCustomRpc} className="mt-2 px-4 py-2 bg-accent text-white rounded-md hover:bg-accent/80 transition">
-									Apply
+								<button
+									onClick={handleApplyCustomRpc}
+									className="mt-2 px-4 py-3 bg-accent text-white rounded-md hover:bg-accent/80 transition disabled:opacity-50 disabled:cursor-not-allowed"
+									disabled={customRpcUrl === customRPCValue}
+								>
+									{customRpcUrl === customRPCValue ? 'Applied' : 'Apply'}
 								</button>
 							</div>
-						)}
-						{/* Close Button */}
-						{/* <div className="hidden md:flex mt-16 mb-0 justify-center">
-							<button onClick={handleModalToggle} className="px-4 py-2 bg-accent text-white rounded-md transition font-semibold">
-								Close
-							</button>
-						</div> */}
+						</div>
 					</div>
 
 					{/* Close Button */}
 					<div className="absolute md:hidden bottom-5 mb-10 left-0 right-0 flex justify-center">
-						<button onClick={handleModalToggle} className="px-4 py-2 bg-accent text-white rounded-md transition font-semibold">
+						<button onClick={handleModalToggle} className="px-4 py-3 bg-accent text-white rounded-md transition font-semibold">
 							Close
 						</button>
 					</div>

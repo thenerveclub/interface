@@ -10,6 +10,7 @@ import useBalanceTracker from '../../../hooks/useBalanceTracker';
 import { createTriggerSlice } from '../../../state/trigger/createTriggerSlice';
 import { CHAINS } from '../../../utils/chains';
 import { metaMask } from '../../../utils/connectors/metaMask';
+import PortalModal from '../../PortalModal';
 import ConnectModal from '../menu/ConnectModal';
 
 export default function CreateMapDare({ modalCoords, onClose }: { modalCoords: any; onClose: () => void }) {
@@ -83,25 +84,20 @@ export default function CreateMapDare({ modalCoords, onClose }: { modalCoords: a
 	};
 
 	return (
-		<div
-			className={`fixed inset-0 z-50 flex justify-center bg-black/50 backdrop-blur-sm transition-all duration-300 ${
-				showModal ? 'opacity-100' : 'opacity-0'
-			}`}
-			onClick={closeModal}
-		>
+		<PortalModal isOpen={showModal} onClose={closeModal}>
 			<div
 				onClick={(e) => e.stopPropagation()}
-				className="bg-white dark:bg-black w-full h-screen md:max-h-[90vh] justify-center items-center m-auto md:w-[350px] p-6 rounded-none md:rounded-2xl border md:border-secondary flex flex-col justify-between overflow-y-auto"
+				className="bg-background rounded-lg shadow-lg p-6 w-full md:w-[25vw] md:border md:border-secondary h-screen md:h-auto justify-center items-center m-auto md:max-h-[90vh] overflow-hidden md:overflow-y-auto flex flex-col"
 			>
-				<h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white text-center -mt-24 md:-mt-0">Create Task</h2>
+				<h2 className="text-3xl font-bold mb-4 text-black dark:text-white text-center -mt-24 md:-mt-0">Create Task</h2>
 
-				<div className="mb-4">
-					<label className="block mb-1 text-sm font-medium">Player</label>
+				<div className="mb-4 w-full">
+					<label className="flex mb-1 text-sm font-medium text-black dark:text-white w-full">Player</label>
 					<input
 						type="text"
 						value={searchValue}
 						onChange={(e) => setSearchValue(e.target.value)}
-						className="w-full px-3 py-2 border border-gray-400 rounded-lg bg-white dark:bg-black text-sm focus:outline-none focus:ring-accent focus:border-transparent"
+						className="w-full px-3 py-3 border border-gray-400 rounded-lg bg-white dark:bg-black text-sm focus:outline-none focus:ring-accent focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-400 placeholder:text-sm text-black dark:text-white"
 						placeholder="Search player"
 					/>
 					{searchValue && (
@@ -109,7 +105,7 @@ export default function CreateMapDare({ modalCoords, onClose }: { modalCoords: a
 							{playerSearchList.map((player) => (
 								<li
 									key={player.id}
-									className="px-3 py-2 cursor-pointer text-black dark:text-white hover:text-accent dark:hover:text-accent"
+									className="px-3 py-3 cursor-pointer text-black dark:text-white hover:text-accent dark:hover:text-accent"
 									onClick={() => {
 										setSearchValue(player.userName);
 									}}
@@ -121,12 +117,12 @@ export default function CreateMapDare({ modalCoords, onClose }: { modalCoords: a
 					)}
 				</div>
 
-				<div className="mb-4">
-					<label className="block mb-1 text-sm font-medium">Select Network</label>
+				<div className="mb-4 w-full">
+					<label className="flex mb-1 text-sm font-medium text-black dark:text-white w-full">Select Network</label>
 					<select
 						value={network}
 						onChange={(e) => setNetwork(e.target.value)}
-						className="w-full px-3 py-2 border border-gray-400 rounded-lg bg-white dark:bg-black text-sm focus:outline-none focus:ring-accent focus:border-transparent"
+						className="w-full px-3 py-3 border border-gray-400 rounded-lg bg-white dark:bg-black text-sm focus:outline-none focus:ring-accent focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-400 placeholder:text-sm text-black dark:text-white"
 					>
 						<option value="" disabled>
 							Select a chain
@@ -139,9 +135,9 @@ export default function CreateMapDare({ modalCoords, onClose }: { modalCoords: a
 					</select>
 				</div>
 
-				<div className="mb-4">
-					<label className="block mb-1 text-sm font-medium">
-						<div className="flex items-center justify-between">
+				<div className="mb-4 w-full">
+					<label className="flex mb-1 text-sm font-medium text-black dark:text-white w-full">
+						<div className="flex items-center justify-between w-full">
 							<span>Entry Amount</span>
 							<span>Balance: {formatBalance(balance)}</span>
 						</div>
@@ -151,60 +147,62 @@ export default function CreateMapDare({ modalCoords, onClose }: { modalCoords: a
 							type="text"
 							value={value}
 							onChange={(e) => setValue(e.target.value)}
-							className="flex-1 px-3 py-2 border border-gray-400 rounded-l-lg bg-white dark:bg-black text-sm text-right focus:outline-none focus:ring-accent focus:border-transparent"
+							className="flex-1 px-3 py-3 border border-gray-400 rounded-l-lg bg-white dark:bg-black text-sm text-right focus:outline-none focus:ring-accent focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-400 placeholder:text-sm text-black dark:text-white"
 						/>
-						<button
-							type="button"
-							onClick={setMaxValue}
-							className="text-black dark:text-white bg-accent text-sm font-semibold px-3 py-2.5 rounded-r-lg"
-						>
+						<button type="button" onClick={setMaxValue} className="text-black dark:text-white bg-accent text-sm font-semibold px-3 py-3 rounded-r-lg">
 							Max
 						</button>
 					</div>
 				</div>
 
-				<div className="mb-4">
-					<label className="block mb-1 text-sm font-medium">Duration</label>
+				<div className="mb-4 w-full">
+					<label className="flex items-center justify-between mb-1 text-sm font-medium text-black dark:text-white w-full">
+						Duration
+						<span className="text-xs text-gray-400">Max 30 days</span>
+					</label>
 					<div className="grid grid-cols-3 gap-2">
 						<input
 							type="number"
 							placeholder="Days"
 							value={days}
 							onChange={(e) => setDays(validateInput(e.target.value, 30))}
-							className="px-3 py-2 border border-gray-400 rounded-l-lg bg-white dark:bg-black text-sm text-right focus:outline-none focus:ring-accent focus:border-transparent"
+							className="px-3 py-3 border border-gray-400 rounded-l-lg bg-white dark:bg-black text-sm text-right focus:outline-none focus:ring-accent focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-400 placeholder:text-sm text-black dark:text-white"
 						/>
 						<input
 							type="number"
 							placeholder="Hours"
 							value={hours}
 							onChange={(e) => setHours(validateInput(e.target.value, 23))}
-							className="px-3 py-2 border border-gray-400 bg-white dark:bg-black text-sm text-right focus:outline-none focus:ring-accent focus:border-transparent"
+							className="px-3 py-3 border border-gray-400 bg-white dark:bg-black text-sm text-right focus:outline-none focus:ring-accent focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-400 placeholder:text-sm text-black dark:text-white"
 						/>
 						<input
 							type="number"
 							placeholder="Minutes"
 							value={minutes}
 							onChange={(e) => setMinutes(validateInput(e.target.value, 59))}
-							className="px-3 py-2 border border-gray-400 rounded-r-lg bg-white dark:bg-black text-sm text-right focus:outline-none focus:ring-accent focus:border-transparent"
+							className="px-3 py-3 border border-gray-400 rounded-r-lg bg-white dark:bg-black text-sm text-right focus:outline-none focus:ring-accent focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-400 placeholder:text-sm text-black dark:text-white"
 						/>
 					</div>
 				</div>
 
-				<div className="mb-4">
-					<label className="block mb-1 text-sm font-medium">Description</label>
+				<div className="mb-4 w-full">
+					<label className="flex mb-1 text-sm font-medium text-black dark:text-white w-full">Description</label>
 					<textarea
 						rows={3}
 						maxLength={100}
 						value={description}
 						onChange={(e) => setDescription(e.target.value)}
-						className="w-full px-3 py-2 border border-gray-400 rounded-lg bg-white dark:bg-black text-sm focus:outline-none focus:ring-accent focus:border-transparent"
+						className="w-full px-3 py-3 border border-gray-400 rounded-lg bg-white dark:bg-black text-sm focus:outline-none focus:ring-accent focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-400 placeholder:text-sm text-black dark:text-white"
 						placeholder="Do you dare..."
 					/>
 					<div className="text-right text-xs text-gray-400">{description.length}/100</div>
 				</div>
 
-				<div className="mb-2 text-sm">Lat: {modalCoords.lat}</div>
-				<div className="mb-4 text-sm">Lng: {modalCoords.lng}</div>
+				<div className="mb-4 w-full text-black dark:text-white">
+					<label className="flex mb-1 text-sm font-medium">Location</label>
+					<div className="mb-2 text-sm">Lat: {modalCoords.lat}</div>
+					<div className="mb-4 text-sm">Lng: {modalCoords.lng}</div>
+				</div>
 
 				<div className="flex justify-center">
 					{account ? (
@@ -212,14 +210,14 @@ export default function CreateMapDare({ modalCoords, onClose }: { modalCoords: a
 							<button
 								onClick={onCreateTask}
 								disabled={pendingTx || !value || value === '0'}
-								className={`px-4 py-2 rounded-lg text-white font-semibold ${
+								className={`px-4 py-3 rounded-lg text-white font-semibold ${
 									pendingTx ? 'bg-gray-400 cursor-not-allowed' : 'bg-accent hover:bg-accent/80'
 								}`}
 							>
 								{pendingTx ? 'Pending...' : 'Create Task'}
 							</button>
 						) : (
-							<button onClick={handleNetworkChange} className="px-4 py-2 rounded-lg bg-accent hover:bg-accent/80 text-white font-semibold">
+							<button onClick={handleNetworkChange} className="px-4 py-3 rounded-lg bg-accent hover:bg-accent/80 text-white font-semibold">
 								Change Network
 							</button>
 						)
@@ -228,12 +226,13 @@ export default function CreateMapDare({ modalCoords, onClose }: { modalCoords: a
 					)}
 				</div>
 			</div>
-			{/* Close Button */}
+
+			{/* Mobile Close Button */}
 			<div className="absolute md:hidden bottom-5 mb-10 left-0 right-0 flex justify-center w-fit m-auto">
-				<button onClick={closeModal} className="px-4 py-2 bg-accent text-white rounded-md transition font-semibold">
+				<button onClick={closeModal} className="px-4 py-3 bg-accent text-white rounded-md transition font-semibold">
 					Close
 				</button>
 			</div>
-		</div>
+		</PortalModal>
 	);
 }

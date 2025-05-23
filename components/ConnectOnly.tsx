@@ -41,7 +41,7 @@ export function ConnectOnly({
 	if (error) {
 		return (
 			<div style={{ display: 'flex', flexDirection: 'column' }}>
-				<div className="bg-secondary text-white py-2 px-4 rounded-lg mt-2 hover:bg-secondary flex justify-center items-center" onClick={onClick}>
+				<div className="bg-secondary text-white py-3 px-4 rounded-lg mt-2 hover:bg-secondary flex justify-center items-center" onClick={onClick}>
 					Try {getName(connector)} again?
 				</div>
 			</div>
@@ -49,7 +49,7 @@ export function ConnectOnly({
 	} else if (isActivating) {
 		return (
 			<div style={{ display: 'flex', flexDirection: 'column' }}>
-				<div className="bg-secondary text-white py-2 px-4 rounded-lg mt-2 hover:bg-secondary flex justify-center items-center" onClick={onClick}>
+				<div className="bg-secondary text-white py-3 px-4 rounded-lg mt-2 hover:bg-secondary flex justify-center items-center" onClick={onClick}>
 					Connecting
 				</div>
 			</div>
@@ -58,7 +58,7 @@ export function ConnectOnly({
 		return (
 			<div style={{ display: 'flex', flexDirection: 'column' }}>
 				<div
-					className="bg-secondary text-white py-2 px-4 rounded-lg mt-2 hover:bg-secondary flex justify-center items-center"
+					className="bg-secondary text-white py-3 px-4 rounded-lg mt-2 hover:bg-secondary flex justify-center items-center"
 					onClick={() => {
 						if (connector?.deactivate) {
 							void connector.deactivate();
@@ -76,7 +76,7 @@ export function ConnectOnly({
 			<>
 				<div style={{ display: 'flex', flexDirection: 'column' }}>
 					<div
-						className="bg-secondary text-white py-2 px-4 rounded-lg mt-2 hover:bg-secondary flex justify-center items-center"
+						className="bg-secondary text-white py-3 px-4 rounded-lg mt-2 hover:bg-secondary flex justify-center items-center"
 						onClick={
 							isActivating
 								? undefined

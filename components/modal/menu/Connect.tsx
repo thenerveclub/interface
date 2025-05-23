@@ -51,7 +51,7 @@ const ConnectModal = () => {
 
 			{/* Modal */}
 			<PortalModal isOpen={open} onClose={handleModalToggle}>
-				<div className="bg-background rounded-lg shadow-lg p-6 w-full md:w-96 md:border md:border-secondary h-screen md:h-auto justify-center items-center m-auto md:max-h-[90vh] overflow-hidden md:overflow-y-auto flex flex-col">
+				<div className="bg-background rounded-lg shadow-lg p-6 w-full md:w-[25vw] md:border md:border-secondary h-screen md:h-auto justify-center items-center m-auto md:max-h-[90vh] overflow-hidden md:overflow-y-auto flex flex-col">
 					<h2 className="text-3xl font-bold -mt-24 md:-mt-0 mb-4 text-gray-900 dark:text-white text-center">Connect</h2>
 
 					{/* Wallet Connect Buttons */}

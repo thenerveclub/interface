@@ -83,16 +83,16 @@ export default function Header() {
 
 			<motion.div
 				ref={headerRef}
-				className={`flex md:hidden fixed top-0 left-0 right-0 h-16 bg-black z-50 items-center justify-center m-0 p-0 ${
-					isScrolled ? 'backdrop-blur-lg bg-black/50' : 'bg-transparent'
+				className={`flex md:hidden fixed top-0 left-0 right-0 h-16 bg-transparent z-50 items-center justify-center m-0 p-0 ${
+					isScrolled || isMap ? 'backdrop-blur-lg bg-black/50' : 'bg-transparent'
 				}`}
 			>
 				<div className="flex items-center justify-between w-full">
-					{!isMap && (
-						<Link href="/" passHref>
-							<h1 className="font-bold text-2xl text-black dark:text-white ml-4">THE NERVE CLUB</h1>
-						</Link>
-					)}
+					{/* {!isMap && ( */}
+					<Link href="/" passHref>
+						<h1 className="font-bold text-2xl text-black dark:text-white ml-4">THE NERVE CLUB</h1>
+					</Link>
+					{/* )} */}
 				</div>
 				<div className="flex items-center mr-4">
 					<Setting />
