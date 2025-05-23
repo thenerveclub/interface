@@ -11,6 +11,8 @@ import useBalanceTracker from '../../../hooks/useBalanceTracker';
 import { createTriggerSlice } from '../../../state/trigger/createTriggerSlice';
 import { CHAINS, getAddChainParameters } from '../../../utils/chains';
 import { metaMask } from '../../../utils/connectors/metaMask';
+import Connect from '../menu/Connect';
+import ConnectModal from '../menu/ConnectModal';
 
 export default function CreateMapDare({ modalCoords, onClose }: { modalCoords: any; onClose: () => void }) {
 	const { account, provider } = useWeb3React();
@@ -90,7 +92,7 @@ export default function CreateMapDare({ modalCoords, onClose }: { modalCoords: a
 			onClick={closeModal}
 		>
 			<div className="bg-white dark:bg-black p-6 w-[350px] rounded-2xl border border-secondary" onClick={(e) => e.stopPropagation()}>
-				<h2 className="text-lg font-bold text-center mb-4">Create Task</h2>
+				<h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white text-center -mt-24 md:-mt-0">Create Task</h2>
 
 				<div className="mb-4">
 					<label className="block mb-1 text-sm font-medium">Player</label>
@@ -98,15 +100,15 @@ export default function CreateMapDare({ modalCoords, onClose }: { modalCoords: a
 						type="text"
 						value={searchValue}
 						onChange={(e) => setSearchValue(e.target.value)}
-						className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white dark:bg-zinc-800 text-sm"
+						className="w-full px-3 py-2 border border-gray-400 rounded-lg bg-white dark:bg-black text-sm focus:outline-none focus:ring-accent focus:border-transparent"
 						placeholder="Search player"
 					/>
 					{searchValue && (
-						<ul className="mt-2 max-h-40 overflow-y-auto border border-accent rounded-lg bg-white dark:bg-zinc-800 text-sm">
+						<ul className="mt-2 max-h-full border border-accent rounded-lg bg-white dark:bg-black text-sm">
 							{playerSearchList.map((player) => (
 								<li
 									key={player.id}
-									className="px-3 py-2 hover:bg-yellow-100 dark:hover:bg-yellow-900 cursor-pointer"
+									className="px-3 py-2 cursor-pointer text-black dark:text-white hover:text-accent dark:hover:text-accent"
 									onClick={() => {
 										setSearchValue(player.userName);
 									}}
@@ -123,7 +125,7 @@ export default function CreateMapDare({ modalCoords, onClose }: { modalCoords: a
 					<select
 						value={network}
 						onChange={(e) => setNetwork(e.target.value)}
-						className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white dark:bg-zinc-800 text-sm"
+						className="w-full px-3 py-2 border border-gray-400 rounded-lg bg-white dark:bg-black text-sm focus:outline-none focus:ring-accent focus:border-transparent"
 					>
 						<option value="" disabled>
 							Select a chain
@@ -137,15 +139,24 @@ export default function CreateMapDare({ modalCoords, onClose }: { modalCoords: a
 				</div>
 
 				<div className="mb-4">
-					<label className="block mb-1 text-sm font-medium">Entry Amount (Balance: {formatBalance(balance)})</label>
+					<label className="block mb-1 text-sm font-medium">
+						<div className="flex items-center justify-between">
+							<span>Entry Amount</span>
+							<span>Balance: {formatBalance(balance)}</span>
+						</div>
+					</label>
 					<div className="flex items-center">
 						<input
 							type="text"
 							value={value}
 							onChange={(e) => setValue(e.target.value)}
-							className="flex-1 px-3 py-2 border border-gray-300 rounded-l-lg bg-white dark:bg-zinc-800 text-sm text-right"
+							className="flex-1 px-3 py-2 border border-gray-400 rounded-l-lg bg-white dark:bg-black text-sm text-right focus:outline-none focus:ring-accent focus:border-transparent"
 						/>
-						<button type="button" onClick={setMaxValue} className="px-3 py-2 bg-accent text-black rounded-r-lg text-sm font-semibold">
+						<button
+							type="button"
+							onClick={setMaxValue}
+							className="text-black dark:text-white bg-accent text-sm font-semibold px-3 py-2.5 rounded-r-lg"
+						>
 							Max
 						</button>
 					</div>
@@ -159,21 +170,21 @@ export default function CreateMapDare({ modalCoords, onClose }: { modalCoords: a
 							placeholder="Days"
 							value={days}
 							onChange={(e) => setDays(validateInput(e.target.value, 30))}
-							className="px-3 py-2 border border-gray-300 rounded-lg bg-white dark:bg-zinc-800 text-sm"
+							className="px-3 py-2 border border-gray-400 rounded-l-lg bg-white dark:bg-black text-sm text-right focus:outline-none focus:ring-accent focus:border-transparent"
 						/>
 						<input
 							type="number"
 							placeholder="Hours"
 							value={hours}
 							onChange={(e) => setHours(validateInput(e.target.value, 23))}
-							className="px-3 py-2 border border-gray-300 rounded-lg bg-white dark:bg-zinc-800 text-sm"
+							className="px-3 py-2 border border-gray-400 bg-white dark:bg-black text-sm text-right focus:outline-none focus:ring-accent focus:border-transparent"
 						/>
 						<input
 							type="number"
 							placeholder="Minutes"
 							value={minutes}
 							onChange={(e) => setMinutes(validateInput(e.target.value, 59))}
-							className="px-3 py-2 border border-gray-300 rounded-lg bg-white dark:bg-zinc-800 text-sm"
+							className="px-3 py-2 border border-gray-400 rounded-r-lg bg-white dark:bg-black text-sm text-right focus:outline-none focus:ring-accent focus:border-transparent"
 						/>
 					</div>
 				</div>
@@ -185,7 +196,7 @@ export default function CreateMapDare({ modalCoords, onClose }: { modalCoords: a
 						maxLength={100}
 						value={description}
 						onChange={(e) => setDescription(e.target.value)}
-						className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white dark:bg-zinc-800 text-sm"
+						className="w-full px-3 py-2 border border-gray-400 rounded-lg bg-white dark:bg-black text-sm focus:outline-none focus:ring-accent focus:border-transparent"
 						placeholder="Do you dare..."
 					/>
 					<div className="text-right text-xs text-gray-400">{description.length}/100</div>
@@ -195,20 +206,24 @@ export default function CreateMapDare({ modalCoords, onClose }: { modalCoords: a
 				<div className="mb-4 text-sm">Lng: {modalCoords.lng}</div>
 
 				<div className="flex justify-center">
-					{chainId === Number(network) ? (
-						<button
-							onClick={onCreateTask}
-							disabled={pendingTx || !value || value === '0'}
-							className={`px-4 py-2 rounded-lg text-white font-semibold ${
-								pendingTx ? 'bg-gray-400 cursor-not-allowed' : 'bg-accent hover:bg-accent/80'
-							}`}
-						>
-							{pendingTx ? 'Pending...' : 'Create Task'}
-						</button>
+					{account ? (
+						chainId === Number(network) ? (
+							<button
+								onClick={onCreateTask}
+								disabled={pendingTx || !value || value === '0'}
+								className={`px-4 py-2 rounded-lg text-white font-semibold ${
+									pendingTx ? 'bg-gray-400 cursor-not-allowed' : 'bg-accent hover:bg-accent/80'
+								}`}
+							>
+								{pendingTx ? 'Pending...' : 'Create Task'}
+							</button>
+						) : (
+							<button onClick={handleNetworkChange} className="px-4 py-2 rounded-lg bg-accent hover:bg-accent/80 text-white font-semibold">
+								Change Network
+							</button>
+						)
 					) : (
-						<button onClick={handleNetworkChange} className="px-4 py-2 rounded-lg bg-accent hover:bg-accent/80 text-white font-semibold">
-							Change Network
-						</button>
+						<ConnectModal />
 					)}
 				</div>
 			</div>
