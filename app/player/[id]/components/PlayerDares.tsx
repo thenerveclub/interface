@@ -1,618 +1,161 @@
-import styled from '@emotion/styled';
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import { Box, Button, Skeleton, Tab, Tabs, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+'use client';
+
+import { PeopleAlt } from '@mui/icons-material';
 import Link from 'next/link';
 import router from 'next/router';
 import { useEffect, useState } from 'react';
 import { SiEthereum, SiGooglemaps, SiPolygon } from 'react-icons/si';
 import { useDispatch, useSelector } from 'react-redux';
+
 import SelectFilter from '../../../../components/SelectFilter';
 import SelectSort from '../../../../components/SelectSort';
 import CreateAtPlayer from '../../../../components/modal/create/createAtPlayer';
-import Connect from '../../../../components/modal/menu/Connect';
 import useActivePlayerTasks from '../../../../hooks/playerData/useActivePlayerTasks';
 import useCompletedPlayerTasks from '../../../../hooks/playerData/useCompletedPlayerTasks';
 import { currencySlice } from '../../../../state/currency/currencySlice';
 import { CHAINS } from '../../../../utils/chains';
 
-const ActiveBox = styled(Box)`
-	display: flex;
-	width: 100%;
-	margin: 2.5rem auto 0 auto;
-	border-bottom: 1px solid rgba(128, 128, 138, 1);
-
-	@media (max-width: 750px) {
-		width: fit-content;
-		justify-content: center;
-		align-items: center;
-	}
-`;
-
-const StyledTabs = styled(Tabs)<{ theme: any }>`
-	// target child element
-	& .MuiTabs-indicator {
-		background-color: ${({ theme }) => theme.palette.warning.main};
-	}
-
-	@media (max-width: 750px) {
-		width: 100%;
-		justify-content: center;
-		align-items: center;
-	}
-`;
-
-const StyledTab = styled(Tab)<{ theme: any }>`
-	font-size: 1rem;
-	font-weight: 400;
-	text-transform: none;
-	min-width: 10rem;
-	color: ${({ theme }) => theme.palette.secondary.main};
-	background-color: transparent;
-
-	&.Mui-selected {
-		color: ${({ theme }) => theme.palette.text.primary};
-		font-weight: 500;
-		font-size: 1rem;
-	}
-`;
-
-const PanelBox = styled(Box)`
-	margin: 1rem auto 0 auto;
-`;
-
-const ActiveFilterBox = styled(Box)`
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
-	width: 100%;
-	height: 40px;
-
-	@media (max-width: 750px) {
-		flex-direction: column;
-		height: auto;
-	}
-`;
-
-const ActiveTabLeftSection = styled(Box)`
-	min-width: 50%;
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-start;
-`;
-
-const ActiveTabRightSection = styled(Box)`
-	// min-width: 100%;
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	// gap: 1rem;
-	margin: 0 0 0 auto;
-
-	// & > :not(:last-child) {
-	// 	margin-right: 1rem;
-	// }
-
-	@media (max-width: 750px) {
-		min-width: auto;
-		flex-direction: row;
-		justify-content: center;
-		margin: 0 auto 0 auto;
-		gap: 0.5rem;
-	}
-`;
-
-const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{ theme: any }>`
-	background-color: transparent;
-	height: 35px;
-	width: 150px;
-	margin-left: 1rem;
-	cursor: not-allowed;
-
-	& .MuiToggleButton-root {
-		&:hover {
-			background-color: transparent;
-			border: 1px solid ${({ theme }) => theme.palette.warning.main};
-			border-left: 1px solid ${({ theme }) => theme.palette.warning.main};
-		}
-	}
-
-	@media (max-width: 750px) {
-		display: flex;
-		justify-content: center;
-		margin: 0.5rem auto 0 auto;
-	}
-`;
-
-const StyledToggleButton = styled(ToggleButton)<{ theme: any }>`
-	color: ${({ theme }) => theme.palette.secondary.main};
-	background-color: transparent;
-	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
-	border-radius: ${({ theme }) => theme.customShape.borderRadius};
-	cursor: pointer;
-	// font-size: 1rem;
-	font-weight: 500;
-	width: 150px;
-
-	&.Mui-selected {
-		color: ${({ theme }) => theme.palette.text.primary};
-		background-color: transparent;
-		border: 1px solid ${({ theme }) => theme.palette.secondary.main};
-	}
-`;
-
-const CreateTaskBox = styled(Box)`
-	display: flex;
-	// justify-content: flex-end;
-
-	@media (max-width: 750px) {
-		display: none;
-		visibility: hidden;
-	}
-`;
-
-const ActiveTabSection = styled(Box)`
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	align-items: center;
-	justify-content: space-evenly;
-	margin: 1rem auto 5rem auto;
-	gap: 2rem;
-	min-width: 100%;
-
-	@media (max-width: 750px) {
-		flex-direction: column;
-		margin: 1rem auto 5rem auto;
-		width: 100%;
-	}
-`;
-
-const TaskCard = styled(Box)<{ theme: any }>`
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	align-items: center;
-	margin: 0 auto 0 auto;
-	min-width: 450px;
-	max-width: 450px;
-	min-height: 300px;
-	max-height: 300px;
-	background-color: ${({ theme }) => theme.palette.background.default};
-	border: 0.5px solid ${({ theme }) => theme.palette.secondary.main};
-	border-radius: ${({ theme }) => theme.customShape.borderRadius};
-	padding: 1rem;
-
-	@media (max-width: 750px) {
-		min-width: 350px;
-		max-width: 350px;
-	}
-
-	@media (max-width: 750px) {
-		min-width: 90vw;
-		max-width: 90vw;
-	}
-`;
-
-const StyledInfo = styled.div<{ theme: any }>`
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: center;
-	width: 100%;
-	margin: 0 auto 0 auto;
-
-	@media (max-width: 750px) {
-	}
-`;
-
-const StyledMap = styled.div<{ theme: any }>`
-	display: flex;
-	justify-content: left;
-	align-items: center;
-	width: fit-content;
-	margin: 0 auto 0 0;
-	height: 35px;
-	color: rgba(255, 255, 255, 0.75);
-	font-size: 0.925rem;
-	background-color: rgba(134, 134, 139, 0.25);
-	border-radius: 12px;
-	padding: 0.5rem;
-	color: ${({ theme }) => theme.palette.text.primary};
-	cursor: default;
-
-	&:hover {
-		cursor: pointer;
-	}
-`;
-
-const StyledNetwork = styled.div<{ theme: any }>`
-	display: flex;
-	justify-content: right;
-	align-items: center;
-	width: fit-content;
-	margin: 0 0 0 auto;
-	height: 35px;
-	color: rgba(255, 255, 255, 0.75);
-	font-size: 0.925rem;
-	background-color: rgba(134, 134, 139, 0.25);
-	border-radius: 12px;
-	padding: 0.5rem;
-	color: ${({ theme }) => theme.palette.text.primary};
-	cursor: default;
-`;
-
-const TaskBoxSection = styled(Box)`
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin: 0 auto 0 auto;
-	height: 100%;
-	flex-grow: 1;
-
-	p {
-		font-size: 1rem;
-		text-align: center;
-	}
-
-	@media (max-width: 750px) {
-	}
-`;
-
-const TaskBoxSectionOne = styled(Box)`
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	height: 25px;
-	width: 100%;
-	margin: 0 auto 0 auto;
-	padding: 0;
-
-	p {
-		display: flex;
-		height: 25px;
-		font-size: 1rem;
-		cursor: default;
-		margin: 0;
-	}
-
-	@media (max-width: 750px) {
-	}
-`;
-
-const TaskBoxSectionTwo = styled(Box)`
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	height: 25px;
-	width: 100%;
-	margin: 0 auto 0 auto;
-	padding: 0;
-
-	p {
-		display: flex;
-		height: 25px;
-		font-size: 1rem;
-		cursor: default;
-		margin: 0;
-	}
-
-	@media (max-width: 750px) {
-	}
-`;
-
-const BottomContainer = styled.div`
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	width: 100%;
-	margin: 0 auto 0 auto;
-`;
-
-const TaskButton = styled(Button)`
-	color: #fff;
-	width: 100%;
-	font-size: 16px;
-	margin: 0.5rem auto 0 auto;
-	text-transform: none;
-	background-color: rgba(255, 127.5, 0, 1);
-
-	&:hover {
-		background-color: rgba(255, 127.5, 0, 1);
-	}
-`;
-
-interface TabPanelProps {
-	children?: React.ReactNode;
-	index: number;
-	value: number;
-}
-
 interface PlayerDaresProps {
-	recipientAddress: any;
-	recipientENS: any;
+	recipientAddress: string;
+	recipientENS: string;
 	error: any;
 }
 
-const PlayerDares: React.FC<PlayerDaresProps> = ({ recipientAddress, recipientENS, error }) => {
-	const theme = useTheme();
-
-	// Redux
+export default function PlayerDares({ recipientAddress, recipientENS, error }: PlayerDaresProps) {
 	const dispatch = useDispatch();
-	const account = useSelector((state: { account: string }) => state.account);
-	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
-	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
-	const sort = useSelector((state: { sort: number }) => state.sort);
-	const filter = useSelector((state: { filter: number[] }) => state.filter);
+	const account = useSelector((state: any) => state.account);
+	const currencyValue = useSelector((state: any) => state.currency);
+	const currencyPrice = useSelector((state: any) => state.currencyPrice);
+	const sort = useSelector((state: any) => state.sort);
+	const filter = useSelector((state: any) => state.filter);
 
-	// console.log('filter', selectedChains);
-	function getChainLogoComponent(chainId) {
-		if (!chainId) return null;
-
-		const LogoComponent = {
-			1: <SiEthereum size={32} color="#627EEA" />,
-			11155111: <SiEthereum size={32} color="#627EEA" />,
-			137: <SiPolygon size={32} color="#627EEA" />,
-		}[chainId];
-
-		return <LogoComponent style={{ display: 'flex', marginRight: '8px' }} width="18" height="18" alt="Logo" />;
-	}
-
-	// Toogle Button For Token Price
-	const handleToggle = (event, newCurrency) => {
-		// update currencyValue in redux
-		dispatch(currencySlice.actions.updateCurrency(newCurrency));
-	};
-
-	// Active Player Tasks
 	const activePlayerTasks = useActivePlayerTasks(recipientAddress);
 	const completedPlayerTasks = useCompletedPlayerTasks(recipientAddress);
 
+	const [tab, setTab] = useState(1);
 	const [filteredActiveTasks, setFilteredActiveTasks] = useState([]);
 	const [filteredCompletedTasks, setFilteredCompletedTasks] = useState([]);
 
-	// console.log('filteredActiveTasks', filteredActiveTasks);
-
-	// Tab Panel
-	function TabPanel(props: TabPanelProps) {
-		const { children, value, index, ...other } = props;
-
-		return (
-			<div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
-				{value === index && <PanelBox>{children}</PanelBox>}
-			</div>
-		);
-	}
-
-	const [tabValue, setTabValue] = useState(1);
-	const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-		setTabValue(newValue);
-	};
-
 	useEffect(() => {
-		// Combine tasks from all chains into a single array
-		const combineTasks = (allTasks) => {
-			return Object.values(allTasks).flat();
-		};
+		const combine = (allTasks: any) => Object.values(allTasks).flat();
 
-		// Create a function that returns sorted tasks based on the sort option
-		const sortTasks = (tasks, sortOption) => {
+		const sortTasks = (tasks: any[], sortType: number) => {
 			if (!tasks) return [];
-			switch (sortOption) {
-				case 1:
-					return [...tasks].sort((a, b) => a.amount - b.amount);
-				case 2:
-					return [...tasks].sort((a, b) => b.amount - a.amount);
-				case 3:
-					return [...tasks].sort((a, b) => a.participants - b.participants);
-				case 4:
-					return [...tasks].sort((a, b) => b.participants - a.participants);
-				case 5:
-					return [...tasks].sort((a, b) => a.entranceAmount - b.entranceAmount);
-				case 6:
-					return [...tasks].sort((a, b) => b.entranceAmount - a.entranceAmount);
-				default:
-					return tasks; // return original tasks if no sort option matches
-			}
+			const sorterMap = {
+				1: (a, b) => a.amount - b.amount,
+				2: (a, b) => b.amount - a.amount,
+				3: (a, b) => a.participants - b.participants,
+				4: (a, b) => b.participants - a.participants,
+				5: (a, b) => a.entranceAmount - b.entranceAmount,
+				6: (a, b) => b.entranceAmount - a.entranceAmount,
+			};
+			return [...tasks].sort(sorterMap[sortType] || (() => 0));
 		};
 
-		// Filter tasks by selected chains
-		const filterBySelectedChains = (tasks, selectedChains) => {
-			return tasks.filter((task) => {
-				const taskChainIdNum = Number(task.chainId); // Convert to number
-				return selectedChains?.includes(taskChainIdNum);
-			});
+		const filterChains = (tasks: any[], selected: number[]) => {
+			return tasks.filter((task) => selected.includes(Number(task.chainId)));
 		};
 
-		// Combine, sort, and then filter tasks
-		const combinedActiveTasks = combineTasks(activePlayerTasks);
-		const combinedCompletedTasks = combineTasks(completedPlayerTasks);
+		const sortedActive = sortTasks(combine(activePlayerTasks), sort);
+		const sortedCompleted = sortTasks(combine(completedPlayerTasks), sort);
 
-		const sortedActiveTasks = sortTasks(combinedActiveTasks, sort);
-		const sortedCompletedTasks = sortTasks(combinedCompletedTasks, sort);
+		setFilteredActiveTasks(filterChains(sortedActive, filter));
+		setFilteredCompletedTasks(filterChains(sortedCompleted, filter));
+	}, [sort, activePlayerTasks, completedPlayerTasks, filter]);
 
-		const filteredActiveTasks = filterBySelectedChains(sortedActiveTasks, filter);
-		const filteredCompletedTasks = filterBySelectedChains(sortedCompletedTasks, filter);
+	const formatCrypto = (value) => (Number(value) / 1e18).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
 
-		// Update the state with the filtered and sorted tasks
-		setFilteredActiveTasks(filteredActiveTasks);
-		setFilteredCompletedTasks(filteredCompletedTasks);
-	}, [sort, activePlayerTasks, completedPlayerTasks, filter]); // Include 'selectedChains' in the dependencies array
+	const formatNumber = (value) => (Number(value) / 1e18).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-	function formatCrypto(value) {
-		return (Number(value) / 1e18).toLocaleString('en-US', {
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 4,
-		});
-	}
+	const getChainLogo = (id) =>
+		id === 1 || id === 11155111 ? <SiEthereum size={18} className="mr-1" /> : id === 137 ? <SiPolygon size={18} className="mr-1" /> : null;
 
-	function formatNumber(value) {
-		return (Number(value) / 1e18).toLocaleString('en-US', {
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 2,
-		});
-	}
-
-	// Function to handle map click
-	const handleMapClick = (latitude, longitude) => {
-		router.push(`/map?lat=${latitude}&lng=${longitude}`);
-	};
+	const handleMapClick = (lat, lng) => router.push(`/map?lat=${lat}&lng=${lng}`);
 
 	return (
 		<>
-			<ActiveBox>
-				<StyledTabs theme={theme} value={tabValue} onChange={handleChange}>
-					<StyledTab theme={theme} value={1} label="Active Tasks" />
-					<StyledTab theme={theme} value={2} label="Completed Tasks" />
-				</StyledTabs>
-			</ActiveBox>
-			<TabPanel value={tabValue} index={1}>
-				<ActiveFilterBox>
-					{/* <ActiveTabLeftSection></ActiveTabLeftSection> */}
-					<ActiveTabRightSection>
-						{/* // Filter StyledSection */}
-						<SelectFilter />
-						<SelectSort />
+			<div className="w-full border-b border-secondary mt-10">
+				<div className="flex justify-center gap-4 text-sm font-medium">
+					<button onClick={() => setTab(1)} className={`py-2 ${tab === 1 ? 'text-primary border-b-2 border-primary' : 'text-gray-500'}`}>
+						Active Tasks
+					</button>
+					<button onClick={() => setTab(2)} className={`py-2 ${tab === 2 ? 'text-primary border-b-2 border-primary' : 'text-gray-500'}`}>
+						Completed Tasks
+					</button>
+				</div>
+			</div>
 
-						{/* <StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
-							<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
-								ETH
-							</StyledToggleButton>
-							<StyledToggleButton theme={theme} disabled={currencyValue === true} value={true}>
-								<a>USD</a>
-							</StyledToggleButton>
-						</StyledToggleButtonGroup> */}
-						{!error && (
-							<CreateTaskBox>
-								{account && account.toLowerCase() !== recipientAddress && (
-									<CreateAtPlayer recipientAddress={recipientAddress} recipientENS={recipientENS} />
-								)}
-							</CreateTaskBox>
+			{/* Filters */}
+			<div className="w-full flex flex-col sm:flex-row justify-center items-center gap-4 mt-6">
+				<SelectFilter />
+				<SelectSort />
+				{/* Optional toggle for USD/ETH */}
+				{!error && (
+					<div className="hidden sm:flex ml-auto">
+						{account && account.toLowerCase() !== recipientAddress.toLowerCase() && (
+							<CreateAtPlayer recipientAddress={recipientAddress} recipientENS={recipientENS} />
 						)}
-					</ActiveTabRightSection>
-				</ActiveFilterBox>
-				<ActiveTabSection>
-					{filteredActiveTasks.map((tad) => (
-						<li style={{ listStyle: 'none' }} key={`${tad.chainId}-${tad.id}`}>
-							<TaskCard theme={theme}>
-								<StyledInfo theme={theme}>
-									{tad?.latitude && tad?.longitude !== '0' && (
-										<StyledMap theme={theme} onClick={() => handleMapClick(tad.latitude, tad.longitude)}>
-											<SiGooglemaps style={{ fill: theme.palette.text.primary, display: 'flex', fontSize: '20px', marginRight: '0.5rem' }} />
-											Google Map
-										</StyledMap>
-									)}
-									<StyledNetwork theme={theme}>
-										{getChainLogoComponent(tad?.chainId)}
-										{CHAINS[tad.chainId].name}
-									</StyledNetwork>
-								</StyledInfo>
-								<TaskBoxSection>
-									<p>{tad.description}</p>
-								</TaskBoxSection>
-								<BottomContainer>
-									<TaskBoxSectionOne>
-										<p>#{tad.id}</p>
-										<p>
-											{tad.participants}{' '}
-											<PeopleAltIcon style={{ display: 'felx', fontSize: '18px', fill: 'white', height: '100%', marginLeft: '0.5rem' }} />
-										</p>
-									</TaskBoxSectionOne>
-									<TaskBoxSectionTwo>
-										{currencyValue === false ? (
-											<p>
-												{formatCrypto(tad?.entranceAmount)} {CHAINS[tad?.chainId].nameToken}
-											</p>
-										) : (
-											<p>${formatNumber(tad?.entranceAmount * currencyPrice[CHAINS[tad?.chainId]?.nameToken?.toLowerCase()])}</p>
-										)}
-										{currencyValue === false ? (
-											<p>
-												{formatCrypto(tad?.amount)} {CHAINS[tad?.chainId].nameToken}
-											</p>
-										) : (
-											<p>${formatNumber(tad?.amount * currencyPrice[CHAINS[tad?.chainId]?.nameToken?.toLowerCase()])}</p>
-										)}
-									</TaskBoxSectionTwo>
-									<TaskButton>
-										<Link href={`/dare/${tad.chainId}-${tad.id}`}>View Task</Link>
-									</TaskButton>
-								</BottomContainer>
-							</TaskCard>
-						</li>
-					))}
-				</ActiveTabSection>
-			</TabPanel>
-			<TabPanel value={tabValue} index={2}>
-				<ActiveFilterBox>
-					{/* <ActiveTabLeftSection></ActiveTabLeftSection> */}
-					<ActiveTabRightSection>
-						{/* // Filter StyledSection */}
-						<SelectFilter />
-						<SelectSort />
+					</div>
+				)}
+			</div>
 
-						{/* <StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
-							<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
-								ETH
-							</StyledToggleButton>
-							<StyledToggleButton theme={theme} disabled={currencyValue === true} value={true}>
-								<a>USD</a>
-							</StyledToggleButton>
-						</StyledToggleButtonGroup> */}
-						{!error && (
-							<CreateTaskBox>
-								{account && account.toLowerCase() !== recipientAddress && (
-									<CreateAtPlayer recipientAddress={recipientAddress} recipientENS={recipientENS} />
+			{/* Tasks */}
+			<ul className="mt-6 mb-20 flex flex-wrap gap-6 justify-center">
+				{(tab === 1 ? filteredActiveTasks : filteredCompletedTasks).map((task: any) => (
+					<li key={`${task.chainId}-${task.id}`} className="list-none">
+						<div className="w-[90vw] max-w-[450px] min-h-[300px] bg-background border border-secondary rounded-2xl p-4 flex flex-col justify-between">
+							{/* Header */}
+							<div className="flex justify-between items-center mb-4">
+								{task.latitude && task.longitude && (
+									<button
+										onClick={() => handleMapClick(task.latitude, task.longitude)}
+										className="flex items-center gap-1 text-sm bg-white/10 px-3 py-1 rounded-md hover:bg-white/20 transition"
+									>
+										<SiGooglemaps size={16} />
+										Map
+									</button>
 								)}
-							</CreateTaskBox>
-						)}
-					</ActiveTabRightSection>
-				</ActiveFilterBox>
-				<ActiveTabSection>
-					{filteredCompletedTasks.map((tad) => (
-						<li style={{ listStyle: 'none' }} key={`${tad.chainId}-${tad.id}`}>
-							<TaskCard theme={theme}>
-								<StyledNetwork theme={theme}>
-									{getChainLogoComponent(tad?.chainId)}
-									{CHAINS[tad.chainId].name}
-								</StyledNetwork>
-								<TaskBoxSection>
-									<p>{tad.description}</p>
-								</TaskBoxSection>
-								<BottomContainer>
-									<TaskBoxSectionOne>
-										<p>#{tad.id}</p>
-										<p>
-											{tad.participants} <PeopleAltIcon style={{ fontSize: '18px', fill: 'white', height: '100%', marginLeft: '0.5rem' }} />
-										</p>
-									</TaskBoxSectionOne>
-									<TaskBoxSectionTwo>
-										{currencyValue === false ? (
-											<p>
-												{((tad?.entranceAmount / 1e18) * 1).toFixed(2)} {CHAINS[tad?.chainId].nameToken}
-											</p>
-										) : (
-											<p>${formatNumber(tad?.entranceAmount * currencyPrice[CHAINS[tad?.chainId]?.nameToken?.toLowerCase()])}</p>
-										)}
-										{currencyValue === false ? (
-											<p>
-												{((tad?.amount / 1e18) * 1).toFixed(2)} {CHAINS[tad?.chainId].nameToken}
-											</p>
-										) : (
-											<p>${formatNumber(tad?.amount * currencyPrice[CHAINS[tad?.chainId]?.nameToken?.toLowerCase()])}</p>
-										)}
-									</TaskBoxSectionTwo>
-									<TaskButton onClick={() => router.push(`/dare/${tad.chainId}-` + tad.id)}>View Task</TaskButton>
-								</BottomContainer>
-							</TaskCard>
-						</li>
-					))}
-				</ActiveTabSection>
-			</TabPanel>
+								<div className="flex items-center text-sm bg-white/10 px-3 py-1 rounded-md text-gray-700 dark:text-white">
+									{getChainLogo(task.chainId)}
+									{CHAINS[task.chainId]?.name}
+								</div>
+							</div>
+
+							{/* Description */}
+							<p className="text-sm text-center flex-grow">{task.description}</p>
+
+							{/* Bottom */}
+							<div className="mt-4 flex flex-col gap-2">
+								<div className="flex justify-between text-sm">
+									<span>#{task.id}</span>
+									<span className="flex items-center gap-1">
+										{task.participants}
+										<PeopleAlt style={{ fontSize: '18px' }} />
+									</span>
+								</div>
+								<div className="flex justify-between text-sm">
+									<span>
+										{currencyValue === false
+											? `${formatCrypto(task.entranceAmount)} ${CHAINS[task.chainId]?.nameToken}`
+											: `$${formatNumber(task.entranceAmount * currencyPrice[CHAINS[task.chainId]?.nameToken?.toLowerCase()] || 0)}`}
+									</span>
+									<span>
+										{currencyValue === false
+											? `${formatCrypto(task.amount)} ${CHAINS[task.chainId]?.nameToken}`
+											: `$${formatNumber(task.amount * currencyPrice[CHAINS[task.chainId]?.nameToken?.toLowerCase()] || 0)}`}
+									</span>
+								</div>
+								<Link
+									href={`/dare/${task.chainId}-${task.id}`}
+									className="block mt-2 w-full text-center py-2 bg-accent text-white rounded-md text-sm font-semibold hover:bg-accent/90 transition"
+								>
+									View Task
+								</Link>
+							</div>
+						</div>
+					</li>
+				))}
+			</ul>
 		</>
 	);
-};
-
-export default PlayerDares;
+}

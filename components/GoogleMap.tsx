@@ -10,8 +10,7 @@ import { CHAINS } from '../utils/chains';
 interface GoogleMapProps {
 	location: { latitude: number; longitude: number; zoom: number };
 	onMapClick: (lat: number, lng: number) => void;
- }
- 
+}
 
 const GoogleMap: React.FC<GoogleMapProps> = ({ location }) => {
 	const mapRef = useRef(null);
@@ -121,20 +120,38 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ location }) => {
 
 			const infoWindow = new google.maps.InfoWindow({
 				content: `
-        <div style="max-width: 200px; word-wrap: break-word;">
-          <div style="display: flex; align-items: center; justify-content: center;">
-            <img src="${CHAINS[dataItem.chainId]?.logo}" width="18" height="18" alt="Logo" />
-            <span style="margin-left: 0.5rem; font-size: 0.875rem;">${CHAINS[dataItem.chainId]?.name}</span>
-          </div>
-          <p style="font-size: 0.875rem;">${dataItem.description}</p>
-          <p style="font-size: 0.875rem;">Amount: ${
-						currencyValue
-							? `$${formatNumber(dataItem.amount * currencyPrice[CHAINS[dataItem.chainId]?.nameToken.toLowerCase()])}`
-							: `${formatCrypto(dataItem.amount)} ${CHAINS[dataItem.chainId]?.nameToken}`
-					}</p>
-          <p style="font-size: 0.875rem;">Player: ${dataItem.recipientAddress.slice(0, 6)}...${dataItem.recipientAddress.slice(-4)}</p>
-        </div>
-        `,
+    <div style="
+      max-width: 240px;
+      padding: 0.75rem;
+      border-radius: 12px;
+      background: rgba(22, 22, 25, 0.95);
+      color: white;
+      font-family: 'Inter', sans-serif;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    ">
+      <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 0.5rem;">
+        <img src="${CHAINS[dataItem.chainId]?.logo}" width="18" height="18" alt="Logo" />
+        <span style="margin-left: 0.5rem; font-size: 0.875rem; font-weight: 600;">
+          ${CHAINS[dataItem.chainId]?.name}
+        </span>
+      </div>
+      <p style="font-size: 0.875rem; margin-bottom: 0.25rem;">
+        <strong>Description:</strong><br />${dataItem.description}
+      </p>
+      <p style="font-size: 0.875rem; margin-bottom: 0.25rem;">
+        <strong>Amount:</strong><br />
+        ${
+					currencyValue
+						? `$${formatNumber(dataItem.amount * currencyPrice[CHAINS[dataItem.chainId]?.nameToken.toLowerCase()])}`
+						: `${formatCrypto(dataItem.amount)} ${CHAINS[dataItem.chainId]?.nameToken}`
+				}
+      </p>
+      <p style="font-size: 0.875rem;">
+        <strong>Player:</strong><br />
+        ${dataItem.recipientAddress.slice(0, 6)}...${dataItem.recipientAddress.slice(-4)}
+      </p>
+    </div>
+  `,
 			});
 
 			marker.addListener('mouseover', () => infoWindow.open(map, marker));

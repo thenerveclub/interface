@@ -1,123 +1,41 @@
-import styled from '@emotion/styled';
-import InfoOutlined from '@mui/icons-material/InfoOutlined';
-import { Box, Fade, Grid, Tooltip } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+'use client';
+
 import { useSelector } from 'react-redux';
 import useRankingEarned from '../../../../hooks/playerData/useRankingEarned';
 import useRankingSpent from '../../../../hooks/playerData/useRankingSpent';
-
-const StatisticBox = styled(Box)`
-	display: flex;
-	flex-direction: row;
-	justify-content: left;
-	width: 100%;
-
-	@media (max-width: 750px) {
-		width: 80%;
-		justify-content: space-between;
-		padding: 0.5rem 0 0.5rem 0;
-	}
-`;
-
-const StyledStatistics = styled(Grid)<{ theme: any }>`
-	display: flex;
-	flex-direction: column;
-	padding: 1rem 1rem 1rem 0;
-	margin-right: 5rem;
-
-	div {
-		display: flex;
-		flex-direction: column;
-	}
-
-	p {
-		display: flex;
-		color: ${({ theme }) => theme.palette.text.primary};
-		font-size: 1rem;
-		cursor: default;
-		margin: 0;
-	}
-
-	@media (max-width: 750px) {
-		margin-right: 0;
-		padding: 0;
-
-		div {
-			display: flex;
-			flex-direction: column;
-		}
-
-		p {
-			display: flex;
-			color: ${({ theme }) => theme.palette.text.primary};
-			font-size: 0.925rem;
-			cursor: default;
-			width: 100%;
-		}
-	}
-`;
 
 interface PlayerStatisticsProps {
 	playerData: any;
 	checksumAddress: string;
 }
 
-const PlayerStatistics: React.FC<PlayerStatisticsProps> = ({ playerData, checksumAddress }) => {
-	const theme = useTheme();
-
-	// Ranking Data
+export default function PlayerStatistics({ playerData, checksumAddress }: PlayerStatisticsProps) {
 	const rankingEarned = useRankingEarned(checksumAddress);
 	const rankingSpent = useRankingSpent(checksumAddress);
 
 	if (!playerData) return null;
 
 	return (
-		<StatisticBox>
-			<StyledStatistics theme={theme}>
-				<div>
-					<p>${playerData?.allChains.earnedInUSD}</p>
-				</div>
-				<div>
-					<p>Earnings</p>
-				</div>
-			</StyledStatistics>
-			<StyledStatistics theme={theme}>
-				<div>
-					<p>${playerData?.allChains.spentInUSD}</p>
-				</div>
-				<div>
-					<p>Contributions</p>
-				</div>
-			</StyledStatistics>
-			<StyledStatistics theme={theme}>
-				<div>
-					<p>
-						{rankingEarned} | {rankingSpent}
-						<Tooltip
-							title="Player Ranking: Most Earned | Most Spent"
-							placement="top"
-							disableInteractive
-							TransitionComponent={Fade}
-							TransitionProps={{ timeout: 600 }}
-						>
-							<InfoOutlined
-								style={{
-									display: 'flex',
-									marginLeft: '0.5rem',
-									fontSize: '1rem',
-									color: theme.palette.secondary.main,
-									cursor: 'help',
-								}}
-							/>
-						</Tooltip>
-					</p>
-				</div>
-				<div>
-					<p>Rank</p>
-				</div>
-			</StyledStatistics>
-		</StatisticBox>
-	);
-};
+		<div className="flex flex-row w-full justify-start gap-10 flex-wrap sm:flex-nowrap sm:w-full sm:justify-start sm:gap-8 mt-6">
+			<div className="flex flex-col pr-4">
+				<p className="text-lg font-semibold text-primary">${playerData?.allChains.earnedInUSD}</p>
+				<p className="text-sm text-gray-500 dark:text-gray-300 mt-1">Earnings</p>
+			</div>
 
-export default PlayerStatistics;
+			<div className="flex flex-col pr-4">
+				<p className="text-lg font-semibold text-primary">${playerData?.allChains.spentInUSD}</p>
+				<p className="text-sm text-gray-500 dark:text-gray-300 mt-1">Contributions</p>
+			</div>
+
+			<div className="flex flex-col pr-4">
+				<p className="text-lg font-semibold text-primary flex items-center">
+					{rankingEarned} | {rankingSpent}
+					<span className="ml-2 text-gray-500 dark:text-gray-300 cursor-help text-sm" title="Player Ranking: Most Earned | Most Spent">
+						ℹ️
+					</span>
+				</p>
+				<p className="text-sm text-gray-500 dark:text-gray-300 mt-1">Rank</p>
+			</div>
+		</div>
+	);
+}

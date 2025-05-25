@@ -1,222 +1,42 @@
-import styled from '@emotion/styled';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
-import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
-import { Box, Button, Divider, Table, TableBody, TableCell, TableHead, TableRow, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+'use client';
+
+import { useState } from 'react';
+import { FaArrowDown, FaArrowUp, FaLightbulb, FaUserPlus } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { currencySlice } from '../../../../state/currency/currencySlice';
 import { CHAINS } from '../../../../utils/chains';
-
-const TaskCard = styled(Box)<{ theme: any }>`
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-	max-height: 500px;
-	margin: 0 auto 0 auto;
-	background-color: ${({ theme }) => theme.palette.background.default};
-	backdrop-filter: blur(15px) brightness(70%);
-	border: 0.5px solid ${({ theme }) => theme.palette.secondary.main};
-	border-radius: ${({ theme }) => theme.customShape.borderRadius};
-	overflow: auto;
-	z-index: 999;
-
-	@media (max-width: 960px) {
-		width: 95%;
-		max-width: auto;
-		height: 100%;
-		max-height: auto;
-		margin: 0 auto 0 auto;
-	}
-`;
-
-const StyledCardHeader = styled(Box)<{ theme: any }>`
-	display: flex;
-	flex-direction: column;
-	justify-content: left;
-
-	a {
-		font-size: 16px;
-		cursor: default;
-		padding: 1rem;
-	}
-`;
-
-const StyledDivider = styled(Divider)<{ theme: any }>`
-	border-bottom: 0.5px solid ${({ theme }) => theme.palette.secondary.main};
-`;
-
-const StyledCardFilter = styled(Box)<{ theme: any }>`
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	width: 100%;
-	padding: 1rem 1rem 0 1rem;
-`;
-
-const StyledTableContainer = styled(Box)<{ theme: any }>`
-	overflow-y: auto;
-	z-index: 1;
-`;
-
-const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{ theme: any }>`
-	display: flex;
-	align-self: flex-end;
-	background-color: transparent;
-	height: 35px;
-	width: 150px;
-	margin-left: 1rem;
-	cursor: not-allowed;
-
-	& .MuiToggleButton-root {
-		&:hover {
-			background-color: transparent;
-			border: 1px solid ${({ theme }) => theme.palette.warning.main};
-			border-left: 1px solid ${({ theme }) => theme.palette.warning.main};
-		}
-	}
-
-	@media (max-width: 960px) {
-		margin-left: 0.5rem;
-	}
-`;
-
-const StyledFilterGroup = styled(Box)<{ theme: any }>`
-	display: flex;
-	flex-direction: row;
-	background-color: transparent;
-`;
-
-const StyledToggleButton = styled(ToggleButton)<{ theme: any }>`
-	color: ${({ theme }) => theme.palette.secondary.main};
-	background-color: transparent;
-	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
-	border-radius: ${({ theme }) => theme.customShape.borderRadius};
-	cursor: pointer;
-	// font-size: 1rem;
-	font-weight: 500;
-	width: 150px;
-
-	&.Mui-selected {
-		color: ${({ theme }) => theme.palette.text.primary};
-		background-color: transparent;
-		border: 1px solid ${({ theme }) => theme.palette.secondary.main};
-	}
-`;
-
-const StyledSortButton = styled(Button)<{ theme: any }>`
-	color: ${({ theme }) => theme.palette.secondary.main};
-	background-color: transparent;
-	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
-	border-radius: ${({ theme }) => theme.customShape.borderRadius};
-	cursor: pointer;
-	font-weight: 500;
-	width: auto;
-	height: 35px;
-	text-transform: none;
-	margin-right: 1rem;
-
-	&:hover {
-		background-color: transparent;
-		border: 1px solid ${({ theme }) => theme.palette.warning.main};
-	}
-
-	@media (max-width: 960px) {
-		margin-right: 0.5rem;
-	}
-`;
-
-const StyledTable = styled(Table)<{ theme: any }>`
-	max-height: 378px;
-	padding: 0 1rem 0 1rem;
-
-	@media (max-width: 600px) {
-		font-size: 3rem;
-	}
-`;
-
-const StyledButton = styled(Button)<{ theme: any }>`
-	display: flex-end;
-	flex-direction: row;
-	justify-content: right;
-	align-items: right;
-	color: ${({ theme }) => theme.palette.text.primary};
-	background-color: transparent;
-	text-transform: none;
-	width: 100%;
-
-	@media (max-width: 600px) {
-		font-size: auto;
-	}
-`;
-
-const StyledTableRow = styled(TableRow)<{ theme: any }>`
-	transition: transform 0.3s;
-	box-shadow 0.3s;
-	cursor: default;
-
-	&:nth-of-type(odd) {
-		background-color: ${({ theme }) => theme.palette.background.default};
-	}
-`;
-
-const TableCellAmount = styled(TableCell)<{ theme: any }>`
-	text-align: left;
-	width: 15rem;
-
-	p {
-		margin: 0;
-		white-space: nowrap;
-	}
-
-	@media (max-width: 860px) {
-		min-width: 7.5rem;
-	}
-`;
 
 interface ActivityTableProps {
 	dareData: any;
 }
 
-const ActivityTable: React.FC<ActivityTableProps> = ({ dareData }) => {
-	const theme = useTheme();
-
-	// Redux
+export default function ActivityTable({ dareData }: ActivityTableProps) {
 	const dispatch = useDispatch();
 	const currencyValue = useSelector((state: { currency: boolean }) => state.currency);
-	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
+	const currencyPrice = useSelector((state: { currencyPrice: any }) => state.currencyPrice);
 
-	// State declarations
 	const [order, setOrder] = useState('desc');
 	const [orderBy, setOrderBy] = useState('blockNumber');
 	const [isParticipantsSelected, setIsParticipantsSelected] = useState(true);
 	const [isVotedSelected, setIsVotedSelected] = useState(false);
 
-	const createSortHandler = (property) => (event) => {
+	const createSortHandler = (property: string) => () => {
 		const isAsc = orderBy === property && order === 'desc';
 		setOrder(isAsc ? 'asc' : 'desc');
 		setOrderBy(property);
 	};
 
-	let sortedData = [];
-
-	// Check if dareData is defined and is an array
+	let sortedData: any[] = [];
 	if (dareData && Array.isArray(dareData)) {
 		sortedData = [...dareData].sort((a, b) => {
 			let aValue = Number(a[orderBy]);
 			let bValue = Number(b[orderBy]);
-
 			return order === 'asc' ? aValue - bValue : bValue - aValue;
 		});
 	}
 
 	const filteredData = sortedData.filter((row) => {
-		if (isVotedSelected && !row.voted) {
-			return false;
-		}
+		if (isVotedSelected && !row.voted) return false;
 		return true;
 	});
 
@@ -224,194 +44,125 @@ const ActivityTable: React.FC<ActivityTableProps> = ({ dareData }) => {
 		return isParticipantsSelected || row.task.initiatorAddress === row.userAddress;
 	});
 
-	// Toogle Button For Token Price
-	const handleToggle = (event, newCurrency) => {
-		// update currencyValue in redux
+	const handleToggle = (event: any, newCurrency: boolean) => {
 		dispatch(currencySlice.actions.updateCurrency(newCurrency));
 	};
 
-	function formatCrypto(value) {
-		return (Number(value) / 1e18).toLocaleString('en-US', {
+	const formatCrypto = (value: number) =>
+		(Number(value) / 1e18).toLocaleString('en-US', {
 			minimumFractionDigits: 2,
 			maximumFractionDigits: 4,
 		});
-	}
 
-	function formatNumber(value) {
-		return (Number(value) / 1e18).toLocaleString('en-US', {
+	const formatNumber = (value: number) =>
+		(Number(value) / 1e18).toLocaleString('en-US', {
 			minimumFractionDigits: 2,
 			maximumFractionDigits: 2,
 		});
-	}
 
 	if (!dareData) return null;
 
+	const chainId = dareData[0]?.task?.chainId;
+	const token = CHAINS[chainId]?.nameToken?.toLowerCase();
+
 	return (
-		<TaskCard theme={theme}>
-			<StyledCardHeader theme={theme}>
-				<a>Activity</a>
-				<StyledDivider theme={theme} />
-			</StyledCardHeader>
-			<StyledCardFilter theme={theme}>
-				<StyledFilterGroup theme={theme}>
-					<StyledSortButton
-						theme={theme}
+		<div className="w-full max-h-[500px] bg-white dark:bg-neutral-900 border border-neutral-700 rounded-xl overflow-auto backdrop-blur-md">
+			<div className="px-4 pt-4">
+				<h2 className="text-base font-medium mb-2">Activity</h2>
+				<hr className="border-b border-neutral-700" />
+			</div>
+
+			<div className="flex justify-between items-center px-4 py-2 text-sm">
+				<div className="flex gap-2">
+					<button
 						onClick={() => setIsParticipantsSelected(!isParticipantsSelected)}
-						style={{ color: isParticipantsSelected ? theme.palette.text.primary : theme.palette.secondary.main }}
+						className={`px-3 py-1 border rounded-md ${isParticipantsSelected ? 'text-white border-white' : 'text-gray-400 border-gray-500'}`}
 					>
 						Participants
-					</StyledSortButton>
-					<StyledSortButton
-						theme={theme}
+					</button>
+					<button
 						onClick={() => setIsVotedSelected(!isVotedSelected)}
-						style={{ color: isVotedSelected ? theme.palette.text.primary : theme.palette.secondary.main }}
+						className={`px-3 py-1 border rounded-md ${isVotedSelected ? 'text-white border-white' : 'text-gray-400 border-gray-500'}`}
 					>
 						Voted
-					</StyledSortButton>
-				</StyledFilterGroup>
-				<StyledToggleButtonGroup theme={theme} value={currencyValue} exclusive onChange={handleToggle}>
-					<StyledToggleButton theme={theme} disabled={currencyValue === false} value={false}>
-						{CHAINS[dareData[0]?.task.chainId]?.nameToken}
-					</StyledToggleButton>
-					<StyledToggleButton theme={theme} disabled={currencyValue === true} value={true}>
-						<a>USD</a>
-					</StyledToggleButton>
-				</StyledToggleButtonGroup>
-			</StyledCardFilter>
-			<StyledTableContainer theme={theme}>
-				<StyledTable stickyHeader theme={theme}>
-					<TableHead>
-						<TableRow style={{ zIndex: '1' }}>
-							<TableCell>Event</TableCell>
-							<TableCell>Amount</TableCell>
-							<TableCell>Address</TableCell>
-							{/* <TableCell>Name</TableCell> */}
+					</button>
+				</div>
+				<div className="flex gap-2 text-sm">
+					<button
+						onClick={() => handleToggle(null, false)}
+						disabled={!currencyValue}
+						className={`px-3 py-1 border rounded-md ${!currencyValue ? 'text-white border-white' : 'text-gray-400 border-gray-500'}`}
+					>
+						{CHAINS[chainId]?.nameToken}
+					</button>
+					<button
+						onClick={() => handleToggle(null, true)}
+						disabled={currencyValue}
+						className={`px-3 py-1 border rounded-md ${currencyValue ? 'text-white border-white' : 'text-gray-400 border-gray-500'}`}
+					>
+						USD
+					</button>
+				</div>
+			</div>
 
-							<TableCell>
-								<StyledButton theme={theme} onClick={createSortHandler('voted')}>
-									Voted
-									{orderBy === 'voted' ? (
-										order === 'asc' ? (
-											<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
-										) : (
-											<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
-										)
-									) : order === 'asc' ? (
-										<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
+			<table className="min-w-full text-sm text-left px-4">
+				<thead className="sticky top-0 z-10 bg-neutral-800 text-gray-300">
+					<tr>
+						<th className="px-4 py-2">Event</th>
+						<th className="px-4 py-2">Amount</th>
+						<th className="px-4 py-2">Address</th>
+						<th className="px-4 py-2 cursor-pointer" onClick={createSortHandler('voted')}>
+							Voted {orderBy === 'voted' && (order === 'asc' ? <FaArrowUp className="inline ml-1" /> : <FaArrowDown className="inline ml-1" />)}
+						</th>
+						<th className="px-4 py-2 cursor-pointer" onClick={createSortHandler('vote')}>
+							Vote {orderBy === 'vote' && (order === 'asc' ? <FaArrowUp className="inline ml-1" /> : <FaArrowDown className="inline ml-1" />)}
+						</th>
+						<th className="px-4 py-2 cursor-pointer" onClick={createSortHandler('blockNumber')}>
+							Time {orderBy === 'blockNumber' && (order === 'asc' ? <FaArrowUp className="inline ml-1" /> : <FaArrowDown className="inline ml-1" />)}
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					{participantData.length > 0 ? (
+						participantData.map((row, index) => (
+							<tr key={index} className="border-t border-neutral-800 hover:bg-neutral-800/30 transition">
+								<td className="px-4 py-3 flex items-center gap-2">
+									{row.task.initiatorAddress === row.userAddress ? (
+										<>
+											<FaLightbulb className="text-green-400 text-xs" />
+											<span className="text-green-400">Creator</span>
+										</>
 									) : (
-										<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
+										<>
+											<FaUserPlus className="text-orange-400 text-xs" />
+											<span className="text-orange-400">Joined</span>
+										</>
 									)}
-								</StyledButton>
-							</TableCell>
-
-							<TableCell>
-								<StyledButton theme={theme} onClick={createSortHandler('vote')}>
-									Vote
-									{orderBy === 'vote' ? (
-										order === 'asc' ? (
-											<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
-										) : (
-											<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
-										)
-									) : order === 'asc' ? (
-										<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
-									) : (
-										<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-									)}
-								</StyledButton>
-							</TableCell>
-
-							<TableCell>
-								<StyledButton theme={theme} onClick={createSortHandler('blockNumber')}>
-									Time
-									{orderBy === 'blockNumber' ? (
-										order === 'asc' ? (
-											<ArrowDropUpIcon style={{ color: theme.palette.text.primary }} />
-										) : (
-											<ArrowDropDownIcon style={{ color: theme.palette.text.primary }} />
-										)
-									) : order === 'asc' ? (
-										<ArrowDropUpIcon style={{ color: theme.palette.secondary.main }} />
-									) : (
-										<ArrowDropDownIcon style={{ color: theme.palette.secondary.main }} />
-									)}
-								</StyledButton>
-							</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{participantData.length > 0 ? (
-							participantData.map((row, index) => (
-								<StyledTableRow theme={theme} key={index}>
-									<TableCell style={{ display: 'flex', alignItems: 'center' }}>
-										{row.task.initiatorAddress === row.userAddress ? (
-											<>
-												<TipsAndUpdatesOutlinedIcon
-													style={{
-														color: theme.palette.success.main,
-														fontSize: '1rem',
-														marginRight: '0.5rem',
-													}}
-												/>
-												<span style={{ color: theme.palette.success.main }}>Creator</span>
-											</>
-										) : (
-											<>
-												<GroupAddOutlinedIcon
-													style={{
-														color: theme.palette.warning.main,
-														fontSize: '1rem',
-														marginRight: '0.5rem',
-													}}
-												/>
-												<span style={{ color: theme.palette.warning.main }}>Joined</span>
-											</>
-										)}
-									</TableCell>
-
-									<TableCellAmount theme={theme}>
-										{row.task.initiatorAddress === row.userAddress ? (
-											currencyValue === false ? (
-												<p>
-													{formatCrypto(row.task.entranceAmount)} {CHAINS[dareData[0]?.task.chainId]?.nameToken}
-												</p>
-											) : (
-												<p>${formatNumber(row.task.entranceAmount * currencyPrice[CHAINS[dareData[0]?.task.chainId]?.nameToken?.toLowerCase()])}</p>
-											)
-										) : currencyValue === false ? (
-											<p>
-												{formatCrypto(row.userStake)} {CHAINS[dareData[0]?.task.chainId]?.nameToken}
-											</p>
-										) : (
-											<p>${formatNumber(row.userStake * currencyPrice[CHAINS[dareData[0]?.task.chainId]?.nameToken?.toLowerCase()])}</p>
-										)}
-									</TableCellAmount>
-									<TableCell style={{ textAlign: 'left' }}>{`${row.userAddress.slice(0, 6)}...${row.userAddress.slice(-4)}`}</TableCell>
-									{/* <TableCell style={{ textAlign: 'left' }}>
-										<a>{row.userName}</a>
-									</TableCell> */}
-									<TableCell style={{ textAlign: 'right', color: row.voted ? theme.palette.success.contrastText : theme.palette.error.contrastText }}>
-										{row.voted ? 'Yes' : 'No'}
-									</TableCell>
-									<TableCell style={{ textAlign: 'right', color: row.vote ? theme.palette.success.main : theme.palette.error.main }}>
-										{row.voted ? (row.vote ? 'True' : 'False') : ''}
-									</TableCell>
-
-									<TableCell style={{ textAlign: 'right' }}>{row.blockNumber}</TableCell>
-								</StyledTableRow>
-							))
-						) : (
-							<StyledTableRow theme={theme}>
-								<TableCell colSpan={7} style={{ textAlign: 'center' }}>
-									No activities yet
-								</TableCell>
-							</StyledTableRow>
-						)}
-					</TableBody>
-				</StyledTable>
-			</StyledTableContainer>
-		</TaskCard>
+								</td>
+								<td className="px-4 py-3 whitespace-nowrap">
+									{row.task.initiatorAddress === row.userAddress
+										? currencyValue
+											? `$${formatNumber(row.task.entranceAmount * currencyPrice[token])}`
+											: `${formatCrypto(row.task.entranceAmount)} ${CHAINS[chainId].nameToken}`
+										: currencyValue
+										? `$${formatNumber(row.userStake * currencyPrice[token])}`
+										: `${formatCrypto(row.userStake)} ${CHAINS[chainId].nameToken}`}
+								</td>
+								<td className="px-4 py-3">{`${row.userAddress.slice(0, 6)}...${row.userAddress.slice(-4)}`}</td>
+								<td className="px-4 py-3 text-right">{row.voted ? 'Yes' : 'No'}</td>
+								<td className="px-4 py-3 text-right">{row.voted ? (row.vote ? 'True' : 'False') : ''}</td>
+								<td className="px-4 py-3 text-right">{row.blockNumber}</td>
+							</tr>
+						))
+					) : (
+						<tr>
+							<td colSpan={6} className="px-4 py-4 text-center text-gray-500">
+								No activities yet
+							</td>
+						</tr>
+					)}
+				</tbody>
+			</table>
+		</div>
 	);
-};
-
-export default ActivityTable;
+}

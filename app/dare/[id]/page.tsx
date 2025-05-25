@@ -1,8 +1,5 @@
 'use client';
 
-import styled from '@emotion/styled';
-import { Box, Divider, Grid, Typography } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import LoadingScreen from '../../../components/LoadingScreen';
@@ -14,219 +11,108 @@ import Redeem from '../../../components/modal/redeem';
 import VoteTask from '../../../components/modal/vote';
 import useDareData from '../../../hooks/dareData/useDareData';
 import useENSName from '../../../hooks/useENSName';
-import { nameToChainId } from '../../../utils/chains';
 import ActivityTable from './components/ActivityTable';
-import Chart from './components/Chart';
 import DescriptionCard from './components/DescriptionCard';
 import DetailsCard from './components/DetailsCard';
 import ProofCard from './components/ProofCard';
 import ShareCard from './components/ShareCard';
 import TimerCard from './components/TimerCard';
 
-const StyledBox = styled(Box)`
-	display: flex;
-	flex-direction: column;
-	margin: 7.5rem auto 5rem auto;
-	width: 90%;
-
-	@media (max-width: 600px) {
-		margin: 7.5rem auto 7.5rem auto;
-		width: 95%;
-	}
-`;
-
-const StyledGridBox = styled(Box)`
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	width: 100%;
-	margin: 0 auto 2.5rem auto;
-	gap: 2.5rem;
-
-	@media (max-width: 960px) {
-		flex-direction: column;
-		margin: 0 auto 2rem auto;
-
-		& > *:first-child {
-			margin-top: 2rem;
-			order: 2;
-		}
-	}
-`;
-
-const StyledLeftSection = styled.section`
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	width: 100%;
-
-	& > *:not(:last-child) {
-		margin-bottom: 2.5rem;
-	}
-
-	@media (max-width: 960px) {
-		display: flex;
-		flex-direction: column;
-	}
-`;
-
-const StyledRightSection = styled.section`
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	width: 100%;
-
-	& > *:not(:last-child) {
-		margin-bottom: 2rem;
-	}
-
-	@media (max-width: 960px) {
-		display: flex;
-		flex-direction: column;
-	}
-`;
-
-const StyledTimerAndShare = styled(Box)`
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: top;
-	width: 100%;
-	margin-bottom: 2rem;
-	gap: 2.5rem;
-
-	// both items in there get each 50% of the width
-	& > * {
-		width: 50%;
-	}
-
-	@media (max-width: 860px) {
-		display: flex;
-		flex-direction: column;
-	}
-`;
-
 export default function TaskPage({ params }: { params: { id: string } }) {
-	const theme = useTheme();
 	const router = useRouter();
 	const id = params.id;
 
-	// split id to get chainId before "-" and task id after "-"
 	const network = id?.split('-')[0];
 	const taskId = id?.split('-')[1];
 
-	// Redux
 	const dispatch = useDispatch();
 	const account = useSelector((state: { account: string }) => state.account);
 
-	// State declarations
-
-	// Hooks
 	const { dareData, isLoading } = useDareData(network, taskId);
+	const task = dareData?.[0]?.task;
 
-	// console.log('dareData', dareData);
+	const finished = task?.finished;
+	const timeover = task?.endTask <= Math.floor(Date.now() / 1000);
+	const voteIsTrue = task?.positiveVotes > task?.negativeVotes;
+	const proof = !!task?.proofLink;
+	const isPlayer = task?.recipientAddress.toLowerCase() === account?.toLowerCase();
+	const playerAddress = task?.recipientAddress;
+	const { ensName, address } = useENSName(playerAddress);
+	const player = ensName || address;
+	const playerClaimed = task?.executed;
 
-	const finished = dareData?.[0]?.task.finished;
-	const timeover = dareData?.[0]?.task.endTask <= Math.floor(Date.now() / 1000);
-	const voteIsTrue = dareData?.[0]?.task.positiveVotes > dareData?.[0]?.task.negativeVotes ? true : false;
-	const proof = dareData?.[0]?.task.proofLink === '' ? false : true;
-	const isPlayer = dareData?.[0]?.task.recipientAddress.toLowerCase() === account.toLowerCase();
-	console.log('isPlayer', isPlayer, account);
-	const playerAddress = dareData?.[0]?.task.recipientAddress;
-	const { ensName, address, error } = useENSName(playerAddress);
-	const player = ensName ? ensName : address;
-	const proven = dareData?.[0]?.task.proofLink === '' ? false : true;
-	const playerClaimed = dareData?.[0]?.task.executed;
-
-	// Initialize variables to track if the user has joined and voted
 	let hasJoined = false;
 	let hasVoted = false;
-	let userVote = null;
 	let hasClaimed = false;
+	let userVote: boolean | null = null;
 
-	console.log('hasJoined', hasJoined);
-	console.log('hasVoted', hasVoted);
-
-	// Iterate over dareData to check for both conditions
 	dareData.forEach((data) => {
-		if (data.userAddress.toLowerCase() === account.toLowerCase()) {
-			console.log('data', data);
-			hasJoined = true; // The user's address is in dareData, so they've joined
-
+		if (data.userAddress.toLowerCase() === account?.toLowerCase()) {
+			hasJoined = true;
 			if (data.voted) {
-				hasVoted = true; // The user's address matched, and they have voted
+				hasVoted = true;
 				userVote = data.vote;
 				hasClaimed = data.userStake === '0';
 			}
 		}
 	});
 
-	// console.log('playerClaimed ', playerClaimed);
+	return isLoading ? (
+		<LoadingScreen />
+	) : (
+		<div className="flex flex-col w-[90%] max-w-7xl mx-auto mt-32 mb-20 sm:mt-28">
+			<div className="flex flex-col lg:flex-row gap-10 mb-16">
+				{/* Left Section */}
+				<div className="flex flex-col w-full gap-10">
+					<DescriptionCard dareData={dareData} />
+					<DetailsCard dareData={dareData} player={player} />
+				</div>
 
-	return (
-		// <div>
-		// 	<h1>Index Page</h1>
-		// </div>
-		<>
-			{isLoading ? (
-				<LoadingScreen />
-			) : (
-				<StyledBox>
-					<StyledGridBox>
-						<StyledLeftSection>
-							<DescriptionCard dareData={dareData} />
-							<DetailsCard dareData={dareData} player={player} />
+				{/* Right Section */}
+				<div className="flex flex-col w-full gap-8">
+					<div className="flex flex-col md:flex-row justify-between items-start gap-6">
+						<TimerCard dareData={dareData} />
+						<ShareCard dareData={dareData} player={player} />
+					</div>
 
-							{/* <Chart dareData={dareData} /> */}
-						</StyledLeftSection>
-						<StyledRightSection>
-							<StyledTimerAndShare>
-								<TimerCard dareData={dareData} />
-								<ShareCard dareData={dareData} player={player} />
-							</StyledTimerAndShare>
-							{account ? (
-								finished || timeover ? (
-									isPlayer ? (
-										voteIsTrue && !playerClaimed ? (
-											<Claim dareData={dareData} />
-										) : (
-											<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-												<p>{playerClaimed ? 'You have claimed your win' : 'You has lost the dare'}</p>
-											</div>
-										)
-									) : hasJoined && !voteIsTrue && !hasClaimed ? (
-										<Redeem dareData={dareData} />
+					{/* Conditional Action Section */}
+					<div className="w-full rounded-lg bg-neutral-100 dark:bg-neutral-800 px-6 py-4 flex justify-center items-center text-center min-h-[60px]">
+						{account ? (
+							finished || timeover ? (
+								isPlayer ? (
+									voteIsTrue && !playerClaimed ? (
+										<Claim dareData={dareData} />
 									) : (
-										<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-											<p>{hasClaimed ? 'You have claimed your stake' : 'Player has won the dare'}</p>
-										</div>
+										<p>{playerClaimed ? 'You have claimed your win' : 'You have lost the dare'}</p>
 									)
-								) : isPlayer ? (
-									!proven ? (
-										<ProveDare dareData={dareData} />
-									) : (
-										voteIsTrue && playerClaimed && <Redeem dareData={dareData} />
-									)
-								) : !hasJoined ? (
-									<JoinDare dareData={dareData} />
-								) : !hasVoted ? (
-									<VoteTask dareData={dareData} />
+								) : hasJoined && !voteIsTrue && !hasClaimed ? (
+									<Redeem dareData={dareData} />
 								) : (
-									<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-										<p>{userVote === true ? 'You voted true' : 'Yout voted false'}</p>
-									</div>
+									<p>{hasClaimed ? 'You have claimed your stake' : 'Player has won the dare'}</p>
 								)
+							) : isPlayer ? (
+								!proof ? (
+									<ProveDare dareData={dareData} />
+								) : (
+									voteIsTrue && playerClaimed && <Redeem dareData={dareData} />
+								)
+							) : !hasJoined ? (
+								<JoinDare dareData={dareData} />
+							) : !hasVoted ? (
+								<VoteTask dareData={dareData} />
 							) : (
-								<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-									<Connect />
-								</div>
-							)}
-							{proof && <ProofCard dareData={dareData} />}
-						</StyledRightSection>
-					</StyledGridBox>
-					<ActivityTable dareData={dareData} />
-				</StyledBox>
-			)}
-		</>
+								<p>{userVote ? 'You voted true' : 'You voted false'}</p>
+							)
+						) : (
+							<Connect />
+						)}
+					</div>
+
+					{proof && <ProofCard dareData={dareData} />}
+				</div>
+			</div>
+
+			<ActivityTable dareData={dareData} />
+		</div>
 	);
 }

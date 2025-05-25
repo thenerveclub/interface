@@ -1,29 +1,5 @@
-import { keyframes } from '@emotion/react';
-import styled from '@emotion/styled';
-import { VolumeUp } from '@mui/icons-material';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
-import {
-	Box,
-	Button,
-	CircularProgress,
-	FormControl,
-	Grid,
-	Input,
-	InputAdornment,
-	InputLabel,
-	MenuItem,
-	Modal,
-	OutlinedInput,
-	Select,
-	Slider,
-	SpeedDial,
-	SpeedDialIcon,
-	TextField,
-	Tooltip,
-	Typography,
-} from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+'use client';
+
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { useRouter } from 'next/navigation';
@@ -35,517 +11,201 @@ import useBalanceTracker from '../../../hooks/useBalanceTracker';
 import { createTriggerSlice } from '../../../state/trigger/createTriggerSlice';
 import { CHAINS, getAddChainParameters } from '../../../utils/chains';
 import { metaMask } from '../../../utils/connectors/metaMask';
-
-const StyledModal = styled(Modal)`
-	.MuiModal-backdrop {
-		backdrop-filter: blur(5px);
-	}
-`;
-
-// Define the keyframes for the slide-down animation
-const slideDown = keyframes`
-  0% {
-    transform: translate(-50%, -50%);
-  }
-  100% {
-    transform: translate(-50%, 125%);
-  }
-`;
-
-// Define the keyframes for the slide-up animation
-const slideUp = keyframes`
-  0% {
-    transform: translate(-50%, 125%);
-  }
-  100% {
-    transform: translate(-50%, -50%);
-  }
-`;
-
-const ConnectBox = styled(Box)<{ theme: any }>`
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	margin: 0 auto 0 auto;
-	justify-content: center;
-	align-items: center;
-	padding: 3rem 1rem;
-	height: auto;
-	width: 350px;
-	background-color: ${({ theme }) => theme.palette.background.default};
-	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
-	border-radius: ${({ theme }) => theme.customShape.borderRadius};
-
-	animation: ${slideUp} 0.5s ease-in-out forwards;
-	&.closing {
-		animation: ${slideDown} 0.5s ease-in-out forwards;
-	}
-`;
-
-const StyledSection = styled.section`
-	display: flex;
-	align-items: center;
-	justify-content: space-evenly;
-	align-content: center;
-	margin: 0 auto 0 auto;
-
-	@media (max-width: 960px) {
-		display: grid;
-		align-items: center;
-		margin: 0 auto 0 auto;
-		grid-template-columns: 1fr;
-		grid-gap: 2em;
-	}
-`;
-
-const ModalButton = styled(Button)<{ theme: any }>`
-	color: #fff;
-	text-transform: none;
-	font-size: 16px;
-	border: none;
-	line-height: 1.5;
-	background-color: ${({ theme }) => theme.palette.warning.main};
-	border-radius: ${({ theme }) => theme.shape.borderRadius};
-	height: 35px;
-	width: 125px;
-	margin-left: 1rem;
-
-	&:hover {
-		background-color: ${({ theme }) => theme.palette.warning.main};
-	}
-
-	@media (max-width: 1024px) {
-		display: none;
-		visibility: hidden;
-	}
-`;
-
-const StyledSpeedDial = styled(SpeedDial)<{ theme: any }>`
-	display: none;
-	visibility: hidden;
-
-	@media (max-width: 1024px) {
-		display: flex;
-		visibility: visible;
-		position: fixed;
-		bottom: 8rem;
-		right: 2.5rem;
-		z-index: 1000;
-
-		.MuiSpeedDial-fab {
-			background-color: ${({ theme }) => theme.palette.warning.main};
-		}
-	}
-
-	@media (max-width: 680px) {
-		bottom: 7.5rem;
-		right: 1rem;
-	}
-`;
-
-const BuyButton = styled(Button)<{ theme: any }>`
-	color: #fff;
-	text-transform: none;
-	font-size: 16px;
-	border: none;
-	line-height: 1.5;
-	background-color: ${({ theme }) => theme.palette.warning.main};
-	border-radius: ${({ theme }) => theme.shape.borderRadius};
-	height: 40px;
-	width: 125px;
-	margin-left: 1rem;
-
-	&:hover {
-		background-color: ${({ theme }) => theme.palette.warning.main};
-	}
-
-	&:disabled {
-		// color: ${({ theme }) => theme.palette.secondary.main};
-		background-color: ${({ theme }) => theme.palette.warning.dark};
-	}
-`;
-
-const MaxButton = styled(Button)<{ theme: any }>`
-	color: ${({ theme }) => theme.palette.text.primary};
-	text-transform: none;
-	font-size: 1rem;
-	border: none;
-	margin-left: 1rem;
-	line-height: 1.5;
-	background-color: ${({ theme }) => theme.palette.success.contrastText};
-	border-radius: ${({ theme }) => theme.shape.borderRadius};
-	height: 40px;
-`;
-
-const StatisticBox = styled(Box)`
-	width: 90%;
-	margin: 0 auto 0 auto;
-
-	a {
-		font-size: 16px;
-		cursor: default;
-	}
-`;
-
-const StyledTitle = styled(Box)<{ theme: any }>`
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	width: 100%;
-`;
-
-const ChangeNetworkButton = styled(Button)<{ theme: any }>`
-	display: flex;
-	color: ${({ theme }) => theme.palette.text.primary};
-	text-transform: none;
-	width: 150px;
-	font-size: 1rem;
-	font-weight: 400;
-	line-height: 1.5;
-	height: 100%;
-	background-color: ${({ theme }) => theme.palette.warning.main};
-	border-radius: ${({ theme }) => theme.customShape.borderRadius};
-
-	&:hover {
-		background-color: ${({ theme }) => theme.palette.warning.main};
-	}
-
-	&:disabled {
-		color: ${({ theme }) => theme.palette.secondary.main};
-		background-color: ${({ theme }) => theme.palette.warning.dark};
-	}
-`;
-
-const StyledTime = styled(Box)<{ theme: any }>`
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	margin: 0.5rem auto 1rem auto;
-`;
-
-const StyledTextField = styled(TextField)<{ theme: any }>`
-	border-radius: ${({ theme }) => theme.customShape.borderRadius};
-
-	&:nth-of-type(2) {
-		margin: 0 0.5rem 0 0.5rem;
-	}
-
-	& .MuiOutlinedInput-notchedOutline {
-		border: 1px solid ${({ theme }) => theme.palette.secondary.main};
-
-		&:hover {
-			border: 1px solid ${({ theme }) => theme.palette.warning.main};
-		}
-	}
-`;
+import PortalModal from '../../PortalModal';
 
 interface CreateAtPlayerProps {
 	recipientAddress: any;
 	recipientENS: any;
 }
 
-const CreateAtPlayer: React.FC<CreateAtPlayerProps> = ({ recipientAddress, recipientENS }) => {
-	const theme = useTheme();
-	const router = useRouter();
+export default function CreateAtPlayer({ recipientAddress, recipientENS }: CreateAtPlayerProps) {
 	const { provider } = useWeb3React();
 	const { enqueueSnackbar } = useSnackbar();
-
-	// console.log('balance', balance, provider);
-
-	// Redux
 	const dispatch = useDispatch();
-	const account = useSelector((state: { account: string }) => state.account);
-	const chainId = useSelector((state: { chainId: number }) => state.chainId);
-	const availableChains = useSelector((state: { availableChains: any }) => state.availableChains);
+	const router = useRouter();
+
+	const account = useSelector((state: any) => state.account);
+	const chainId = useSelector((state: any) => state.chainId);
+	const availableChains = useSelector((state: any) => state.availableChains);
 
 	const balance = useBalanceTracker(provider, account);
 
-	// console.log('availableChains', availableChains);
-
-	// State
 	const [open, setOpen] = useState(false);
 	const [pendingTx, setPendingTx] = useState(false);
 	const [value, setValue] = useState('0.00');
-	const [description, setDescription] = useState(null);
+	const [description, setDescription] = useState('');
 	const [isMax, setIsMax] = useState(false);
-	const [isClosing, setIsClosing] = useState(false); // <-- New state to track closing status
 	const [days, setDays] = useState('0');
 	const [hours, setHours] = useState('0');
 	const [minutes, setMinutes] = useState('0');
 	const [network, setNetwork] = useState('');
 
-	const handleChange = (event) => {
-		setNetwork(event.target.value);
-	};
-
-	// Validation function
-	const validateInput = (value, max) => {
+	const validateInput = (value: string, max: number) => {
 		const num = parseInt(value, 10);
 		if (isNaN(num) || num < 0) return '0';
 		if (num > max) return max.toString();
 		return num.toString();
 	};
 
-	function convertToSeconds(days, hours, minutes) {
-		const daysInSeconds = parseInt(days) * 86400; // 86400 seconds in a day
-		const hoursInSeconds = parseInt(hours) * 3600; // 3600 seconds in an hour
-		const minutesInSeconds = parseInt(minutes) * 60; // 60 seconds in a minute
+	const convertToSeconds = (d: string, h: string, m: string) => parseInt(d) * 86400 + parseInt(h) * 3600 + parseInt(m) * 60;
 
-		return daysInSeconds + hoursInSeconds + minutesInSeconds;
-	}
+	const formatBalance = (val: any) => Number(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-	// Function to set max value
+	const txValue = ethers.utils.parseEther(value || '0');
+
 	const setMaxValue = () => {
 		setValue(formatBalance(balance));
 		setIsMax(true);
 	};
 
-	// Update the value state and reset isMax flag when the input value changes
-	const handleInputChange = (event) => {
-		setValue(event.target.value || '0.00');
-		setIsMax(false);
+	const handleNetworkChange = async () => {
+		if (!network) return;
+		try {
+			await metaMask.activate(getAddChainParameters(Number(network)));
+		} catch (error) {
+			console.error(error);
+		}
 	};
 
-	// Value
-	const txValue = ethers.utils.parseEther(value || '0');
-
-	// Handle open and close modal
-	const handleOpen = () => setOpen(true);
-
-	const handleClose = () => {
-		// Prevent closing the modal if there's a pending transaction
-		if (pendingTx) return;
-
-		setIsClosing(true); // <-- Set closing status to true
-		// Wait for the animation to complete before closing the modal
-		setTimeout(() => {
-			setOpen(false);
-			setIsClosing(false); // <-- Reset closing status for the next cycle
-		}, 500); // <-- Length of the slide-down animation
-	};
-
-	// Format Balance
-	function formatBalance(value) {
-		return Number(value).toLocaleString('en-US', {
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 2,
-		});
-	}
-
-	// Format Number
-	function formatNumber(value) {
-		return Number(value / 1e18).toLocaleString('en-US', {
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 2,
-		});
-	}
-
-	// Create Dare Function
-	async function onCreateTask() {
+	const handleCreate = async () => {
+		if (!provider || !network || !value) return;
 		const signer = provider.getSigner();
 		const nerveGlobal = new ethers.Contract(CHAINS[network]?.contract, NerveGlobalABI, signer);
 		try {
 			setPendingTx(true);
-			const tx = await nerveGlobal.create(recipientAddress, description, convertToSeconds(days, hours, minutes), '0', '0', {
-				value: txValue,
-			});
+			const tx = await nerveGlobal.create(recipientAddress, description, convertToSeconds(days, hours, minutes), '0', '0', { value: txValue });
 			await tx.wait();
-			if (tx.hash) {
-				// wait 2 seconds
-				await new Promise((resolve) => setTimeout(resolve, 2000));
-				dispatch(createTriggerSlice.actions.setCreateTrigger(true));
-				handleClose();
-				setPendingTx(false);
-			}
-		} catch (error) {
+			dispatch(createTriggerSlice.actions.setCreateTrigger(true));
+			setOpen(false);
 			setPendingTx(false);
-			console.log(error);
-		}
-	}
-
-	// Change Network
-	const handleNetworkChange = async () => {
-		if (metaMask) {
-			try {
-				await metaMask.activate(Number(network));
-			} catch (error) {
-				console.error(error);
-			}
-		} else {
-			try {
-				await metaMask.activate(getAddChainParameters(Number(network)));
-			} catch (error) {
-				console.error(error);
-			}
+		} catch (err) {
+			console.error(err);
+			setPendingTx(false);
 		}
 	};
 
 	return (
 		<>
-			<ModalButton theme={theme} onClick={handleOpen}>
+			<button
+				onClick={() => setOpen(true)}
+				className="hidden md:flex bg-accent text-black dark:text-white px-3 py-3 rounded-md text-sm justify-center items-center"
+			>
 				Create Dare
-			</ModalButton>
-			<StyledSpeedDial theme={theme} ariaLabel="New Dare" icon={<PlaylistAddIcon />} onClick={handleOpen} />
-			<StyledModal open={open} onClose={handleClose}>
-				<ConnectBox theme={theme} className={isClosing ? 'closing' : ''}>
-					<Typography
-						style={{ fontWeight: 'bold', margin: '0.0 auto 1.75rem auto', cursor: 'default' }}
-						align="center"
-						color={theme.palette.text.primary}
-						id="modal-modal-title"
-						variant="h6"
-						component="h2"
-					>
-						Create Task
-					</Typography>
-					<StatisticBox>
-						<StyledTitle theme={theme}>
-							<div>
-								<a style={{ color: theme.palette.text.primary, marginRight: '0.25rem' }}>Select Network</a>
-								<Tooltip title="Mandatory contribution for participation." placement="top">
-									<InfoOutlinedIcon style={{ fontSize: '1rem', color: theme.palette.secondary.main, cursor: 'default' }} />
-								</Tooltip>
-							</div>
-							<FormControl fullWidth>
-								<InputLabel id="chain-select-label">Select Network</InputLabel>
-								<Select labelId="chain-select-label" id="chain-select" value={network} label="Select Network" onChange={handleChange}>
-									{Object.entries(CHAINS).map(([chainId, chainInfo]) => {
-										if (chainInfo && chainInfo.name && chainInfo.logo) {
-											return (
-												<MenuItem key={chainId} value={chainId}>
-													<img
-														src={chainInfo.logo}
-														style={{ display: 'flex', marginRight: '8px' }}
-														width="22"
-														height="22"
-														alt={`${chainInfo.name} Logo`}
-													/>
-													{chainInfo.name}
-												</MenuItem>
-											);
-										}
-										return null;
-									})}
-								</Select>
-							</FormControl>
-						</StyledTitle>
-						<StyledTitle theme={theme}>
-							<div>
-								<a style={{ color: theme.palette.text.primary, marginRight: '0.25rem' }}>Entry amount</a>
-								<Tooltip title="Mandatory contribution for participation." placement="top">
-									<InfoOutlinedIcon style={{ fontSize: '1rem', color: theme.palette.secondary.main, cursor: 'default' }} />
-								</Tooltip>
-							</div>
+			</button>
 
-							<a>Balance: {formatBalance(balance)}</a>
-						</StyledTitle>
-						<OutlinedInput
-							id="outlined-adornment-amount"
-							onChange={handleInputChange}
-							endAdornment={
-								<InputAdornment position="end">
-									<a style={{ color: theme.palette.text.primary }}>{CHAINS[network]?.nameToken}</a>
-									<MaxButton theme={theme} onClick={setMaxValue}>
-										Max
-									</MaxButton>
-								</InputAdornment>
-							}
-							placeholder={'0.00'}
-							value={value}
-							type="string"
-							style={{ display: 'flex', margin: '0.5rem 0 1rem 0' }}
-							inputProps={{
-								style: {
-									textAlign: 'right',
-									fontSize: '1rem',
-									color: theme.palette.text.primary,
-								},
-							}}
-							sx={{
-								color: theme.palette.text.primary,
-								'& .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: theme.palette.secondary.main },
-								'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: theme.palette.warning.main },
-							}}
-						/>
+			{/* SpeedDial for mobile */}
+			<button
+				onClick={() => setOpen(true)}
+				className="md:hidden fixed bottom-28 right-5 z-50 bg-accent p-4 rounded-full shadow-lg hover:bg-accent/90 transition"
+			>
+				+
+			</button>
 
-						<StyledTitle theme={theme}>
-							<div>
-								<a style={{ color: theme.palette.text.primary, marginRight: '0.25rem' }}>Time</a>
-								<Tooltip
-									title="Set the time allowed to complete the task in days, hours, and minutes. Maximum allowed is 30 days, 23 hours, and 59 minutes."
-									placement="top"
-								>
-									<InfoOutlinedIcon style={{ fontSize: '1rem', color: theme.palette.secondary.main, cursor: 'default' }} />
-								</Tooltip>
-							</div>
-						</StyledTitle>
-						<StyledTime theme={theme}>
-							<StyledTextField
-								theme={theme}
-								color="warning"
-								label="Days"
+			<PortalModal isOpen={open} onClose={() => !pendingTx && setOpen(false)}>
+				<div className="bg-background border border-secondary rounded-xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
+					<h2 className="text-xl font-bold mb-4 text-center text-gray-900 dark:text-white">Create Task</h2>
+
+					{/* Network Select */}
+					<div className="mb-4">
+						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Select Network</label>
+						<select
+							value={network}
+							onChange={(e) => setNetwork(e.target.value)}
+							className="w-full rounded-md border border-secondary bg-transparent text-sm px-3 py-2 text-gray-900 dark:text-white focus:outline-none"
+						>
+							<option value="" disabled>
+								Select network
+							</option>
+							{Object.entries(CHAINS).map(([chainId, chainInfo]: any) => (
+								<option key={chainId} value={chainId}>
+									{chainInfo.name}
+								</option>
+							))}
+						</select>
+					</div>
+
+					{/* Value Input */}
+					<div className="mb-4">
+						<div className="flex justify-between text-sm mb-1">
+							<span className="text-gray-700 dark:text-gray-300">Entry Amount</span>
+							<span className="text-gray-500">Balance: {formatBalance(balance)}</span>
+						</div>
+						<div className="flex items-center">
+							<input
+								type="text"
+								value={value}
+								onChange={(e) => setValue(e.target.value || '0.00')}
+								className="flex-1 rounded-md border border-secondary bg-transparent text-right px-3 py-2 text-sm text-gray-900 dark:text-white"
+								placeholder="0.00"
+							/>
+							<button
+								onClick={setMaxValue}
+								className="ml-2 px-3 py-2 bg-gray-200 dark:bg-gray-800 rounded-md text-sm text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700"
+							>
+								Max
+							</button>
+						</div>
+					</div>
+
+					{/* Time Selection */}
+					<div className="mb-4">
+						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Duration</label>
+						<div className="flex gap-2">
+							<input
+								type="number"
 								value={days}
-								onChange={(event) => setDays(validateInput(event.target.value, 30))}
+								onChange={(e) => setDays(validateInput(e.target.value, 30))}
+								className="w-1/3 rounded-md border border-secondary bg-transparent px-3 py-2 text-sm text-gray-900 dark:text-white"
+								placeholder="Days"
 							/>
-							<StyledTextField
-								theme={theme}
-								color="warning"
-								label="Hours"
+							<input
+								type="number"
 								value={hours}
-								onChange={(event) => setHours(validateInput(event.target.value, 23))}
+								onChange={(e) => setHours(validateInput(e.target.value, 23))}
+								className="w-1/3 rounded-md border border-secondary bg-transparent px-3 py-2 text-sm text-gray-900 dark:text-white"
+								placeholder="Hours"
 							/>
-							<StyledTextField
-								theme={theme}
-								color="warning"
-								label="Minutes"
+							<input
+								type="number"
 								value={minutes}
-								onChange={(event) => setMinutes(validateInput(event.target.value, 59))}
+								onChange={(e) => setMinutes(validateInput(e.target.value, 59))}
+								className="w-1/3 rounded-md border border-secondary bg-transparent px-3 py-2 text-sm text-gray-900 dark:text-white"
+								placeholder="Minutes"
 							/>
-						</StyledTime>
-						<StyledTitle theme={theme}>Task description</StyledTitle>
-						<OutlinedInput
-							sx={{
-								color: theme.palette.text.primary,
-								'& .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: theme.palette.secondary.main },
-								'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: theme.palette.warning.main },
-							}}
-							placeholder="Do you dare..."
-							id="outlined-adornment-name"
-							multiline={true}
+						</div>
+					</div>
+
+					{/* Description */}
+					<div className="mb-6">
+						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Task Description</label>
+						<textarea
 							rows={3}
-							type="string"
-							style={{ display: 'flex', margin: '0.5rem 0 1rem 0' }}
-							onChange={(event) => setDescription(event.target.value)}
-						/>
-						<StyledSection style={{ margin: '2rem auto 1.5rem auto' }}>
-							{chainId === Number(network) ? (
-								pendingTx ? (
-									<BuyButton theme={theme} disabled>
-										Pending
-									</BuyButton>
-								) : (
-									<BuyButton theme={theme} onClick={onCreateTask} disabled={value === '0' || value === '0.0' || value === '0.00' || value === '0.'}>
-										Create Task
-									</BuyButton>
-								)
-							) : (
-								network && (
-									<ChangeNetworkButton
-										theme={theme}
-										onClick={handleNetworkChange}
-										startIcon={pendingTx && <CircularProgress color="secondary" thickness={2.5} size={20} />}
-									>
-										Change Network
-									</ChangeNetworkButton>
-								)
-							)}
-						</StyledSection>
-					</StatisticBox>
-				</ConnectBox>
-			</StyledModal>
+							value={description}
+							onChange={(e) => setDescription(e.target.value)}
+							className="w-full rounded-md border border-secondary bg-transparent px-3 py-2 text-sm text-gray-900 dark:text-white"
+							placeholder="Do you dare..."
+						></textarea>
+					</div>
+
+					{/* CTA Buttons */}
+					{chainId === Number(network) ? (
+						<button
+							disabled={pendingTx || value === '0.00' || value === '0'}
+							onClick={onCreateTask}
+							className="w-full py-3 bg-yellow-500 text-white font-semibold rounded-lg hover:bg-yellow-600 transition disabled:opacity-50"
+						>
+							{pendingTx ? 'Pending...' : 'Create Task'}
+						</button>
+					) : (
+						<button
+							onClick={handleNetworkChange}
+							className="w-full py-3 bg-yellow-500 text-white font-semibold rounded-lg hover:bg-yellow-600 transition"
+						>
+							Change Network
+						</button>
+					)}
+				</div>
+			</PortalModal>
 		</>
 	);
-};
-
-export default CreateAtPlayer;
+}

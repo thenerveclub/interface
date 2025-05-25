@@ -25,16 +25,20 @@ export default function IndexPage() {
 	const sort = useSelector((state: { sort: number }) => state.sort);
 	const filter = useSelector((state: { filter: number[] }) => state.filter);
 
-	function getChainLogoComponent(chainId) {
+	function getChainLogoComponent(chainId: number) {
 		if (!chainId) return null;
 
-		const LogoComponent = {
-			1: <SiEthereum size={32} color="#627EEA" />,
-			11155111: <SiEthereum size={32} color="#627EEA" />,
-			137: <SiPolygon size={32} color="#627EEA" />,
-		}[chainId];
+		const LogoMap = {
+			1: SiEthereum,
+			11155111: SiEthereum,
+			137: SiPolygon,
+		};
 
-		return <LogoComponent style={{ display: 'flex', marginRight: '0.5rem' }} width="18" height="18" alt="Logo" />;
+		const Logo = LogoMap[chainId];
+
+		if (!Logo) return null;
+
+		return <Logo size={18} color="#627EEA" style={{ display: 'flex', marginRight: '0.5rem' }} />;
 	}
 
 	// Active Player Tasks
@@ -85,6 +89,8 @@ export default function IndexPage() {
 		const combinedActiveTasks = combineTasks(trendingDareList);
 		const sortedActiveTasks = sortTasks(combinedActiveTasks, sort);
 		const filteredActiveTasks = filterBySelectedChains(sortedActiveTasks, filter);
+
+		console.log('Aktive Dares', filteredActiveTasks);
 
 		// Update the state with the filtered and sorted tasks
 		setFilteredActiveTasks(filteredActiveTasks);
@@ -175,7 +181,7 @@ export default function IndexPage() {
 						<div className="flex flex-wrap items-center justify-evenly gap-8 my-10 w-full">
 							{filteredActiveTasks.map((tad) => (
 								<li key={`${tad.chainId}-${tad.id}`} className="list-none">
-									<div className="flex flex-col justify-between items-center mx-auto min-w-[450px] max-w-[450px] min-h-[300px] max-h-[300px] bg-background border border-secondary rounded-lg p-4">
+									<div className="flex flex-col justify-between items-center mx-auto w-[90vw] md:min-w-[450px] md:max-w-[450px] min-h-[300px] max-h-[300px] bg-background border border-secondary rounded-lg p-3">
 										<div className="flex justify-between w-full">
 											{tad?.latitude && tad?.longitude !== '0' && (
 												<div

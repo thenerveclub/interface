@@ -3,6 +3,8 @@
 import { useRef } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
 import QRCode from 'react-qr-code';
+import PortalModal from '../PortalModal';
+
 interface QRCodeModalProps {
 	open: boolean;
 	handleClose: () => void;
@@ -36,27 +38,32 @@ export default function QRCodeModal({ open, handleClose, qrCodeUrl }: QRCodeModa
 		img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
 	};
 
-	if (!open) return null;
-
 	return (
-		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-			<div className="relative w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl dark:bg-neutral-900">
-				{/* Close Button */}
-				<button onClick={handleClose} className="absolute right-4 top-4 text-gray-500 transition hover:text-gray-800 dark:hover:text-white">
-					<IoCloseOutline className="h-5 w-5" />
+		<PortalModal isOpen={open} onClose={handleClose}>
+			<div className="bg-background rounded-lg shadow-lg p-6 w-full md:w-[25vw] md:border md:border-secondary h-screen md:h-auto justify-center items-center m-auto md:max-h-[90vh] overflow-hidden md:overflow-y-auto flex flex-col relative">
+				{/* Header */}
+				<h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white text-center">QR Code</h2>
+
+				{/* QR Code box with styling */}
+				<div className="rounded-2xl border-8 border-accent p-4 shadow-xl dark:border-accent">
+					<QRCode value={qrCodeUrl} size={150} fgColor="#000000" bgColor="#ffffff" ref={qrRef} />
+				</div>
+
+				{/* Download button */}
+				<button
+					onClick={handleDownload}
+					className="mt-6 w-full px-6 py-3 rounded-md bg-accent text-white font-semibold hover:bg-accent/90 transition text-sm"
+				>
+					Download QR Code
 				</button>
 
-				{/* QR Code */}
-				<div className="flex flex-col items-center text-center">
-					<div className="rounded-2xl border-8 border-blue-600 p-4 shadow-lg dark:border-blue-500">
-						<QRCode value={qrCodeUrl} size={150} fgColor="#000000" bgColor="#ffffff" ref={qrRef} />
-					</div>
-
-					<button onClick={handleDownload} className="mt-6 w-full rounded-xl bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700">
-						Download QR Code
+				{/* Close Button */}
+				<div className="absolute md:hidden bottom-5 mb-10 left-0 right-0 flex justify-center">
+					<button onClick={handleClose} className="px-4 py-3 bg-accent text-white rounded-md transition font-semibold">
+						Close
 					</button>
 				</div>
 			</div>
-		</div>
+		</PortalModal>
 	);
 }

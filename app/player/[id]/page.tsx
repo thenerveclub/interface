@@ -1,263 +1,102 @@
 'use client';
 
-import styled from '@emotion/styled';
-import { ContentCopy, OpenInNew } from '@mui/icons-material';
-import { Box, Button, Fade, SpeedDial, SpeedDialIcon, Tooltip } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import QRCode from 'qrcode.react'; // Added QR code library import
 import { useEffect, useState } from 'react';
-import QRCodeComponent from 'react-qr-code';
+import { FiExternalLink } from 'react-icons/fi';
+import { IoCopyOutline } from 'react-icons/io5';
 import { useSelector } from 'react-redux';
-import LoadingScreen from '../../../components/LoadingScreen';
-import CreateAtPlayer from '../../../components/modal/create/createAtPlayer';
-import QRCodeModal from '../../../components/modal/QRCodeModal';
+
 import usePlayerData from '../../../hooks/playerData/usePlayerData';
 import useENSAvatar from '../../../hooks/useENSAvatar';
 import useENSName from '../../../hooks/useENSName';
+
+import LoadingScreen from '../../../components/LoadingScreen';
+import QRCodeModal from '../../../components/modal/QRCodeModal';
+import CreateAtPlayer from '../../../components/modal/create/createAtPlayer';
 import PlayerDares from './components/PlayerDares';
 import PlayerStatistics from './components/PlayerStatistics';
 
-const StyledBox = styled(Box)`
-	display: flex;
-	flex-direction: column;
-	margin: 7.5rem auto 0 auto;
-	width: 90%;
-
-	@media (max-width: 750px) {
-		width: 100%;
-		margin: 5rem auto 0 auto;
-	}
-`;
-
-const StyledSection = styled(Box)`
-	display: flex;
-	flex-direction: row;
-	width: 100%;
-`;
-
-const StyledLeftSectionBox = styled(Box)`
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-
-	@media (max-width: 750px) {
-		justify-content: center;
-		align-items: center;
-		margin: 0 auto 0 auto;
-	}
-`;
-
-// const PlayerBox = styled(Box)`
-// 	display: flex;
-// 	flex-direction: row;
-// 	min-height: 50px;
-// 	text-align: left;
-// 	align-items: center;
-
-// 	p {
-// 		font-size: 30px;
-// 		cursor: default;
-// 		margin: 0;
-// 	}
-
-// 	@media (max-width: 750px) {
-// 		flex-direction: column;
-// 		justify-content: center;
-// 		width: 100%;
-// 		margin: 0 auto 0 auto;
-// 	}
-// `;
-
-const PlayerBox = styled(Box)<{ imageurl: string }>`
-	position: relative;
-	display: flex;
-	flex-direction: row;
-	min-height: 50px;
-	text-align: left;
-	align-items: center;
-
-	p {
-		font-size: 30px;
-		cursor: default;
-		margin: 0 0 0 1rem;
-		z-index: 1;
-	}
-
-	@media (max-width: 750px) {
-		flex-direction: column;
-		justify-content: center;
-		width: 100%;
-		margin: 0 auto;
-	}
-
-	&::before {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background-image: ${({ imageurl }) => `url(${imageurl})`};
-		background-size: cover;
-		background-position: center;
-		filter: blur(20px);
-		transform: scale(1);
-		opacity: 0.5;
-		z-index: -1;
-	}
-
-	img {
-		z-index: 1;
-		border-radius: 8px;
-	}
-`;
-
-const AddressBox = styled(Box)`
-	display: flex;
-	flex-direction: row;
-	min-height: 25px;
-	text-align: left;
-	align-items: center;
-
-	p {
-		color: rgba(128, 128, 138, 1);
-		font-size: 14px;
-		cursor: default;
-
-		&:not(:last-child) {
-			margin-right: 1rem;
-		}
-	}
-
-	@media (max-width: 750px) {
-		justify-content: center;
-	}
-`;
-
-const CreateTaskBox = styled(Box)`
-	display: none;
-	visibility: hidden;
-
-	@media (max-width: 750px) {
-		display: flex;
-		visibility: visible;
-	}
-`;
-
-const QRCodeContainer = styled(Box)<{ theme: any }>`
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin-top: 2rem;
-
-	canvas {
-		border: 5px solid ${({ theme }) => theme.palette.primary.main};
-		border-radius: 12px;
-		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-	}
-`; // Styled component for QR code
-
 export default function PlayerPage({ params }: { params: { id: string } }) {
-	const theme = useTheme();
 	const router = useRouter();
 	const pathname = usePathname();
-
-	// Usernames
 	const id = params.id;
 
-	// console.log('id', id);
-
-	// Redux
-	const account = useSelector((state: { account: string }) => state.account);
-	const currencyPrice = useSelector((state: { currencyPrice: number }) => state.currencyPrice);
-
-	// Address Checksumed And Lowercased
+	const account = useSelector((state: any) => state.account);
+	const currencyPrice = useSelector((state: any) => state.currencyPrice);
 	const checksumAccount = account?.toLowerCase();
 
-	const [qrModalOpen, setQrModalOpen] = useState(false); // State to control modal
-
-	// Dynamic QR Code URL
+	const [qrModalOpen, setQrModalOpen] = useState(false);
 	const qrCodeUrl = `http://localhost:3003/player/${id}`;
 
 	const { ensName, address, error } = useENSName(id?.toLowerCase());
-
-	// Get the ensAvatar
-	const { ensAvatar, avatarError, avatarLoading } = useENSAvatar(ensName);
-	console.log('ensAvatar', ensAvatar, 'avatarError', avatarError, 'avatarLoading', avatarLoading);
-
+	const { ensAvatar } = useENSAvatar(ensName);
 	const { playerData, isLoading } = usePlayerData(address, currencyPrice);
 
-	// Copy Address To Clipboard && Tooltip
 	const [copied, setCopied] = useState(false);
 	function handleCopyAddress() {
 		navigator.clipboard.writeText(address);
 		setCopied(true);
-
-		setTimeout(() => {
-			setCopied(false);
-		}, 2000); // Reset to "Copy Address" after 2 seconds
+		setTimeout(() => setCopied(false), 2000);
 	}
 
-	return (
-		<>
-			{isLoading ? (
-				<LoadingScreen />
-			) : (
-				<StyledBox>
-					<StyledSection>
-						<StyledLeftSectionBox>
-							<PlayerBox imageurl={`https://euc.li/${ensName}`}>
-								{ensName && <Image src={`https://euc.li/${ensName}`} alt="ENS Avatar" width={100} height={100} />}
-								<p>{ensName ? ensName : address ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}` : null}</p>
-							</PlayerBox>
-							{/* QR Code Section */}
-							<Button variant="contained" color="primary" style={{ marginTop: '1rem' }} onClick={() => setQrModalOpen(true)}>
-								Show QR Code
-							</Button>
-							<AddressBox>
-								<p>
-									({address?.substring(0, 6)}...{address?.substring(address?.length - 4)})
-								</p>
-								<Tooltip
-									title={copied ? 'Copied!' : 'Copy Address'}
-									placement="bottom"
-									disableInteractive
-									enterTouchDelay={100}
-									TransitionComponent={Fade}
-									TransitionProps={{ timeout: 600 }}
-								>
-									<p onClick={handleCopyAddress} style={{ cursor: 'pointer' }}>
-										<ContentCopy style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
-									</p>
-								</Tooltip>
-								<Tooltip
-									title="View On Explorer"
-									placement="bottom"
-									disableInteractive
-									enterTouchDelay={100}
-									TransitionComponent={Fade}
-									TransitionProps={{ timeout: 600 }}
-								>
-									<a href={`https://etherscan.io/address/${address}#multichain-portfolio`} target="_blank" style={{ cursor: 'pointer' }}>
-										<OpenInNew style={{ display: 'flex', fontSize: '14px', fill: 'rgba(128, 128, 138, 1)' }} />
-									</a>
-								</Tooltip>
-							</AddressBox>
-							<PlayerStatistics playerData={playerData} checksumAddress={address} />
-						</StyledLeftSectionBox>
-					</StyledSection>
-					<PlayerDares recipientAddress={address} recipientENS={ensName} error={error} />
+	if (isLoading) return <LoadingScreen />;
 
-					{!error && (
-						<CreateTaskBox>
-							{account && checksumAccount !== address && <CreateAtPlayer recipientAddress={address} recipientENS={ensName} />}
-						</CreateTaskBox>
-					)}
-					<QRCodeModal open={qrModalOpen} handleClose={() => setQrModalOpen(false)} qrCodeUrl={qrCodeUrl} />
-				</StyledBox>
+	return (
+		<div className="mt-32 mx-auto w-[90%] max-w-6xl px-4 sm:mt-20 flex flex-col">
+			{/* Player Header */}
+			<div className="relative flex flex-col sm:flex-row items-center sm:items-start w-full text-center sm:text-left">
+				{/* Blurred Background */}
+				<div
+					className="absolute top-0 left-0 w-full h-full bg-cover bg-center blur-md opacity-50 rounded-xl -z-10"
+					style={{ backgroundImage: `url(https://euc.li/${ensName})` }}
+				></div>
+
+				{/* Avatar + Name */}
+				{ensName && <Image src={`https://euc.li/${ensName}`} alt="ENS Avatar" width={100} height={100} className="rounded-lg z-10" />}
+				<p className="text-2xl font-semibold mt-4 sm:mt-0 sm:ml-4 z-10">
+					{ensName || (address && `${address.substring(0, 6)}...${address.substring(address.length - 4)}`)}
+				</p>
+			</div>
+
+			{/* Actions */}
+			<div className="flex flex-col sm:flex-row items-center sm:justify-start gap-4 mt-6">
+				<button onClick={() => setQrModalOpen(true)} className="px-4 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition">
+					Show QR Code
+				</button>
+
+				<div className="flex items-center text-sm text-gray-500 gap-3">
+					<p className="select-none">
+						({address?.substring(0, 6)}...{address?.substring(address?.length - 4)})
+					</p>
+					<button onClick={handleCopyAddress} title={copied ? 'Copied!' : 'Copy Address'}>
+						<IoCopyOutline className="w-4 h-4 hover:text-blue-600 transition" />
+					</button>
+					<a href={`https://etherscan.io/address/${address}#asset-multichain`} target="_blank" rel="noopener noreferrer" title="View on Explorer">
+						<FiExternalLink className="w-4 h-4 hover:text-blue-600 transition" />
+					</a>
+				</div>
+			</div>
+
+			{/* Player Stats */}
+			<div className="mt-6">
+				<PlayerStatistics playerData={playerData} checksumAddress={address} />
+			</div>
+
+			{/* Player Dares */}
+			<div className="mt-10">
+				<PlayerDares recipientAddress={address} recipientENS={ensName} error={error} />
+			</div>
+
+			{/* Create Dare */}
+			{!error && account && checksumAccount !== address && (
+				<div className="mt-6 block sm:hidden">
+					<CreateAtPlayer recipientAddress={address} recipientENS={ensName} />
+				</div>
 			)}
-		</>
+
+			{/* QR Code Modal */}
+			<QRCodeModal open={qrModalOpen} handleClose={() => setQrModalOpen(false)} qrCodeUrl={qrCodeUrl} />
+		</div>
 	);
 }
