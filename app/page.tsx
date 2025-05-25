@@ -2,7 +2,7 @@
 
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import Head from 'next/head';
-import router, { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { SiEthereum, SiGooglemaps, SiPolygon } from 'react-icons/si';
 import { useDispatch, useSelector } from 'react-redux';
@@ -43,14 +43,6 @@ export default function IndexPage() {
 	// Global Stats
 	const { globalStats } = useGlobalStats();
 	const { allChains } = globalStats || {};
-
-	console.log('allChains', allChains);
-
-	// Toogle Button For Token Price
-	const handleToggle = (event, newCurrency) => {
-		// update currencyValue in redux
-		dispatch(currencySlice.actions.updateCurrency(newCurrency));
-	};
 
 	const [filteredActiveTasks, setFilteredActiveTasks] = useState([]);
 
@@ -152,7 +144,6 @@ export default function IndexPage() {
 								<div className="text-center xl:text-left text-6xl md:text-9xl font-bold text-black dark:text-white">DARE.</div>
 								<div className="text-center xl:text-left text-6xl md:text-9xl font-bold text-black dark:text-white">PROVE.</div>
 								<div className="text-center xl:text-left text-6xl md:text-9xl font-bold text-accent">GET PAID.</div>
-								{/* <div className="text-center md:text-left text-6xl 2xl:text-9xl font-bold text-[#FF0033]">GET PAID.</div> */}
 							</div>
 
 							{/* Stats Section */}
@@ -176,26 +167,9 @@ export default function IndexPage() {
 					<div className="flex flex-col bg-background items-center justify-center text-center w-[90%] mx-auto my-8">
 						<hr className="w-full border-t border-secondary" />
 						<div className="flex flex-col lg:flex-row items-center justify-center w-full h-10 my-4 gap-4">
-							{/* <ActiveTabLeftSection></ActiveTabLeftSection> */}
 							<div className="flex flex-row justify-between md:justify-end w-full gap-2">
-								{/* // Filter StyledSection */}
 								<SelectFilter />
 								<SelectSort />
-								{/* <div className="flex items-center justify-center">
-									<ToggleButtonGroup
-										className="h-9 w-40 cursor-not-allowed"
-										value={currencyValue}
-										exclusive
-										onChange={handleToggle}
-									>
-										<ToggleButton className="text-secondary border-secondary font-medium" disabled={currencyValue === false} value={false}>
-											ETH
-										</ToggleButton>
-										<ToggleButton className="text-secondary border-secondary font-medium" disabled={currencyValue === true} value={true}>
-											USD
-										</ToggleButton>
-									</ToggleButtonGroup>
-								</div> */}
 							</div>
 						</div>
 						<div className="flex flex-wrap items-center justify-evenly gap-8 my-10 w-full">

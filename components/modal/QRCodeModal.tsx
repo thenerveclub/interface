@@ -1,51 +1,8 @@
 'use client';
 
-import styled from '@emotion/styled';
-import { Close } from '@mui/icons-material';
-import { Box, Button, Dialog, DialogContent, IconButton } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import QRCode from 'qrcode.react';
-import QRCodeComponent from 'react-qr-code';
-
-const ModalContainer = styled(Dialog)`
-	.MuiBackdrop-root {
-		background-color: rgba(0, 0, 0, 0.8);
-		backdrop-filter: blur(8px);
-	}
-`;
-
-const ModalHeader = styled(Box)`
-	display: flex;
-	justify-content: flex-end;
-	padding: 0.5rem;
-`;
-
-const QRCodeBox = styled(Box)<{ theme: any }>`
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	padding: 1rem;
-	text-align: center;
-
-	canvas {
-		border: 8px solid ${({ theme }) => theme.palette.primary.main};
-		border-radius: 16px;
-		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-	}
-`;
-
-const DownloadButton = styled(Button)<{ theme: any }>`
-	margin-top: 1rem;
-	background-color: ${({ theme }) => theme.palette.primary.main};
-	color: ${({ theme }) => theme.palette.primary.contrastText};
-	text-transform: none;
-
-	&:hover {
-		background-color: ${({ theme }) => theme.palette.primary.dark};
-	}
-`;
-
+import { useRef } from 'react';
+import { IoCloseOutline } from 'react-icons/io5';
+import QRCode from 'react-qr-code';
 interface QRCodeModalProps {
 	open: boolean;
 	handleClose: () => void;
@@ -53,45 +10,53 @@ interface QRCodeModalProps {
 }
 
 export default function QRCodeModal({ open, handleClose, qrCodeUrl }: QRCodeModalProps) {
-	const theme = useTheme();
+	const qrRef = useRef<SVGSVGElement | null>(null);
 
 	const handleDownload = () => {
-		const canvas = document.querySelector('canvas') as HTMLCanvasElement;
-		if (canvas) {
+		if (!qrRef.current) return;
+
+		const svg = qrRef.current;
+		const svgData = new XMLSerializer().serializeToString(svg);
+		const canvas = document.createElement('canvas');
+		const ctx = canvas.getContext('2d')!;
+		const img = new Image();
+
+		img.onload = () => {
+			canvas.width = img.width;
+			canvas.height = img.height;
+			ctx.drawImage(img, 0, 0);
+			const png = canvas.toDataURL('image/png');
+
 			const link = document.createElement('a');
-			link.href = canvas.toDataURL();
+			link.href = png;
 			link.download = 'qr-code.png';
 			link.click();
-		}
+		};
+
+		img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
 	};
 
+	if (!open) return null;
+
 	return (
-		<ModalContainer open={open} onClose={handleClose}>
-			<DialogContent>
-				<ModalHeader>
-					<IconButton onClick={handleClose}>
-						<Close />
-					</IconButton>
-				</ModalHeader>
-				<QRCodeBox theme={theme}>
-					{/* <QRCode
-						value={qrCodeUrl}
-						size={200}
-						fgColor={theme.palette.text.primary}
-						bgColor={theme.palette.background.default}
-						imageSettings={{
-							src: '/instagram-like-logo.png', // Add your custom center image/logo path
-							height: 40,
-							width: 40,
-							excavate: true,
-						      }}
-					/> */}
-					<QRCodeComponent value={qrCodeUrl} size={150} fgColor={theme.palette.text.primary} bgColor={theme.palette.background.default} />
-					<DownloadButton theme={theme} onClick={handleDownload}>
+		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+			<div className="relative w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl dark:bg-neutral-900">
+				{/* Close Button */}
+				<button onClick={handleClose} className="absolute right-4 top-4 text-gray-500 transition hover:text-gray-800 dark:hover:text-white">
+					<IoCloseOutline className="h-5 w-5" />
+				</button>
+
+				{/* QR Code */}
+				<div className="flex flex-col items-center text-center">
+					<div className="rounded-2xl border-8 border-blue-600 p-4 shadow-lg dark:border-blue-500">
+						<QRCode value={qrCodeUrl} size={150} fgColor="#000000" bgColor="#ffffff" ref={qrRef} />
+					</div>
+
+					<button onClick={handleDownload} className="mt-6 w-full rounded-xl bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700">
 						Download QR Code
-					</DownloadButton>
-				</QRCodeBox>
-			</DialogContent>
-		</ModalContainer>
+					</button>
+				</div>
+			</div>
+		</div>
 	);
 }

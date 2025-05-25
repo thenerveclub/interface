@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { CHAINS } from '../../../utils/chains';
 
 interface TopContributorsProps {
 	topContributors: any;
@@ -50,12 +49,7 @@ const TopContributors: React.FC<TopContributorsProps> = ({ topContributors, load
 								<tr key={index} className="even:bg-zinc-200 dark:even:bg-zinc-900 hover:text-accent">
 									<td className="px-4 py-3">{index + 1}</td>
 									<td className="px-4 py-3 whitespace-nowrap overflow-hidden text-ellipsis max-w-[250px]">
-										<Link
-											href={`${CHAINS[137]?.blockExplorerUrls[0]}address/${row.id}`}
-											target="_blank"
-											rel="noopener noreferrer"
-											className="flex items-center gap-1 truncate cursor-default"
-										>
+										<Link href={`/player/${row.id}`} className="flex items-center gap-1 truncate cursor-default">
 											<span className="truncate hover:underline cursor-pointer">
 												{typeof window !== 'undefined' && window.innerWidth < 680 ? `${row.id.slice(0, 6)}...${row.id.slice(-4)}` : row.id}
 											</span>
