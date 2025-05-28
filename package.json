@@ -56,7 +56,6 @@
 		"ethers": "^5.7.2",
 		"framer-motion": "^12.0.5",
 		"next": "^15.1.6",
-		"notistack": "^2.0.8",
 		"qrcode.react": "^4.2.0",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",

@@ -1,7 +1,6 @@
 'use client';
 
 import { Web3ReactProvider } from '@web3-react/core';
-import { SnackbarProvider } from 'notistack';
 import { Suspense, useEffect } from 'react';
 import { Provider, useDispatch } from 'react-redux';
 import Layout from '../components/layout/Layout';
@@ -117,9 +116,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 					<Web3ReactProvider connectors={connectors}>
 						<Updaters />
 						<Suspense fallback={<div>Loading...</div>}>
-							<Layout>
-								<SnackbarProvider maxSnack={3}>{children}</SnackbarProvider>
-							</Layout>
+							<Layout>{children}</Layout>
 						</Suspense>
 					</Web3ReactProvider>
 				</Provider>

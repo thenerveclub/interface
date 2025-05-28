@@ -3,7 +3,6 @@
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { useRouter } from 'next/navigation';
-import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import NerveGlobalABI from '../../../constants/abi/nerveGlobal.json';
@@ -20,7 +19,6 @@ interface CreateAtPlayerProps {
 
 export default function CreateAtPlayer({ recipientAddress, recipientENS }: CreateAtPlayerProps) {
 	const { provider } = useWeb3React();
-	const { enqueueSnackbar } = useSnackbar();
 	const dispatch = useDispatch();
 	const router = useRouter();
 
