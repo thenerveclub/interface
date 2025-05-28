@@ -241,7 +241,7 @@ export default function SettingsModal() {
 					</div>
 
 					{/* Close Button */}
-					<div className="absolute md:hidden bottom-5 mb-10 left-0 right-0 flex justify-center">
+					<div className="absolute md:hidden bottom-0 mb-10 left-0 right-0 flex justify-center">
 						<button onClick={handleModalToggle} className="px-4 py-3 bg-accent text-white rounded-md transition font-semibold">
 							Close
 						</button>
