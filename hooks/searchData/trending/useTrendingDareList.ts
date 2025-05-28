@@ -17,6 +17,7 @@ const useTrendingDareList = () => {
 				  id
 				  amount
 				  description
+				  endTask
 				  entranceAmount
 				  participants
 				  chainId

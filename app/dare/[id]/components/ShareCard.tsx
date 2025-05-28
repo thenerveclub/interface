@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { FaTelegram, FaWhatsapp, FaXTwitter } from 'react-icons/fa6';
 
 interface ShareCardProps {
@@ -9,8 +9,8 @@ interface ShareCardProps {
 }
 
 const ShareCard: React.FC<ShareCardProps> = ({ dareData, player }) => {
-	const router = useRouter();
-	const path = `https://nerveglobal.com${router.asPath}`;
+	const pathname = usePathname();
+	const path = `https://app.nerve.club${pathname}`;
 
 	return (
 		<div className="flex flex-col w-full mx-auto bg-background border border-secondary rounded-xl backdrop-blur-md md:w-[95%]">

@@ -191,7 +191,7 @@ export default function CreateAtPlayer({ recipientAddress, recipientENS }: Creat
 					{chainId === Number(network) ? (
 						<button
 							disabled={pendingTx || value === '0.00' || value === '0'}
-							onClick={onCreateTask}
+							onClick={handleCreate}
 							className="w-full py-3 bg-yellow-500 text-white font-semibold rounded-lg hover:bg-yellow-600 transition disabled:opacity-50"
 						>
 							{pendingTx ? 'Pending...' : 'Create Task'}

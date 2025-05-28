@@ -12,7 +12,7 @@ interface QRCodeModalProps {
 }
 
 export default function QRCodeModal({ open, handleClose, qrCodeUrl }: QRCodeModalProps) {
-	const qrRef = useRef<SVGSVGElement | null>(null);
+	const qrRef = useRef<HTMLDivElement>(null);
 
 	const handleDownload = () => {
 		if (!qrRef.current) return;
@@ -45,8 +45,8 @@ export default function QRCodeModal({ open, handleClose, qrCodeUrl }: QRCodeModa
 				<h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white text-center">QR Code</h2>
 
 				{/* QR Code box with styling */}
-				<div className="rounded-2xl border-8 border-accent p-4 shadow-xl dark:border-accent">
-					<QRCode value={qrCodeUrl} size={150} fgColor="#000000" bgColor="#ffffff" ref={qrRef} />
+				<div className="rounded-2xl border-8 border-accent p-4 shadow-xl dark:border-accent" ref={qrRef}>
+					<QRCode value={qrCodeUrl} size={150} fgColor="#000000" bgColor="#ffffff" />
 				</div>
 
 				{/* Download button */}

@@ -1,537 +1,223 @@
-import { keyframes } from '@emotion/react';
-import styled from '@emotion/styled';
-import { VolumeUp } from '@mui/icons-material';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
-import {
-	Box,
-	Button,
-	CircularProgress,
-	FormControl,
-	Grid,
-	Input,
-	InputAdornment,
-	InputLabel,
-	MenuItem,
-	Modal,
-	OutlinedInput,
-	Select,
-	Slider,
-	SpeedDial,
-	SpeedDialIcon,
-	TextField,
-	Tooltip,
-	Typography,
-} from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+'use client';
+
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { useRouter } from 'next/navigation';
-import { useSnackbar } from 'notistack';
 import { useState } from 'react';
+import { FaSpinner } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import NerveGlobalABI from '../../../constants/abi/nerveGlobal.json';
 import useBalanceTracker from '../../../hooks/useBalanceTracker';
 import { createTriggerSlice } from '../../../state/trigger/createTriggerSlice';
-import { CHAINS, getAddChainParameters } from '../../../utils/chains';
+import { CHAINS } from '../../../utils/chains';
 import { metaMask } from '../../../utils/connectors/metaMask';
-
-const StyledModal = styled(Modal)`
-	.MuiModal-backdrop {
-		backdrop-filter: blur(5px);
-	}
-`;
-
-// Define the keyframes for the slide-down animation
-const slideDown = keyframes`
-  0% {
-    transform: translate(-50%, -50%);
-  }
-  100% {
-    transform: translate(-50%, 125%);
-  }
-`;
-
-// Define the keyframes for the slide-up animation
-const slideUp = keyframes`
-  0% {
-    transform: translate(-50%, 125%);
-  }
-  100% {
-    transform: translate(-50%, -50%);
-  }
-`;
-
-const ConnectBox = styled(Box)<{ theme: any }>`
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	margin: 0 auto 0 auto;
-	justify-content: center;
-	align-items: center;
-	padding: 3rem 1rem;
-	height: auto;
-	width: 350px;
-	background-color: ${({ theme }) => theme.palette.background.default};
-	border: 1px solid ${({ theme }) => theme.palette.secondary.main};
-	border-radius: ${({ theme }) => theme.customShape.borderRadius};
-
-	animation: ${slideUp} 0.5s ease-in-out forwards;
-	&.closing {
-		animation: ${slideDown} 0.5s ease-in-out forwards;
-	}
-`;
-
-const StyledSection = styled.section`
-	display: flex;
-	align-items: center;
-	justify-content: space-evenly;
-	align-content: center;
-	margin: 0 auto 0 auto;
-
-	@media (max-width: 960px) {
-		display: grid;
-		align-items: center;
-		margin: 0 auto 0 auto;
-		grid-template-columns: 1fr;
-		grid-gap: 2em;
-	}
-`;
-
-const ModalButton = styled(Button)<{ theme: any }>`
-	color: #fff;
-	text-transform: none;
-	font-size: 16px;
-	border: none;
-	line-height: 1.5;
-	background-color: ${({ theme }) => theme.palette.warning.main};
-	border-radius: ${({ theme }) => theme.shape.borderRadius};
-	height: 35px;
-	width: 125px;
-	margin-left: 1rem;
-
-	&:hover {
-		background-color: ${({ theme }) => theme.palette.warning.main};
-	}
-
-	@media (max-width: 1024px) {
-		display: none;
-		visibility: hidden;
-	}
-`;
-
-const StyledSpeedDial = styled(SpeedDial)<{ theme: any }>`
-	display: none;
-	visibility: hidden;
-
-	@media (max-width: 1024px) {
-		display: flex;
-		visibility: visible;
-		position: fixed;
-		bottom: 8rem;
-		right: 2.5rem;
-		z-index: 1000;
-
-		.MuiSpeedDial-fab {
-			background-color: ${({ theme }) => theme.palette.warning.main};
-		}
-	}
-
-	@media (max-width: 680px) {
-		bottom: 7.5rem;
-		right: 1rem;
-	}
-`;
-
-const BuyButton = styled(Button)<{ theme: any }>`
-	color: #fff;
-	text-transform: none;
-	font-size: 16px;
-	border: none;
-	line-height: 1.5;
-	background-color: ${({ theme }) => theme.palette.warning.main};
-	border-radius: ${({ theme }) => theme.shape.borderRadius};
-	height: 40px;
-	width: 125px;
-	margin-left: 1rem;
-
-	&:hover {
-		background-color: ${({ theme }) => theme.palette.warning.main};
-	}
-
-	&:disabled {
-		// color: ${({ theme }) => theme.palette.secondary.main};
-		background-color: ${({ theme }) => theme.palette.warning.dark};
-	}
-`;
-
-const MaxButton = styled(Button)<{ theme: any }>`
-	color: ${({ theme }) => theme.palette.text.primary};
-	text-transform: none;
-	font-size: 1rem;
-	border: none;
-	margin-left: 1rem;
-	line-height: 1.5;
-	background-color: ${({ theme }) => theme.palette.success.contrastText};
-	border-radius: ${({ theme }) => theme.shape.borderRadius};
-	height: 40px;
-`;
-
-const StatisticBox = styled(Box)`
-	width: 90%;
-	margin: 0 auto 0 auto;
-
-	a {
-		font-size: 16px;
-		cursor: default;
-	}
-`;
-
-const StyledTitle = styled(Box)<{ theme: any }>`
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	width: 100%;
-`;
-
-const ChangeNetworkButton = styled(Button)<{ theme: any }>`
-	display: flex;
-	color: ${({ theme }) => theme.palette.text.primary};
-	text-transform: none;
-	width: 150px;
-	font-size: 1rem;
-	font-weight: 400;
-	line-height: 1.5;
-	height: 100%;
-	background-color: ${({ theme }) => theme.palette.warning.main};
-	border-radius: ${({ theme }) => theme.customShape.borderRadius};
-
-	&:hover {
-		background-color: ${({ theme }) => theme.palette.warning.main};
-	}
-
-	&:disabled {
-		color: ${({ theme }) => theme.palette.secondary.main};
-		background-color: ${({ theme }) => theme.palette.warning.dark};
-	}
-`;
-
-const StyledTime = styled(Box)<{ theme: any }>`
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	margin: 0.5rem auto 1rem auto;
-`;
-
-const StyledTextField = styled(TextField)<{ theme: any }>`
-	border-radius: ${({ theme }) => theme.customShape.borderRadius};
-
-	&:nth-of-type(2) {
-		margin: 0 0.5rem 0 0.5rem;
-	}
-
-	& .MuiOutlinedInput-notchedOutline {
-		border: 1px solid ${({ theme }) => theme.palette.secondary.main};
-
-		&:hover {
-			border: 1px solid ${({ theme }) => theme.palette.warning.main};
-		}
-	}
-`;
+import PortalModal from '../../PortalModal';
 
 interface CreateTaskProps {
 	recipientENS: string;
 }
 
-const CreateTask: React.FC<CreateTaskProps> = ({ recipientENS }) => {
-	const theme = useTheme();
-	const router = useRouter();
+export default function CreateTask({ recipientENS }: CreateTaskProps) {
 	const { provider } = useWeb3React();
-	const { enqueueSnackbar } = useSnackbar();
-
-	// console.log('balance', balance, provider);
-
-	// Redux
+	const router = useRouter();
 	const dispatch = useDispatch();
+
 	const account = useSelector((state: { account: string }) => state.account);
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 	const availableChains = useSelector((state: { availableChains: any }) => state.availableChains);
 
 	const balance = useBalanceTracker(provider, account);
 
-	// console.log('availableChains', availableChains);
-
-	// State
 	const [open, setOpen] = useState(false);
 	const [pendingTx, setPendingTx] = useState(false);
 	const [value, setValue] = useState('0.00');
-	const [description, setDescription] = useState(null);
-	const [isMax, setIsMax] = useState(false);
-	const [isClosing, setIsClosing] = useState(false); // <-- New state to track closing status
+	const [description, setDescription] = useState('');
 	const [days, setDays] = useState('0');
 	const [hours, setHours] = useState('0');
 	const [minutes, setMinutes] = useState('0');
 	const [network, setNetwork] = useState('');
 
-	const handleChange = (event) => {
-		setNetwork(event.target.value);
+	const handleClose = () => {
+		if (pendingTx) return;
+		setOpen(false);
+		document.body.style.overflow = '';
 	};
 
-	// Validation function
-	const validateInput = (value, max) => {
+	const handleOpen = () => {
+		setOpen(true);
+		document.body.style.overflow = 'hidden';
+	};
+
+	const handleChangeNetwork = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		setNetwork(e.target.value);
+	};
+
+	const formatBalance = (val: number | string) => Number(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+	const setMaxValue = () => setValue(formatBalance(balance));
+
+	const validateInput = (value: string, max: number) => {
 		const num = parseInt(value, 10);
 		if (isNaN(num) || num < 0) return '0';
 		if (num > max) return max.toString();
 		return num.toString();
 	};
 
-	function convertToSeconds(days, hours, minutes) {
-		const daysInSeconds = parseInt(days) * 86400; // 86400 seconds in a day
-		const hoursInSeconds = parseInt(hours) * 3600; // 3600 seconds in an hour
-		const minutesInSeconds = parseInt(minutes) * 60; // 60 seconds in a minute
+	const convertToSeconds = (d: string, h: string, m: string) => parseInt(d) * 86400 + parseInt(h) * 3600 + parseInt(m) * 60;
 
-		return daysInSeconds + hoursInSeconds + minutesInSeconds;
-	}
-
-	// Function to set max value
-	const setMaxValue = () => {
-		setValue(formatBalance(balance));
-		setIsMax(true);
-	};
-
-	// Update the value state and reset isMax flag when the input value changes
-	const handleInputChange = (event) => {
-		setValue(event.target.value || '0.00');
-		setIsMax(false);
-	};
-
-	// Value
 	const txValue = ethers.utils.parseEther(value || '0');
-
-	// Handle open and close modal
-	const handleOpen = () => setOpen(true);
-
-	const handleClose = () => {
-		// Prevent closing the modal if there's a pending transaction
-		if (pendingTx) return;
-
-		setIsClosing(true); // <-- Set closing status to true
-		// Wait for the animation to complete before closing the modal
-		setTimeout(() => {
-			setOpen(false);
-			setIsClosing(false); // <-- Reset closing status for the next cycle
-		}, 500); // <-- Length of the slide-down animation
-	};
-
-	// Format Balance
-	function formatBalance(value) {
-		return Number(value).toLocaleString('en-US', {
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 2,
-		});
-	}
-
-	// Format Number
-	function formatNumber(value) {
-		return Number(value / 1e18).toLocaleString('en-US', {
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 2,
-		});
-	}
-
 	const recipientAddress = '0x';
 
-	// Create Dare Function
-	async function onCreateTask() {
-		const signer = provider.getSigner();
-		const nerveGlobal = new ethers.Contract(CHAINS[network]?.contract, NerveGlobalABI, signer);
+	const onCreateTask = async () => {
 		try {
 			setPendingTx(true);
+			const signer = provider.getSigner();
+			const nerveGlobal = new ethers.Contract(CHAINS[Number(network)]?.contract, NerveGlobalABI, signer);
 			const tx = await nerveGlobal.create(recipientAddress, description, convertToSeconds(days, hours, minutes), '0', '0', {
 				value: txValue,
 			});
 			await tx.wait();
-			if (tx.hash) {
-				// wait 2 seconds
-				await new Promise((resolve) => setTimeout(resolve, 2000));
-				dispatch(createTriggerSlice.actions.setCreateTrigger(true));
-				handleClose();
-				setPendingTx(false);
-			}
-		} catch (error) {
+			await new Promise((r) => setTimeout(r, 2000));
+			dispatch(createTriggerSlice.actions.setCreateTrigger(true));
+			handleClose();
+		} catch (err) {
+			console.error(err);
+		} finally {
 			setPendingTx(false);
-			console.log(error);
 		}
-	}
+	};
 
-	// Change Network
-	const handleNetworkChange = async () => {
-		if (metaMask) {
-			try {
-				await metaMask.activate(Number(network));
-			} catch (error) {
-				console.error(error);
-			}
-		} else {
-			try {
-				await metaMask.activate(getAddChainParameters(Number(network)));
-			} catch (error) {
-				console.error(error);
-			}
+	const handleNetworkSwitch = async () => {
+		try {
+			await metaMask.activate(Number(network));
+		} catch (err) {
+			console.error(err);
 		}
 	};
 
 	return (
 		<>
-			<ModalButton theme={theme} onClick={handleOpen}>
+			{/* Desktop Button */}
+			<button onClick={handleOpen} className="bg-yellow-500 text-white text-sm px-4 py-2 rounded-md hover:bg-yellow-500 hidden lg:inline-block">
 				Create Dare
-			</ModalButton>
-			<StyledSpeedDial theme={theme} ariaLabel="New Dare" icon={<PlaylistAddIcon />} onClick={handleOpen} />
-			<StyledModal open={open} onClose={handleClose}>
-				<ConnectBox theme={theme} className={isClosing ? 'closing' : ''}>
-					<Typography
-						style={{ fontWeight: 'bold', margin: '0.0 auto 1.75rem auto', cursor: 'default' }}
-						align="center"
-						color={theme.palette.text.primary}
-						id="modal-modal-title"
-						variant="h6"
-						component="h2"
-					>
-						Create Task
-					</Typography>
-					<StatisticBox>
-						<StyledTitle theme={theme}>
-							<div>
-								<a style={{ color: theme.palette.text.primary, marginRight: '0.25rem' }}>Select Network</a>
-								<Tooltip title="Mandatory contribution for participation." placement="top">
-									<InfoOutlinedIcon style={{ fontSize: '1rem', color: theme.palette.secondary.main, cursor: 'default' }} />
-								</Tooltip>
-							</div>
-							<FormControl fullWidth>
-								<InputLabel id="chain-select-label">Select Network</InputLabel>
-								<Select labelId="chain-select-label" id="chain-select" value={network} label="Select Network" onChange={handleChange}>
-									<MenuItem value={11155111}>Sepolia</MenuItem>
-									<MenuItem value={137}>Polygon</MenuItem>
-								</Select>
-							</FormControl>
-						</StyledTitle>
-						<StyledTitle theme={theme}>
-							<div>
-								<a style={{ color: theme.palette.text.primary, marginRight: '0.25rem' }}>Entry amount</a>
-								<Tooltip title="Mandatory contribution for participation." placement="top">
-									<InfoOutlinedIcon style={{ fontSize: '1rem', color: theme.palette.secondary.main, cursor: 'default' }} />
-								</Tooltip>
-							</div>
+			</button>
 
-							<a>Balance: {formatBalance(balance)}</a>
-						</StyledTitle>
-						<OutlinedInput
-							id="outlined-adornment-amount"
-							onChange={handleInputChange}
-							endAdornment={
-								<InputAdornment position="end">
-									<a style={{ color: theme.palette.text.primary }}>{CHAINS[network]}</a>
-									<MaxButton theme={theme} onClick={setMaxValue}>
-										Max
-									</MaxButton>
-								</InputAdornment>
-							}
-							placeholder={'0.00'}
-							value={value}
-							type="string"
-							style={{ display: 'flex', margin: '0.5rem 0 1rem 0' }}
-							inputProps={{
-								style: {
-									textAlign: 'right',
-									fontSize: '1rem',
-									color: theme.palette.text.primary,
-								},
-							}}
-							sx={{
-								color: theme.palette.text.primary,
-								'& .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: theme.palette.secondary.main },
-								'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: theme.palette.warning.main },
-							}}
-						/>
+			{/* Mobile Button */}
+			<button onClick={handleOpen} className="lg:hidden fixed bottom-32 right-10 z-50 bg-yellow-500 text-white w-14 h-14 rounded-full shadow-lg">
+				+
+			</button>
 
-						<StyledTitle theme={theme}>
-							<div>
-								<a style={{ color: theme.palette.text.primary, marginRight: '0.25rem' }}>Time</a>
-								<Tooltip
-									title="Set the time allowed to complete the task in days, hours, and minutes. Maximum allowed is 30 days, 23 hours, and 59 minutes."
-									placement="top"
-								>
-									<InfoOutlinedIcon style={{ fontSize: '1rem', color: theme.palette.secondary.main, cursor: 'default' }} />
-								</Tooltip>
-							</div>
-						</StyledTitle>
-						<StyledTime theme={theme}>
-							<StyledTextField
-								theme={theme}
-								color="warning"
-								label="Days"
+			<PortalModal isOpen={open} onClose={handleClose}>
+				<div className="bg-background rounded-lg shadow-lg p-6 w-full md:w-[25vw] md:border md:border-secondary h-screen md:h-auto justify-center items-center m-auto md:max-h-[90vh] overflow-hidden md:overflow-y-auto flex flex-col">
+					<h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white text-center">Create Task</h2>
+
+					{/* Network Select */}
+					<div className="mb-4 w-full">
+						<label className="block text-sm font-medium mb-1 text-gray-700 dark:text-white">Select Network</label>
+						<select className="w-full px-3 py-2 border rounded-md text-sm bg-transparent" value={network} onChange={handleChangeNetwork}>
+							<option value="">Select...</option>
+							<option value="11155111">Sepolia</option>
+							<option value="137">Polygon</option>
+						</select>
+					</div>
+
+					{/* Entry Amount */}
+					<div className="mb-4 w-full">
+						<div className="flex justify-between text-sm mb-1">
+							<span className="text-gray-700 dark:text-white">Entry Amount</span>
+							<span className="text-gray-500 dark:text-gray-300">Balance: {formatBalance(balance)}</span>
+						</div>
+						<div className="flex gap-2 items-center">
+							<input type="text" value={value} onChange={(e) => setValue(e.target.value)} className="w-full px-3 py-2 border rounded-md text-right" />
+							<button onClick={setMaxValue} className="text-sm px-2 py-1 bg-gray-100 rounded-md">
+								Max
+							</button>
+						</div>
+					</div>
+
+					{/* Time Inputs */}
+					<div className="mb-4 w-full">
+						<label className="block text-sm font-medium mb-1 text-gray-700 dark:text-white">Time (D / H / M)</label>
+						<div className="flex gap-2">
+							<input
+								type="number"
 								value={days}
-								onChange={(event) => setDays(validateInput(event.target.value, 30))}
+								onChange={(e) => setDays(validateInput(e.target.value, 30))}
+								className="w-full px-2 py-1 border rounded-md text-center"
+								placeholder="Days"
 							/>
-							<StyledTextField
-								theme={theme}
-								color="warning"
-								label="Hours"
+							<input
+								type="number"
 								value={hours}
-								onChange={(event) => setHours(validateInput(event.target.value, 23))}
+								onChange={(e) => setHours(validateInput(e.target.value, 23))}
+								className="w-full px-2 py-1 border rounded-md text-center"
+								placeholder="Hours"
 							/>
-							<StyledTextField
-								theme={theme}
-								color="warning"
-								label="Minutes"
+							<input
+								type="number"
 								value={minutes}
-								onChange={(event) => setMinutes(validateInput(event.target.value, 59))}
+								onChange={(e) => setMinutes(validateInput(e.target.value, 59))}
+								className="w-full px-2 py-1 border rounded-md text-center"
+								placeholder="Minutes"
 							/>
-						</StyledTime>
-						<StyledTitle theme={theme}>Task description</StyledTitle>
-						<OutlinedInput
-							sx={{
-								color: theme.palette.text.primary,
-								'& .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: theme.palette.secondary.main },
-								'&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: '1px solid', borderColor: theme.palette.warning.main },
-							}}
-							placeholder="Do you dare..."
-							id="outlined-adornment-name"
-							multiline={true}
+						</div>
+					</div>
+
+					{/* Task Description */}
+					<div className="mb-4 w-full">
+						<label className="block text-sm font-medium mb-1 text-gray-700 dark:text-white">Task Description</label>
+						<textarea
+							value={description || ''}
+							onChange={(e) => setDescription(e.target.value)}
 							rows={3}
-							type="string"
-							style={{ display: 'flex', margin: '0.5rem 0 1rem 0' }}
-							onChange={(event) => setDescription(event.target.value)}
+							className="w-full px-3 py-2 border rounded-md resize-none"
+							placeholder="Do you dare..."
 						/>
-						<StyledSection style={{ margin: '2rem auto 1.5rem auto' }}>
-							{chainId === Number(network) ? (
-								pendingTx ? (
-									<BuyButton theme={theme} disabled>
+					</div>
+
+					{/* Create Button */}
+					<div className="mt-6 flex justify-center w-full">
+						{chainId === Number(network) ? (
+							<button
+								onClick={onCreateTask}
+								disabled={!value || value === '0.00' || pendingTx}
+								className="bg-yellow-500 text-white w-[125px] h-10 rounded-md flex items-center justify-center gap-2 disabled:opacity-60"
+							>
+								{pendingTx ? (
+									<>
+										<FaSpinner className="animate-spin h-4 w-4" />
 										Pending
-									</BuyButton>
+									</>
 								) : (
-									<BuyButton theme={theme} onClick={onCreateTask} disabled={value === '0' || value === '0.0' || value === '0.00' || value === '0.'}>
-										Create Task
-									</BuyButton>
-								)
-							) : (
-								network && (
-									<ChangeNetworkButton
-										theme={theme}
-										onClick={handleNetworkChange}
-										startIcon={pendingTx && <CircularProgress color="secondary" thickness={2.5} size={20} />}
-									>
-										Change Network
-									</ChangeNetworkButton>
-								)
-							)}
-						</StyledSection>
-					</StatisticBox>
-				</ConnectBox>
-			</StyledModal>
+									'Create Task'
+								)}
+							</button>
+						) : (
+							<button
+								onClick={handleNetworkSwitch}
+								disabled={pendingTx}
+								className="w-[150px] h-10 bg-yellow-500 text-black rounded-md flex items-center justify-center gap-2 disabled:opacity-60"
+							>
+								{pendingTx ? (
+									<>
+										<FaSpinner className="animate-spin h-4 w-4" />
+										Switching...
+									</>
+								) : (
+									'Change Network'
+								)}
+							</button>
+						)}
+					</div>
+
+					{/* Close Button Mobile */}
+					<div className="absolute md:hidden bottom-0 mb-10 left-0 right-0 flex justify-center">
+						<button onClick={handleClose} className="px-4 py-3 bg-accent text-white rounded-md transition font-semibold">
+							Close
+						</button>
+					</div>
+				</div>
+			</PortalModal>
 		</>
 	);
-};
-
-export default CreateTask;
+}

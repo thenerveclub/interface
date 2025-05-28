@@ -1,132 +1,123 @@
-import styled from '@emotion/styled';
-import { Button, CircularProgress } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+'use client';
+
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { useState } from 'react';
+import { FaSpinner } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import NerveGlobalABI from '../../constants/abi/nerveGlobal.json';
 import { redeemTriggerSlice } from '../../state/trigger/redeemTriggerSlice';
-import { CHAINS, getAddChainParameters } from '../../utils/chains';
+import { CHAINS } from '../../utils/chains';
 import { metaMask } from '../../utils/connectors/metaMask';
-
-const BuyButton = styled(Button)<{ theme: any }>`
-	color: #fff;
-	text-transform: none;
-	font-size: 16px;
-	border: none;
-	line-height: 1.5;
-	background-color: ${({ theme }) => theme.palette.warning.main};
-	border-radius: ${({ theme }) => theme.shape.borderRadius};
-	height: 40px;
-	width: 90%;
-	margin: 0 auto 0 auto;
-
-	&:hover {
-		background-color: ${({ theme }) => theme.palette.warning.main};
-	}
-`;
-
-const ChangeNetworkButton = styled(Button)<{ theme: any }>`
-	display: flex;
-	color: ${({ theme }) => theme.palette.text.primary};
-	text-transform: none;
-	width: 150px;
-	font-size: 1rem;
-	font-weight: 400;
-	line-height: 1.5;
-	height: 100%;
-	background-color: ${({ theme }) => theme.palette.warning.main};
-	border-radius: ${({ theme }) => theme.customShape.borderRadius};
-
-	&:hover {
-		background-color: ${({ theme }) => theme.palette.warning.main};
-	}
-
-	&:disabled {
-		color: ${({ theme }) => theme.palette.secondary.main};
-		background-color: ${({ theme }) => theme.palette.warning.dark};
-	}
-`;
+import PortalModal from '../PortalModal';
 
 interface RedeemUserProps {
 	dareData: any;
 }
 
-const RedeemRecipient: React.FC<RedeemUserProps> = ({ dareData }) => {
-	const theme = useTheme();
+export default function RedeemRecipient({ dareData }: RedeemUserProps) {
 	const { provider } = useWeb3React();
-
-	// Redux
 	const dispatch = useDispatch();
 	const chainId = useSelector((state: { chainId: number }) => state.chainId);
 
-	// State
+	const [open, setOpen] = useState(false);
 	const [pendingTx, setPendingTx] = useState(false);
-	const network = dareData[0]?.task.chainId;
 
-	// Redeem Function
-	async function redeem() {
-		const signer = provider.getSigner();
-		const nerveGlobal = new ethers.Contract(CHAINS[dareData[0]?.task.chainId]?.contract, NerveGlobalABI, signer);
+	const network = dareData[0]?.task?.chainId;
+
+	const handleOpen = () => {
+		setOpen(true);
+		document.body.style.overflow = 'hidden';
+	};
+
+	const handleClose = () => {
+		if (pendingTx) return;
+		setOpen(false);
+		document.body.style.overflow = '';
+	};
+
+	const redeem = async () => {
 		try {
 			setPendingTx(true);
-			const tx = await nerveGlobal.redeem(dareData[0]?.task.id);
+			const signer = provider.getSigner();
+			const contract = new ethers.Contract(CHAINS[network]?.contract, NerveGlobalABI, signer);
+			const tx = await contract.redeem(dareData[0]?.task?.id);
 			await tx.wait();
-			if (tx.hash) {
-				// wait 2 seconds
-				await new Promise((resolve) => setTimeout(resolve, 2000));
-				dispatch(redeemTriggerSlice.actions.setRedeemTrigger(true));
-				setPendingTx(false);
-			}
-		} catch (error) {
+			await new Promise((resolve) => setTimeout(resolve, 2000));
+			dispatch(redeemTriggerSlice.actions.setRedeemTrigger(true));
+			handleClose();
+		} catch (err) {
+			console.error(err);
+		} finally {
 			setPendingTx(false);
-			console.log(error);
 		}
-	}
+	};
 
-	// Change Network
 	const handleNetworkChange = async () => {
-		if (metaMask) {
-			try {
-				await metaMask.activate(Number(dareData[0]?.task?.chainId));
-			} catch (error) {
-				console.error(error);
-			}
-		} else {
-			try {
-				await metaMask.activate(getAddChainParameters(Number(dareData[0]?.task?.chainId)));
-			} catch (error) {
-				console.error(error);
-			}
+		try {
+			await metaMask.activate(Number(network));
+		} catch (err) {
+			console.error(err);
 		}
 	};
 
 	return (
 		<>
-			{chainId === Number(network) ? (
-				pendingTx ? (
-					<BuyButton theme={theme} startIcon={<CircularProgress color="info" thickness={2.5} size={20} />} disabled={true}>
-						Pending
-					</BuyButton>
-				) : (
-					<BuyButton theme={theme} onClick={redeem} disabled={pendingTx}>
-						Redeem Recipient
-					</BuyButton>
-				)
-			) : (
-				network && (
-					<ChangeNetworkButton
-						theme={theme}
-						onClick={handleNetworkChange}
-						startIcon={pendingTx && <CircularProgress color="secondary" thickness={2.5} size={20} />}
-					>
-						Change Network
-					</ChangeNetworkButton>
-				)
-			)}
+			{/* Trigger Button */}
+			<div className="w-full flex justify-center">
+				<button
+					onClick={handleOpen}
+					className="w-11/12 h-10 text-white text-base font-medium rounded-md bg-yellow-500 hover:bg-yellow-500 transition"
+				>
+					Redeem Recipient
+				</button>
+			</div>
+
+			{/* Modal */}
+			<PortalModal isOpen={open} onClose={handleClose}>
+				<div className="bg-background rounded-lg shadow-lg p-6 w-full md:w-[25vw] md:border md:border-secondary h-screen md:h-auto justify-center items-center m-auto md:max-h-[90vh] overflow-hidden md:overflow-y-auto flex flex-col">
+					<h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white text-center">Redeem Task</h2>
+
+					{chainId === Number(network) ? (
+						<button
+							onClick={redeem}
+							disabled={pendingTx}
+							className="w-[150px] h-10 bg-yellow-500 text-white rounded-md flex items-center justify-center gap-2 disabled:opacity-60"
+						>
+							{pendingTx ? (
+								<>
+									<FaSpinner className="animate-spin h-4 w-4" />
+									Pending
+								</>
+							) : (
+								'Redeem Recipient'
+							)}
+						</button>
+					) : (
+						<button
+							onClick={handleNetworkChange}
+							disabled={pendingTx}
+							className="w-[150px] h-10 text-base font-normal rounded-md bg-yellow-500 text-black flex items-center justify-center gap-2 disabled:opacity-60"
+						>
+							{pendingTx ? (
+								<>
+									<FaSpinner className="animate-spin h-4 w-4" />
+									Switching...
+								</>
+							) : (
+								'Change Network'
+							)}
+						</button>
+					)}
+
+					{/* Close Button on mobile */}
+					<div className="absolute md:hidden bottom-0 mb-10 left-0 right-0 flex justify-center">
+						<button onClick={handleClose} className="px-4 py-3 bg-accent text-white rounded-md transition font-semibold">
+							Close
+						</button>
+					</div>
+				</div>
+			</PortalModal>
 		</>
 	);
-};
-
-export default RedeemRecipient;
+}

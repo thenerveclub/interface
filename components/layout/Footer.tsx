@@ -5,7 +5,7 @@ import { FaDiscord, FaInstagram, FaTiktok, FaXTwitter } from 'react-icons/fa6';
 
 export default function Footer() {
 	return (
-		<footer className="w-full py-8 bg-background text-text border-t border-gray-200 dark:border-gray-700">
+		<footer className="w-full py-8 bg-background text-text border-t border-secondary mb-24 md:mb-0">
 			<div className="container mx-auto flex flex-col items-center space-y-6 sm:flex-row sm:justify-between sm:space-y-0">
 				{/* Left Section (Optional for future use) */}
 				<div className="flex-1 text-left hidden sm:block"></div>

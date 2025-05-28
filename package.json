@@ -1,6 +1,6 @@
 {
-	"name": "nerveglobal",
-	"description": "Nerve Global DApp Interface",
+	"name": "the-nerve-club",
+	"description": "The Nerve Club DApp Interface",
 	"version": "1.1.1",
 	"license": "GPL-3.0-or-later",
 	"engines": {
@@ -10,15 +10,15 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/nerveglobal/interface.git"
+		"url": "git+https://github.com/thenerveclub/interface.git"
 	},
 	"bugs": {
-		"url": "https://github.com/nerveglobal/interface/issues"
+		"url": "https://github.com/thenerveclub/interface/issues"
 	},
-	"homepage": "http://www.app.nerveglobal.com",
+	"homepage": "http://app.nerve.club",
 	"keywords": [
 		"react",
-		"nerve",
+		"the-nerve-club",
 		"typescript"
 	],
 	"scripts": {
@@ -39,10 +39,6 @@
 		"@ethersproject/providers": "^5.6.0",
 		"@ethersproject/units": "^5.6.0",
 		"@metamask/jazzicon": "^2.0.0",
-		"@mui/icons-material": "^5.10.9",
-		"@mui/material": "^5.10.12",
-		"@mui/styles": "^5.13.7",
-		"@mui/x-charts": "^6.18.1",
 		"@next/bundle-analyzer": "^13.2.3",
 		"@reduxjs/toolkit": "^1.9.2",
 		"@svgr/webpack": "^8.1.0",

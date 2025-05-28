@@ -1,9 +1,9 @@
 'use client';
 
-import { PeopleAlt } from '@mui/icons-material';
 import Link from 'next/link';
 import router from 'next/router';
 import { useEffect, useState } from 'react';
+import { FaPeopleGroup } from 'react-icons/fa6';
 import { SiEthereum, SiGooglemaps, SiPolygon } from 'react-icons/si';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -130,7 +130,7 @@ export default function PlayerDares({ recipientAddress, recipientENS, error }: P
 									<span>#{task.id}</span>
 									<span className="flex items-center gap-1">
 										{task.participants}
-										<PeopleAlt style={{ fontSize: '18px' }} />
+										<FaPeopleGroup style={{ fontSize: '18px' }} />
 									</span>
 								</div>
 								<div className="flex justify-between text-sm">

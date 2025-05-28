@@ -232,9 +232,9 @@ export default function SettingsModal() {
 								<button
 									onClick={handleApplyCustomRpc}
 									className="mt-2 px-4 py-3 bg-accent text-white rounded-md hover:bg-accent/80 transition disabled:opacity-50 disabled:cursor-not-allowed"
-									disabled={customRpcUrl === customRPCValue}
+									disabled={customRpcUrl === customRPCValue || customRpcUrl === ''}
 								>
-									{customRpcUrl === customRPCValue ? 'Applied' : 'Apply'}
+									{customRpcUrl === '' ? 'Enter RPC' : customRpcUrl === customRPCValue ? 'Applied' : 'Apply'}
 								</button>
 							</div>
 						</div>

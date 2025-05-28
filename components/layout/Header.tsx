@@ -119,18 +119,18 @@ export default function Header() {
 				</Link>
 				{account ? (
 					<Link href={`/player/${account}`} passHref>
-						<button
+						<div
 							className={`flex items-center justify-center ${
 								pathname === `/player/${account}` ? 'text-accent' : 'text-black dark:text-white'
 							} w-8 h-8`}
 						>
 							<AccountModal account={account} ens={ens} network={network} />
-						</button>
+						</div>
 					</Link>
 				) : (
-					<button className={`flex items-center justify-center ${pathname === '/connect' ? 'text-accent' : 'text-black dark:text-white'} w-8 h-8`}>
+					<div className={`flex items-center justify-center ${pathname === '/connect' ? 'text-accent' : 'text-black dark:text-white'} w-8 h-8`}>
 						<Connect />
-					</button>
+					</div>
 				)}
 			</motion.div>
 		</>

@@ -1,17 +1,18 @@
 'use client';
 
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import Head from 'next/head';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { FaPeopleGroup } from 'react-icons/fa6';
+import { IoIosBody } from 'react-icons/io';
 import { SiEthereum, SiGooglemaps, SiPolygon } from 'react-icons/si';
+
 import { useDispatch, useSelector } from 'react-redux';
 import LoadingScreen from '../components/LoadingScreen';
 import SelectFilter from '../components/SelectFilter';
 import SelectSort from '../components/SelectSort';
 import useGlobalStats from '../hooks/globalStats/useGlobalStats';
 import useTrendingDareList from '../hooks/searchData/trending/useTrendingDareList';
-import { currencySlice } from '../state/currency/currencySlice';
 import { CHAINS } from '../utils/chains';
 
 export default function IndexPage() {
@@ -115,34 +116,61 @@ export default function IndexPage() {
 		router.push(`/map?lat=${latitude}&lng=${longitude}`);
 	};
 
+	// Countdown Timer
+	function useCountdown(endTimestamp: number): string {
+		const [timeLeft, setTimeLeft] = useState(() => getFormattedTime(endTimestamp));
+
+		useEffect(() => {
+			const interval = setInterval(() => {
+				setTimeLeft(getFormattedTime(endTimestamp));
+			}, 1000);
+
+			return () => clearInterval(interval);
+		}, [endTimestamp]);
+
+		return timeLeft;
+	}
+
+	function getFormattedTime(endTimestamp: number): string {
+		const now = Math.floor(Date.now() / 1000);
+		const diff = endTimestamp - now;
+
+		if (diff <= 0) return 'Expired';
+
+		const days = Math.floor(diff / 86400);
+		const hours = Math.floor((diff % 86400) / 3600);
+		const minutes = Math.floor((diff % 3600) / 60);
+		const seconds = diff % 60;
+
+		return `${days.toString().padStart(2, '0')}d ${hours.toString().padStart(2, '0')}h ${minutes.toString().padStart(2, '0')}m ${seconds
+			.toString()
+			.padStart(2, '0')}s`;
+	}
+
+	const CountdownDisplay = ({ endTime }: { endTime: number }) => {
+		const timeLeft = useCountdown(endTime);
+		return (
+			<span
+				className="tabular-nums text-base md:text-lg"
+				style={{ minWidth: '170px', display: 'inline-block' }} // adjust minWidth as needed
+			>
+				{timeLeft}
+			</span>
+		);
+	};
+
 	return (
 		<>
 			{isLoading ? (
 				<LoadingScreen />
 			) : (
 				<>
-					<Head>
-						<meta name="viewport" content="width=device-width, initial-scale=1" />
-						<title>Nerve Global Dapp</title>
-						<meta property="og:title" content="Nerve Global Dapp" key="title" />
-						<meta property="og:site_name" content="Nerve Global Dapp" />
-						<meta property="og:description" content="Nerve Global Dapp." />
-						<meta property="og:image" content="https://dapp.nerveglobal.com/favicon.ico" />
-						<meta property="og:url" content="https://dapp.nerveglobal.com/" />
-						<meta property="og:type" content="website" />
-						<meta name="twitter:card" content="summary_large_image" />
-						<meta name="twitter:site" content="@nerveglobal_" />
-						<meta name="twitter:title" content="Nerve Global Dapp" />
-						<meta name="twitter:description" content="Nerve Global Dapp." />
-						<meta name="twitter:image" content="https://dapp.nerveglobal.com/favicon.ico" />
-					</Head>
-
 					{/* Landing Section */}
-					<div className="flex flex-col h-screen xl:flex-row items-center justify-center text-center w-[90%] mx-auto -mt-10">
+					<div className="flex flex-col h-screen xl:flex-row items-center justify-center text-center w-full max-w-[90%] mx-auto -mt-10">
 						<div className="relative flex flex-col items-center xl:items-start justify-center text-center w-[90%] mx-auto my-8">
 							{/* Image behind text on mobile only */}
 							<div className="absolute inset-0 xl:hidden opacity-25 z-0">
-								<img src="/logo.png" alt="The Nerve Club Logo" className="w-full h-full object-contain" />
+								<Image src="/logo.png" alt="The Nerve Club Logo" fill className="object-contain w-auto h-auto max-w-full max-h-full" />
 							</div>
 
 							{/* Foreground text */}
@@ -165,8 +193,8 @@ export default function IndexPage() {
 							</div>
 						</div>
 
-						<div className="hidden xl:flex flex-col items-center xl:items-end justify-center text-center w-[90%] mx-auto my-8">
-							<img src="/logo.png" alt="The Nerve Club Logo" className="w-full h-full" />
+						<div className="hidden xl:flex items-center justify-center w-1/3 relative h-full w-full">
+							<Image src="/logo.png" alt="The Nerve Club Logo" fill className="w-full h-full" />
 						</div>
 					</div>
 
@@ -197,6 +225,9 @@ export default function IndexPage() {
 												{CHAINS[tad?.chainId]?.name}
 											</div>
 										</div>
+										<div className="flex justify-end w-full">
+											<CountdownDisplay endTime={tad.endTask} />
+										</div>
 										<div className="flex flex-col justify-center text-center flex-grow">
 											<p>{tad.description}</p>
 										</div>
@@ -205,7 +236,7 @@ export default function IndexPage() {
 												<p>#{tad.id}</p>
 												<p className="flex items-center">
 													{tad.participants}
-													<PeopleAltIcon className="ml-2 text-white text-lg" />
+													<FaPeopleGroup className="ml-2 text-white text-lg" />
 												</p>
 											</div>
 											<div className="flex justify-between w-full h-6">

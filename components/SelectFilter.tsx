@@ -1,5 +1,5 @@
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { useState } from 'react';
+import { IoFilter } from 'react-icons/io5';
 import { useDispatch, useSelector } from 'react-redux';
 import { filterSlice } from '../state/filter/filterSlice';
 import { CHAINS } from '../utils/chains';
@@ -28,7 +28,7 @@ export default function SelectFilter() {
 				}`}
 			>
 				<div className="flex items-center text-sm font-medium">
-					<FilterAltIcon fontSize="small" className="mr-2 md:mr-0" />
+					<IoFilter fontSize="small" className="mr-2 md:mr-2" />
 					<span className="hidden md:block">Filter Chains</span>
 				</div>
 

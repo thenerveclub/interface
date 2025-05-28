@@ -12,16 +12,6 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 const nextConfig = {
 	reactStrictMode: true,
-	// transpilePackages: ['@mui/x-charts'],
-
-	// modularizeImports: {
-	// 	'@mui/material': {
-	// 		transform: '@mui/material/{{member}}',
-	// 	},
-	// 	'@mui/icons-material': {
-	// 		transform: '@mui/icons-material/{{member}}',
-	// 	},
-	// },
 
 	webpack(config, { isServer }) {
 		// Add the next-bundle-analyzer plugin for client builds

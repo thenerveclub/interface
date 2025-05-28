@@ -1,7 +1,5 @@
 'use client';
 
-import { PieChart } from '@mui/x-charts/PieChart';
-
 interface ChartProps {
 	dareData: any;
 }
@@ -34,7 +32,7 @@ const Chart: React.FC<ChartProps> = ({ dareData }) => {
 					<hr className="border-b border-secondary w-full" />
 				</div>
 				<div className="flex flex-col justify-center items-center w-full h-full">
-					<PieChart
+					{/* <PieChart
 						series={[
 							{
 								data: [
@@ -52,7 +50,7 @@ const Chart: React.FC<ChartProps> = ({ dareData }) => {
 							legend: { hidden: true },
 						}}
 						{...sizing}
-					/>
+					/> */}
 					<p className="text-center text-sm text-secondary mb-4">
 						Voted: {votedPercentage}% | Not voted: {notVotedPercentage}%
 					</p>
