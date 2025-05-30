@@ -199,7 +199,7 @@ export default function IndexPage() {
 					</div>
 
 					<div className="flex flex-col bg-background items-center justify-center text-center w-[90%] mx-auto my-8">
-						<hr className="w-full border-t border-secondary" />
+						<hr className="w-full border-t border-gray-400 dark:border-secondary" />
 						<div className="flex flex-col lg:flex-row items-center justify-center w-full h-10 my-4 gap-4">
 							<div className="flex flex-row justify-between md:justify-end w-full gap-2">
 								<SelectFilter />
@@ -209,7 +209,7 @@ export default function IndexPage() {
 						<div className="flex flex-wrap items-center justify-evenly gap-8 my-10 w-full">
 							{filteredActiveTasks.map((tad) => (
 								<li key={`${tad.chainId}-${tad.id}`} className="list-none">
-									<div className="flex flex-col justify-between items-center mx-auto w-[90vw] md:min-w-[450px] md:max-w-[450px] min-h-[300px] max-h-[300px] bg-background border hover:border-accent rounded-lg p-3">
+									<div className="flex flex-col justify-between items-center mx-auto w-[90vw] md:min-w-[450px] md:max-w-[450px] min-h-[300px] max-h-[300px] bg-background border border-accent rounded-lg p-3">
 										<div className="flex justify-between w-full">
 											{tad?.latitude && tad?.longitude !== '0' && (
 												<div

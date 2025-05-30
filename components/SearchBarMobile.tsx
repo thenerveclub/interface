@@ -205,7 +205,7 @@ const SearchBarMobile: React.FC<SearchBarMobileProps> = ({ network }) => {
 					</div>
 					{/* Close Button */}
 					<div className="text-center mb-10">
-						<button onClick={() => setIsOpen(false)} className="px-4 py-3 bg-accent text-white rounded-md transition">
+						<button onClick={() => setIsOpen(false)} className="py-2 px-4 bg-accent text-white rounded-md transition">
 							Close
 						</button>
 					</div>

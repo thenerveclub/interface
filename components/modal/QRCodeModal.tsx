@@ -59,7 +59,7 @@ export default function QRCodeModal({ open, handleClose, qrCodeUrl }: QRCodeModa
 
 				{/* Close Button */}
 				<div className="absolute md:hidden bottom-5 mb-10 left-0 right-0 flex justify-center">
-					<button onClick={handleClose} className="px-4 py-3 bg-accent text-white rounded-md transition font-semibold">
+					<button onClick={handleClose} className="py-2 px-4 bg-accent text-white rounded-md transition font-semibold">
 						Close
 					</button>
 				</div>

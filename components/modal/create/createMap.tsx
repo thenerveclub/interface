@@ -229,7 +229,7 @@ export default function CreateMapDare({ modalCoords, onClose }: { modalCoords: a
 
 			{/* Mobile Close Button */}
 			<div className="absolute md:hidden bottom-5 mb-10 left-0 right-0 flex justify-center w-fit m-auto">
-				<button onClick={closeModal} className="px-4 py-3 bg-accent text-white rounded-md transition font-semibold">
+				<button onClick={closeModal} className="py-2 px-4 bg-accent text-white rounded-md transition font-semibold">
 					Close
 				</button>
 			</div>

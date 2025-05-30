@@ -96,6 +96,9 @@ export default function Header() {
 					{/* )} */}
 				</div>
 				<div className="flex items-center mr-4">
+					<HowItWorksModal />
+				</div>
+				<div className="flex items-center mr-4">
 					<Setting />
 				</div>
 			</motion.div>
