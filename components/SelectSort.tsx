@@ -46,8 +46,10 @@ export default function SelectSort() {
 			{/* Select Button */}
 			<button
 				onClick={toggleMenu}
-				className={`flex justify-between items-center w-full px-5 py-3 bg-transparent text-black dark:text-white border rounded-lg shadow-lg transition-all focus:outline-none hover:border-accent hover:text-accent dark:hover:border-accent dark:hover:text-accent ${
-					menuOpen ? 'border-accent text-accent dark:border-accent dark:text-accent' : ''
+				className={`flex justify-between items-center w-full px-5 py-3 bg-transparent border rounded-lg shadow-lg transition-all focus:outline-none ${
+					menuOpen
+						? 'border-accent text-accent dark:border-accent dark:text-accent'
+						: 'text-black dark:text-white hover:border-accent hover:text-accent dark:hover:border-accent dark:hover:text-accent'
 				}`}
 			>
 				{/* Selected Option */}
@@ -68,16 +70,16 @@ export default function SelectSort() {
 
 			{/* Dropdown Menu */}
 			{menuOpen && (
-				<div className="absolute z-20 w-full mt-2 bg-white dark:bg-black border border-gray-400 rounded-lg">
+				<div className="absolute z-20 w-full mt-2 bg-white dark:bg-black border border-accent rounded-lg">
 					{/* Stake Section */}
 					<div className="px-4 py-2 text-sm font-semibold bg-zinc-200 dark:bg-zinc-900 text-black dark:text-white rounded-t-lg">Stake</div>
-					<div className="space-y-2">
+					<div>
 						<button
 							onClick={() => handleChange(1)}
 							disabled={sort === 1}
-							className={`w-full flex justify-between mx-auto text-gray-400 dark:text-gray-400 hover:text-accent dark:hover:text-accent hover:bg-transparent ${getOptionClasses(
-								sort === 1
-							)}`}
+							className={`w-full flex justify-between mx-auto hover:bg-transparent px-3 py-2 ${
+								sort === 1 ? 'text-accent dark:text-accent' : 'text-gray-400 dark:text-gray-400 hover:text-accent dark:hover:text-accent'
+							}`}
 						>
 							<span>Low to High</span>
 							{sort === 1 && <span className="text-xs italic text-accent mr-2">Selected</span>}
@@ -85,9 +87,9 @@ export default function SelectSort() {
 						<button
 							onClick={() => handleChange(2)}
 							disabled={sort === 2}
-							className={`w-full flex justify-between mx-auto text-gray-400 dark:text-gray-400 hover:text-accent dark:hover:text-accent hover:bg-transparent ${getOptionClasses(
-								sort === 2
-							)}`}
+							className={`w-full flex justify-between mx-auto hover:bg-transparent px-3 py-2 ${
+								sort === 2 ? 'text-accent dark:text-accent' : 'text-gray-400 dark:text-gray-400 hover:text-accent dark:hover:text-accent'
+							}`}
 						>
 							<span>High to Low</span>
 							{sort === 2 && <span className="text-xs italic text-accent mr-2">Selected</span>}
@@ -96,13 +98,13 @@ export default function SelectSort() {
 
 					{/* Participants Section */}
 					<div className="px-4 py-2 mt-2 text-sm font-semibold bg-zinc-200 dark:bg-zinc-900 text-black dark:text-white">Participants</div>
-					<div className="space-y-2">
+					<div>
 						<button
 							onClick={() => handleChange(3)}
 							disabled={sort === 3}
-							className={`w-full flex justify-between mx-auto text-gray-400 dark:text-gray-400 hover:text-accent dark:hover:text-accent hover:bg-transparent ${getOptionClasses(
-								sort === 3
-							)}`}
+							className={`w-full flex justify-between mx-auto hover:bg-transparent px-3 py-2 ${
+								sort === 3 ? 'text-accent dark:text-accent' : 'text-gray-400 dark:text-gray-400 hover:text-accent dark:hover:text-accent'
+							}`}
 						>
 							<span>Low to High</span>
 							{sort === 3 && <span className="text-xs italic text-accent mr-2">Selected</span>}
@@ -111,9 +113,9 @@ export default function SelectSort() {
 						<button
 							onClick={() => handleChange(4)}
 							disabled={sort === 4}
-							className={`w-full flex justify-between mx-auto text-gray-400 dark:text-gray-400 hover:text-accent dark:hover:text-accent hover:bg-transparent ${getOptionClasses(
-								sort === 4
-							)}`}
+							className={`w-full flex justify-between mx-auto hover:bg-transparent px-3 py-2 ${
+								sort === 4 ? 'text-accent dark:text-accent' : 'text-gray-400 dark:text-gray-400 hover:text-accent dark:hover:text-accent'
+							}`}
 						>
 							<span>High to Low</span>
 							{sort === 4 && <span className="text-xs italic text-accent mr-2">Selected</span>}
@@ -122,13 +124,13 @@ export default function SelectSort() {
 
 					{/* Entry Amount Section */}
 					<div className="px-4 py-2 mt-2 text-sm font-semibold bg-zinc-200 dark:bg-zinc-900 text-black dark:text-white">Entry Amount</div>
-					<div className="space-y-2">
+					<div>
 						<button
 							onClick={() => handleChange(5)}
 							disabled={sort === 5}
-							className={`w-full flex justify-between mx-auto text-gray-400 dark:text-gray-400 hover:text-accent dark:hover:text-accent hover:bg-transparent ${getOptionClasses(
-								sort === 5
-							)}`}
+							className={`w-full flex justify-between mx-auto hover:bg-transparent px-3 py-2 ${
+								sort === 5 ? 'text-accent dark:text-accent' : 'text-gray-400 dark:text-gray-400 hover:text-accent dark:hover:text-accent'
+							}`}
 						>
 							<span>Low to High</span>
 							{sort === 5 && <span className="text-xs italic text-accent mr-2">Selected</span>}
@@ -136,9 +138,9 @@ export default function SelectSort() {
 						<button
 							onClick={() => handleChange(6)}
 							disabled={sort === 6}
-							className={`w-full flex justify-between mx-auto text-gray-400 dark:text-gray-400 hover:text-accent dark:hover:text-accent hover:bg-transparent ${getOptionClasses(
-								sort === 6
-							)}`}
+							className={`w-full flex justify-between mx-auto hover:bg-transparent px-3 py-2 ${
+								sort === 6 ? 'text-accent dark:text-accent' : 'text-gray-400 dark:text-gray-400 hover:text-accent dark:hover:text-accent'
+							}`}
 						>
 							<span>High to Low</span>
 							{sort === 6 && <span className="text-xs italic text-accent mr-2">Selected</span>}

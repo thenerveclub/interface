@@ -23,8 +23,10 @@ export default function SelectFilter() {
 			{/* Select Button */}
 			<button
 				onClick={toggleMenu}
-				className={`flex justify-between items-center w-full px-5 py-3 bg-transparent text-black dark:text-white border rounded-lg shadow-lg transition-all focus:outline-none hover:border-accent hover:text-accent dark:hover:border-accent dark:hover:text-accent ${
-					menuOpen ? 'border-accent text-accent dark:border-accent dark:text-accent' : ''
+				className={`flex justify-between items-center w-full px-5 py-3 bg-transparent border rounded-lg shadow-lg transition-all focus:outline-none ${
+					menuOpen
+						? 'border-accent text-accent dark:border-accent dark:text-accent'
+						: 'text-black dark:text-white hover:border-accent hover:text-accent dark:hover:border-accent dark:hover:text-accent'
 				}`}
 			>
 				<div className="flex items-center text-sm font-medium">
@@ -48,21 +50,40 @@ export default function SelectFilter() {
 
 			{/* Dropdown Menu */}
 			{menuOpen && (
-				<div className="absolute z-20 w-full mt-2 bg-white dark:bg-black border border-gray-400 rounded-lg">
+				<div className="absolute z-20 w-full mt-2 bg-white dark:bg-black border border-accent rounded-lg">
 					{Object.entries(CHAINS).map(([chainId, chainInfo]) => {
 						if (!chainInfo?.name || !chainInfo.logo) return null;
 
 						const isSelected = filter.includes(Number(chainId));
+
 						return (
-							<button
+							<div
 								key={chainId}
-								onClick={() => toggleChain(Number(chainId))}
-								className="w-full flex items-center px-4 py-3 text-sm font-medium transition-all"
+								className={`w-full flex items-center justify-between px-3 py-3 text-sm font-medium transition-all ${
+									isSelected
+										? 'text-black dark:text-white hover:text-accent dark:hover:text-accent'
+										: 'text-gray-400 dark:text-gray-400 hover:text-accent dark:hover:text-accent'
+								}`}
 							>
-								<input type="checkbox" checked={isSelected} readOnly className="mr-3" />
-								<img src={chainInfo.logo} alt={`${chainInfo.name} Logo`} className="w-5 h-5 mr-3 text-white dark:text-white fill-white" />
-								<span className="hidden md:block">{chainInfo.name}</span>
-							</button>
+								<div className={`flex items-center`}>
+									<img src={chainInfo.logo} alt={`${chainInfo.name} Logo`} className="w-5 h-5 mr-2" />
+									<span className="hidden md:block">{chainInfo.name}</span>
+								</div>
+
+								{/* Slider Toggle */}
+								<button
+									onClick={() => toggleChain(Number(chainId))}
+									className={`relative inline-flex items-center h-5 w-10 rounded-full transition-colors duration-300 ${
+										isSelected ? 'bg-accent' : 'bg-gray-400 dark:bg-gray-600'
+									}`}
+								>
+									<span
+										className={`inline-block w-4 h-4 transform rounded-full bg-white transition-transform duration-300 ${
+											isSelected ? 'translate-x-5' : 'translate-x-1'
+										}`}
+									/>
+								</button>
+							</div>
 						);
 					})}
 				</div>

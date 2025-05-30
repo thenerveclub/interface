@@ -142,9 +142,9 @@ export default function IndexPage() {
 		const minutes = Math.floor((diff % 3600) / 60);
 		const seconds = diff % 60;
 
-		return `${days.toString().padStart(2, '0')}d ${hours.toString().padStart(2, '0')}h ${minutes.toString().padStart(2, '0')}m ${seconds
+		return `${days.toString().padStart(2, '0')}:${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds
 			.toString()
-			.padStart(2, '0')}s`;
+			.padStart(2, '0')}`;
 	}
 
 	const CountdownDisplay = ({ endTime }: { endTime: number }) => {
@@ -209,7 +209,7 @@ export default function IndexPage() {
 						<div className="flex flex-wrap items-center justify-evenly gap-8 my-10 w-full">
 							{filteredActiveTasks.map((tad) => (
 								<li key={`${tad.chainId}-${tad.id}`} className="list-none">
-									<div className="flex flex-col justify-between items-center mx-auto w-[90vw] md:min-w-[450px] md:max-w-[450px] min-h-[300px] max-h-[300px] bg-background border border-secondary rounded-lg p-3">
+									<div className="flex flex-col justify-between items-center mx-auto w-[90vw] md:min-w-[450px] md:max-w-[450px] min-h-[300px] max-h-[300px] bg-background border hover:border-accent rounded-lg p-3">
 										<div className="flex justify-between w-full">
 											{tad?.latitude && tad?.longitude !== '0' && (
 												<div
@@ -220,7 +220,7 @@ export default function IndexPage() {
 													Google Map
 												</div>
 											)}
-											<div className="flex items-center w-fit justify-end text-primary bg-secondary rounded-lg px-4 py-2">
+											<div className="flex items-center w-fit justify-end text-black dark:text-white bg-secondary rounded-lg px-4 py-2">
 												{getChainLogoComponent(tad?.chainId)}
 												{CHAINS[tad?.chainId]?.name}
 											</div>
@@ -257,7 +257,7 @@ export default function IndexPage() {
 											</div>
 											<button
 												onClick={() => router.push(`/dare/${tad.chainId}-${tad.id}`)}
-												className="bg-secondary text-white py-2 px-4 rounded-lg mt-2 hover:bg-secondary"
+												className="bg-accent border border-accent text-white dark:text-white py-2 px-4 rounded-lg mt-2 w-full font-semibold"
 											>
 												View Task
 											</button>

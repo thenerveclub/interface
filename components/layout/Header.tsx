@@ -9,11 +9,11 @@ import { BsLightningChargeFill } from 'react-icons/bs';
 import { IoIosContact } from 'react-icons/io';
 import { IoStatsChartSharp } from 'react-icons/io5';
 import { useSelector } from 'react-redux';
+import HowItWorksModal from '../modal/HowItWorks';
 import AccountModal from '../modal/menu/Account';
 import Connect from '../modal/menu/Connect';
 import Setting from '../modal/menu/Settings';
 import SearchBar from '../SearchBar';
-
 export default function Header() {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
@@ -65,6 +65,7 @@ export default function Header() {
 					</div>
 
 					<div className={`hidden md:flex items-center space-x-4 ${isMap ? 'text-black dark:text-white' : 'text-black dark:text-white'}`}>
+						<HowItWorksModal />
 						<div className="flex-grow flex justify-center">
 							<SearchBar network={network} />
 						</div>
