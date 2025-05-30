@@ -64,7 +64,7 @@ export default function HowItWorksModal() {
               transform: scale(1);
             }
             50% {
-              color: rgba(0, 0, 0, 0); /* Lighter red */
+              color: rgba(255, 0, 0, 0.5); /* Lighter red */
               transform: scale(1); /* Subtle scale */
             }
           }
