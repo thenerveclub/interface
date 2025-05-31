@@ -20,7 +20,7 @@ export default function SelectFilter() {
 	};
 
 	return (
-		<div className="relative inline-block size-fit md:w-[250px] h-[50px] max-w-sm z-20">
+		<div className="relative inline-block size-fit w-1/3 md:w-[250px] md:max-w-sm h-[50px] z-20">
 			{/* Select Button */}
 			<button
 				onClick={toggleMenu}
@@ -60,26 +60,26 @@ export default function SelectFilter() {
 						return (
 							<div
 								key={chainId}
-								className={`w-full flex items-center justify-between px-3 py-3 text-sm font-medium transition-all ${
+								className={`w-full flex items-center justify-between gap-3 px-3 py-3 text-sm font-medium transition-all ${
 									isSelected
 										? 'text-black dark:text-white hover:text-accent dark:hover:text-accent'
 										: 'text-gray-400 dark:text-gray-400 hover:text-accent dark:hover:text-accent'
 								}`}
 							>
-								<div className={`flex items-center`}>
-									{Number(chainId) === 137 ? <SiPolygon className="w-5 h-5 mr-2" /> : <SiEthereum className="w-5 h-5 mr-2" />}
+								<div className="flex items-center gap-2">
+									{Number(chainId) === 137 ? <SiPolygon className="w-5 h-5" /> : <SiEthereum className="w-5 h-5" />}
 									<span className="hidden md:block">{chainInfo.name}</span>
 								</div>
 
 								{/* Slider Toggle */}
 								<button
 									onClick={() => toggleChain(Number(chainId))}
-									className={`relative inline-flex items-center h-5 w-10 rounded-full transition-colors duration-300 ${
-										isSelected ? 'bg-accent' : 'bg-gray-400 dark:bg-gray-600'
+									className={`relative inline-flex items-center h-6 w-11 rounded-full transition-colors duration-300 ${
+										isSelected ? 'bg-accent' : 'bg-zinc-500 dark:bg-zinc-700'
 									}`}
 								>
 									<span
-										className={`inline-block w-4 h-4 transform rounded-full bg-white transition-transform duration-300 ${
+										className={`inline-block w-5 h-5 transform rounded-full bg-white shadow transition-transform duration-300 ${
 											isSelected ? 'translate-x-5' : 'translate-x-1'
 										}`}
 									/>
