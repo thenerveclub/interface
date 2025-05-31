@@ -82,7 +82,6 @@ export default function SelectSort() {
 							}`}
 						>
 							<span>Low to High</span>
-							{sort === 1 && <span className="text-xs italic text-accent mr-2">Selected</span>}
 						</button>
 						<button
 							onClick={() => handleChange(2)}
@@ -92,7 +91,6 @@ export default function SelectSort() {
 							}`}
 						>
 							<span>High to Low</span>
-							{sort === 2 && <span className="text-xs italic text-accent mr-2">Selected</span>}
 						</button>
 					</div>
 
@@ -107,7 +105,6 @@ export default function SelectSort() {
 							}`}
 						>
 							<span>Low to High</span>
-							{sort === 3 && <span className="text-xs italic text-accent mr-2">Selected</span>}
 						</button>
 
 						<button
@@ -118,7 +115,6 @@ export default function SelectSort() {
 							}`}
 						>
 							<span>High to Low</span>
-							{sort === 4 && <span className="text-xs italic text-accent mr-2">Selected</span>}
 						</button>
 					</div>
 
@@ -133,7 +129,6 @@ export default function SelectSort() {
 							}`}
 						>
 							<span>Low to High</span>
-							{sort === 5 && <span className="text-xs italic text-accent mr-2">Selected</span>}
 						</button>
 						<button
 							onClick={() => handleChange(6)}
@@ -143,7 +138,6 @@ export default function SelectSort() {
 							}`}
 						>
 							<span>High to Low</span>
-							{sort === 6 && <span className="text-xs italic text-accent mr-2">Selected</span>}
 						</button>
 					</div>
 				</div>

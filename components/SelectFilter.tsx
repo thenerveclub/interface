@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { IoFilter } from 'react-icons/io5';
+import { SiEthereum, SiPolygon } from 'react-icons/si';
 import { useDispatch, useSelector } from 'react-redux';
 import { filterSlice } from '../state/filter/filterSlice';
 import { CHAINS } from '../utils/chains';
@@ -66,7 +67,7 @@ export default function SelectFilter() {
 								}`}
 							>
 								<div className={`flex items-center`}>
-									<img src={chainInfo.logo} alt={`${chainInfo.name} Logo`} className="w-5 h-5 mr-2" />
+									{Number(chainId) === 137 ? <SiPolygon className="w-5 h-5 mr-2" /> : <SiEthereum className="w-5 h-5 mr-2" />}
 									<span className="hidden md:block">{chainInfo.name}</span>
 								</div>
 

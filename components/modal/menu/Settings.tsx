@@ -109,7 +109,7 @@ export default function SettingsModal() {
 					<h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white text-center -mt-24 md:-mt-0">Settings</h2>
 
 					{/* Theme Toggle Buttons */}
-					<div className="mt-6 mb-6 flex flex-col items-center justify-center">
+					<div className="mt-6 mb-4 flex flex-col items-center justify-center">
 						<h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Theme</h3>
 						<div className="flex items-center justify-between gap-2">
 							<button
@@ -146,7 +146,7 @@ export default function SettingsModal() {
 					</div>
 
 					{/* Testnets Toggle */}
-					<div className="mt-6 mb-6 flex flex-col items-center justify-center">
+					<div className="mt-4 mb-4 flex flex-col items-center justify-center">
 						<h3 className="text-lg font-semibold mb-2 text-black dark:text-white">Show Testnets</h3>
 						<label className="flex items-center gap-2">
 							<input type="checkbox" checked={showTestnets} onChange={handleChangeTestnets} className="sr-only peer" />
@@ -159,7 +159,7 @@ export default function SettingsModal() {
 					</div>
 
 					{/* Currency Toggle */}
-					<div className="mt-6 mb-6 flex flex-col items-center justify-center">
+					<div className="mt-4 mb-4 flex flex-col items-center justify-center">
 						<h3 className="text-lg font-semibold mb-2 text-black dark:text-white">Show Currency</h3>
 						<label className="flex items-center gap-2">
 							<input type="checkbox" checked={showCurrency} onChange={handleChangeCurrency} className="sr-only peer" />
@@ -172,7 +172,7 @@ export default function SettingsModal() {
 					</div>
 
 					{/* RPC Selector */}
-					<div className="mt-6 mb-6 flex flex-col items-center justify-center">
+					<div className="mt-4 mb-4 flex flex-col items-center justify-center">
 						<h3 className="text-lg font-semibold mb-2 text-black dark:text-white">RPC Endpoint</h3>
 						<div className="relative w-full md:w-[250px] group z-10">
 							{/* Toggle Dropdown Button */}

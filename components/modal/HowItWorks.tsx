@@ -79,7 +79,7 @@ export default function HowItWorksModal() {
 			<PortalModal isOpen={open} onClose={handleModalToggle}>
 				<div className="bg-background rounded-lg shadow-lg w-full md:w-[25vw] md:border md:border-secondary h-screen md:h-auto md:max-h-[90vh] overflow-hidden md:overflow-y-auto flex flex-col relative">
 					{/* Image with fade */}
-					<div className="relative w-full h-[60vh] md:h-96">
+					<div className="relative w-full h-[65vh] md:h-[60vh]">
 						<Image src={steps[step].image} alt={steps[step].title} fill className="object-cover fade-bottom pointer-events-none" priority />
 						<div className="absolute inset-x-0 bottom-0 h-0 dark:h-64 bg-gradient-to-t from-white to-transparent dark:from-black dark:to-transparent pointer-events-none" />
 					</div>
@@ -102,11 +102,11 @@ export default function HowItWorksModal() {
 					</div>
 
 					{/* Close Button for Mobile */}
-					<div className="absolute md:hidden bottom-0 mb-10 left-0 right-0 flex justify-center">
+					{/* <div className="absolute md:hidden bottom-0 mb-14 left-0 right-0 flex justify-center">
 						<button onClick={handleModalToggle} className="py-2 px-4 bg-accent text-white rounded-md transition font-semibold">
 							Close
 						</button>
-					</div>
+					</div> */}
 				</div>
 			</PortalModal>
 		</>
